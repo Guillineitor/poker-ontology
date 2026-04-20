@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-"""Generate the Texas Hold'em Poker Ontology (English version) in OWL 2 DL / Turtle."""
+"""Generate the Texas Hold'em Poker Ontology (English version) in OWL 2 DL / Turtle.
+Includes the hand inference layer in addition to the base ontology.
+The resulting ontology allows OWL 2 DL reasoners (HermiT/Pellet/FaCT++)
+to automatically classify poker hands given their 5 explicit cards."""
 
 import os
 from itertools import combinations
 
 OUTPUT = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                      "base_ontology", "poker_base_ontology.ttl")
+                      "..", "ontology", "poker_complete_ontology.ttl")
 
 # === Constants ===
 RANKS = ["Two", "Three", "Four", "Five", "Six", "Seven", "Eight",
@@ -78,6 +81,61 @@ def qualified_card_restriction(prop, n, on_class, kind="qualifiedCardinality"):
             f"owl:onClass poker:{on_class} ]")
 
 
+# ── Module 13 helpers ──────────────────────────────────────────────
+
+def hv_card_r(card_iri):
+    """owl:hasValue restriction on containsCard for a specific card individual."""
+    return (f"[ a owl:Restriction ; owl:onProperty poker:containsCard ; "
+            f"owl:hasValue poker:{card_iri} ]")
+
+
+def qc_rank_r(rank, n, kind="qualifiedCardinality"):
+    """qualifiedCardinality restriction on containsCard for a rank helper class."""
+    return (f"[ a owl:Restriction ; owl:onProperty poker:containsCard ; "
+            f"owl:{kind} \"{n}\"^^xsd:nonNegativeInteger ; "
+            f"owl:onClass poker:{rank}RankCard ]")
+
+
+def qc_suit_r(suit, n, kind="qualifiedCardinality"):
+    """qualifiedCardinality restriction on containsCard for a suit helper class."""
+    return (f"[ a owl:Restriction ; owl:onProperty poker:containsCard ; "
+            f"owl:{kind} \"{n}\"^^xsd:nonNegativeInteger ; "
+            f"owl:onClass poker:{suit}Card ]")
+
+
+def write_m13_union_equiv(class_name, members, label, cmt):
+    """Write: poker:{class_name} ≡ BestHand ∩ unionOf(members).
+
+    Each element of `members` is either:
+    - str  → written directly as one union alternative
+    - list → wrapped in owl:intersectionOf as one union alternative
+    """
+    w(f"poker:{class_name} a owl:Class ;")
+    w( "    owl:equivalentClass [")
+    w( "        a owl:Class ;")
+    w( "        owl:intersectionOf (")
+    w( "            poker:BestHand")
+    w( "            [ a owl:Class ;")
+    w( "              owl:unionOf (")
+    for m in members:
+        if isinstance(m, str):
+            w(f"                {m}")
+        elif len(m) == 1:
+            w(f"                {m[0]}")
+        else:
+            w( "                [ a owl:Class ; owl:intersectionOf (")
+            for part in m:
+                w(f"                    {part}")
+            w( "                )]")
+    w( "              )")
+    w( "            ]")
+    w( "        )")
+    w( "    ] ;")
+    w(f"    rdfs:label \"{label}\" ;")
+    w(f"    rdfs:comment \"{cmt}\" .")
+    blank()
+
+
 # ══════════════════════════════════════════════════════════════════
 #  MAIN GENERATION
 # ══════════════════════════════════════════════════════════════════
@@ -97,29 +155,31 @@ def generate():
     blank()
 
     w("# ============================================================")
-    w("# BASE ONTOLOGY: TEXAS HOLD'EM POKER")
+    w("# COMPLETE ONTOLOGY: TEXAS HOLD'EM POKER (with Module 13)")
     w("# Profile: OWL 2 DL  |  Serialization: Turtle (.ttl)")
     w("# Namespace: http://www.poker-ontology.org/poker#")
-    w("# Version: 2.0.0")
+    w("# Version: 2.1.0  (base + hand inference layer)")
     w("# ============================================================")
     w("# PURPOSE:")
-    w("#   Structural vocabulary to model Texas Hold'em games.")
-    w("#   This is the BASE ontology. Hand classifiers")
-    w("#   (Flush, Straight, Three of a Kind, etc.) are implemented")
-    w("#   as separate extensions that import this base and introduce")
-    w("#   their own owl:equivalentClass restrictions.")
+    w("#   COMPLETE ontology that includes the structural vocabulary")
+    w("#   (Modules 1-12) and the hand inference layer (Module 13).")
+    w("#   Module 13 defines owl:equivalentClass patterns that allow")
+    w("#   an OWL 2 DL reasoner to automatically classify hands")
+    w("#   given that their 5 cards are explicitly assigned.")
     w("# ============================================================")
     w("# OPEN WORLD ASSUMPTION (OWA):")
     w("#   OWL operates under OWA: what is not asserted is unknown, not false.")
     w("#   To mitigate this, Suit and Rank are closed with owl:oneOf, and the")
     w("#   52 card individuals are declared AllDifferent.")
+    w("#   Module 13 inference patterns require all cards in a BestHand")
+    w("#   to be explicitly assigned.")
     w("# ============================================================")
     blank()
     w("<http://www.poker-ontology.org/poker>")
     w("    rdf:type owl:Ontology ;")
-    w('    rdfs:label "Poker Ontology" ;')
-    w('    rdfs:comment "OWL 2 DL ontology that models the game of Texas Hold\'em Poker." ;')
-    w('    owl:versionInfo "2.0.0" .')
+    w('    rdfs:label "Poker Ontology (Complete)" ;')
+    w('    rdfs:comment "Complete OWL 2 DL ontology with hand inference layer for Texas Hold\'em." ;')
+    w('    owl:versionInfo "2.1.0" .')
 
     # ================================================================
     # MODULE 2 – The Deck (Card, Suit, Rank, Deck)
@@ -556,11 +616,6 @@ def generate():
     w("#   └── PostBlind   mandatory blind (not voluntary)")
     w("#         ├── PostSmallBlind  only in PreFlop, by SmallBlindPlayer")
     w("#         └── PostBigBlind    only in PreFlop, by BigBlindPlayer")
-    w("#")
-    w("# AllIn is NOT disjoint with Bet/Call/Raise: an all-in IS always")
-    w("# a specific type of bet at the same time.")
-    w("# Action allValuesFrom (PreFlop|FlopRound|TurnRound|RiverRound):")
-    w("# ensures that actions only occur in betting rounds.")
     blank()
     # Action (with allValuesFrom restriction)
     w("poker:Action a owl:Class ;")
@@ -652,13 +707,6 @@ def generate():
     w("#   └── SidePot   side pot (created when a player goes")
     w("#                 all-in for less than the total bet)")
     w("# MainPot and SidePot are disjoint (see Module 11).")
-    w("# potSequence indicates the order of side pots: 1, 2, 3...")
-    w("# eligibleForPot indicates which players can win each pot.")
-    w("#")
-    w("# BETTING STRUCTURES (BettingStructure):")
-    w("#   NoLimitHoldEm   no limit — can bet everything")
-    w("#   LimitHoldEm     fixed-size bets per street")
-    w("#   PotLimitHoldEm  maximum bet = current pot size")
     blank()
     w("poker:Pot a owl:Class ;")
     w('    rdfs:label "Pot" ;')
@@ -715,7 +763,6 @@ def generate():
     w("# CARD PROPERTIES (Card → Suit / Rank)")
     w("# hasSuit and hasRank are FunctionalProperty: each card has")
     w("# exactly 1 suit and 1 rank (cannot change).")
-    w("# containsCard connects any hand with its cards.")
     w("# ------------------------------------------------------------")
     blank()
     # hasSuit
@@ -744,10 +791,6 @@ def generate():
 
     w("# ------------------------------------------------------------")
     w("# HAND PROPERTIES (Player ↔ Hand)")
-    w("# hasHoleCards: Functional + InverseFunctional → 1 player has")
-    w("#   1 single HoleCards and each HoleCards belongs to 1 player only.")
-    w("# hasBestHand: Functional → a player has exactly 1 best hand.")
-    w("# hasHandRanking: Functional → a BestHand has 1 single ranking.")
     w("# ------------------------------------------------------------")
     blank()
     # hasHoleCards
@@ -784,9 +827,6 @@ def generate():
 
     w("# ------------------------------------------------------------")
     w("# INVERSE PROPERTIES (Game ↔ Player / Action ↔ Round)")
-    w("# hasPlayer/participatesIn, makesAction/performedBy,")
-    w("# performedIn/hasAction are inverse property pairs.")
-    w("# hasSidePot is subPropertyOf hasPot: every side pot is a pot.")
     w("# ------------------------------------------------------------")
     blank()
     # hasPlayer / participatesIn  (inverses)
@@ -923,10 +963,6 @@ def generate():
 
     w("# ------------------------------------------------------------")
     w("# beats PROPERTY (TransitiveProperty)")
-    w("# Relates rankings: RoyalFlush beats StraightFlush, etc.")
-    w("# By transitivity, the reasoner automatically infers that")
-    w("# RoyalFlush beats HighCard without explicit declaration.")
-    w("# 9 direct relations are declared → 45 total pairs inferred.")
     w("# ------------------------------------------------------------")
     blank()
     # beats (Transitive)
@@ -950,10 +986,7 @@ def generate():
     section("MODULE 10: Data Properties")
 
     w("# Data Properties record scalar values from the domain.")
-    w("# OWL cannot calculate or sum: values are recorded as")
-    w("# facts (e.g., hasPotSize records the pot, does not calculate it).")
-    w("# Those marked FunctionalProperty guarantee value uniqueness")
-    w("# per individual (e.g., each Rank has a single hasRankValue).")
+    w("# Those marked FunctionalProperty guarantee value uniqueness per individual.")
     blank()
     data_props = [
         ("hasRankValue",    "Rank",    "xsd:integer", True,  "has rank value",        "Numeric rank value (2-14)."),
@@ -989,9 +1022,6 @@ def generate():
     section("MODULE 11: Structural Axioms and Restrictions")
 
     w("# Global axioms that guarantee the consistency of the ontology.")
-    w("# A reasoner (HermiT/Pellet) detects inconsistencies if any")
-    w("# axiom is violated (e.g., instantiating something as both")
-    w("# MainPot and SidePot → inconsistent).")
     blank()
     comment("Hand Ranking Disjunction (9 base classes, RoyalFlush excluded)")
     w("[] a owl:AllDisjointClasses ;")
@@ -1041,7 +1071,6 @@ def generate():
     w("poker:EarlyPosition owl:disjointWith poker:MiddlePosition .")
     w("poker:EarlyPosition owl:disjointWith poker:LatePosition .")
     w("poker:MiddlePosition owl:disjointWith poker:LatePosition .")
-    comment("NOTE: ButtonPosition is NOT disjoint with SmallBlindPosition (they coincide in heads-up)")
 
     # ================================================================
     # MODULE 12 – Individuals (ABox)
@@ -1065,10 +1094,7 @@ def generate():
     blank()
 
     # ── Ranks ──
-    w("# Rank values from Two (hasRankValue 2) to Ace (hasRankValue 14).")
-    w("# The Ace also has hasRankValueLow=1 for the low straight")
-    w("# (A-2-3-4-5, the 'wheel'). OWL does not sum; external applications")
-    w("# (SPARQL/Python) use this data for evaluation logic.")
+    w("# The Ace also has hasRankValueLow=1 for the low straight (A-2-3-4-5).")
     comment("Ranks (13 individuals)")
     for r in RANKS:
         v = RANK_VALUES[r]
@@ -1080,10 +1106,6 @@ def generate():
     blank()
 
     # ── 52 Cards ──
-    w("# Naming convention: {Rank}Of{Suit}")
-    w("# Examples: TwoOfSpades, AceOfHearts, KingOfDiamonds, JackOfClubs")
-    w("# Each card declares hasSuit and hasRank explicitly.")
-    w("# This enables SPARQL queries and the AllDifferent axiom.")
     comment("Cards (52 individuals)")
     for s in SUITS:
         for r in RANKS:
@@ -1137,10 +1159,6 @@ def generate():
     blank()
 
     comment("beats chain: 9 direct relations, 36 pairs inferred by transitivity")
-    w("# Order from highest to lowest strength:")
-    w("# RoyalFlush > StraightFlush > FourOfAKind > FullHouse > Flush")
-    w("#   > Straight > ThreeOfAKind > TwoPair > OnePair > HighCard")
-    w("# The reasoner infers e.g. FourOfAKindRanking beats OnePairRanking.")
     beats = [
         ("RoyalFlushRanking",    "StraightFlushRanking"),
         ("StraightFlushRanking", "FourOfAKindRanking"),
@@ -1157,11 +1175,6 @@ def generate():
     blank()
 
     # ── AllDifferent ──
-    w("# AllDifferent AXIOMS: guarantee that the individuals in each group")
-    w("# are distinct from each other (local Unique Name Assumption).")
-    w("# Under OWA, two different names could refer to the same object.")
-    w("# AllDifferent closes this world for the 52 card individuals,")
-    w("# the 4 suits, the 13 ranks, positions, and rankings.")
     comment("AllDifferent Axioms")
     blank()
 
@@ -1199,29 +1212,337 @@ def generate():
     w("[] a owl:AllDifferent ;")
     w("    owl:distinctMembers ( poker:NLHE poker:LHE poker:PLHE ) .")
 
-    # MODULE 13 omitted: this is the BASE ontology.
-    # The classifiers (FlushDiamonds, StraightSpades, etc.)
-    # are built as separate extensions on top of this base.
-    w("# ============================================================")
-    w("# MODULE 13 OMITTED — CLASSIFIER EXTENSION")
-    w("# ============================================================")
-    w("# This is the BASE ontology. To build a classifier,")
-    w("# create a new .ttl file that imports this base and introduces")
-    w("# its own classes with owl:equivalentClass. Example:")
+    # ================================================================
+    # MODULE 13 – Hand Inference Layer
+    # ================================================================
+    section("MODULE 13: Hand Inference Layer")
+
+    w("# This module defines owl:equivalentClass patterns that allow an OWL 2 DL")
+    w("# reasoner (HermiT/Pellet/FaCT++) to automatically classify poker hands.")
+    w("# REQUIREMENT: the 5 cards of the BestHand must be explicitly assigned")
+    w("# with containsCard for the reasoner to activate classification.")
     w("#")
-    w("#   @prefix poker: <http://www.poker-ontology.org/poker#> .")
-    w("#   <http://example.org/classifiers>")
-    w("#       owl:imports <http://www.poker-ontology.org/poker> .")
-    w("#")
-    w("#   ex:DiamondFlush a owl:Class ;")
-    w("#       rdfs:subClassOf poker:BestHand ;")
-    w("#       owl:equivalentClass [")
-    w("#           owl:intersectionOf (")
-    w("#               poker:BestHand")
-    w("#               [ owl:onProperty poker:containsCard ;")
-    w("#                 owl:allValuesFrom")
-    w("#                   [ owl:onProperty poker:hasSuit ;")
-    w("#                     owl:hasValue poker:Diamonds ] ] ) ] .")
+    w("# Module contents:")
+    w("#   13.1  4  suit helper classes        (SpadesCard, HeartsCard, ...)")
+    w("#   13.2  13 rank helper classes         (TwoRankCard, AceRankCard, ...)")
+    w("#   13.3  10 BestHand-by-ranking classes (OnePairBestHand, FlushBestHand, ...)")
+    w("#   13.4  Royal Flush by cards           (4  variants: one per suit)")
+    w("#   13.5  Steel Wheel by cards           (4  variants: one per suit)")
+    w("#   13.6  Standard Straight Flush        (32 variants: 8 ranges × 4 suits)")
+    w("#   13.7  Four of a Kind by cards        (13 variants: one per rank)")
+    w("#   13.8  Full House by cards             (156 variants: 13 trips × 12 pairs)")
+    w("#   13.9  Flush by cards                  (4  variants: one per suit)")
+    w("#   13.10 Straight by ranks               (10 variants)")
+    w("#   13.11 Three of a Kind by cards        (13 variants)")
+    w("#   13.12 Two Pair by cards               (78 variants: C(13,2))")
+    w("#   13.13 One Pair by cards               (13 variants)")
+    w("#   13.14 High Card by complement         (1  class, requires closed world)")
+    blank()
+
+    # ----------------------------------------------------------------
+    # 13.1 Suit Helper Classes
+    # ----------------------------------------------------------------
+    comment("13.1 Suit Helper Classes (4 classes)")
+    w("# XxxCard ≡ Card ∩ hasSuit.{Xxx}")
+    w("# Enable owl:qualifiedCardinality over cards of a specific suit.")
+    w("# Example: =5 containsCard SpadesCard detects a Spades Flush.")
+    blank()
+    for suit in SUITS:
+        w(f"poker:{suit}Card a owl:Class ;")
+        w( "    owl:equivalentClass [")
+        w( "        a owl:Class ;")
+        w( "        owl:intersectionOf (")
+        w( "            poker:Card")
+        w(f"            [ a owl:Restriction ; owl:onProperty poker:hasSuit ; owl:hasValue poker:{suit} ]")
+        w( "        )")
+        w( "    ] ;")
+        w(f'    rdfs:label "{suit} Card" ;')
+        w(f'    rdfs:comment "Card whose suit is {suit}." .')
+        blank()
+
+    # ----------------------------------------------------------------
+    # 13.2 Rank Helper Classes
+    # ----------------------------------------------------------------
+    comment("13.2 Rank Helper Classes (13 classes)")
+    w("# XxxRankCard ≡ Card ∩ hasRank.{Xxx}")
+    w("# Enable owl:qualifiedCardinality over cards of a specific rank.")
+    w("# Example: >=3 containsCard AceRankCard detects Three of a Kind (Aces).")
+    blank()
+    for rank in RANKS:
+        w(f"poker:{rank}RankCard a owl:Class ;")
+        w( "    owl:equivalentClass [")
+        w( "        a owl:Class ;")
+        w( "        owl:intersectionOf (")
+        w( "            poker:Card")
+        w(f"            [ a owl:Restriction ; owl:onProperty poker:hasRank ; owl:hasValue poker:{rank} ]")
+        w( "        )")
+        w( "    ] ;")
+        w(f'    rdfs:label "{rank} Rank Card" ;')
+        w(f'    rdfs:comment "Card whose rank is {rank}." .')
+        blank()
+
+    # ----------------------------------------------------------------
+    # 13.3 BestHand by Ranking (10 classes)
+    # ----------------------------------------------------------------
+    comment("13.3 BestHand by Ranking (10 defined classes)")
+    w("# XxxBestHand ≡ BestHand ∩ hasHandRanking.{XxxRanking}")
+    w("# Classify a BestHand already tagged with its ranking individual.")
+    blank()
+    bh_by_ranking = [
+        ("HighCard",      "HighCardRanking",      "High Card",        "BestHand classified as High Card."),
+        ("OnePair",       "OnePairRanking",       "One Pair",         "BestHand classified as One Pair."),
+        ("TwoPair",       "TwoPairRanking",       "Two Pair",         "BestHand classified as Two Pair."),
+        ("ThreeOfAKind",  "ThreeOfAKindRanking",  "Three of a Kind",  "BestHand classified as Three of a Kind."),
+        ("Straight",      "StraightRanking",      "Straight",         "BestHand classified as Straight."),
+        ("Flush",         "FlushRanking",         "Flush",            "BestHand classified as Flush."),
+        ("FullHouse",     "FullHouseRanking",     "Full House",       "BestHand classified as Full House."),
+        ("FourOfAKind",   "FourOfAKindRanking",   "Four of a Kind",   "BestHand classified as Four of a Kind."),
+        ("StraightFlush", "StraightFlushRanking", "Straight Flush",   "BestHand classified as Straight Flush."),
+        ("RoyalFlush",    "RoyalFlushRanking",    "Royal Flush",      "BestHand classified as Royal Flush."),
+    ]
+    for hand_type, ranking_ind, label, cmt in bh_by_ranking:
+        cls = f"{hand_type}BestHand"
+        w(f"poker:{cls} a owl:Class ;")
+        w( "    owl:equivalentClass [")
+        w( "        a owl:Class ;")
+        w( "        owl:intersectionOf (")
+        w( "            poker:BestHand")
+        w(f"            [ a owl:Restriction ; owl:onProperty poker:hasHandRanking ; owl:hasValue poker:{ranking_ind} ]")
+        w( "        )")
+        w( "    ] ;")
+        w(f'    rdfs:label "Best Hand: {label}" ;')
+        w(f'    rdfs:comment "{cmt}" .')
+        blank()
+
+    # ----------------------------------------------------------------
+    # 13.4 Royal Flush by cards (4 variants)
+    # ----------------------------------------------------------------
+    comment("13.4 Royal Flush by Cards Pattern (4 variants)")
+    w("# RoyalFlushByCardsBestHand ≡ BestHand ∩ unionOf(")
+    w("#   [10-J-Q-K-A of Spades] ⊔ [10-J-Q-K-A of Hearts] ⊔ ...)")
+    w("# A reasoner automatically detects the Royal Flush by cards.")
+    blank()
+    royal_ranks = ["Ten", "Jack", "Queen", "King", "Ace"]
+    royal_members = []
+    for suit in SUITS:
+        member = [hv_card_r(f"{rank}Of{suit}") for rank in royal_ranks]
+        royal_members.append(member)
+    write_m13_union_equiv(
+        "RoyalFlushByCardsBestHand",
+        royal_members,
+        "Royal Flush by Cards",
+        "BestHand with 10-J-Q-K-A of the same suit (4 possible variants, one per suit)."
+    )
+
+    # ----------------------------------------------------------------
+    # 13.5 Steel Wheel by cards (4 variants)
+    # ----------------------------------------------------------------
+    comment("13.5 Steel Wheel by Cards Pattern (4 variants)")
+    w("# SteelWheelBestHand: A-2-3-4-5 of the same suit.")
+    w("# The lowest Straight Flush; the Ace counts as 1.")
+    blank()
+    wheel_ranks = ["Ace", "Two", "Three", "Four", "Five"]
+    steel_wheel_members = []
+    for suit in SUITS:
+        member = [hv_card_r(f"{rank}Of{suit}") for rank in wheel_ranks]
+        steel_wheel_members.append(member)
+    write_m13_union_equiv(
+        "SteelWheelBestHand",
+        steel_wheel_members,
+        "Steel Wheel by Cards",
+        "BestHand with A-2-3-4-5 of the same suit (low straight flush, 4 variants)."
+    )
+
+    # ----------------------------------------------------------------
+    # 13.6 Standard Straight Flush (32 variants)
+    # ----------------------------------------------------------------
+    comment("13.6 Standard Straight Flush by Cards Pattern (32 variants)")
+    w("# StraightFlushByCardsBestHand: 8 intermediate ranges × 4 suits = 32 variants.")
+    w("# Excludes Royal Flush (Broadway × 4) and Steel Wheel (Wheel × 4),")
+    w("# modeled as separate classes in 13.4 and 13.5.")
+    blank()
+    std_sf_members = []
+    for straight_indices in STRAIGHTS[1:9]:   # indices 1-8: excludes Wheel (0) and Broadway (9)
+        straight_ranks = [RANKS[i] for i in straight_indices]
+        for suit in SUITS:
+            member = [hv_card_r(f"{rank}Of{suit}") for rank in straight_ranks]
+            std_sf_members.append(member)
+    write_m13_union_equiv(
+        "StraightFlushByCardsBestHand",
+        std_sf_members,
+        "Straight Flush by Cards",
+        "BestHand with standard straight flush (8 ranges x 4 suits = 32 variants). Excludes Royal Flush and Steel Wheel."
+    )
+
+    # ----------------------------------------------------------------
+    # 13.7 Four of a Kind (13 variants)
+    # ----------------------------------------------------------------
+    comment("13.7 Four of a Kind by Cards Pattern (13 variants)")
+    w("# FourOfAKindByCardsBestHand: qualifiedCardinality 4 for each rank.")
+    blank()
+    four_members = [qc_rank_r(rank, 4) for rank in RANKS]
+    write_m13_union_equiv(
+        "FourOfAKindByCardsBestHand",
+        four_members,
+        "Four of a Kind by Cards",
+        "BestHand with exactly 4 cards of the same rank (13 possible variants, one per rank)."
+    )
+
+    # ----------------------------------------------------------------
+    # 13.8 Full House (156 variants)
+    # ----------------------------------------------------------------
+    comment("13.8 Full House by Cards Pattern (156 variants)")
+    w("# FullHouseByCardsBestHand: 13 ranks for trips × 12 ranks for pair.")
+    w("# LARGE AXIOM: 156 members in the unionOf — correct in OWL 2 DL.")
+    w("# Each member: (=3 XRankCard ∩ =2 YRankCard) with X ≠ Y.")
+    blank()
+    fh_members = []
+    for trio_rank in RANKS:
+        for pair_rank in RANKS:
+            if trio_rank != pair_rank:
+                fh_members.append([
+                    qc_rank_r(trio_rank, 3),
+                    qc_rank_r(pair_rank, 2)
+                ])
+    write_m13_union_equiv(
+        "FullHouseByCardsBestHand",
+        fh_members,
+        "Full House by Cards",
+        "BestHand with trips and a pair of different ranks (156 variants = 13 x 12)."
+    )
+
+    # ----------------------------------------------------------------
+    # 13.9 Flush (4 variants)
+    # ----------------------------------------------------------------
+    comment("13.9 Flush by Cards Pattern (4 variants)")
+    w("# FlushByCardsBestHand: qualifiedCardinality 5 for each suit class.")
+    w("# Note: includes Straight Flush and Royal Flush as special cases.")
+    w("# Fine distinction is made via hasHandRanking.")
+    blank()
+    flush_members = [qc_suit_r(suit, 5) for suit in SUITS]
+    write_m13_union_equiv(
+        "FlushByCardsBestHand",
+        flush_members,
+        "Flush by Cards",
+        "BestHand with 5 cards of the same suit (4 variants). Semantic superclass of Straight Flush."
+    )
+
+    # ----------------------------------------------------------------
+    # 13.10 Straight by Ranks (10 variants)
+    # ----------------------------------------------------------------
+    comment("13.10 Straight by Ranks Pattern (10 variants)")
+    w("# StraightByRanksBestHand: minQualifiedCardinality 1 for each required rank.")
+    w("# Note: includes Straight Flush and Royal Flush. Distinction via hasHandRanking.")
+    blank()
+    straight_members = []
+    for straight_indices in STRAIGHTS:
+        straight_ranks = [RANKS[i] for i in straight_indices]
+        member = [qc_rank_r(rank, 1, "minQualifiedCardinality") for rank in straight_ranks]
+        straight_members.append(member)
+    write_m13_union_equiv(
+        "StraightByRanksBestHand",
+        straight_members,
+        "Straight by Ranks",
+        "BestHand with 5 consecutive ranks (10 variants: wheel to broadway). Semantic superclass of Straight Flush."
+    )
+
+    # ----------------------------------------------------------------
+    # 13.11 Three of a Kind by cards (13 variants)
+    # ----------------------------------------------------------------
+    comment("13.11 Three of a Kind by Cards Pattern (13 variants)")
+    w("# ThreeOfAKindByCardsBestHand: minQualifiedCardinality 3 for each rank.")
+    w("# Note: also detects Full House (has trips) and Four of a Kind (4 >= 3).")
+    blank()
+    toak_members = [qc_rank_r(rank, 3, "minQualifiedCardinality") for rank in RANKS]
+    write_m13_union_equiv(
+        "ThreeOfAKindByCardsBestHand",
+        toak_members,
+        "Three of a Kind by Cards",
+        "BestHand with at least 3 cards of the same rank (13 variants). Includes Full House and Four of a Kind."
+    )
+
+    # ----------------------------------------------------------------
+    # 13.12 Two Pair by cards (78 variants)
+    # ----------------------------------------------------------------
+    comment("13.12 Two Pair by Cards Pattern (78 variants)")
+    w("# TwoPairByCardsBestHand: C(13,2) = 78 combinations of 2 distinct ranks.")
+    w("# Each member: (>=2 XRankCard ∩ >=2 YRankCard) with X < Y (lexicographic order).")
+    w("# Note: also detects Full House (the trips have >=2 of that rank).")
+    blank()
+    tp_members = []
+    for i, rank1 in enumerate(RANKS):
+        for rank2 in RANKS[i + 1:]:
+            tp_members.append([
+                qc_rank_r(rank1, 2, "minQualifiedCardinality"),
+                qc_rank_r(rank2, 2, "minQualifiedCardinality")
+            ])
+    write_m13_union_equiv(
+        "TwoPairByCardsBestHand",
+        tp_members,
+        "Two Pair by Cards",
+        "BestHand with at least 2 cards of two distinct ranks (78 variants = C(13,2)). Includes Full House."
+    )
+
+    # ----------------------------------------------------------------
+    # 13.13 One Pair by cards (13 variants)
+    # ----------------------------------------------------------------
+    comment("13.13 One Pair by Cards Pattern (13 variants)")
+    w("# OnePairByCardsBestHand: minQualifiedCardinality 2 for each rank.")
+    w("# This is the broadest condition: also covers Two Pair, Three of a Kind,")
+    w("# Full House, and Four of a Kind (all have at least one pair).")
+    blank()
+    op_members = [qc_rank_r(rank, 2, "minQualifiedCardinality") for rank in RANKS]
+    write_m13_union_equiv(
+        "OnePairByCardsBestHand",
+        op_members,
+        "One Pair by Cards",
+        "BestHand with at least 2 cards of the same rank (13 variants). Includes Two Pair, Three of a Kind, Full House, Four of a Kind."
+    )
+
+    # ----------------------------------------------------------------
+    # 13.14 High Card by complement
+    # ----------------------------------------------------------------
+    comment("13.14 High Card by Complement Pattern")
+    w("# HighCardByCardsBestHand ≡ BestHand")
+    w("#   ∩ ¬OnePairByCardsBestHand     (no pair of any rank)")
+    w("#   ∩ ¬StraightByRanksBestHand   (no 5 ranks of any straight)")
+    w("#   ∩ ¬FlushByCardsBestHand      (no 5 cards of the same suit)")
+    w("# WARNING: requires closed world (all cards assigned).")
+    w("# In a benchmark with complete ABox this pattern works correctly.")
+    blank()
+    w("poker:HighCardByCardsBestHand a owl:Class ;")
+    w( "    owl:equivalentClass [")
+    w( "        a owl:Class ;")
+    w( "        owl:intersectionOf (")
+    w( "            poker:BestHand")
+    w( "            [ a owl:Class ; owl:complementOf poker:OnePairByCardsBestHand ]")
+    w( "            [ a owl:Class ; owl:complementOf poker:StraightByRanksBestHand ]")
+    w( "            [ a owl:Class ; owl:complementOf poker:FlushByCardsBestHand ]")
+    w( "        )")
+    w( "    ] ;")
+    w( '    rdfs:label "High Card by Complement" ;')
+    w( '    rdfs:comment "BestHand with no pair, straight, or flush (requires closed world over assigned cards)." .')
+    blank()
+
+    w("# ============================================================")
+    w("# MODULE 13 COMPLETE")
+    w("# ─────────────────────────────────────────────────────────────")
+    w("# Helper classes:              17  (4 suit + 13 rank)")
+    w("# BestHand by ranking:         10")
+    w("# Inference patterns:")
+    w("#   Royal Flush:               4  variants")
+    w("#   Steel Wheel:               4  variants")
+    w("#   Standard Straight Flush:  32  variants")
+    w("#   Four of a Kind:           13  variants")
+    w("#   Full House:              156  variants")
+    w("#   Flush:                     4  variants")
+    w("#   Straight:                 10  variants")
+    w("#   Three of a Kind:          13  variants")
+    w("#   Two Pair:                 78  variants")
+    w("#   One Pair:                 13  variants")
+    w("#   High Card:                 1  class (complement)")
+    w("# ─────────────────────────────────────────────────────────────")
+    w("# Total inference variants: 328")
     w("# ============================================================")
 
     # ── WRITE FILE ──
@@ -1229,9 +1550,12 @@ def generate():
         f.write("\n".join(lines))
         f.write("\n")
 
-    print(f"✓ Base ontology written to {OUTPUT}")
+    print(f"✓ Complete ontology written to {OUTPUT}")
     print(f"  Total lines: {len(lines)}")
     print(f"  Cards generated: {sum(1 for s in SUITS for _ in RANKS)}")
+    print(f"  M13 helper classes: {len(SUITS)} suit + {len(RANKS)} rank = {len(SUITS)+len(RANKS)}")
+    print(f"  Full House variants: {len([1 for t in RANKS for p in RANKS if t != p])}")
+    print(f"  Two Pair variants: {len(RANKS)*(len(RANKS)-1)//2}")
 
 
 if __name__ == "__main__":
