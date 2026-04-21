@@ -1,0 +1,511 @@
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================
+# ABOX: Full game instances for the BASE Ontology
+# Imports TBox: poker_base_ontology.ttl
+# ============================================================
+# Game 1: 3-player NLHE — Alice wins with a Straight Flush
+#         Cards: hole(Ts-9s) | board: 8s-7s-2d / Js / Qs
+# Game 2: 2-player HeadsUp — Eve wins with Three of a Kind (Kings)
+#         Cards: Dave(Ah-Ad) Eve(Ks-Kd) | board: Kh-3c-5h / 9d / 2c
+# ============================================================
+# Reasoning goals (HermiT / Pellet):
+#   - Game2 inferred as HeadsUpGame (2 players + isHeadsUp=true)
+#   - Dave inferred as both Dealer and SmallBlindPlayer (heads-up role)
+#   - Eve inferred as BigBlindPlayer
+#   - beats chain: ThreeOfAKindRanking beats OnePairRanking (by transitivity)
+# ============================================================
+
+<http://www.poker-ontology.org/abox_base>
+    rdf:type owl:Ontology ;
+    owl:imports <http://www.poker-ontology.org/poker> ;
+    rdfs:label "ABox: Full Game Instances for the Base Ontology" ;
+    rdfs:comment "Two complete Texas Hold'em games for OWL 2 DL reasoning." .
+
+# ============================================================
+# GAME 1: 3-Player No-Limit Hold'em
+# Alice (Button) wins with a Queen-high Straight Flush
+# Sequence: PreFlop → Flop (Bob folds) → Turn → River (Carol folds)
+# ============================================================
+
+poker:Table1 a poker:Table ;
+    poker:tableSize "9"^^xsd:integer ;
+    rdfs:label "Table 1" .
+
+# Players
+
+poker:Player_Alice a poker:Player ;
+    poker:playerName "Alice" ;
+    poker:seatNumber "3"^^xsd:integer ;
+    poker:hasChipCount "1000"^^xsd:integer ;
+    poker:hasDealerButton "true"^^xsd:boolean ;
+    poker:isFolded "false"^^xsd:boolean ;
+    poker:hasPosition poker:Button ;
+    poker:hasHoleCards poker:HoleCards_Alice ;
+    poker:hasBestHand poker:BestHand_Alice ;
+    rdfs:label "Alice" .
+
+poker:Player_Bob a poker:Player ;
+    poker:playerName "Bob" ;
+    poker:seatNumber "1"^^xsd:integer ;
+    poker:hasChipCount "1000"^^xsd:integer ;
+    poker:isBlind "true"^^xsd:boolean ;
+    poker:isFolded "true"^^xsd:boolean ;
+    poker:hasPosition poker:SmallBlind ;
+    poker:hasHoleCards poker:HoleCards_Bob ;
+    rdfs:label "Bob" .
+
+poker:Player_Carol a poker:Player ;
+    poker:playerName "Carol" ;
+    poker:seatNumber "2"^^xsd:integer ;
+    poker:hasChipCount "1000"^^xsd:integer ;
+    poker:isBlind "true"^^xsd:boolean ;
+    poker:isFolded "true"^^xsd:boolean ;
+    poker:hasPosition poker:BigBlind ;
+    poker:hasHoleCards poker:HoleCards_Carol ;
+    rdfs:label "Carol" .
+
+# Hole Cards
+
+# Alice: T♠ 9♠  (straight-flush draw to the nuts)
+poker:HoleCards_Alice a poker:HoleCards ;
+    poker:containsCard poker:TenOfSpades ;
+    poker:containsCard poker:NineOfSpades ;
+    rdfs:label "Alice's Hole Cards: Ts-9s" .
+
+# Bob: A♣ K♣  (big cards, no board connectivity)
+poker:HoleCards_Bob a poker:HoleCards ;
+    poker:containsCard poker:AceOfClubs ;
+    poker:containsCard poker:KingOfClubs ;
+    rdfs:label "Bob's Hole Cards: Ac-Kc" .
+
+# Carol: 6♥ 7♥  (pair of sevens on the flop)
+poker:HoleCards_Carol a poker:HoleCards ;
+    poker:containsCard poker:SixOfHearts ;
+    poker:containsCard poker:SevenOfHearts ;
+    rdfs:label "Carol's Hole Cards: 6h-7h" .
+
+# Community Cards: 8s-7s-2d / Js / Qs
+
+poker:Flop1 a poker:Flop ;
+    poker:containsCard poker:EightOfSpades ;
+    poker:containsCard poker:SevenOfSpades ;
+    poker:containsCard poker:TwoOfDiamonds ;
+    rdfs:label "Flop 1: 8s-7s-2d" .
+
+poker:Turn1 a poker:Turn ;
+    poker:containsCard poker:JackOfSpades ;
+    rdfs:label "Turn 1: Js" .
+
+poker:River1 a poker:River ;
+    poker:containsCard poker:QueenOfSpades ;
+    rdfs:label "River 1: Qs" .
+
+# Rounds and Actions
+
+poker:PreFlop1 a poker:PreFlop ;
+    poker:hasAction poker:Act_Bob_PostSB ;
+    poker:hasAction poker:Act_Carol_PostBB ;
+    poker:hasAction poker:Act_Alice_Call_PF ;
+    poker:hasAction poker:Act_Bob_CallSB ;
+    poker:hasAction poker:Act_Carol_Check_PF ;
+    rdfs:label "PreFlop — Game 1" .
+
+poker:Act_Bob_PostSB a poker:PostSmallBlind ;
+    poker:performedBy poker:Player_Bob ;
+    poker:performedIn poker:PreFlop1 ;
+    poker:hasBetAmount "10"^^xsd:decimal ;
+    rdfs:label "Bob posts Small Blind (10)" .
+
+poker:Act_Carol_PostBB a poker:PostBigBlind ;
+    poker:performedBy poker:Player_Carol ;
+    poker:performedIn poker:PreFlop1 ;
+    poker:hasBetAmount "20"^^xsd:decimal ;
+    rdfs:label "Carol posts Big Blind (20)" .
+
+poker:Act_Alice_Call_PF a poker:Call ;
+    poker:performedBy poker:Player_Alice ;
+    poker:performedIn poker:PreFlop1 ;
+    poker:hasBetAmount "20"^^xsd:decimal ;
+    rdfs:label "Alice calls 20 (PreFlop)" .
+
+poker:Act_Bob_CallSB a poker:Call ;
+    poker:performedBy poker:Player_Bob ;
+    poker:performedIn poker:PreFlop1 ;
+    poker:hasBetAmount "10"^^xsd:decimal ;
+    rdfs:label "Bob completes small blind to 20 (calls 10 more)" .
+
+poker:Act_Carol_Check_PF a poker:Check ;
+    poker:performedBy poker:Player_Carol ;
+    poker:performedIn poker:PreFlop1 ;
+    rdfs:label "Carol checks (PreFlop)" .
+
+poker:FlopRound1 a poker:FlopRound ;
+    poker:hasAction poker:Act_Bob_Check_F ;
+    poker:hasAction poker:Act_Carol_Check_F ;
+    poker:hasAction poker:Act_Alice_Bet_F ;
+    poker:hasAction poker:Act_Bob_Fold_F ;
+    poker:hasAction poker:Act_Carol_Call_F ;
+    rdfs:label "Flop Round — Game 1" .
+
+poker:Act_Bob_Check_F a poker:Check ;
+    poker:performedBy poker:Player_Bob ;
+    poker:performedIn poker:FlopRound1 ;
+    rdfs:label "Bob checks (Flop)" .
+
+poker:Act_Carol_Check_F a poker:Check ;
+    poker:performedBy poker:Player_Carol ;
+    poker:performedIn poker:FlopRound1 ;
+    rdfs:label "Carol checks (Flop)" .
+
+poker:Act_Alice_Bet_F a poker:Bet ;
+    poker:performedBy poker:Player_Alice ;
+    poker:performedIn poker:FlopRound1 ;
+    poker:hasBetAmount "30"^^xsd:decimal ;
+    rdfs:label "Alice bets 30 (Flop)" .
+
+poker:Act_Bob_Fold_F a poker:Fold ;
+    poker:performedBy poker:Player_Bob ;
+    poker:performedIn poker:FlopRound1 ;
+    rdfs:label "Bob folds (Flop)" .
+
+poker:Act_Carol_Call_F a poker:Call ;
+    poker:performedBy poker:Player_Carol ;
+    poker:performedIn poker:FlopRound1 ;
+    poker:hasBetAmount "30"^^xsd:decimal ;
+    rdfs:label "Carol calls 30 (Flop)" .
+
+poker:TurnRound1 a poker:TurnRound ;
+    poker:hasAction poker:Act_Carol_Check_T ;
+    poker:hasAction poker:Act_Alice_Bet_T ;
+    poker:hasAction poker:Act_Carol_Call_T ;
+    rdfs:label "Turn Round — Game 1" .
+
+poker:Act_Carol_Check_T a poker:Check ;
+    poker:performedBy poker:Player_Carol ;
+    poker:performedIn poker:TurnRound1 ;
+    rdfs:label "Carol checks (Turn)" .
+
+poker:Act_Alice_Bet_T a poker:Bet ;
+    poker:performedBy poker:Player_Alice ;
+    poker:performedIn poker:TurnRound1 ;
+    poker:hasBetAmount "60"^^xsd:decimal ;
+    rdfs:label "Alice bets 60 (Turn)" .
+
+poker:Act_Carol_Call_T a poker:Call ;
+    poker:performedBy poker:Player_Carol ;
+    poker:performedIn poker:TurnRound1 ;
+    poker:hasBetAmount "60"^^xsd:decimal ;
+    rdfs:label "Carol calls 60 (Turn)" .
+
+poker:RiverRound1 a poker:RiverRound ;
+    poker:hasAction poker:Act_Carol_Check_R ;
+    poker:hasAction poker:Act_Alice_Bet_R ;
+    poker:hasAction poker:Act_Carol_Fold_R ;
+    rdfs:label "River Round — Game 1" .
+
+poker:Act_Carol_Check_R a poker:Check ;
+    poker:performedBy poker:Player_Carol ;
+    poker:performedIn poker:RiverRound1 ;
+    rdfs:label "Carol checks (River)" .
+
+poker:Act_Alice_Bet_R a poker:Bet ;
+    poker:performedBy poker:Player_Alice ;
+    poker:performedIn poker:RiverRound1 ;
+    poker:hasBetAmount "100"^^xsd:decimal ;
+    rdfs:label "Alice bets 100 (River)" .
+
+poker:Act_Carol_Fold_R a poker:Fold ;
+    poker:performedBy poker:Player_Carol ;
+    poker:performedIn poker:RiverRound1 ;
+    rdfs:label "Carol folds (River) — Alice wins without showdown" .
+
+# Showdown with 0 actions (Carol folded on river, no cards revealed)
+poker:Showdown1 a poker:Showdown ;
+    rdfs:label "Showdown — Game 1 (no actions: Carol folded on River)" .
+
+# Main Pot: 20+20+20 (PreFlop) + 30+30 (Flop) + 60+60 (Turn) + 100 (River) = 340
+poker:MainPot1 a poker:MainPot ;
+    poker:hasPotSize "340"^^xsd:decimal ;
+    poker:eligibleForPot poker:Player_Alice ;
+    rdfs:label "Main Pot — Game 1 (340 chips)" .
+
+# Best Hand: Alice's Q-high Straight Flush (Ts-9s hole + 8s-Js-Qs board)
+poker:BestHand_Alice a poker:BestHand ;
+    poker:containsCard poker:TenOfSpades ;
+    poker:containsCard poker:NineOfSpades ;
+    poker:containsCard poker:EightOfSpades ;
+    poker:containsCard poker:JackOfSpades ;
+    poker:containsCard poker:QueenOfSpades ;
+    poker:hasHandRanking poker:StraightFlushRanking ;
+    rdfs:label "Alice's Best Hand: Q-high Straight Flush (8-9-T-J-Q of Spades)" .
+
+poker:Game1 a poker:Game ;
+    poker:gameId "GAME-001" ;
+    poker:handNumber "1"^^xsd:integer ;
+    poker:usesStructure poker:NLHE ;
+    poker:hasTable poker:Table1 ;
+    poker:hasPlayer poker:Player_Alice ;
+    poker:hasPlayer poker:Player_Bob ;
+    poker:hasPlayer poker:Player_Carol ;
+    poker:hasRound poker:PreFlop1 ;
+    poker:hasRound poker:FlopRound1 ;
+    poker:hasRound poker:TurnRound1 ;
+    poker:hasRound poker:RiverRound1 ;
+    poker:hasRound poker:Showdown1 ;
+    poker:hasCommunityCards poker:Flop1 ;
+    poker:hasCommunityCards poker:Turn1 ;
+    poker:hasCommunityCards poker:River1 ;
+    poker:hasPot poker:MainPot1 ;
+    poker:hasWinner poker:Player_Alice ;
+    rdfs:label "Game 1: 3-player NLHE — Alice wins with Straight Flush" .
+
+# ============================================================
+# GAME 2: 2-Player Heads-Up No-Limit Hold'em
+# Eve wins with Three of a Kind (Kings) vs Dave's One Pair (Aces)
+# Both players go all-in pre-flop; board runs out without betting.
+#
+# HeadsUpGame inference:
+#   Game2 ∈ Game ∧ hasPlayer=2 ∧ isHeadsUp=true  →  HeadsUpGame
+#
+# Role inference for Dave (Button = SmallBlind in heads-up):
+#   Dave hasPosition Button  →  Dealer
+#   Dave hasPosition SmallBlind  →  SmallBlindPlayer
+# ============================================================
+
+poker:Table2 a poker:Table ;
+    poker:tableSize "2"^^xsd:integer ;
+    rdfs:label "Table 2 (Heads-Up)" .
+
+# Players
+
+# Dave: Button position. In heads-up the Button IS the Small Blind.
+# Asserting both poker:Button and poker:SmallBlind lets the reasoner
+# infer Dave as Dealer AND SmallBlindPlayer simultaneously.
+poker:Player_Dave a poker:Player ;
+    poker:playerName "Dave" ;
+    poker:seatNumber "1"^^xsd:integer ;
+    poker:hasChipCount "500"^^xsd:integer ;
+    poker:hasDealerButton "true"^^xsd:boolean ;
+    poker:isBlind "true"^^xsd:boolean ;
+    poker:isAllIn "true"^^xsd:boolean ;
+    poker:isFolded "false"^^xsd:boolean ;
+    poker:hasPosition poker:Button ;
+    poker:hasPosition poker:SmallBlind ;
+    poker:hasHoleCards poker:HoleCards_Dave ;
+    poker:hasBestHand poker:BestHand_Dave ;
+    rdfs:label "Dave" .
+
+poker:Player_Eve a poker:Player ;
+    poker:playerName "Eve" ;
+    poker:seatNumber "2"^^xsd:integer ;
+    poker:hasChipCount "500"^^xsd:integer ;
+    poker:isBlind "true"^^xsd:boolean ;
+    poker:isAllIn "true"^^xsd:boolean ;
+    poker:isFolded "false"^^xsd:boolean ;
+    poker:hasPosition poker:BigBlind ;
+    poker:hasHoleCards poker:HoleCards_Eve ;
+    poker:hasBestHand poker:BestHand_Eve ;
+    rdfs:label "Eve" .
+
+# Hole Cards
+
+# Dave: A♥ A♦  (pocket aces)
+poker:HoleCards_Dave a poker:HoleCards ;
+    poker:containsCard poker:AceOfHearts ;
+    poker:containsCard poker:AceOfDiamonds ;
+    rdfs:label "Dave's Hole Cards: Ah-Ad (pocket aces)" .
+
+# Eve: K♠ K♦  (pocket kings)
+poker:HoleCards_Eve a poker:HoleCards ;
+    poker:containsCard poker:KingOfSpades ;
+    poker:containsCard poker:KingOfDiamonds ;
+    rdfs:label "Eve's Hole Cards: Ks-Kd (pocket kings)" .
+
+# Community Cards: Kh-3c-5h / 9d / 2c
+# The K♥ on the flop gives Eve a set of Kings.
+
+poker:Flop2 a poker:Flop ;
+    poker:containsCard poker:KingOfHearts ;
+    poker:containsCard poker:ThreeOfClubs ;
+    poker:containsCard poker:FiveOfHearts ;
+    rdfs:label "Flop 2: Kh-3c-5h" .
+
+poker:Turn2 a poker:Turn ;
+    poker:containsCard poker:NineOfDiamonds ;
+    rdfs:label "Turn 2: 9d" .
+
+poker:River2 a poker:River ;
+    poker:containsCard poker:TwoOfClubs ;
+    rdfs:label "River 2: 2c" .
+
+# Rounds and Actions
+
+poker:PreFlop2 a poker:PreFlop ;
+    poker:hasAction poker:Act_Dave_PostSB ;
+    poker:hasAction poker:Act_Eve_PostBB ;
+    poker:hasAction poker:Act_Dave_Raise_PF ;
+    poker:hasAction poker:Act_Eve_AllInRaise_PF ;
+    poker:hasAction poker:Act_Dave_AllInCall_PF ;
+    rdfs:label "PreFlop — Game 2" .
+
+poker:Act_Dave_PostSB a poker:PostSmallBlind ;
+    poker:performedBy poker:Player_Dave ;
+    poker:performedIn poker:PreFlop2 ;
+    poker:hasBetAmount "5"^^xsd:decimal ;
+    rdfs:label "Dave posts Small Blind (5)" .
+
+poker:Act_Eve_PostBB a poker:PostBigBlind ;
+    poker:performedBy poker:Player_Eve ;
+    poker:performedIn poker:PreFlop2 ;
+    poker:hasBetAmount "10"^^xsd:decimal ;
+    rdfs:label "Eve posts Big Blind (10)" .
+
+poker:Act_Dave_Raise_PF a poker:Raise ;
+    poker:performedBy poker:Player_Dave ;
+    poker:performedIn poker:PreFlop2 ;
+    poker:hasBetAmount "30"^^xsd:decimal ;
+    rdfs:label "Dave raises to 30 (PreFlop)" .
+
+poker:Act_Eve_AllInRaise_PF a poker:AllInRaise ;
+    poker:performedBy poker:Player_Eve ;
+    poker:performedIn poker:PreFlop2 ;
+    poker:hasBetAmount "500"^^xsd:decimal ;
+    rdfs:label "Eve 3-bets all-in for 500 (PreFlop)" .
+
+poker:Act_Dave_AllInCall_PF a poker:AllInCall ;
+    poker:performedBy poker:Player_Dave ;
+    poker:performedIn poker:PreFlop2 ;
+    poker:hasBetAmount "470"^^xsd:decimal ;
+    rdfs:label "Dave calls all-in (470 more, total 500)" .
+
+# Flop/Turn/River rounds have no betting actions (all-in runout)
+poker:FlopRound2 a poker:FlopRound ;
+    rdfs:label "Flop Round — Game 2 (all-in runout, no betting)" .
+
+poker:TurnRound2 a poker:TurnRound ;
+    rdfs:label "Turn Round — Game 2 (all-in runout, no betting)" .
+
+poker:RiverRound2 a poker:RiverRound ;
+    rdfs:label "River Round — Game 2 (all-in runout, no betting)" .
+
+poker:Showdown2 a poker:Showdown ;
+    rdfs:label "Showdown — Game 2 (both hands revealed)" .
+
+# Main Pot: both players committed 500 chips each → 1000 total
+poker:MainPot2 a poker:MainPot ;
+    poker:hasPotSize "1000"^^xsd:decimal ;
+    poker:eligibleForPot poker:Player_Dave ;
+    poker:eligibleForPot poker:Player_Eve ;
+    rdfs:label "Main Pot — Game 2 (1000 chips)" .
+
+# Best Hands (both revealed at Showdown)
+
+# Dave: Ah-Ad + Kh-9d-5h → One Pair (Aces)  [board gives no improvement]
+poker:BestHand_Dave a poker:BestHand ;
+    poker:containsCard poker:AceOfHearts ;
+    poker:containsCard poker:AceOfDiamonds ;
+    poker:containsCard poker:KingOfHearts ;
+    poker:containsCard poker:NineOfDiamonds ;
+    poker:containsCard poker:FiveOfHearts ;
+    poker:hasHandRanking poker:OnePairRanking ;
+    rdfs:label "Dave's Best Hand: One Pair (Aces) — AA + K-9-5" .
+
+# Eve: Ks-Kd + Kh-9d-5h → Three of a Kind (Kings)  [set on the flop]
+poker:BestHand_Eve a poker:BestHand ;
+    poker:containsCard poker:KingOfSpades ;
+    poker:containsCard poker:KingOfDiamonds ;
+    poker:containsCard poker:KingOfHearts ;
+    poker:containsCard poker:NineOfDiamonds ;
+    poker:containsCard poker:FiveOfHearts ;
+    poker:hasHandRanking poker:ThreeOfAKindRanking ;
+    rdfs:label "Eve's Best Hand: Three of a Kind (Kings) — KKK + 9-5" .
+
+# isHeadsUp=true + exactly 2 players → reasoner infers Game2 ∈ HeadsUpGame
+poker:Game2 a poker:Game ;
+    poker:gameId "GAME-002" ;
+    poker:handNumber "1"^^xsd:integer ;
+    poker:isHeadsUp "true"^^xsd:boolean ;
+    poker:usesStructure poker:NLHE ;
+    poker:hasTable poker:Table2 ;
+    poker:hasPlayer poker:Player_Dave ;
+    poker:hasPlayer poker:Player_Eve ;
+    poker:hasRound poker:PreFlop2 ;
+    poker:hasRound poker:FlopRound2 ;
+    poker:hasRound poker:TurnRound2 ;
+    poker:hasRound poker:RiverRound2 ;
+    poker:hasRound poker:Showdown2 ;
+    poker:hasCommunityCards poker:Flop2 ;
+    poker:hasCommunityCards poker:Turn2 ;
+    poker:hasCommunityCards poker:River2 ;
+    poker:hasPot poker:MainPot2 ;
+    poker:hasWinner poker:Player_Eve ;
+    rdfs:label "Game 2: 2-player Heads-Up NLHE — Eve wins with Three of a Kind" .
+
+# ============================================================
+# AllDifferent over all ABox individuals
+# (TBox individuals are already AllDifferent in the base ontology)
+# ============================================================
+[] a owl:AllDifferent ;
+    owl:distinctMembers (
+        poker:Table1
+        poker:Table2
+        poker:Player_Alice
+        poker:Player_Bob
+        poker:Player_Carol
+        poker:Player_Dave
+        poker:Player_Eve
+        poker:HoleCards_Alice
+        poker:HoleCards_Bob
+        poker:HoleCards_Carol
+        poker:HoleCards_Dave
+        poker:HoleCards_Eve
+        poker:Flop1
+        poker:Turn1
+        poker:River1
+        poker:Flop2
+        poker:Turn2
+        poker:River2
+        poker:PreFlop1
+        poker:FlopRound1
+        poker:TurnRound1
+        poker:RiverRound1
+        poker:Showdown1
+        poker:PreFlop2
+        poker:FlopRound2
+        poker:TurnRound2
+        poker:RiverRound2
+        poker:Showdown2
+        poker:Act_Bob_PostSB
+        poker:Act_Carol_PostBB
+        poker:Act_Alice_Call_PF
+        poker:Act_Bob_CallSB
+        poker:Act_Carol_Check_PF
+        poker:Act_Bob_Check_F
+        poker:Act_Carol_Check_F
+        poker:Act_Alice_Bet_F
+        poker:Act_Bob_Fold_F
+        poker:Act_Carol_Call_F
+        poker:Act_Carol_Check_T
+        poker:Act_Alice_Bet_T
+        poker:Act_Carol_Call_T
+        poker:Act_Carol_Check_R
+        poker:Act_Alice_Bet_R
+        poker:Act_Carol_Fold_R
+        poker:Act_Dave_PostSB
+        poker:Act_Eve_PostBB
+        poker:Act_Dave_Raise_PF
+        poker:Act_Eve_AllInRaise_PF
+        poker:Act_Dave_AllInCall_PF
+        poker:MainPot1
+        poker:MainPot2
+        poker:BestHand_Alice
+        poker:BestHand_Dave
+        poker:BestHand_Eve
+        poker:Game1
+        poker:Game2
+    ) .

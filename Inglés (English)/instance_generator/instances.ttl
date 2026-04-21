@@ -1,0 +1,420 @@
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================
+# ABOX: Poker hand instances for testing with OWL 2 DL reasoners
+# Imports TBox: poker_complete_ontology.ttl
+# ============================================================
+# Block 1: Hands WITH explicit hasHandRanking  (coherence test)
+# Block 2: Hands WITHOUT hasHandRanking         (inference test)
+# Block 3: Invalid / edge-case hands            (inconsistency test)
+# ============================================================
+# The reasoner (HermiT/Pellet) should:
+#   Block 1 → confirm consistency and classify into XxxBestHand
+#   Block 2 → infer XxxByCardsBestHand from card patterns alone
+#   Block 3 → detect inconsistency or leave unclassified
+# ============================================================
+
+<http://www.poker-ontology.org/abox>
+    rdf:type owl:Ontology ;
+    owl:imports <http://www.poker-ontology.org/poker> ;
+    rdfs:label "ABox: Poker Hand Test Instances" ;
+    rdfs:comment "Instance layer with 35 test hands for OWL 2 DL reasoning." .
+
+# ============================================================
+# BLOCK 1: Hands with explicit ranking (coherence test)
+# ============================================================
+
+# RoyalFlush: TenOfSpades, JackOfSpades, QueenOfSpades, KingOfSpades, AceOfSpades
+poker:Hand_RoyalFlush_Spades a poker:BestHand ;
+    poker:containsCard poker:TenOfSpades ;
+    poker:containsCard poker:JackOfSpades ;
+    poker:containsCard poker:QueenOfSpades ;
+    poker:containsCard poker:KingOfSpades ;
+    poker:containsCard poker:AceOfSpades ;
+    poker:hasHandRanking poker:RoyalFlushRanking ;
+    rdfs:label "Hand_RoyalFlush_Spades" .
+
+# RoyalFlush: TenOfHearts, JackOfHearts, QueenOfHearts, KingOfHearts, AceOfHearts
+poker:Hand_RoyalFlush_Hearts a poker:BestHand ;
+    poker:containsCard poker:TenOfHearts ;
+    poker:containsCard poker:JackOfHearts ;
+    poker:containsCard poker:QueenOfHearts ;
+    poker:containsCard poker:KingOfHearts ;
+    poker:containsCard poker:AceOfHearts ;
+    poker:hasHandRanking poker:RoyalFlushRanking ;
+    rdfs:label "Hand_RoyalFlush_Hearts" .
+
+# StraightFlush: AceOfDiamonds, TwoOfDiamonds, ThreeOfDiamonds, FourOfDiamonds, FiveOfDiamonds
+poker:Hand_SteelWheel_Diamonds a poker:BestHand ;
+    poker:containsCard poker:AceOfDiamonds ;
+    poker:containsCard poker:TwoOfDiamonds ;
+    poker:containsCard poker:ThreeOfDiamonds ;
+    poker:containsCard poker:FourOfDiamonds ;
+    poker:containsCard poker:FiveOfDiamonds ;
+    poker:hasHandRanking poker:StraightFlushRanking ;
+    rdfs:label "Hand_SteelWheel_Diamonds" .
+
+# StraightFlush: TwoOfClubs, ThreeOfClubs, FourOfClubs, FiveOfClubs, SixOfClubs
+poker:Hand_StraightFlush_Low_Clubs a poker:BestHand ;
+    poker:containsCard poker:TwoOfClubs ;
+    poker:containsCard poker:ThreeOfClubs ;
+    poker:containsCard poker:FourOfClubs ;
+    poker:containsCard poker:FiveOfClubs ;
+    poker:containsCard poker:SixOfClubs ;
+    poker:hasHandRanking poker:StraightFlushRanking ;
+    rdfs:label "Hand_StraightFlush_Low_Clubs" .
+
+# StraightFlush: EightOfSpades, NineOfSpades, TenOfSpades, JackOfSpades, QueenOfSpades
+poker:Hand_StraightFlush_High_Spades a poker:BestHand ;
+    poker:containsCard poker:EightOfSpades ;
+    poker:containsCard poker:NineOfSpades ;
+    poker:containsCard poker:TenOfSpades ;
+    poker:containsCard poker:JackOfSpades ;
+    poker:containsCard poker:QueenOfSpades ;
+    poker:hasHandRanking poker:StraightFlushRanking ;
+    rdfs:label "Hand_StraightFlush_High_Spades" .
+
+# FourOfAKind: AceOfSpades, AceOfHearts, AceOfDiamonds, AceOfClubs, KingOfSpades
+poker:Hand_FourOfAKind_Aces a poker:BestHand ;
+    poker:containsCard poker:AceOfSpades ;
+    poker:containsCard poker:AceOfHearts ;
+    poker:containsCard poker:AceOfDiamonds ;
+    poker:containsCard poker:AceOfClubs ;
+    poker:containsCard poker:KingOfSpades ;
+    poker:hasHandRanking poker:FourOfAKindRanking ;
+    rdfs:label "Hand_FourOfAKind_Aces" .
+
+# FourOfAKind: FiveOfSpades, FiveOfHearts, FiveOfDiamonds, FiveOfClubs, NineOfHearts
+poker:Hand_FourOfAKind_Fives a poker:BestHand ;
+    poker:containsCard poker:FiveOfSpades ;
+    poker:containsCard poker:FiveOfHearts ;
+    poker:containsCard poker:FiveOfDiamonds ;
+    poker:containsCard poker:FiveOfClubs ;
+    poker:containsCard poker:NineOfHearts ;
+    poker:hasHandRanking poker:FourOfAKindRanking ;
+    rdfs:label "Hand_FourOfAKind_Fives" .
+
+# FullHouse: KingOfSpades, KingOfHearts, KingOfDiamonds, JackOfSpades, JackOfClubs
+poker:Hand_FullHouse_KingsJacks a poker:BestHand ;
+    poker:containsCard poker:KingOfSpades ;
+    poker:containsCard poker:KingOfHearts ;
+    poker:containsCard poker:KingOfDiamonds ;
+    poker:containsCard poker:JackOfSpades ;
+    poker:containsCard poker:JackOfClubs ;
+    poker:hasHandRanking poker:FullHouseRanking ;
+    rdfs:label "Hand_FullHouse_KingsJacks" .
+
+# FullHouse: ThreeOfSpades, ThreeOfHearts, ThreeOfClubs, SevenOfDiamonds, SevenOfHearts
+poker:Hand_FullHouse_ThreesSevens a poker:BestHand ;
+    poker:containsCard poker:ThreeOfSpades ;
+    poker:containsCard poker:ThreeOfHearts ;
+    poker:containsCard poker:ThreeOfClubs ;
+    poker:containsCard poker:SevenOfDiamonds ;
+    poker:containsCard poker:SevenOfHearts ;
+    poker:hasHandRanking poker:FullHouseRanking ;
+    rdfs:label "Hand_FullHouse_ThreesSevens" .
+
+# Flush: AceOfDiamonds, SixOfDiamonds, NineOfDiamonds, ThreeOfDiamonds, JackOfDiamonds
+poker:Hand_Flush_Diamonds a poker:BestHand ;
+    poker:containsCard poker:AceOfDiamonds ;
+    poker:containsCard poker:SixOfDiamonds ;
+    poker:containsCard poker:NineOfDiamonds ;
+    poker:containsCard poker:ThreeOfDiamonds ;
+    poker:containsCard poker:JackOfDiamonds ;
+    poker:hasHandRanking poker:FlushRanking ;
+    rdfs:label "Hand_Flush_Diamonds" .
+
+# Flush: TwoOfClubs, SevenOfClubs, EightOfClubs, QueenOfClubs, KingOfClubs
+poker:Hand_Flush_Clubs a poker:BestHand ;
+    poker:containsCard poker:TwoOfClubs ;
+    poker:containsCard poker:SevenOfClubs ;
+    poker:containsCard poker:EightOfClubs ;
+    poker:containsCard poker:QueenOfClubs ;
+    poker:containsCard poker:KingOfClubs ;
+    poker:hasHandRanking poker:FlushRanking ;
+    rdfs:label "Hand_Flush_Clubs" .
+
+# Straight: AceOfSpades, TwoOfHearts, ThreeOfDiamonds, FourOfClubs, FiveOfSpades
+poker:Hand_Straight_Wheel a poker:BestHand ;
+    poker:containsCard poker:AceOfSpades ;
+    poker:containsCard poker:TwoOfHearts ;
+    poker:containsCard poker:ThreeOfDiamonds ;
+    poker:containsCard poker:FourOfClubs ;
+    poker:containsCard poker:FiveOfSpades ;
+    poker:hasHandRanking poker:StraightRanking ;
+    rdfs:label "Hand_Straight_Wheel" .
+
+# Straight: FiveOfSpades, SixOfHearts, SevenOfDiamonds, EightOfClubs, NineOfSpades
+poker:Hand_Straight_Middle a poker:BestHand ;
+    poker:containsCard poker:FiveOfSpades ;
+    poker:containsCard poker:SixOfHearts ;
+    poker:containsCard poker:SevenOfDiamonds ;
+    poker:containsCard poker:EightOfClubs ;
+    poker:containsCard poker:NineOfSpades ;
+    poker:hasHandRanking poker:StraightRanking ;
+    rdfs:label "Hand_Straight_Middle" .
+
+# Straight: TenOfSpades, JackOfHearts, QueenOfDiamonds, KingOfClubs, AceOfHearts
+poker:Hand_Straight_Broadway a poker:BestHand ;
+    poker:containsCard poker:TenOfSpades ;
+    poker:containsCard poker:JackOfHearts ;
+    poker:containsCard poker:QueenOfDiamonds ;
+    poker:containsCard poker:KingOfClubs ;
+    poker:containsCard poker:AceOfHearts ;
+    poker:hasHandRanking poker:StraightRanking ;
+    rdfs:label "Hand_Straight_Broadway" .
+
+# ThreeOfAKind: QueenOfSpades, QueenOfHearts, QueenOfDiamonds, FiveOfClubs, TwoOfHearts
+poker:Hand_ThreeOfAKind_Queens a poker:BestHand ;
+    poker:containsCard poker:QueenOfSpades ;
+    poker:containsCard poker:QueenOfHearts ;
+    poker:containsCard poker:QueenOfDiamonds ;
+    poker:containsCard poker:FiveOfClubs ;
+    poker:containsCard poker:TwoOfHearts ;
+    poker:hasHandRanking poker:ThreeOfAKindRanking ;
+    rdfs:label "Hand_ThreeOfAKind_Queens" .
+
+# ThreeOfAKind: TwoOfSpades, TwoOfHearts, TwoOfDiamonds, AceOfClubs, KingOfHearts
+poker:Hand_ThreeOfAKind_Twos a poker:BestHand ;
+    poker:containsCard poker:TwoOfSpades ;
+    poker:containsCard poker:TwoOfHearts ;
+    poker:containsCard poker:TwoOfDiamonds ;
+    poker:containsCard poker:AceOfClubs ;
+    poker:containsCard poker:KingOfHearts ;
+    poker:hasHandRanking poker:ThreeOfAKindRanking ;
+    rdfs:label "Hand_ThreeOfAKind_Twos" .
+
+# TwoPair: AceOfSpades, AceOfHearts, KingOfDiamonds, KingOfClubs, TwoOfSpades
+poker:Hand_TwoPair_AcesKings a poker:BestHand ;
+    poker:containsCard poker:AceOfSpades ;
+    poker:containsCard poker:AceOfHearts ;
+    poker:containsCard poker:KingOfDiamonds ;
+    poker:containsCard poker:KingOfClubs ;
+    poker:containsCard poker:TwoOfSpades ;
+    poker:hasHandRanking poker:TwoPairRanking ;
+    rdfs:label "Hand_TwoPair_AcesKings" .
+
+# TwoPair: TenOfSpades, TenOfHearts, FourOfDiamonds, FourOfClubs, JackOfSpades
+poker:Hand_TwoPair_TensFours a poker:BestHand ;
+    poker:containsCard poker:TenOfSpades ;
+    poker:containsCard poker:TenOfHearts ;
+    poker:containsCard poker:FourOfDiamonds ;
+    poker:containsCard poker:FourOfClubs ;
+    poker:containsCard poker:JackOfSpades ;
+    poker:hasHandRanking poker:TwoPairRanking ;
+    rdfs:label "Hand_TwoPair_TensFours" .
+
+# OnePair: SevenOfSpades, SevenOfHearts, AceOfDiamonds, KingOfClubs, TwoOfSpades
+poker:Hand_OnePair_Sevens a poker:BestHand ;
+    poker:containsCard poker:SevenOfSpades ;
+    poker:containsCard poker:SevenOfHearts ;
+    poker:containsCard poker:AceOfDiamonds ;
+    poker:containsCard poker:KingOfClubs ;
+    poker:containsCard poker:TwoOfSpades ;
+    poker:hasHandRanking poker:OnePairRanking ;
+    rdfs:label "Hand_OnePair_Sevens" .
+
+# OnePair: JackOfSpades, JackOfClubs, NineOfDiamonds, FiveOfHearts, ThreeOfSpades
+poker:Hand_OnePair_Jacks a poker:BestHand ;
+    poker:containsCard poker:JackOfSpades ;
+    poker:containsCard poker:JackOfClubs ;
+    poker:containsCard poker:NineOfDiamonds ;
+    poker:containsCard poker:FiveOfHearts ;
+    poker:containsCard poker:ThreeOfSpades ;
+    poker:hasHandRanking poker:OnePairRanking ;
+    rdfs:label "Hand_OnePair_Jacks" .
+
+# HighCard: AceOfSpades, JackOfHearts, NineOfDiamonds, FiveOfClubs, TwoOfSpades
+poker:Hand_HighCard_AceHigh a poker:BestHand ;
+    poker:containsCard poker:AceOfSpades ;
+    poker:containsCard poker:JackOfHearts ;
+    poker:containsCard poker:NineOfDiamonds ;
+    poker:containsCard poker:FiveOfClubs ;
+    poker:containsCard poker:TwoOfSpades ;
+    poker:hasHandRanking poker:HighCardRanking ;
+    rdfs:label "Hand_HighCard_AceHigh" .
+
+# HighCard: KingOfHearts, TenOfDiamonds, EightOfClubs, SixOfSpades, ThreeOfHearts
+poker:Hand_HighCard_KingHigh a poker:BestHand ;
+    poker:containsCard poker:KingOfHearts ;
+    poker:containsCard poker:TenOfDiamonds ;
+    poker:containsCard poker:EightOfClubs ;
+    poker:containsCard poker:SixOfSpades ;
+    poker:containsCard poker:ThreeOfHearts ;
+    poker:hasHandRanking poker:HighCardRanking ;
+    rdfs:label "Hand_HighCard_KingHigh" .
+
+# ============================================================
+# BLOCK 2: Hands WITHOUT ranking (inference test)
+# Only containsCard is asserted. The reasoner should infer
+# the hand type via Module 13 XxxByCardsBestHand patterns.
+# ============================================================
+
+# Expected inference: RoyalFlush
+poker:Hand_Infer_RoyalFlush a poker:BestHand ;
+    poker:containsCard poker:TenOfDiamonds ;
+    poker:containsCard poker:JackOfDiamonds ;
+    poker:containsCard poker:QueenOfDiamonds ;
+    poker:containsCard poker:KingOfDiamonds ;
+    poker:containsCard poker:AceOfDiamonds ;
+    rdfs:label "Hand_Infer_RoyalFlush" .
+
+# Expected inference: StraightFlush
+poker:Hand_Infer_SteelWheel a poker:BestHand ;
+    poker:containsCard poker:AceOfClubs ;
+    poker:containsCard poker:TwoOfClubs ;
+    poker:containsCard poker:ThreeOfClubs ;
+    poker:containsCard poker:FourOfClubs ;
+    poker:containsCard poker:FiveOfClubs ;
+    rdfs:label "Hand_Infer_SteelWheel" .
+
+# Expected inference: FourOfAKind
+poker:Hand_Infer_FourOfAKind a poker:BestHand ;
+    poker:containsCard poker:KingOfSpades ;
+    poker:containsCard poker:KingOfHearts ;
+    poker:containsCard poker:KingOfDiamonds ;
+    poker:containsCard poker:KingOfClubs ;
+    poker:containsCard poker:TwoOfDiamonds ;
+    rdfs:label "Hand_Infer_FourOfAKind" .
+
+# Expected inference: FullHouse
+poker:Hand_Infer_FullHouse a poker:BestHand ;
+    poker:containsCard poker:EightOfSpades ;
+    poker:containsCard poker:EightOfHearts ;
+    poker:containsCard poker:EightOfDiamonds ;
+    poker:containsCard poker:FourOfSpades ;
+    poker:containsCard poker:FourOfHearts ;
+    rdfs:label "Hand_Infer_FullHouse" .
+
+# Expected inference: Flush
+poker:Hand_Infer_Flush a poker:BestHand ;
+    poker:containsCard poker:TwoOfHearts ;
+    poker:containsCard poker:FiveOfHearts ;
+    poker:containsCard poker:EightOfHearts ;
+    poker:containsCard poker:JackOfHearts ;
+    poker:containsCard poker:AceOfHearts ;
+    rdfs:label "Hand_Infer_Flush" .
+
+# Expected inference: Straight
+poker:Hand_Infer_Straight a poker:BestHand ;
+    poker:containsCard poker:SixOfSpades ;
+    poker:containsCard poker:SevenOfHearts ;
+    poker:containsCard poker:EightOfDiamonds ;
+    poker:containsCard poker:NineOfClubs ;
+    poker:containsCard poker:TenOfSpades ;
+    rdfs:label "Hand_Infer_Straight" .
+
+# Expected inference: ThreeOfAKind
+poker:Hand_Infer_ThreeOfAKind a poker:BestHand ;
+    poker:containsCard poker:NineOfSpades ;
+    poker:containsCard poker:NineOfHearts ;
+    poker:containsCard poker:NineOfClubs ;
+    poker:containsCard poker:AceOfDiamonds ;
+    poker:containsCard poker:FourOfSpades ;
+    rdfs:label "Hand_Infer_ThreeOfAKind" .
+
+# Expected inference: TwoPair
+poker:Hand_Infer_TwoPair a poker:BestHand ;
+    poker:containsCard poker:SixOfSpades ;
+    poker:containsCard poker:SixOfHearts ;
+    poker:containsCard poker:QueenOfDiamonds ;
+    poker:containsCard poker:QueenOfClubs ;
+    poker:containsCard poker:ThreeOfSpades ;
+    rdfs:label "Hand_Infer_TwoPair" .
+
+# Expected inference: OnePair
+poker:Hand_Infer_OnePair a poker:BestHand ;
+    poker:containsCard poker:ThreeOfSpades ;
+    poker:containsCard poker:ThreeOfDiamonds ;
+    poker:containsCard poker:KingOfClubs ;
+    poker:containsCard poker:JackOfHearts ;
+    poker:containsCard poker:FiveOfSpades ;
+    rdfs:label "Hand_Infer_OnePair" .
+
+# Expected inference: HighCard
+poker:Hand_Infer_HighCard a poker:BestHand ;
+    poker:containsCard poker:AceOfClubs ;
+    poker:containsCard poker:TenOfHearts ;
+    poker:containsCard poker:EightOfSpades ;
+    poker:containsCard poker:SixOfDiamonds ;
+    poker:containsCard poker:ThreeOfClubs ;
+    rdfs:label "Hand_Infer_HighCard" .
+
+# ============================================================
+# BLOCK 3: Invalid / edge-case hands (inconsistency test)
+# WARNING: These may cause the reasoner to detect inconsistency.
+# Load separately or comment out to test blocks 1-2 first.
+# ============================================================
+
+# INVALID: cards do not match ranking 'OnePair'
+poker:Hand_Invalid_WrongRanking a poker:BestHand ;
+    poker:containsCard poker:AceOfSpades ;
+    poker:containsCard poker:SixOfSpades ;
+    poker:containsCard poker:NineOfSpades ;
+    poker:containsCard poker:ThreeOfSpades ;
+    poker:containsCard poker:JackOfSpades ;
+    poker:hasHandRanking poker:OnePairRanking ;
+    rdfs:label "Hand_Invalid_WrongRanking" .
+
+# EDGE CASE: incomplete hand (3 cards)
+poker:Hand_Invalid_Incomplete a poker:BestHand ;
+    poker:containsCard poker:AceOfSpades ;
+    poker:containsCard poker:KingOfSpades ;
+    poker:containsCard poker:QueenOfSpades ;
+    rdfs:label "Hand_Invalid_Incomplete" .
+
+# INVALID: cards do not match ranking 'HighCard'
+poker:Hand_Invalid_StraightAsHighCard a poker:BestHand ;
+    poker:containsCard poker:FiveOfHearts ;
+    poker:containsCard poker:SixOfDiamonds ;
+    poker:containsCard poker:SevenOfClubs ;
+    poker:containsCard poker:EightOfSpades ;
+    poker:containsCard poker:NineOfHearts ;
+    poker:hasHandRanking poker:HighCardRanking ;
+    rdfs:label "Hand_Invalid_StraightAsHighCard" .
+
+# ============================================================
+# All hand individuals are distinct from each other
+# ============================================================
+[] a owl:AllDifferent ;
+    owl:distinctMembers (
+        poker:Hand_RoyalFlush_Spades
+        poker:Hand_RoyalFlush_Hearts
+        poker:Hand_SteelWheel_Diamonds
+        poker:Hand_StraightFlush_Low_Clubs
+        poker:Hand_StraightFlush_High_Spades
+        poker:Hand_FourOfAKind_Aces
+        poker:Hand_FourOfAKind_Fives
+        poker:Hand_FullHouse_KingsJacks
+        poker:Hand_FullHouse_ThreesSevens
+        poker:Hand_Flush_Diamonds
+        poker:Hand_Flush_Clubs
+        poker:Hand_Straight_Wheel
+        poker:Hand_Straight_Middle
+        poker:Hand_Straight_Broadway
+        poker:Hand_ThreeOfAKind_Queens
+        poker:Hand_ThreeOfAKind_Twos
+        poker:Hand_TwoPair_AcesKings
+        poker:Hand_TwoPair_TensFours
+        poker:Hand_OnePair_Sevens
+        poker:Hand_OnePair_Jacks
+        poker:Hand_HighCard_AceHigh
+        poker:Hand_HighCard_KingHigh
+        poker:Hand_Infer_RoyalFlush
+        poker:Hand_Infer_SteelWheel
+        poker:Hand_Infer_FourOfAKind
+        poker:Hand_Infer_FullHouse
+        poker:Hand_Infer_Flush
+        poker:Hand_Infer_Straight
+        poker:Hand_Infer_ThreeOfAKind
+        poker:Hand_Infer_TwoPair
+        poker:Hand_Infer_OnePair
+        poker:Hand_Infer_HighCard
+        poker:Hand_Invalid_WrongRanking
+        poker:Hand_Invalid_Incomplete
+        poker:Hand_Invalid_StraightAsHighCard
+    ) .
