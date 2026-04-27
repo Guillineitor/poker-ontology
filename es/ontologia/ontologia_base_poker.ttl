@@ -25,12 +25,13 @@
 # como componentes separados que se le pueden agregar a esta ontología base y añaden sus propias
 # restricciones owl:equivalentClass.
 #
-# Suposición de mundo abierto (Open World Assumption, OWA)
+# Open World Assumption (OWA)
 # ----------------------------------
 # OWL asume que lo que no está afirmado es desconocido, no falso necesariamente.
 # Para compensarlo, Palo y Rango se cierran con owl:oneOf (exactamente
 # 4 palos y 13 rangos), y los 52 individuos de cartas se declaran
-# AllDifferent para que el razonador los trate como entidades distintas.
+# AllDifferent para que el razonador los trate como entidades distintas (porque son
+# claramente son cartas distintas entre sí).
 # =============================================================================
 
 <http://www.poker-ontology.org/poker>
@@ -330,8 +331,8 @@ poker:Repartidor a owl:Class ;
             [ a owl:Restriction ; owl:onProperty poker:tienePosicion ; owl:hasValue poker:Boton ]
         )
     ] ;
-    rdfs:label "Dealer" ;
-    rdfs:comment "Jugador con el botón de dealer. Clase definida: Jugador ∩ tienePosicion.{Boton}." .
+    rdfs:label "Repartidor" ;
+    rdfs:comment "Jugador con el botón de repartidor (dealer). Clase definida: Jugador ∩ tienePosicion.{Boton}." .
 
 # Definición de la clase JugadorCiegaPequena
 poker:JugadorCiegaPequena a owl:Class ;
@@ -392,6 +393,7 @@ poker:Partida a owl:Class ;
     ] ;
     rdfs:subClassOf [
         a owl:Restriction ; owl:onProperty poker:tieneRonda ;
+        owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
         owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
         owl:onClass poker:PreFlop
     ] ;
@@ -482,7 +484,7 @@ poker:Flop a owl:Class ;
         owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
         owl:onClass poker:CartaFlop
     ] ;
-    rdfs:label "Ronda del Flop" ;
+    rdfs:label "Flop" ;
     rdfs:comment "Ronda de apuestas tras revelar el Flop." .
 
 # Definición de la clase Turn, con la carta comunitaria correspondiente.
@@ -493,7 +495,7 @@ poker:Turn a owl:Class ;
         owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
         owl:onClass poker:CartaTurn
     ] ;
-    rdfs:label "Ronda del Turn" ;
+    rdfs:label "Turn" ;
     rdfs:comment "Ronda de apuestas tras revelar el Turn." .
 
 # Definición de la clase River, con la carta comunitaria correspondiente.
@@ -504,10 +506,10 @@ poker:River a owl:Class ;
         owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
         owl:onClass poker:CartaRiver
     ] ;
-    rdfs:label "Ronda del River" ;
+    rdfs:label "River" ;
     rdfs:comment "Ronda de apuestas tras revelar el River." .
 
-# Definición de la clase Showdown, sin acciones de apuesta.
+# Definición de la clase Showdown, sin acciones de apuesta ni cartas reveladas.
 poker:Showdown a owl:Class ;
     rdfs:subClassOf poker:Ronda ;
     rdfs:subClassOf [
@@ -515,8 +517,13 @@ poker:Showdown a owl:Class ;
         owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
         owl:onClass poker:Accion
     ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ; owl:onProperty poker:revelaCartas ;
+        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+        owl:onClass poker:CartasComunitarias
+    ] ;
     rdfs:label "Showdown" ;
-    rdfs:comment "Ronda final en la que se comparan las manos. No admite acciones de apuesta." .
+    rdfs:comment "Ronda final en la que se comparan las manos. No admite acciones de apuesta ni revela nuevas cartas comunitarias." .
 
 
 # =============================================================================
@@ -560,31 +567,31 @@ poker:Accion a owl:Class ;
 # Definición de las clase Retirar.
 poker:Retirar a owl:Class ;
     rdfs:subClassOf poker:Accion ;
-    rdfs:label "Fold" ;
+    rdfs:label "Retirada" ;
     rdfs:comment "Retirarse de la mano, abandonando las fichas apostadas." .
 
 # Definición de la clase Pasar.
 poker:Pasar a owl:Class ;
     rdfs:subClassOf poker:Accion ;
-    rdfs:label "Check" ;
+    rdfs:label "Pasar" ;
     rdfs:comment "Pasar el turno sin apostar, disponible solo cuando no hay apuesta previa." .
 
 # Definición de la clase Igualar.
 poker:Igualar a owl:Class ;
     rdfs:subClassOf poker:Accion ;
-    rdfs:label "Call" ;
+    rdfs:label "Igualar" ;
     rdfs:comment "Igualar la apuesta actual para continuar en la mano." .
 
 # Definición de la clase Apostar.
 poker:Apostar a owl:Class ;
     rdfs:subClassOf poker:Accion ;
-    rdfs:label "Bet" ;
+    rdfs:label "Apostar" ;
     rdfs:comment "Realizar la primera apuesta de una calle." .
 
 # Definición de la clase Subir.
 poker:Subir a owl:Class ;
     rdfs:subClassOf poker:Accion ;
-    rdfs:label "Raise" ;
+    rdfs:label "Subir" ;
     rdfs:comment "Aumentar una apuesta ya existente en la misma calle." .
 
 # Definición de la clase All-In, que se combina con Apostar, Igualar o Subir.
@@ -597,19 +604,19 @@ poker:AllIn a owl:Class ;
 # Definición de la clase AllInApostar.
 poker:AllInApostar a owl:Class ;
     rdfs:subClassOf poker:AllIn , poker:Apostar ;
-    rdfs:label "All-In como Apostar" ;
+    rdfs:label "All-In Apostar" ;
     rdfs:comment "All-in que abre la apuesta en la calle." .
 
 # Definición de la clase AllInIgualar.
 poker:AllInIgualar a owl:Class ;
     rdfs:subClassOf poker:AllIn , poker:Igualar ;
-    rdfs:label "All-In como Igualar" ;
+    rdfs:label "All-In Igualar" ;
     rdfs:comment "All-in que iguala la apuesta actual." .
 
 # Definición de la clase AllInSubir.
 poker:AllInSubir a owl:Class ;
     rdfs:subClassOf poker:AllIn , poker:Subir ;
-    rdfs:label "All-In como Subir" ;
+    rdfs:label "All-In Subir" ;
     rdfs:comment "All-in que sube la apuesta actual." .
 
 # Definición de la clase PonerCiega, con sus subclases para ciega pequeña y grande.
@@ -629,7 +636,7 @@ poker:PonerCiegaPequena a owl:Class ;
         a owl:Restriction ; owl:onProperty poker:realizadaPor ;
         owl:someValuesFrom poker:JugadorCiegaPequena
     ] ;
-    rdfs:label "Poner Small Blind" ;
+    rdfs:label "Poner Ciega Pequeña" ;
     rdfs:comment "Ciega pequeña obligatoria, pagada por el JugadorCiegaPequena en el PreFlop." .
 
 # Definición de la clase PonerCiegaGrande.
@@ -643,7 +650,7 @@ poker:PonerCiegaGrande a owl:Class ;
         a owl:Restriction ; owl:onProperty poker:realizadaPor ;
         owl:someValuesFrom poker:JugadorCiegaGrande
     ] ;
-    rdfs:label "Poner Big Blind" ;
+    rdfs:label "Poner Ciega Grande" ;
     rdfs:comment "Ciega grande obligatoria, pagada por el JugadorCiegaGrande en el PreFlop." .
 
 
@@ -691,19 +698,19 @@ poker:EstructuraApuesta a owl:Class ;
 # Definición de la clase SinLimite.
 poker:SinLimite a owl:Class ;
     rdfs:subClassOf poker:EstructuraApuesta ;
-    rdfs:label "SinLimite" ;
+    rdfs:label "Sin Límite" ;
     rdfs:comment "Sin límite de apuesta: un jugador puede apostar todas sus fichas en cualquier momento." .
 
 # Definición de la clase ConLimite.
 poker:ConLimite a owl:Class ;
     rdfs:subClassOf poker:EstructuraApuesta ;
-    rdfs:label "ConLimite" ;
+    rdfs:label "Con Límite" ;
     rdfs:comment "Las apuestas y subidas tienen un tamaño fijo predefinido por calle." .
 
 # Definición de la clase LimiteBote.
 poker:LimiteBote a owl:Class ;
     rdfs:subClassOf poker:EstructuraApuesta ;
-    rdfs:label "LimiteBote" ;
+    rdfs:label "Límite del Bote" ;
     rdfs:comment "La apuesta máxima es el tamaño actual del bote." .
 
 
@@ -722,29 +729,29 @@ poker:LimiteBote a owl:Class ;
 poker:tienePalo a owl:ObjectProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Carta ;
     rdfs:range poker:Palo ;
-    rdfs:label "tiene palo" ;
+    rdfs:label "Tiene Palo" ;
     rdfs:comment "Asocia una carta con su palo. Funcional: cada carta tiene exactamente un palo." .
 
 # Definición de la propiedad tieneRango.
 poker:tieneRango a owl:ObjectProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Carta ;
     rdfs:range poker:Rango ;
-    rdfs:label "tiene rango" ;
+    rdfs:label "Tiene Rango" ;
     rdfs:comment "Asocia una carta con su rango. Funcional: cada carta tiene exactamente un rango." .
 
 # Definición de la propiedad contieneCarta.
 poker:contieneCarta a owl:ObjectProperty ;
     rdfs:domain poker:Mano ;
     rdfs:range poker:Carta ;
-    rdfs:label "contiene carta" ;
+    rdfs:label "Contiene Carta" ;
     rdfs:comment "Relaciona una mano con cada una de las cartas que la componen." .
 
-# Definición de la propiedad rangoSiguienteA.
-poker:rangoSiguienteA a owl:ObjectProperty ;
+# Definición de la propiedad tieneRangoSiguiente.
+poker:tieneRangoSiguiente a owl:ObjectProperty ;
     rdfs:domain poker:Rango ;
     rdfs:range poker:Rango ;
-    rdfs:label "rango siguiente a" ;
-    rdfs:comment "Indica qué rango es inmediatamente superior a otro de forma estática." .
+    rdfs:label "Tiene Rango Siguiente" ;
+    rdfs:comment "Indica qué rango le sigue inmediatamente a este en la secuencia estática (apunta hacia adelante)." .
 
 # --- Propiedades de Mano (Jugador ↔ Mano) ----------------------------------
 #
@@ -758,28 +765,28 @@ poker:rangoSiguienteA a owl:ObjectProperty ;
 poker:tieneCartasPrivadas a owl:ObjectProperty , owl:FunctionalProperty , owl:InverseFunctionalProperty ;
     rdfs:domain poker:Jugador ;
     rdfs:range poker:CartasPrivadas ;
-    rdfs:label "tiene cartas privadas" ;
+    rdfs:label "Tiene Cartas Privadas" ;
     rdfs:comment "Asocia un jugador con sus 2 cartas privadas. Funcional e InverseFuncional: la relación es biyectiva." .
 
 # Definición de la propiedad tieneMejorMano.
 poker:tieneMejorMano a owl:ObjectProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Jugador ;
     rdfs:range poker:MejorMano ;
-    rdfs:label "tiene mejor mano" ;
+    rdfs:label "Tiene Mejor Mano" ;
     rdfs:comment "Asocia un jugador con su mejor combinación de 5 cartas." .
 
 # Definición de la propiedad tieneClasificacion.
 poker:tieneClasificacion a owl:ObjectProperty , owl:FunctionalProperty ;
     rdfs:domain poker:MejorMano ;
     rdfs:range poker:ClasificacionMano ;
-    rdfs:label "tiene clasificación de mano" ;
+    rdfs:label "Tiene Clasificación de Mano" ;
     rdfs:comment "Asocia una mejor mano con su categoría de clasificación. Funcional: una mano tiene una sola categoría." .
 
 # Definición de la propiedad repartidaA.
 poker:repartidaA a owl:ObjectProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Carta ;
     rdfs:range poker:Jugador ;
-    rdfs:label "es repartida a" ;
+    rdfs:label "Es Repartida A" ;
     rdfs:comment "Indica a qué jugador fue repartida una carta privada." .
 
 # --- Propiedades inversas (Partida ↔ Jugador / Accion ↔ Ronda) ---------------
@@ -794,7 +801,7 @@ poker:tieneJugador a owl:ObjectProperty ;
     rdfs:domain poker:Partida ;
     rdfs:range poker:Jugador ;
     owl:inverseOf poker:participaEn ;
-    rdfs:label "tiene jugador" ;
+    rdfs:label "Tiene Jugador" ;
     rdfs:comment "Relaciona una partida con cada uno de sus jugadores." .
 
 # Definición de la propiedad participaEn.
@@ -802,28 +809,28 @@ poker:participaEn a owl:ObjectProperty ;
     rdfs:domain poker:Jugador ;
     rdfs:range poker:Partida ;
     owl:inverseOf poker:tieneJugador ;
-    rdfs:label "participa en" ;
+    rdfs:label "Participa En" ;
     rdfs:comment "Inversa de tieneJugador: relaciona un jugador con la partida en la que juega." .
 
 # Definición de la propiedad tieneGanador.
 poker:tieneGanador a owl:ObjectProperty ;
     rdfs:domain poker:Partida ;
     rdfs:range poker:Jugador ;
-    rdfs:label "tiene ganador" ;
+    rdfs:label "Tiene Ganador" ;
     rdfs:comment "Relaciona una partida con el o los jugadores que la ganan." .
 
 # Definición de la propiedad tieneRonda.
 poker:tieneRonda a owl:ObjectProperty ;
     rdfs:domain poker:Partida ;
     rdfs:range poker:Ronda ;
-    rdfs:label "tiene ronda" ;
+    rdfs:label "Tiene Ronda" ;
     rdfs:comment "Relaciona una partida con cada una de sus rondas de juego." .
 
 # Definición de la propiedad tieneBote.
 poker:tieneBote a owl:ObjectProperty ;
     rdfs:domain poker:Partida ;
     rdfs:range poker:Bote ;
-    rdfs:label "tiene bote" ;
+    rdfs:label "Tiene Bote" ;
     rdfs:comment "Relaciona una partida con un bote (principal o secundario)." .
 
 # Definición de la propiedad tieneBoteSecundario
@@ -831,21 +838,21 @@ poker:tieneBoteSecundario a owl:ObjectProperty ;
     rdfs:subPropertyOf poker:tieneBote ;
     rdfs:domain poker:Partida ;
     rdfs:range poker:BoteSecundario ;
-    rdfs:label "tiene bote secundario" ;
+    rdfs:label "Tiene Bote Secundario" ;
     rdfs:comment "Subpropiedad de tieneBote. Relaciona una partida con sus botes secundarios." .
 
 # Definición de la propiedad tieneCartasComunitarias.
 poker:tieneCartasComunitarias a owl:ObjectProperty ;
     rdfs:domain poker:Partida ;
     rdfs:range poker:CartasComunitarias ;
-    rdfs:label "tiene cartas comunitarias" ;
+    rdfs:label "Tiene Cartas Comunitarias" ;
     rdfs:comment "Relaciona una partida con sus cartas comunitarias (que hay en Flop, Turn y River)." .
 
 # Definición de la propiedad revelaCartas.
 poker:revelaCartas a owl:ObjectProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Ronda ;
     rdfs:range poker:CartasComunitarias ;
-    rdfs:label "revela cartas" ;
+    rdfs:label "Revela Cartas" ;
     rdfs:comment "Relaciona una ronda con el grupo de cartas comunitarias que se revelan en ella. Funcional: cada ronda revela exactamente un grupo." .
 
 # Definición de la propiedad realizaAccion.
@@ -853,7 +860,7 @@ poker:realizaAccion a owl:ObjectProperty ;
     rdfs:domain poker:Jugador ;
     rdfs:range poker:Accion ;
     owl:inverseOf poker:realizadaPor ;
-    rdfs:label "realiza acción" ;
+    rdfs:label "Realiza Acción" ;
     rdfs:comment "Relaciona un jugador con una acción que ejecuta." .
 
 # Definición de la propiedad realizadaPor.
@@ -861,7 +868,7 @@ poker:realizadaPor a owl:ObjectProperty ;
     rdfs:domain poker:Accion ;
     rdfs:range poker:Jugador ;
     owl:inverseOf poker:realizaAccion ;
-    rdfs:label "realizada por" ;
+    rdfs:label "Realizada Por" ;
     rdfs:comment "Inversa de realizaAccion: indica qué jugador ejecutó una acción." .
 
 # Definición de la propiedad realizadaEn.
@@ -869,7 +876,7 @@ poker:realizadaEn a owl:ObjectProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Accion ;
     rdfs:range poker:Ronda ;
     owl:inverseOf poker:tieneAccion ;
-    rdfs:label "realizada en" ;
+    rdfs:label "Realizada En" ;
     rdfs:comment "Indica en qué ronda ocurrió una acción. Funcional: cada acción pertenece a una sola ronda." .
 
 # Definición de la propiedad tieneAccion.
@@ -877,28 +884,28 @@ poker:tieneAccion a owl:ObjectProperty ;
     rdfs:domain poker:Ronda ;
     rdfs:range poker:Accion ;
     owl:inverseOf poker:realizadaEn ;
-    rdfs:label "tiene acción" ;
+    rdfs:label "Tiene Acción" ;
     rdfs:comment "Inversa de realizadaEn: relaciona una ronda con las acciones que ocurren en ella." .
 
 # Definición de la propiedad tienePosicion.
 poker:tienePosicion a owl:ObjectProperty ;
     rdfs:domain poker:Jugador ;
     rdfs:range poker:Posicion ;
-    rdfs:label "tiene posición" ;
+    rdfs:label "Tiene Posición" ;
     rdfs:comment "Relaciona un jugador con su posición en la mesa durante la mano." .
 
 # Definición de la propiedad usaEstructura.
 poker:usaEstructura a owl:ObjectProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Partida ;
     rdfs:range poker:EstructuraApuesta ;
-    rdfs:label "usa estructura" ;
+    rdfs:label "Usa Estructura" ;
     rdfs:comment "Indica la estructura de apuesta de la partida. Funcional: una partida usa una sola estructura." .
 
 # Definición de la propiedad ganaMano.
 poker:ganaMano a owl:ObjectProperty ;
     rdfs:domain poker:Jugador ;
     rdfs:range poker:MejorMano ;
-    rdfs:label "gana mano" ;
+    rdfs:label "Gana Mano" ;
     rdfs:comment "Relaciona un jugador con la mejor mano con la que ganó una partida." .
 
 # --- Propiedad supera (TransitiveProperty) ---------------------------------
@@ -914,14 +921,14 @@ poker:ganaMano a owl:ObjectProperty ;
 poker:supera a owl:ObjectProperty , owl:TransitiveProperty ;
     rdfs:domain poker:ClasificacionMano ;
     rdfs:range poker:ClasificacionMano ;
-    rdfs:label "supera" ;
+    rdfs:label "Supera" ;
     rdfs:comment "Indica que una clasificación de mano supera a otra. Transitiva: el razonador cierra el orden completo." .
 
 # Definición de la propiedad elegibleParaBote.
 poker:elegibleParaBote a owl:ObjectProperty ;
     rdfs:domain poker:Jugador ;
     rdfs:range poker:Bote ;
-    rdfs:label "elegible para bote" ;
+    rdfs:label "Elegible Para Bote" ;
     rdfs:comment "Indica que un jugador tiene derecho a ganar un bote determinado (relevante para botes secundarios)." .
 
 
@@ -941,91 +948,94 @@ poker:elegibleParaBote a owl:ObjectProperty ;
 poker:tieneValorRango a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Rango ;
     rdfs:range xsd:integer ;
-    rdfs:label "tiene valor de rango" ;
+    rdfs:label "Tiene Valor De Rango" ;
     rdfs:comment "Valor numérico del rango (2 para Dos, 14 para As). Usado por evaluadores externos." .
 
 # Definición de la propiedad tieneValorRangoBajo.
 poker:tieneValorRangoBajo a owl:DatatypeProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Rango ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:oneOf ( poker:As )
+    ] ;
     rdfs:range xsd:integer ;
-    rdfs:label "tiene valor de rango bajo" ;
-    rdfs:comment "Valor alternativo bajo del As (= 1) para la escalera baja A-2-3-4-5." .
+    rdfs:label "Tiene Valor De Rango Bajo" ;
+    rdfs:comment "Valor alternativo bajo del As (= 1) para la escalera baja A-2-3-4-5 (Wheel). Restringido exclusivamente al As." .
 
 # Definición de la propiedad tieneConteoFichas.
 poker:tieneConteoFichas a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Jugador ;
     rdfs:range xsd:integer ;
-    rdfs:label "tiene conteo de fichas" ;
+    rdfs:label "Tiene Conteo De Fichas" ;
     rdfs:comment "Número de fichas actuales del jugador." .
 
 # Definición de la propiedad tieneMontoApuesta.
 poker:tieneMontoApuesta a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Accion ;
     rdfs:range xsd:decimal ;
-    rdfs:label "tiene monto de apuesta" ;
+    rdfs:label "Tiene Monto De Apuesta" ;
     rdfs:comment "Cantidad de fichas apostadas en una acción concreta." .
 
 # Definición de la propiedad tieneTamañoBote.
 poker:tieneTamanoBote a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Bote ;
     rdfs:range xsd:decimal ;
-    rdfs:label "tiene tamaño del bote" ;
+    rdfs:label "Tiene Tamaño Del Bote" ;
     rdfs:comment "Total de fichas acumuladas en el bote." .
 
 # Definición de la propiedad esCiega
 poker:esCiega a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Jugador ;
     rdfs:range xsd:boolean ;
-    rdfs:label "es ciega" ;
+    rdfs:label "Es Ciega" ;
     rdfs:comment "Verdadero si el jugador ocupa una posición de ciega (ciega pequeña o ciega grande)." .
 
 # Definición de la propiedad estaAllIn.
 poker:estaAllIn a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Jugador ;
     rdfs:range xsd:boolean ;
-    rdfs:label "está all-in" ;
+    rdfs:label "Está All-In" ;
     rdfs:comment "Verdadero si el jugador ha apostado todas sus fichas (estado all-in)." .
 
 # Definición de la propiedad seRetiro.
 poker:seRetiro a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Jugador ;
     rdfs:range xsd:boolean ;
-    rdfs:label "se retiró" ;
-    rdfs:comment "Verdadero si el jugador se ha retirado (fold) en la mano actual." .
+    rdfs:label "Se Retiró" ;
+    rdfs:comment "Verdadero si el jugador se ha retirado en la mano actual." .
 
 # Definición de la propiedad nombreJugador.
 poker:nombreJugador a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Jugador ;
     rdfs:range xsd:string ;
-    rdfs:label "nombre del jugador" ;
+    rdfs:label "Nombre Del Jugador" ;
     rdfs:comment "Nombre o alias del jugador." .
 
 # Definición de la propiedad numeroAsiento.
 poker:numeroAsiento a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Jugador ;
     rdfs:range xsd:integer ;
-    rdfs:label "número de asiento" ;
+    rdfs:label "Número De Asiento" ;
     rdfs:comment "Número de asiento del jugador en la mesa (entre 1 y 10)." .
 
 # Definición de la propiedad idPartida.
 poker:idPartida a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Partida ;
     rdfs:range xsd:string ;
-    rdfs:label "ID de partida" ;
+    rdfs:label "ID de Partida" ;
     rdfs:comment "Identificador único de la partida." .
 
 # Definición de la propiedad numeroMano.
 poker:numeroMano a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Partida ;
     rdfs:range xsd:integer ;
-    rdfs:label "número de mano" ;
+    rdfs:label "Número De Mano" ;
     rdfs:comment "Número secuencial de la mano dentro de la sesión." .
 
 # Definición de la propiedad secuenciaBote.
 poker:secuenciaBote a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:BoteSecundario ;
     rdfs:range xsd:integer ;
-    rdfs:label "secuencia del bote" ;
+    rdfs:label "Secuencia Del Bote" ;
     rdfs:comment "Número de orden del bote secundario (1 para el primero creado, 2 para el segundo, etc.)." .
 
 
@@ -1156,19 +1166,19 @@ poker:As a poker:Rango ;
     rdfs:label "As" .
 
 # Cadena estática de rangos para inferencia semántica.
-poker:Dos poker:rangoSiguienteA poker:As .
-poker:Tres poker:rangoSiguienteA poker:Dos .
-poker:Cuatro poker:rangoSiguienteA poker:Tres .
-poker:Cinco poker:rangoSiguienteA poker:Cuatro .
-poker:Seis poker:rangoSiguienteA poker:Cinco .
-poker:Siete poker:rangoSiguienteA poker:Seis .
-poker:Ocho poker:rangoSiguienteA poker:Siete .
-poker:Nueve poker:rangoSiguienteA poker:Ocho .
-poker:Diez poker:rangoSiguienteA poker:Nueve .
-poker:Jota poker:rangoSiguienteA poker:Diez .
-poker:Reina poker:rangoSiguienteA poker:Jota .
-poker:Rey poker:rangoSiguienteA poker:Reina .
-poker:As poker:rangoSiguienteA poker:Rey .
+poker:As poker:tieneRangoSiguiente poker:Dos .
+poker:Dos poker:tieneRangoSiguiente poker:Tres .
+poker:Tres poker:tieneRangoSiguiente poker:Cuatro .
+poker:Cuatro poker:tieneRangoSiguiente poker:Cinco .
+poker:Cinco poker:tieneRangoSiguiente poker:Seis .
+poker:Seis poker:tieneRangoSiguiente poker:Siete .
+poker:Siete poker:tieneRangoSiguiente poker:Ocho .
+poker:Ocho poker:tieneRangoSiguiente poker:Nueve .
+poker:Nueve poker:tieneRangoSiguiente poker:Diez .
+poker:Diez poker:tieneRangoSiguiente poker:Jota .
+poker:Jota poker:tieneRangoSiguiente poker:Reina .
+poker:Reina poker:tieneRangoSiguiente poker:Rey .
+poker:Rey poker:tieneRangoSiguiente poker:As .
 
 # Cartas (52 individuos) -----------------------------------------------------
 # Convención de nombres: {Rango}De{Palo}  (ej. AsDePicas, ReyDeCorazones).
@@ -1451,32 +1461,3 @@ poker:ClasificacionPar              poker:supera poker:ClasificacionCartaAlta .
 # 3 estructuras de apuesta distintas
 [] a owl:AllDifferent ;
     owl:distinctMembers ( poker:NLHE poker:LHE poker:PLHE ) .
-
-
-# =============================================================================
-# Clasificadores (no incluido en esta base)
-# =============================================================================
-# Hasta ahora es la ontología base. Los clasificadores concretos para inferir manos específicas (Color, Escalera,
-# Trío, etc.) deben implementarse en archivos separados que importen
-# esta base y añadan sus propias restricciones owl:equivalentClass.
-#
-# Ejemplo mínimo de clasificador externo:
-#
-#   @prefix poker: <http://www.poker-ontology.org/poker#> .
-#   @prefix ex: <http://example.org/clasificadores#> .
-#
-#   <http://example.org/clasificadores>
-#       owl:imports <http://www.poker-ontology.org/poker> .
-#
-#   ex:ColorDiamantes a owl:Class ;
-#       rdfs:subClassOf poker:MejorMano ;
-#       owl:equivalentClass [
-#           owl:intersectionOf (
-#               poker:MejorMano
-#               [ owl:onProperty poker:contieneCarta ;
-#                 owl:allValuesFrom
-#                   [ owl:onProperty poker:tienePalo ;
-#                     owl:hasValue poker:Diamantes ] ]
-#           )
-#       ] .
-# =============================================================================

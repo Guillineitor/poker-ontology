@@ -39,41 +39,42 @@
 # --- Color: A-K-Q-J-9 de Picas ---
 # Color en Picas. Sin consecutivos completos: no es EscaleraColor.
 
-test:Jugador_ManoColor_01 a poker:Jugador ;
-    rdfs:label "Color: A-K-Q-J-9 de Picas — Jugador" .
+test:Jugador_Juan a poker:Jugador ;
+    rdfs:label "Jugador Juan" .
 
 test:ManoColor_01 a poker:MejorMano ;
-    rdfs:label "Color: A-K-Q-J-9 de Picas" ;
-    rdfs:comment "Color en Picas. Sin consecutivos completos: no es EscaleraColor." ;
+    rdfs:label "sas" ;
+    rdfs:comment "pez" ;
     poker:tieneClasificacion poker:ClasificacionColor ;
     poker:contieneCarta poker:AsDePicas ;
     poker:contieneCarta poker:ReyDePicas ;
     poker:contieneCarta poker:ReinaDePicas ;
     poker:contieneCarta poker:JotaDePicas ;
-    poker:contieneCarta poker:NueveDePicas ;
-    poker:tieneMejorMano test:Jugador_ManoColor_01 .
+    poker:contieneCarta poker:NueveDePicas.
 
-test:Jugador_ManoColor_01 poker:tieneMejorMano test:ManoColor_01 .
+test:Jugador_Juan poker:tieneMejorMano test:ManoColor_01 .
 
 # --- Color con As bajo: A-2-3-4-6 de Diamantes — caso borde ---
 # Caso borde: Color con As bajo. No forma rueda (falta el 5), así que es solo Color.
 
-test:Jugador_ManoColor_AsBajo_01 a poker:Jugador ;
-    rdfs:label "Color con As bajo: A-2-3-4-6 de Diamantes — caso borde — Jugador" .
+test:Jugador_Maria a poker:Jugador ;
+    rdfs:label "Jugadora María" .
 
 test:ManoColor_AsBajo_01 a poker:MejorMano ;
-    rdfs:label "Color con As bajo: A-2-3-4-6 de Diamantes — caso borde" ;
-    rdfs:comment "Caso borde: Color con As bajo. No forma rueda (falta el 5), así que es solo Color." ;
+    rdfs:label "ses" ;
+    rdfs:comment "paz" ;
     poker:tieneClasificacion poker:ClasificacionColor ;
     poker:contieneCarta poker:AsDeDiamantes ;
     poker:contieneCarta poker:DosDeDiamantes ;
     poker:contieneCarta poker:TresDeDiamantes ;
     poker:contieneCarta poker:CuatroDeDiamantes ;
-    poker:contieneCarta poker:SeisDeDiamantes ;
-    poker:tieneMejorMano test:Jugador_ManoColor_AsBajo_01 .
+    poker:contieneCarta poker:SeisDeDiamantes.
 
-test:Jugador_ManoColor_AsBajo_01 poker:tieneMejorMano test:ManoColor_AsBajo_01 .
+test:Jugador_Maria poker:tieneMejorMano test:ManoColor_AsBajo_01 .
 
 # Las instancias de prueba son entidades distintas entre sí
 [] a owl:AllDifferent ;
     owl:distinctMembers ( test:ManoColor_01 test:ManoColor_AsBajo_01 ) .
+
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( test:Jugador_Juan test:Jugador_Maria ) .
