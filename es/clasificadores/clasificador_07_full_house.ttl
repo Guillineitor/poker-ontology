@@ -1,0 +1,227 @@
+# =============================================================================
+# Clasificador de Mano: Full House
+# =============================================================================
+#
+# Importa   : ontologia_base_poker.ttl (v2.0.0)
+# Versión   : 1.0.0
+# Perfil OWL: OWL 2 DL
+#
+# Descripción
+# -----------
+# Define cuándo una MejorMano se clasifica como FullHouse.
+# Un Full House contiene exactamente un trío (tres cartas del mismo rango R_trio)
+# más un par (dos cartas del mismo rango R_par), donde R_trio ≠ R_par.
+#
+# Estrategia de inferencia
+# ------------------------
+# El Full House es la combinación más compleja de expresar en OWL porque
+# requiere especificar DOS rangos con multiplicidades distintas (×3 y ×2).
+# La estrategia usa anclas de rango para ambos roles:
+#
+#   tieneRangoDelTrio  → el rango que aparece 3 veces (rango del trío)
+#   tieneRangoDelPar   → el rango que aparece 2 veces (rango del par)
+#
+# Con los axiomas AllDifferent de la base, el razonador sabe que:
+#   - Las 52 cartas son individuos distintos.
+#   - Los 13 rangos son individuos distintos.
+# Por tanto, si R_trio ≠ R_par (garantizado por owl:hasValue a distintos individuos),
+# el Full House queda completamente caracterizado por el par de rangos (R_trio, R_par).
+#
+# Las C(13,1) × 12 = 156 subclases ordenadas (el trío puede ser cualquiera
+# de los 13 rangos, el par cualquiera de los 12 restantes) se representan
+# aquí con una selección representativa. Para benchmark exhaustivo se
+# deben generar las 156 combinaciones.
+#
+# Patrón OWL
+# ----------
+#   ManoFullHouse_<Trio>_<Par> ≡ MejorMano
+#       ∩ tieneClasificacion.(FullHouse)
+#       ∩ tieneRangoDelPar.{R_trio}
+#       ∩ tieneRangoDelPar.{R_par}
+#       ∩ ¬(tieneClasificacion.(Poker ∪ EscaleraColor ∪ EscaleraReal))
+# =============================================================================
+
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix cls:   <http://www.poker-ontology.org/clasificadores#> .
+
+<http://www.poker-ontology.org/clasificadores/full_house>
+    a owl:Ontology ;
+    owl:imports <http://www.poker-ontology.org/poker> ;
+    rdfs:label "Clasificador de Full House" ;
+    rdfs:comment "Módulo OWL que define ManoFullHouse con owl:equivalentClass. Importa la ontología base." ;
+    owl:versionInfo "1.0.0" .
+
+
+# =============================================================================
+# Propiedades auxiliares
+# =============================================================================
+
+cls:tieneRangoDelPar a owl:ObjectProperty ;
+    owl:propertyChainAxiom ( poker:contieneCarta poker:tieneRango ) ;
+    rdfs:domain poker:MejorMano ;
+    rdfs:range poker:Rango ;
+    rdfs:label "tiene rango del par" ;
+    rdfs:comment "Cadena contieneCarta ∘ tieneRango." .
+
+# tieneRangoDelTrio es la misma cadena semánticamente, pero la renombramos
+# para distinguir el ROL del rango (trío vs par) en las restricciones.
+# OWL permite usar la misma cadena bajo distintos nombres.
+cls:tieneRangoDelTrio a owl:ObjectProperty ;
+    owl:propertyChainAxiom ( poker:contieneCarta poker:tieneRango ) ;
+    rdfs:domain poker:MejorMano ;
+    rdfs:range poker:Rango ;
+    rdfs:label "tiene rango del trío" ;
+    rdfs:comment "Cadena contieneCarta ∘ tieneRango (usada para el rango del trío en un FullHouse)." .
+
+
+# =============================================================================
+# Clase definida: ManoFullHouse (clasificación genérica)
+# =============================================================================
+
+cls:ManoFullHouse a owl:Class ;
+    rdfs:subClassOf poker:MejorMano ;
+    rdfs:label "Mano de Full House" ;
+    rdfs:comment "MejorMano con un trío y un par de rangos distintos. No es Poker ni EscaleraColor." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:MejorMano
+
+            # Clasificación asignada: FullHouse
+            [ a owl:Restriction ;
+              owl:onProperty poker:tieneClasificacion ;
+              owl:someValuesFrom poker:FullHouse ]
+
+            # El rango del trío está presente en la mano
+            [ a owl:Restriction ;
+              owl:onProperty cls:tieneRangoDelTrio ;
+              owl:someValuesFrom poker:Rango ]
+
+            # El rango del par está presente en la mano
+            [ a owl:Restriction ;
+              owl:onProperty cls:tieneRangoDelPar ;
+              owl:someValuesFrom poker:Rango ]
+
+            # Negación de clasificaciones superiores al FullHouse
+            [ a owl:Class ;
+              owl:complementOf [
+                  a owl:Restriction ;
+                  owl:onProperty poker:tieneClasificacion ;
+                  owl:someValuesFrom [
+                      a owl:Class ;
+                      owl:unionOf (
+                          poker:Poker
+                          poker:EscaleraColor
+                          poker:EscaleraReal
+                      )
+                  ]
+              ]
+            ]
+        )
+    ] .
+
+
+# =============================================================================
+# Subclases ancladas: FullHouse con trío de X y par de Y (selección)
+# =============================================================================
+# Nomenclatura: ManoFullHouse_<RangoTrio>_<RangoPar>
+# R_trio ≠ R_par garantizado por AllDifferent de la base.
+
+# --- Trío de Ases ---
+cls:ManoFullHouse_As_Rey a owl:Class ; rdfs:subClassOf cls:ManoFullHouse ;
+    rdfs:label "Full House: Trío de Ases con Par de Reyes" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoFullHouse
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelTrio ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar  ; owl:hasValue poker:Rey ]
+    )] .
+
+cls:ManoFullHouse_As_Reina a owl:Class ; rdfs:subClassOf cls:ManoFullHouse ;
+    rdfs:label "Full House: Trío de Ases con Par de Reinas" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoFullHouse
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelTrio ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar  ; owl:hasValue poker:Reina ]
+    )] .
+
+cls:ManoFullHouse_As_Jota a owl:Class ; rdfs:subClassOf cls:ManoFullHouse ;
+    rdfs:label "Full House: Trío de Ases con Par de Jotas" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoFullHouse
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelTrio ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar  ; owl:hasValue poker:Jota ]
+    )] .
+
+cls:ManoFullHouse_As_Dos a owl:Class ; rdfs:subClassOf cls:ManoFullHouse ;
+    rdfs:label "Full House: Trío de Ases con Par de Doses" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoFullHouse
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelTrio ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar  ; owl:hasValue poker:Dos ]
+    )] .
+
+# --- Trío de Reyes ---
+cls:ManoFullHouse_Rey_As a owl:Class ; rdfs:subClassOf cls:ManoFullHouse ;
+    rdfs:label "Full House: Trío de Reyes con Par de Ases" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoFullHouse
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelTrio ; owl:hasValue poker:Rey ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar  ; owl:hasValue poker:As ]
+    )] .
+
+cls:ManoFullHouse_Rey_Reina a owl:Class ; rdfs:subClassOf cls:ManoFullHouse ;
+    rdfs:label "Full House: Trío de Reyes con Par de Reinas" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoFullHouse
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelTrio ; owl:hasValue poker:Rey ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar  ; owl:hasValue poker:Reina ]
+    )] .
+
+cls:ManoFullHouse_Rey_Dos a owl:Class ; rdfs:subClassOf cls:ManoFullHouse ;
+    rdfs:label "Full House: Trío de Reyes con Par de Doses" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoFullHouse
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelTrio ; owl:hasValue poker:Rey ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar  ; owl:hasValue poker:Dos ]
+    )] .
+
+# --- Trío de Doses (mano más débil de FullHouse) ---
+cls:ManoFullHouse_Dos_Tres a owl:Class ; rdfs:subClassOf cls:ManoFullHouse ;
+    rdfs:label "Full House: Trío de Doses con Par de Treses" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoFullHouse
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelTrio ; owl:hasValue poker:Dos ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar  ; owl:hasValue poker:Tres ]
+    )] .
+
+cls:ManoFullHouse_Dos_As a owl:Class ; rdfs:subClassOf cls:ManoFullHouse ;
+    rdfs:label "Full House: Trío de Doses con Par de Ases" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoFullHouse
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelTrio ; owl:hasValue poker:Dos ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar  ; owl:hasValue poker:As ]
+    )] .
+
+# --- Trío de Treses ---
+cls:ManoFullHouse_Tres_Dos a owl:Class ; rdfs:subClassOf cls:ManoFullHouse ;
+    rdfs:label "Full House: Trío de Treses con Par de Doses" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoFullHouse
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelTrio ; owl:hasValue poker:Tres ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar  ; owl:hasValue poker:Dos ]
+    )] .
+
+cls:ManoFullHouse_Tres_As a owl:Class ; rdfs:subClassOf cls:ManoFullHouse ;
+    rdfs:label "Full House: Trío de Treses con Par de Ases" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoFullHouse
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelTrio ; owl:hasValue poker:Tres ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar  ; owl:hasValue poker:As ]
+    )] .
+
+# NOTA: Para benchmark exhaustivo, generar las 13 × 12 = 156 combinaciones
+# (trío_rango, par_rango) con R_trio ≠ R_par, siguiendo el patrón anterior.

@@ -1,0 +1,79 @@
+# =============================================================================
+# Instancias de Prueba — Ontología de Póker Texas Hold'em
+# =============================================================================
+#
+# Generado por : generar_instancias_prueba.py
+# Fecha        : 2026-04-27
+# Perfil OWL   : OWL 2 DL
+# Espacio de ns: http://www.poker-ontology.org/pruebas#
+#
+# Propósito
+# ---------
+# Instancias representativas de la mano de Color para verificar
+# que el clasificador correspondiente infiere correctamente.
+#
+# Total de instancias: 2
+#   Clasificaciones cubiertas: Color (×2)
+#
+# Cómo usar
+# ---------
+# 1. Cargar en Protégé junto con la ontología base y los clasificadores.
+# 2. Ejecutar el razonador (HermiT o Pellet).
+# 3. Verificar que cada instancia queda clasificada bajo la clase esperada.
+# =============================================================================
+
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix test:  <http://www.poker-ontology.org/pruebas#> .
+@prefix cls:   <http://www.poker-ontology.org/clasificadores#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+<http://www.poker-ontology.org/pruebas>
+    a owl:Ontology ;
+    rdfs:label "Instancias de Prueba — Clasificadores de Mano" ;
+    rdfs:comment "Instancias específicas para el clasificador de la mano Color." ;
+    owl:versionInfo "1.0.0" .
+
+# --- Color: A-K-Q-J-9 de Picas ---
+# Color en Picas. Sin consecutivos completos: no es EscaleraColor.
+
+test:Jugador_ManoColor_01 a poker:Jugador ;
+    rdfs:label "Color: A-K-Q-J-9 de Picas — Jugador" .
+
+test:ManoColor_01 a poker:MejorMano ;
+    rdfs:label "Color: A-K-Q-J-9 de Picas" ;
+    rdfs:comment "Color en Picas. Sin consecutivos completos: no es EscaleraColor." ;
+    poker:tieneClasificacion poker:ClasificacionColor ;
+    poker:contieneCarta poker:AsDePicas ;
+    poker:contieneCarta poker:ReyDePicas ;
+    poker:contieneCarta poker:ReinaDePicas ;
+    poker:contieneCarta poker:JotaDePicas ;
+    poker:contieneCarta poker:NueveDePicas ;
+    poker:tieneMejorMano test:Jugador_ManoColor_01 .
+
+test:Jugador_ManoColor_01 poker:tieneMejorMano test:ManoColor_01 .
+
+# --- Color con As bajo: A-2-3-4-6 de Diamantes — caso borde ---
+# Caso borde: Color con As bajo. No forma rueda (falta el 5), así que es solo Color.
+
+test:Jugador_ManoColor_AsBajo_01 a poker:Jugador ;
+    rdfs:label "Color con As bajo: A-2-3-4-6 de Diamantes — caso borde — Jugador" .
+
+test:ManoColor_AsBajo_01 a poker:MejorMano ;
+    rdfs:label "Color con As bajo: A-2-3-4-6 de Diamantes — caso borde" ;
+    rdfs:comment "Caso borde: Color con As bajo. No forma rueda (falta el 5), así que es solo Color." ;
+    poker:tieneClasificacion poker:ClasificacionColor ;
+    poker:contieneCarta poker:AsDeDiamantes ;
+    poker:contieneCarta poker:DosDeDiamantes ;
+    poker:contieneCarta poker:TresDeDiamantes ;
+    poker:contieneCarta poker:CuatroDeDiamantes ;
+    poker:contieneCarta poker:SeisDeDiamantes ;
+    poker:tieneMejorMano test:Jugador_ManoColor_AsBajo_01 .
+
+test:Jugador_ManoColor_AsBajo_01 poker:tieneMejorMano test:ManoColor_AsBajo_01 .
+
+# Las instancias de prueba son entidades distintas entre sí
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( test:ManoColor_01 test:ManoColor_AsBajo_01 ) .

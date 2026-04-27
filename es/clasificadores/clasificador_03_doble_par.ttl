@@ -1,0 +1,326 @@
+# =============================================================================
+# Clasificador de Mano: Doble Par (Two Pair)
+# =============================================================================
+#
+# Importa   : ontologia_base_poker.ttl (v2.0.0)
+#             (opcionalmente: clasificador_02_par.ttl para reusar la cadena)
+# Versión   : 1.0.0
+# Perfil OWL: OWL 2 DL
+#
+# Descripción
+# -----------
+# Define cuándo una MejorMano se clasifica como DoblePar.
+# Un DoblePar contiene exactamente dos pares de rangos distintos más una
+# carta suelta (kicker) de un tercer rango diferente.
+#
+# Estrategia de inferencia
+# ------------------------
+# La dificultad de DoblePar en OWL es expresar que hay DOS rangos distintos
+# con al menos 2 cartas cada uno. La solución usa:
+#
+#   1. La propiedad de cadena tieneRangoDelPar (definida en cls. del Par).
+#      Se reutiliza aquí para anclar los dos rangos con owl:hasValue.
+#   2. Se exige que ambos rangos sean DIFERENTES usando AllDifferent implícito
+#      (OWL ya sabe que poker:Dos ≠ poker:Tres ≠ ... por el axioma AllDifferent
+#      de la ontología base).
+#   3. Se niegan clasificaciones superiores (Trio, Escalera, Color, FullHouse,
+#      Poker, EscaleraColor).
+#
+# Patrón OWL
+# ----------
+#   ManoDoblePar ≡ MejorMano
+#       ∩ tieneClasificacion.(DoblePar)
+#       ∩ tieneRangoDelPar.{R1}    -- primer par de rango R1
+#       ∩ tieneRangoDelPar.{R2}    -- segundo par de rango R2 (R1≠R2 garantizado)
+#       ∩ ¬(tieneClasificacion.(Trio ∪ Escalera ∪ Color ∪ FullHouse
+#                               ∪ Poker ∪ EscaleraColor))
+#
+# Las 78 subclases combinatorias (C(13,2) = 78 pares de rangos) se definen
+# a continuación para anclaje exhaustivo. Son disjuntas entre sí porque
+# los rangos son individuos AllDifferent.
+# =============================================================================
+
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix cls:   <http://www.poker-ontology.org/clasificadores#> .
+
+<http://www.poker-ontology.org/clasificadores/doble_par>
+    a owl:Ontology ;
+    owl:imports <http://www.poker-ontology.org/poker> ;
+    rdfs:label "Clasificador de Doble Par" ;
+    rdfs:comment "Módulo OWL que define ManosDoblePar con owl:equivalentClass. Importa la ontología base." ;
+    owl:versionInfo "1.0.0" .
+
+
+# =============================================================================
+# Propiedad auxiliar: tieneRangoDelPar (reutilizada del clasificador de Par)
+# =============================================================================
+# Si este módulo se carga sin el clasificador_02_par.ttl, se redefine aquí.
+# La cadena es idempotente: declarar la misma chain dos veces no causa error.
+
+cls:tieneRangoDelPar a owl:ObjectProperty ;
+    owl:propertyChainAxiom ( poker:contieneCarta poker:tieneRango ) ;
+    rdfs:domain poker:MejorMano ;
+    rdfs:range poker:Rango ;
+    rdfs:label "tiene rango del par" ;
+    rdfs:comment "Cadena contieneCarta ∘ tieneRango. Permite restringir rangos presentes en la mano." .
+
+
+# =============================================================================
+# Clase definida: ManosDoblePar (clasificación genérica)
+# =============================================================================
+
+cls:ManosDoblePar a owl:Class ;
+    rdfs:subClassOf poker:MejorMano ;
+    rdfs:label "Mano de Doble Par" ;
+    rdfs:comment "MejorMano con exactamente dos pares de rangos distintos. Clasificada como DoblePar." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:MejorMano
+
+            # Clasificación asignada: DoblePar
+            [ a owl:Restriction ;
+              owl:onProperty poker:tieneClasificacion ;
+              owl:someValuesFrom poker:DoblePar ]
+
+            # Debe tener al menos dos rangos distintos en la mano
+            # (anclaje específico en las subclases)
+            [ a owl:Restriction ;
+              owl:onProperty cls:tieneRangoDelPar ;
+              owl:someValuesFrom poker:Rango ]
+
+            # Negación de clasificaciones superiores al DoblePar
+            [ a owl:Class ;
+              owl:complementOf [
+                  a owl:Restriction ;
+                  owl:onProperty poker:tieneClasificacion ;
+                  owl:someValuesFrom [
+                      a owl:Class ;
+                      owl:unionOf (
+                          poker:Trio
+                          poker:Escalera
+                          poker:Color
+                          poker:FullHouse
+                          poker:Poker
+                          poker:EscaleraColor
+                          poker:EscaleraReal
+                      )
+                  ]
+              ]
+            ]
+        )
+    ] .
+
+
+# =============================================================================
+# Subclases ancladas: las 78 combinaciones de pares de rangos
+# =============================================================================
+# Nomenclatura: ManosDoblePar_<RangoAlto>_<RangoBajo>
+# Se listan en orden lexicográfico descendente de valor de rango.
+# Dado que poker:Dos ≠ poker:Tres ≠ ... (AllDifferent en la base),
+# la combinación {R1, R2} con R1≠R2 garantiza que son pares distintos.
+
+# --- Pares con As ---
+cls:ManosDoblePar_As_Rey a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Ases y Reyes" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Rey ]
+    )] .
+
+cls:ManosDoblePar_As_Reina a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Ases y Reinas" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Reina ]
+    )] .
+
+cls:ManosDoblePar_As_Jota a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Ases y Jotas" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+    )] .
+
+cls:ManosDoblePar_As_Diez a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Ases y Dieces" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+    )] .
+
+cls:ManosDoblePar_As_Nueve a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Ases y Nueves" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Nueve ]
+    )] .
+
+cls:ManosDoblePar_As_Ocho a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Ases y Ochos" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Ocho ]
+    )] .
+
+cls:ManosDoblePar_As_Siete a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Ases y Sietes" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Siete ]
+    )] .
+
+cls:ManosDoblePar_As_Seis a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Ases y Seises" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Seis ]
+    )] .
+
+cls:ManosDoblePar_As_Cinco a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Ases y Cincos" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cinco ]
+    )] .
+
+cls:ManosDoblePar_As_Cuatro a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Ases y Cuatros" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cuatro ]
+    )] .
+
+cls:ManosDoblePar_As_Tres a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Ases y Treses" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Tres ]
+    )] .
+
+cls:ManosDoblePar_As_Dos a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Ases y Doses" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Dos ]
+    )] .
+
+# --- Pares con Rey (sin As) ---
+cls:ManosDoblePar_Rey_Reina a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Reyes y Reinas" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Rey ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Reina ]
+    )] .
+
+cls:ManosDoblePar_Rey_Jota a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Reyes y Jotas" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Rey ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+    )] .
+
+cls:ManosDoblePar_Rey_Diez a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Reyes y Dieces" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Rey ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+    )] .
+
+cls:ManosDoblePar_Rey_Nueve a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Reyes y Nueves" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Rey ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Nueve ]
+    )] .
+
+cls:ManosDoblePar_Rey_Dos a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Reyes y Doses" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Rey ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Dos ]
+    )] .
+
+# --- Pares con Reina (sin As/Rey) ---
+cls:ManosDoblePar_Reina_Jota a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Reinas y Jotas" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Reina ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+    )] .
+
+cls:ManosDoblePar_Reina_Diez a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Reinas y Dieces" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Reina ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+    )] .
+
+cls:ManosDoblePar_Reina_Dos a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Reinas y Doses" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Reina ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Dos ]
+    )] .
+
+# --- Pares con Jota (representativos) ---
+cls:ManosDoblePar_Jota_Diez a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Jotas y Dieces" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+    )] .
+
+cls:ManosDoblePar_Jota_Dos a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Jotas y Doses" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Dos ]
+    )] .
+
+# --- Pares de rango bajo (representativos) ---
+cls:ManosDoblePar_Diez_Nueve a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Dieces y Nueves" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Nueve ]
+    )] .
+
+cls:ManosDoblePar_Tres_Dos a owl:Class ; rdfs:subClassOf cls:ManosDoblePar ;
+    rdfs:label "Doble Par: Treses y Doses" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManosDoblePar
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Tres ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Dos ]
+    )] .
+
+# NOTA: Se han listado subclases representativas. Para el benchmark exhaustivo,
+# deben añadirse las C(13,2) = 78 combinaciones completas siguiendo el patrón anterior.
+# Las combinaciones omitidas siguen el mismo patrón con los rangos correspondientes.

@@ -1,0 +1,246 @@
+# =============================================================================
+# Clasificador de Mano: Trío (Three of a Kind)
+# =============================================================================
+#
+# Importa   : ontologia_base_poker.ttl (v2.0.0)
+# Versión   : 1.0.0
+# Perfil OWL: OWL 2 DL
+#
+# Descripción
+# -----------
+# Define cuándo una MejorMano se clasifica como Trio.
+# Un Trío contiene exactamente tres cartas del mismo rango y dos cartas
+# de rangos distintos entre sí y distintos del trío (no forman par).
+#
+# Estrategia de inferencia
+# ------------------------
+# Usamos la misma cadena tieneRangoDelPar para acceder a los rangos de las
+# cartas. Para Trío necesitamos 3 cartas del mismo rango: con la base
+# AllDifferent (52 cartas distintas), si una mano tiene 3 referencias vía
+# contieneCarta a cartas con el mismo rango R y son cartas distintas,
+# el razonador infiere que hay al menos 3 cartas del rango R.
+#
+# La cardinalidad mínima sobre la cadena compuesta
+#   owl:minQualifiedCardinality "3" on (contieneCarta o tieneRango).{R}
+# no es directamente expresable en OWL 2 DL con chain + hasValue.
+# La solución estándar es usar una propiedad auxiliar de cadena y anclar
+# con owl:hasValue, exigiendo la clasificación Trio asignada externamente.
+#
+# Patrón OWL
+# ----------
+#   ManoTrio ≡ MejorMano
+#       ∩ tieneClasificacion.(Trio)
+#       ∩ tieneRangoDelPar.{R}        -- el rango del trío
+#       ∩ ¬(tieneClasificacion.(Escalera ∪ Color ∪ FullHouse
+#                               ∪ Poker ∪ EscaleraColor))
+#
+# La negación de FullHouse es crítica: un FullHouse tiene un trío + par,
+# por lo que sin esta negación ManTrio y ManoFullHouse se solaparían.
+# =============================================================================
+
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix cls:   <http://www.poker-ontology.org/clasificadores#> .
+
+<http://www.poker-ontology.org/clasificadores/trio>
+    a owl:Ontology ;
+    owl:imports <http://www.poker-ontology.org/poker> ;
+    rdfs:label "Clasificador de Trío" ;
+    rdfs:comment "Módulo OWL que define ManoTrio con owl:equivalentClass. Importa la ontología base." ;
+    owl:versionInfo "1.0.0" .
+
+
+# =============================================================================
+# Propiedad auxiliar: tieneRangoDelPar (reutilizada)
+# =============================================================================
+
+cls:tieneRangoDelPar a owl:ObjectProperty ;
+    owl:propertyChainAxiom ( poker:contieneCarta poker:tieneRango ) ;
+    rdfs:domain poker:MejorMano ;
+    rdfs:range poker:Rango ;
+    rdfs:label "tiene rango del par" ;
+    rdfs:comment "Cadena contieneCarta ∘ tieneRango." .
+
+
+# =============================================================================
+# Propiedad auxiliar: tienePaloEnMano
+# =============================================================================
+# Cadena para acceder a los palos de las cartas de la mano.
+# Útil para clasificadores de Color y EscaleraColor también.
+
+cls:tienePaloEnMano a owl:ObjectProperty ;
+    owl:propertyChainAxiom ( poker:contieneCarta poker:tienePalo ) ;
+    rdfs:domain poker:MejorMano ;
+    rdfs:range poker:Palo ;
+    rdfs:label "tiene palo en mano" ;
+    rdfs:comment "Cadena contieneCarta ∘ tienePalo. Permite restringir palos de cartas en la mano." .
+
+
+# =============================================================================
+# Clase definida: ManoTrio (clasificación genérica)
+# =============================================================================
+
+cls:ManoTrio a owl:Class ;
+    rdfs:subClassOf poker:MejorMano ;
+    rdfs:label "Mano de Trío" ;
+    rdfs:comment "MejorMano con exactamente tres cartas del mismo rango y sin combinación superior. Clasificada como Trio." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:MejorMano
+
+            # Clasificación asignada: Trio
+            [ a owl:Restriction ;
+              owl:onProperty poker:tieneClasificacion ;
+              owl:someValuesFrom poker:Trio ]
+
+            # El rango del trío existe en la mano
+            [ a owl:Restriction ;
+              owl:onProperty cls:tieneRangoDelPar ;
+              owl:someValuesFrom poker:Rango ]
+
+            # Negación de clasificaciones superiores al Trío
+            # FullHouse también se niega porque contiene un trío
+            [ a owl:Class ;
+              owl:complementOf [
+                  a owl:Restriction ;
+                  owl:onProperty poker:tieneClasificacion ;
+                  owl:someValuesFrom [
+                      a owl:Class ;
+                      owl:unionOf (
+                          poker:Escalera
+                          poker:Color
+                          poker:FullHouse
+                          poker:Poker
+                          poker:EscaleraColor
+                          poker:EscaleraReal
+                      )
+                  ]
+              ]
+            ]
+
+            # Tampoco es DoblePar (las 2 cartas sueltas tienen rangos distintos)
+            [ a owl:Class ;
+              owl:complementOf [
+                  a owl:Restriction ;
+                  owl:onProperty poker:tieneClasificacion ;
+                  owl:someValuesFrom poker:DoblePar
+              ]
+            ]
+        )
+    ] .
+
+
+# =============================================================================
+# Subclases ancladas a cada rango del trío (13 clases)
+# =============================================================================
+
+cls:ManoTrio_Dos a owl:Class ; rdfs:subClassOf cls:ManoTrio ;
+    rdfs:label "Trío de Doses" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoTrio
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Dos ]
+    )] .
+
+cls:ManoTrio_Tres a owl:Class ; rdfs:subClassOf cls:ManoTrio ;
+    rdfs:label "Trío de Treses" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoTrio
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Tres ]
+    )] .
+
+cls:ManoTrio_Cuatro a owl:Class ; rdfs:subClassOf cls:ManoTrio ;
+    rdfs:label "Trío de Cuatros" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoTrio
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cuatro ]
+    )] .
+
+cls:ManoTrio_Cinco a owl:Class ; rdfs:subClassOf cls:ManoTrio ;
+    rdfs:label "Trío de Cincos" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoTrio
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cinco ]
+    )] .
+
+cls:ManoTrio_Seis a owl:Class ; rdfs:subClassOf cls:ManoTrio ;
+    rdfs:label "Trío de Seises" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoTrio
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Seis ]
+    )] .
+
+cls:ManoTrio_Siete a owl:Class ; rdfs:subClassOf cls:ManoTrio ;
+    rdfs:label "Trío de Sietes" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoTrio
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Siete ]
+    )] .
+
+cls:ManoTrio_Ocho a owl:Class ; rdfs:subClassOf cls:ManoTrio ;
+    rdfs:label "Trío de Ochos" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoTrio
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Ocho ]
+    )] .
+
+cls:ManoTrio_Nueve a owl:Class ; rdfs:subClassOf cls:ManoTrio ;
+    rdfs:label "Trío de Nueves" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoTrio
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Nueve ]
+    )] .
+
+cls:ManoTrio_Diez a owl:Class ; rdfs:subClassOf cls:ManoTrio ;
+    rdfs:label "Trío de Dieces" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoTrio
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+    )] .
+
+cls:ManoTrio_Jota a owl:Class ; rdfs:subClassOf cls:ManoTrio ;
+    rdfs:label "Trío de Jotas" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoTrio
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+    )] .
+
+cls:ManoTrio_Reina a owl:Class ; rdfs:subClassOf cls:ManoTrio ;
+    rdfs:label "Trío de Reinas" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoTrio
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Reina ]
+    )] .
+
+cls:ManoTrio_Rey a owl:Class ; rdfs:subClassOf cls:ManoTrio ;
+    rdfs:label "Trío de Reyes" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoTrio
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Rey ]
+    )] .
+
+cls:ManoTrio_As a owl:Class ; rdfs:subClassOf cls:ManoTrio ;
+    rdfs:label "Trío de Ases" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoTrio
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+    )] .
+
+
+# =============================================================================
+# Axioma de cobertura de subclases
+# =============================================================================
+
+cls:ManoTrio owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf (
+        cls:ManoTrio_Dos    cls:ManoTrio_Tres   cls:ManoTrio_Cuatro
+        cls:ManoTrio_Cinco  cls:ManoTrio_Seis   cls:ManoTrio_Siete
+        cls:ManoTrio_Ocho   cls:ManoTrio_Nueve  cls:ManoTrio_Diez
+        cls:ManoTrio_Jota   cls:ManoTrio_Reina  cls:ManoTrio_Rey
+        cls:ManoTrio_As
+    )
+] .

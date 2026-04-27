@@ -1,0 +1,320 @@
+# =============================================================================
+# Clasificador de Mano: Escalera (Straight)
+# =============================================================================
+#
+# Importa   : ontologia_base_poker.ttl (v2.0.0)
+# Versión   : 1.0.0
+# Perfil OWL: OWL 2 DL
+#
+# Descripción
+# -----------
+# Define cuándo una MejorMano se clasifica como Escalera.
+# Una Escalera contiene cinco cartas de rangos consecutivos en al menos
+# dos palos distintos (si fuera un solo palo sería EscaleraColor).
+#
+# Estrategia de inferencia — Escaleras por carta más alta (10 posibles)
+# ---------------------------------------------------------------------
+# Las 10 escaleras posibles en Texas Hold'em, identificadas por su carta más alta:
+#
+#   Escalera_Cinco   : A-2-3-4-5  (escalera "rueda" con As bajo)
+#   Escalera_Seis    : 2-3-4-5-6
+#   Escalera_Siete   : 3-4-5-6-7
+#   Escalera_Ocho    : 4-5-6-7-8
+#   Escalera_Nueve   : 5-6-7-8-9
+#   Escalera_Diez    : 6-7-8-9-10
+#   Escalera_Jota    : 7-8-9-10-J
+#   Escalera_Reina   : 8-9-10-J-Q
+#   Escalera_Rey     : 9-10-J-Q-K
+#   Escalera_As      : 10-J-Q-K-A  (escalera Broadway)
+#
+# Cada subclase se define exigiendo que la mano contenga cartas de cada
+# uno de los cinco rangos específicos. Esto es decidible en OWL 2 DL
+# usando owl:hasValue sobre la cadena tieneRangoDelPar.
+#
+# Restricción crítica: debe negarse EscaleraColor para distinguir
+# Escalera de EscaleraColor (mismos rangos, pero en este caso todos
+# del mismo palo).
+#
+# Patrón OWL (ejemplo para Escalera Broadway 10-J-Q-K-A)
+# -------------------------------------------------------
+#   ManoEscalera_As ≡ MejorMano
+#       ∩ tieneClasificacion.(Escalera)
+#       ∩ tieneRangoDelPar.{Diez}
+#       ∩ tieneRangoDelPar.{Jota}
+#       ∩ tieneRangoDelPar.{Reina}
+#       ∩ tieneRangoDelPar.{Rey}
+#       ∩ tieneRangoDelPar.{As}
+#       ∩ ¬(tieneClasificacion.(EscaleraColor ∪ EscaleraReal))
+# =============================================================================
+
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix cls:   <http://www.poker-ontology.org/clasificadores#> .
+
+<http://www.poker-ontology.org/clasificadores/escalera>
+    a owl:Ontology ;
+    owl:imports <http://www.poker-ontology.org/poker> ;
+    rdfs:label "Clasificador de Escalera" ;
+    rdfs:comment "Módulo OWL que define ManoEscalera con owl:equivalentClass. Importa la ontología base." ;
+    owl:versionInfo "1.0.0" .
+
+
+# =============================================================================
+# Propiedad auxiliar: tieneRangoDelPar
+# =============================================================================
+
+cls:tieneRangoDelPar a owl:ObjectProperty ;
+    owl:propertyChainAxiom ( poker:contieneCarta poker:tieneRango ) ;
+    rdfs:domain poker:MejorMano ;
+    rdfs:range poker:Rango ;
+    rdfs:label "tiene rango del par" ;
+    rdfs:comment "Cadena contieneCarta ∘ tieneRango." .
+
+
+# =============================================================================
+# Clase definida: ManoEscalera (clasificación genérica)
+# =============================================================================
+
+cls:ManoEscalera a owl:Class ;
+    rdfs:subClassOf poker:MejorMano ;
+    rdfs:label "Mano de Escalera" ;
+    rdfs:comment "MejorMano con cinco rangos consecutivos en al menos dos palos. No es EscaleraColor." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:MejorMano
+
+            # Clasificación asignada: Escalera
+            [ a owl:Restriction ;
+              owl:onProperty poker:tieneClasificacion ;
+              owl:someValuesFrom poker:Escalera ]
+
+            # NO es EscaleraColor ni EscaleraReal (si lo fuera, tendría palo único)
+            [ a owl:Class ;
+              owl:complementOf [
+                  a owl:Restriction ;
+                  owl:onProperty poker:tieneClasificacion ;
+                  owl:someValuesFrom [
+                      a owl:Class ;
+                      owl:unionOf (
+                          poker:EscaleraColor
+                          poker:EscaleraReal
+                      )
+                  ]
+              ]
+            ]
+        )
+    ] .
+
+
+# =============================================================================
+# Subclases ancladas: las 10 escaleras posibles
+# =============================================================================
+# Cada subclase ancla los 5 rangos de la escalera usando tieneRangoDelPar.
+# El razonador puede entonces inferir que la mano contiene exactamente
+# esos rangos (dado el cierre AllDifferent de la base y la cardinalidad
+# de MejorMano = 5 cartas).
+
+# --- Escalera Rueda: A-2-3-4-5 (As vale como 1) ---
+cls:ManoEscalera_Cinco a owl:Class ;
+    rdfs:subClassOf cls:ManoEscalera ;
+    rdfs:label "Escalera Rueda (A-2-3-4-5)" ;
+    rdfs:comment "Escalera más baja. El As actúa como 1. Carta más alta: Cinco." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            cls:ManoEscalera
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Dos ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Tres ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cuatro ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cinco ]
+        )
+    ] .
+
+# --- Escalera 2-3-4-5-6 ---
+cls:ManoEscalera_Seis a owl:Class ;
+    rdfs:subClassOf cls:ManoEscalera ;
+    rdfs:label "Escalera 2-3-4-5-6" ;
+    rdfs:comment "Carta más alta: Seis." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            cls:ManoEscalera
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Dos ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Tres ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cuatro ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cinco ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Seis ]
+        )
+    ] .
+
+# --- Escalera 3-4-5-6-7 ---
+cls:ManoEscalera_Siete a owl:Class ;
+    rdfs:subClassOf cls:ManoEscalera ;
+    rdfs:label "Escalera 3-4-5-6-7" ;
+    rdfs:comment "Carta más alta: Siete." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            cls:ManoEscalera
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Tres ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cuatro ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cinco ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Seis ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Siete ]
+        )
+    ] .
+
+# --- Escalera 4-5-6-7-8 ---
+cls:ManoEscalera_Ocho a owl:Class ;
+    rdfs:subClassOf cls:ManoEscalera ;
+    rdfs:label "Escalera 4-5-6-7-8" ;
+    rdfs:comment "Carta más alta: Ocho." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            cls:ManoEscalera
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cuatro ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cinco ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Seis ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Siete ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Ocho ]
+        )
+    ] .
+
+# --- Escalera 5-6-7-8-9 ---
+cls:ManoEscalera_Nueve a owl:Class ;
+    rdfs:subClassOf cls:ManoEscalera ;
+    rdfs:label "Escalera 5-6-7-8-9" ;
+    rdfs:comment "Carta más alta: Nueve." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            cls:ManoEscalera
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cinco ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Seis ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Siete ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Ocho ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Nueve ]
+        )
+    ] .
+
+# --- Escalera 6-7-8-9-10 ---
+cls:ManoEscalera_Diez a owl:Class ;
+    rdfs:subClassOf cls:ManoEscalera ;
+    rdfs:label "Escalera 6-7-8-9-10" ;
+    rdfs:comment "Carta más alta: Diez." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            cls:ManoEscalera
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Seis ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Siete ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Ocho ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Nueve ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+        )
+    ] .
+
+# --- Escalera 7-8-9-10-J ---
+cls:ManoEscalera_Jota a owl:Class ;
+    rdfs:subClassOf cls:ManoEscalera ;
+    rdfs:label "Escalera 7-8-9-10-J" ;
+    rdfs:comment "Carta más alta: Jota." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            cls:ManoEscalera
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Siete ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Ocho ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Nueve ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+        )
+    ] .
+
+# --- Escalera 8-9-10-J-Q ---
+cls:ManoEscalera_Reina a owl:Class ;
+    rdfs:subClassOf cls:ManoEscalera ;
+    rdfs:label "Escalera 8-9-10-J-Q" ;
+    rdfs:comment "Carta más alta: Reina." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            cls:ManoEscalera
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Ocho ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Nueve ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Reina ]
+        )
+    ] .
+
+# --- Escalera 9-10-J-Q-K ---
+cls:ManoEscalera_Rey a owl:Class ;
+    rdfs:subClassOf cls:ManoEscalera ;
+    rdfs:label "Escalera 9-10-J-Q-K" ;
+    rdfs:comment "Carta más alta: Rey." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            cls:ManoEscalera
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Nueve ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Reina ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Rey ]
+        )
+    ] .
+
+# --- Escalera Broadway: 10-J-Q-K-A ---
+cls:ManoEscalera_As a owl:Class ;
+    rdfs:subClassOf cls:ManoEscalera ;
+    rdfs:label "Escalera Broadway (10-J-Q-K-A)" ;
+    rdfs:comment "Escalera más alta sin ser de color. El mismo patrón de rangos que la EscaleraReal, pero en palos mixtos." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            cls:ManoEscalera
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Reina ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Rey ]
+            [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+        )
+    ] .
+
+
+# =============================================================================
+# Axioma de cobertura: toda Escalera es una de las 10 escaleras posibles
+# =============================================================================
+
+cls:ManoEscalera owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf (
+        cls:ManoEscalera_Cinco  cls:ManoEscalera_Seis   cls:ManoEscalera_Siete
+        cls:ManoEscalera_Ocho   cls:ManoEscalera_Nueve  cls:ManoEscalera_Diez
+        cls:ManoEscalera_Jota   cls:ManoEscalera_Reina  cls:ManoEscalera_Rey
+        cls:ManoEscalera_As
+    )
+] .
+
+
+# =============================================================================
+# Disjunción entre escaleras (todas son distintas entre sí)
+# =============================================================================
+# Cada subclase es disjunta de las demás porque sus conjuntos de 5 rangos
+# son distintos (comparten a lo sumo 4 rangos, pero la carta más alta difiere).
+# Se declara explícitamente para que el razonador lo verifique.
+
+[] a owl:AllDisjointClasses ;
+    owl:members (
+        cls:ManoEscalera_Cinco  cls:ManoEscalera_Seis   cls:ManoEscalera_Siete
+        cls:ManoEscalera_Ocho   cls:ManoEscalera_Nueve  cls:ManoEscalera_Diez
+        cls:ManoEscalera_Jota   cls:ManoEscalera_Reina  cls:ManoEscalera_Rey
+        cls:ManoEscalera_As
+    ) .

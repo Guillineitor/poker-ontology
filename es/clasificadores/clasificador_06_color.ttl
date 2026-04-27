@@ -1,0 +1,245 @@
+# =============================================================================
+# Clasificador de Mano: Color (Flush)
+# =============================================================================
+#
+# Importa   : ontologia_base_poker.ttl (v2.0.0)
+# Versión   : 1.0.0
+# Perfil OWL: OWL 2 DL
+#
+# Descripción
+# -----------
+# Define cuándo una MejorMano se clasifica como Color.
+# Un Color contiene cinco cartas del mismo palo en rangos no consecutivos
+# (si fueran consecutivos sería EscaleraColor).
+#
+# Estrategia de inferencia
+# ------------------------
+# La condición "todas las cartas tienen el mismo palo" se expresa en OWL 2 DL
+# usando owl:allValuesFrom sobre la cadena contieneCarta → tienePalo.
+# Dado que Palo es cerrado (owl:oneOf con 4 palos) y tienePalo es
+# FunctionalProperty, basta exigir:
+#
+#   allValuesFrom(contieneCarta, allValuesFrom(tienePalo, {Palo_X}))
+#
+# Lo que equivale a decir que TODAS las cartas de la mano tienen el palo X.
+# Con la cardinalidad exacta de 5 cartas en MejorMano, esto garantiza
+# que las 5 cartas son del mismo palo.
+#
+# Se definen 4 subclases (una por palo) y se niega EscaleraColor para
+# distinguir Color de EscaleraColor.
+#
+# Patrón OWL
+# ----------
+#   ManoColor_Picas ≡ MejorMano
+#       ∩ tieneClasificacion.(Color)
+#       ∩ allValuesFrom(contieneCarta, allValuesFrom(tienePalo, {Picas}))
+#       ∩ ¬(tieneClasificacion.(EscaleraColor ∪ EscaleraReal))
+#
+# Nota sobre allValuesFrom
+# ------------------------
+# En OWL 2 DL, owl:allValuesFrom sobre una ObjectProperty anidada es
+# decidible. La combinación contieneCarta ∘ tienePalo con allValuesFrom
+# es equivalente a: ∀x (contieneCarta(m,x) → tienePalo(x, Picas)).
+# Bajo la cardinalidad exacta de MejorMano (= 5 cartas), esto garantiza
+# que todas las cartas son de Picas.
+# =============================================================================
+
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix cls:   <http://www.poker-ontology.org/clasificadores#> .
+
+<http://www.poker-ontology.org/clasificadores/color>
+    a owl:Ontology ;
+    rdfs:label "Clasificador de Color (Flush)" ;
+    rdfs:comment "Módulo OWL que define ManoColor con owl:equivalentClass. Importa la ontología base." ;
+    owl:versionInfo "1.0.0" .
+
+
+# =============================================================================
+# Clase definida: ManoColor (clasificación genérica)
+# =============================================================================
+
+cls:ManoColor a owl:Class ;
+    rdfs:subClassOf poker:MejorMano ;
+    rdfs:label "Mano de Color" ;
+    rdfs:comment "MejorMano con cinco cartas del mismo palo y rangos no consecutivos. No es EscaleraColor." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:MejorMano
+
+            # Todas las cartas son del mismo palo (especificado en subclases)
+            # A nivel genérico: hay al menos un palo que cubre todas las cartas
+            [ a owl:Restriction ;
+              owl:onProperty poker:contieneCarta ;
+              owl:someValuesFrom poker:Carta ]
+
+            # NO es EscaleraColor ni EscaleraReal
+            [ a owl:Class ;
+              owl:complementOf [
+                  a owl:Restriction ;
+                  owl:onProperty poker:tieneClasificacion ;
+                  owl:someValuesFrom [
+                      a owl:Class ;
+                      owl:unionOf (
+                          poker:EscaleraColor
+                          poker:EscaleraReal
+                      )
+                  ]
+              ]
+            ]
+        )
+    ] .
+
+
+# =============================================================================
+# Subclases ancladas: una por cada palo
+# =============================================================================
+# Cada subclase usa owl:allValuesFrom sobre contieneCarta para forzar
+# que TODAS las cartas de la mano tengan el palo especificado.
+# La restricción es: ∀c ∈ contieneCarta(m): tienePalo(c) = PaloX
+
+# --- Color de Picas ---
+cls:ManoColor_Picas a owl:Class ;
+    rdfs:subClassOf cls:ManoColor ;
+    rdfs:label "Color de Picas" ;
+    rdfs:comment "Las cinco cartas son de Picas. No forma escalera de color." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            cls:ManoColor
+
+            # Todas las cartas tienen palo Picas
+            [ a owl:Restriction ;
+              owl:onProperty poker:contieneCarta ;
+              owl:allValuesFrom [
+                  a owl:Restriction ;
+                  owl:onProperty poker:tienePalo ;
+                  owl:hasValue poker:Picas
+              ]
+            ]
+
+            # Al menos una carta tiene palo Picas (garantiza que no está vacío)
+            [ a owl:Restriction ;
+              owl:onProperty poker:contieneCarta ;
+              owl:someValuesFrom [
+                  a owl:Restriction ;
+                  owl:onProperty poker:tienePalo ;
+                  owl:hasValue poker:Picas
+              ]
+            ]
+        )
+    ] .
+
+# --- Color de Corazones ---
+cls:ManoColor_Corazones a owl:Class ;
+    rdfs:subClassOf cls:ManoColor ;
+    rdfs:label "Color de Corazones" ;
+    rdfs:comment "Las cinco cartas son de Corazones. No forma escalera de color." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            cls:ManoColor
+            [ a owl:Restriction ;
+              owl:onProperty poker:contieneCarta ;
+              owl:allValuesFrom [
+                  a owl:Restriction ;
+                  owl:onProperty poker:tienePalo ;
+                  owl:hasValue poker:Corazones
+              ]
+            ]
+            [ a owl:Restriction ;
+              owl:onProperty poker:contieneCarta ;
+              owl:someValuesFrom [
+                  a owl:Restriction ;
+                  owl:onProperty poker:tienePalo ;
+                  owl:hasValue poker:Corazones
+              ]
+            ]
+        )
+    ] .
+
+# --- Color de Diamantes ---
+cls:ManoColor_Diamantes a owl:Class ;
+    rdfs:subClassOf cls:ManoColor ;
+    rdfs:label "Color de Diamantes" ;
+    rdfs:comment "Las cinco cartas son de Diamantes. No forma escalera de color." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            cls:ManoColor
+            [ a owl:Restriction ;
+              owl:onProperty poker:contieneCarta ;
+              owl:allValuesFrom [
+                  a owl:Restriction ;
+                  owl:onProperty poker:tienePalo ;
+                  owl:hasValue poker:Diamantes
+              ]
+            ]
+            [ a owl:Restriction ;
+              owl:onProperty poker:contieneCarta ;
+              owl:someValuesFrom [
+                  a owl:Restriction ;
+                  owl:onProperty poker:tienePalo ;
+                  owl:hasValue poker:Diamantes
+              ]
+            ]
+        )
+    ] .
+
+# --- Color de Tréboles ---
+cls:ManoColor_Treboles a owl:Class ;
+    rdfs:subClassOf cls:ManoColor ;
+    rdfs:label "Color de Tréboles" ;
+    rdfs:comment "Las cinco cartas son de Tréboles. No forma escalera de color." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            cls:ManoColor
+            [ a owl:Restriction ;
+              owl:onProperty poker:contieneCarta ;
+              owl:allValuesFrom [
+                  a owl:Restriction ;
+                  owl:onProperty poker:tienePalo ;
+                  owl:hasValue poker:Treboles
+              ]
+            ]
+            [ a owl:Restriction ;
+              owl:onProperty poker:contieneCarta ;
+              owl:someValuesFrom [
+                  a owl:Restriction ;
+                  owl:onProperty poker:tienePalo ;
+                  owl:hasValue poker:Treboles
+              ]
+            ]
+        )
+    ] .
+
+
+# =============================================================================
+# Cobertura y disjunción
+# =============================================================================
+# Todo Color es de exactamente uno de los 4 palos (dado el cierre oneOf
+# del palo en la ontología base).
+
+cls:ManoColor owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf (
+        cls:ManoColor_Picas
+        cls:ManoColor_Corazones
+        cls:ManoColor_Diamantes
+        cls:ManoColor_Treboles
+    )
+] .
+
+# Las 4 subclases son disjuntas (un Color no puede ser de dos palos).
+[] a owl:AllDisjointClasses ;
+    owl:members (
+        cls:ManoColor_Picas
+        cls:ManoColor_Corazones
+        cls:ManoColor_Diamantes
+        cls:ManoColor_Treboles
+    ) .

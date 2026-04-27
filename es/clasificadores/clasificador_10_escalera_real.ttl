@@ -1,0 +1,252 @@
+# =============================================================================
+# Clasificador de Mano: Escalera Real (Royal Flush)
+# =============================================================================
+#
+# Importa   : ontologia_base_poker.ttl (v2.0.0)
+#             clasificador_09_escalera_color.ttl (v1.0.0)
+# Versión   : 1.0.0
+# Perfil OWL: OWL 2 DL
+#
+# Descripción
+# -----------
+# Define cuándo una MejorMano se clasifica como EscaleraReal.
+# Una Escalera Real es un caso particular de Escalera de Color:
+# exactamente las cartas 10-J-Q-K-A del mismo palo.
+#
+# Estrategia de inferencia
+# ------------------------
+# EscaleraReal es subclase de EscaleraColor en la ontología base,
+# por lo que ManoEscaleraReal es subclase de ManoEscaleraColor.
+# Solo existen 4 Escaleras Reales posibles, una por palo:
+#
+#   ManoEscaleraReal_Picas      ≡ 10♠ J♠ Q♠ K♠ A♠
+#   ManoEscaleraReal_Corazones  ≡ 10♥ J♥ Q♥ K♥ A♥
+#   ManoEscaleraReal_Diamantes  ≡ 10♦ J♦ Q♦ K♦ A♦
+#   ManoEscaleraReal_Treboles   ≡ 10♣ J♣ Q♣ K♣ A♣
+#
+# Patrón OWL (ejemplo: Escalera Real de Picas)
+# --------------------------------------------
+#   ManoEscaleraReal_Picas ≡ ManoEscaleraColor
+#       ∩ tieneClasificacion.(EscaleraReal)
+#       ∩ allValuesFrom(contieneCarta, tienePalo.{Picas})
+#       ∩ someValuesFrom(contieneCarta, tienePalo.{Picas})
+#       ∩ tieneRangoDelPar.{Diez}
+#       ∩ tieneRangoDelPar.{Jota}
+#       ∩ tieneRangoDelPar.{Reina}
+#       ∩ tieneRangoDelPar.{Rey}
+#       ∩ tieneRangoDelPar.{As}
+#
+# Nota sobre la jerarquía:
+# ManoEscaleraReal hereda de ManoEscaleraColor, que a su vez hereda de
+# MejorMano. El razonador infiere automáticamente que toda EscaleraReal
+# es también una EscaleraColor, sin necesidad de declararlo explícitamente.
+#
+# Nota sobre el clasificador_09:
+# Las 4 subclases ManoEscaleraReal_<Palo> referenciadas como comentario
+# en clasificador_09 quedan aquí definidas. El axioma de cobertura de
+# ManoEscaleraColor_<Palo> debe actualizarse para incluirlas.
+# =============================================================================
+
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix cls:   <http://www.poker-ontology.org/clasificadores#> .
+
+<http://www.poker-ontology.org/clasificadores/escalera_real>
+    a owl:Ontology ;
+    owl:imports <http://www.poker-ontology.org/poker> ;
+    owl:imports <http://www.poker-ontology.org/clasificadores/escalera_color> ;
+    rdfs:label "Clasificador de Escalera Real (Royal Flush)" ;
+    rdfs:comment "Módulo OWL que define ManoEscaleraReal con owl:equivalentClass. Importa la ontología base y el clasificador de Escalera de Color." ;
+    owl:versionInfo "1.0.0" .
+
+
+# =============================================================================
+# Propiedad auxiliar: tieneRangoDelPar
+# =============================================================================
+# Redeclaración local para garantizar que este clasificador es autónomo
+# aunque se importe sin clasificador_09. Si clasificador_09 ya está cargado,
+# el razonador la trata como la misma propiedad (mismo IRI).
+
+cls:tieneRangoDelPar a owl:ObjectProperty ;
+    owl:propertyChainAxiom ( poker:contieneCarta poker:tieneRango ) ;
+    rdfs:domain poker:MejorMano ;
+    rdfs:range poker:Rango ;
+    rdfs:label "tiene rango del par" ;
+    rdfs:comment "Cadena contieneCarta ∘ tieneRango." .
+
+
+# =============================================================================
+# Clase definida: ManoEscaleraReal (clasificación genérica)
+# =============================================================================
+
+cls:ManoEscaleraReal a owl:Class ;
+    rdfs:subClassOf cls:ManoEscaleraColor ;
+    rdfs:label "Mano de Escalera Real" ;
+    rdfs:comment "MejorMano con las cartas 10-J-Q-K-A del mismo palo. Subclase de ManoEscaleraColor." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            cls:ManoEscaleraColor
+
+            # Clasificación asignada: EscaleraReal
+            [ a owl:Restriction ;
+              owl:onProperty poker:tieneClasificacion ;
+              owl:someValuesFrom poker:EscaleraReal ]
+
+            # Todas las cartas son del mismo palo (especificado en subclases)
+            [ a owl:Restriction ;
+              owl:onProperty poker:contieneCarta ;
+              owl:someValuesFrom poker:Carta ]
+        )
+    ] .
+
+
+# =============================================================================
+# Subclases por palo: las 4 Escaleras Reales posibles
+# =============================================================================
+
+# --- ESCALERA REAL DE PICAS (10♠-J♠-Q♠-K♠-A♠) ---
+
+cls:ManoEscaleraReal_Picas a owl:Class ;
+    rdfs:subClassOf cls:ManoEscaleraReal ;
+    rdfs:label "Escalera Real de Picas: 10-J-Q-K-A♠" ;
+    rdfs:comment "La Escalera Real en Picas. Subclase de ManoEscaleraColor_Picas." ;
+    rdfs:subClassOf cls:ManoEscaleraColor ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoEscaleraReal
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:allValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:someValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Reina ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Rey ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+    )] .
+
+
+# --- ESCALERA REAL DE CORAZONES (10♥-J♥-Q♥-K♥-A♥) ---
+
+cls:ManoEscaleraReal_Corazones a owl:Class ;
+    rdfs:subClassOf cls:ManoEscaleraReal ;
+    rdfs:label "Escalera Real de Corazones: 10-J-Q-K-A♥" ;
+    rdfs:comment "La Escalera Real en Corazones. Subclase de ManoEscaleraColor_Corazones." ;
+    rdfs:subClassOf cls:ManoEscaleraColor ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoEscaleraReal
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:allValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Corazones ] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:someValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Corazones ] ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Reina ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Rey ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+    )] .
+
+
+# --- ESCALERA REAL DE DIAMANTES (10♦-J♦-Q♦-K♦-A♦) ---
+
+cls:ManoEscaleraReal_Diamantes a owl:Class ;
+    rdfs:subClassOf cls:ManoEscaleraReal ;
+    rdfs:label "Escalera Real de Diamantes: 10-J-Q-K-A♦" ;
+    rdfs:comment "La Escalera Real en Diamantes. Subclase de ManoEscaleraColor_Diamantes." ;
+    rdfs:subClassOf cls:ManoEscaleraColor ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoEscaleraReal
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:allValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Diamantes ] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:someValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Diamantes ] ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Reina ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Rey ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+    )] .
+
+
+# --- ESCALERA REAL DE TRÉBOLES (10♣-J♣-Q♣-K♣-A♣) ---
+
+cls:ManoEscaleraReal_Treboles a owl:Class ;
+    rdfs:subClassOf cls:ManoEscaleraReal ;
+    rdfs:label "Escalera Real de Tréboles: 10-J-Q-K-A♣" ;
+    rdfs:comment "La Escalera Real en Tréboles. Subclase de ManoEscaleraColor_Treboles." ;
+    rdfs:subClassOf cls:ManoEscaleraColor ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoEscaleraReal
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:allValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Treboles ] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:someValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Treboles ] ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Reina ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Rey ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+    )] .
+
+
+# =============================================================================
+# Axioma de cobertura: ManoEscaleraReal
+# =============================================================================
+# Las 4 subclases agotan todas las Escaleras Reales posibles.
+# El razonador puede verificar que ManoEscaleraReal ≡ la unión de las 4.
+
+cls:ManoEscaleraReal owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf (
+        cls:ManoEscaleraReal_Picas
+        cls:ManoEscaleraReal_Corazones
+        cls:ManoEscaleraReal_Diamantes
+        cls:ManoEscaleraReal_Treboles
+    )
+] .
+
+
+# =============================================================================
+# Disyunción entre las 4 Escaleras Reales
+# =============================================================================
+# Dos Escaleras Reales de distinto palo no pueden ser la misma mano,
+# pues sus cartas son disjuntas por palo.
+
+[] a owl:AllDisjointClasses ;
+    owl:members (
+        cls:ManoEscaleraReal_Picas
+        cls:ManoEscaleraReal_Corazones
+        cls:ManoEscaleraReal_Diamantes
+        cls:ManoEscaleraReal_Treboles
+    ) .
+
+
+# =============================================================================
+# Integración con clasificador_09: actualización del axioma de cobertura
+# =============================================================================
+# En clasificador_09, ManoEscaleraColor_<Palo> fue definida sin incluir
+# ManoEscaleraReal_<Palo> (marcada como comentario pendiente).
+# Aquí se completan esas uniones añadiendo las Escaleras Reales a cada palo.
+
+cls:ManoEscaleraColor_Picas owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf (
+        cls:ManoEscaleraColor_Picas_Cinco
+        cls:ManoEscaleraColor_Picas_Seis
+        cls:ManoEscaleraColor_Picas_Siete
+        cls:ManoEscaleraColor_Picas_Ocho
+        cls:ManoEscaleraColor_Picas_Nueve
+        cls:ManoEscaleraColor_Picas_Diez
+        cls:ManoEscaleraColor_Picas_Jota
+        cls:ManoEscaleraColor_Picas_Reina
+        cls:ManoEscaleraColor_Picas_Rey
+        cls:ManoEscaleraReal_Picas
+    )
+] .
+
+# NOTA: Replicar el bloque de actualización para Corazones, Diamantes
+# y Tréboles cuando esos palos estén definidos en clasificador_09.
+# El patrón es idéntico sustituyendo _Picas por el palo correspondiente.

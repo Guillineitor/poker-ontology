@@ -1,0 +1,292 @@
+# =============================================================================
+# Instancias de Prueba — Ontología de Póker Texas Hold'em
+# =============================================================================
+#
+# Generado por : generar_instancias_prueba.py
+# Fecha        : 2026-04-27
+# Perfil OWL   : OWL 2 DL
+# Espacio de ns: http://www.poker-ontology.org/pruebas#
+#
+# Propósito
+# ---------
+# Una instancia representativa por clasificación de mano para verificar
+# que los clasificadores infieren correctamente cada categoría.
+# Incluye casos borde: rueda (escalera baja), color con As bajo,
+# y la rueda como EscaleraColor.
+#
+# Total de instancias: 13
+#   Clasificaciones cubiertas: CartaAlta, Par, DoblePar, Trío, Escalera (×2),
+#   Color (×2), FullHouse, Póker, EscaleraColor (×2), EscaleraReal
+#
+# Cómo usar
+# ---------
+# 1. Cargar en Protégé junto con la ontología base y los clasificadores.
+# 2. Ejecutar el razonador (HermiT o Pellet).
+# 3. Verificar que cada instancia queda clasificada bajo la clase esperada.
+# =============================================================================
+
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix test:  <http://www.poker-ontology.org/pruebas#> .
+@prefix cls:   <http://www.poker-ontology.org/clasificadores#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+<http://www.poker-ontology.org/pruebas>
+    a owl:Ontology ;
+    owl:imports <http://www.poker-ontology.org/poker> ;
+    rdfs:label "Instancias de Prueba — Clasificadores de Mano" ;
+    rdfs:comment "Una MejorMano representativa por clasificación, generada automáticamente." ;
+    owl:versionInfo "1.0.0" .
+
+# --- Carta Alta: A-K-Q-J-9 (mixtos) ---
+# Caso típico de Carta Alta: cinco rangos distintos, palos distintos, sin consecutivos completos.
+
+test:Jugador_ManoCartaAlta_01 a poker:Jugador ;
+    rdfs:label "Carta Alta: A-K-Q-J-9 (mixtos) — Jugador" .
+
+test:ManoCartaAlta_01 a poker:MejorMano , poker:CartaAlta ;
+    rdfs:label "Carta Alta: A-K-Q-J-9 (mixtos)" ;
+    rdfs:comment "Caso típico de Carta Alta: cinco rangos distintos, palos distintos, sin consecutivos completos." ;
+    poker:tieneClasificacion poker:ClasificacionCartaAlta ;
+    poker:contieneCarta poker:AsDePicas ;
+    poker:contieneCarta poker:ReyDeCorazones ;
+    poker:contieneCarta poker:ReinaDeDiamantes ;
+    poker:contieneCarta poker:JotaDeTreboles ;
+    poker:contieneCarta poker:NueveDePicas ;
+    poker:tieneMejorMano test:Jugador_ManoCartaAlta_01 .
+
+test:Jugador_ManoCartaAlta_01 poker:tieneMejorMano test:ManoCartaAlta_01 .
+
+# --- Par: A-A-K-Q-J (par de Ases) ---
+# Par de Ases con kickers Rey, Reina, Jota.
+
+test:Jugador_ManoPar_01 a poker:Jugador ;
+    rdfs:label "Par: A-A-K-Q-J (par de Ases) — Jugador" .
+
+test:ManoPar_01 a poker:MejorMano , poker:Par ;
+    rdfs:label "Par: A-A-K-Q-J (par de Ases)" ;
+    rdfs:comment "Par de Ases con kickers Rey, Reina, Jota." ;
+    poker:tieneClasificacion poker:ClasificacionPar ;
+    poker:contieneCarta poker:AsDePicas ;
+    poker:contieneCarta poker:AsDeCorazones ;
+    poker:contieneCarta poker:ReyDeDiamantes ;
+    poker:contieneCarta poker:ReinaDeTreboles ;
+    poker:contieneCarta poker:JotaDePicas ;
+    poker:tieneMejorMano test:Jugador_ManoPar_01 .
+
+test:Jugador_ManoPar_01 poker:tieneMejorMano test:ManoPar_01 .
+
+# --- Doble Par: A-A-K-K-Q ---
+# Doble par de Ases y Reyes con kicker Reina.
+
+test:Jugador_ManoDoblePar_01 a poker:Jugador ;
+    rdfs:label "Doble Par: A-A-K-K-Q — Jugador" .
+
+test:ManoDoblePar_01 a poker:MejorMano , poker:DoblePar ;
+    rdfs:label "Doble Par: A-A-K-K-Q" ;
+    rdfs:comment "Doble par de Ases y Reyes con kicker Reina." ;
+    poker:tieneClasificacion poker:ClasificacionDoblePar ;
+    poker:contieneCarta poker:AsDePicas ;
+    poker:contieneCarta poker:AsDeCorazones ;
+    poker:contieneCarta poker:ReyDeDiamantes ;
+    poker:contieneCarta poker:ReyDeTreboles ;
+    poker:contieneCarta poker:ReinaDePicas ;
+    poker:tieneMejorMano test:Jugador_ManoDoblePar_01 .
+
+test:Jugador_ManoDoblePar_01 poker:tieneMejorMano test:ManoDoblePar_01 .
+
+# --- Trío: A-A-A-K-Q ---
+# Trío de Ases con kickers Rey y Reina.
+
+test:Jugador_ManoTrio_01 a poker:Jugador ;
+    rdfs:label "Trío: A-A-A-K-Q — Jugador" .
+
+test:ManoTrio_01 a poker:MejorMano , poker:Trio ;
+    rdfs:label "Trío: A-A-A-K-Q" ;
+    rdfs:comment "Trío de Ases con kickers Rey y Reina." ;
+    poker:tieneClasificacion poker:ClasificacionTrio ;
+    poker:contieneCarta poker:AsDePicas ;
+    poker:contieneCarta poker:AsDeCorazones ;
+    poker:contieneCarta poker:AsDeDiamantes ;
+    poker:contieneCarta poker:ReyDeTreboles ;
+    poker:contieneCarta poker:ReinaDePicas ;
+    poker:tieneMejorMano test:Jugador_ManoTrio_01 .
+
+test:Jugador_ManoTrio_01 poker:tieneMejorMano test:ManoTrio_01 .
+
+# --- Escalera: 10-J-Q-K-A (escalera alta, mixta) ---
+# Escalera más alta posible con palos distintos (no es EscaleraColor).
+
+test:Jugador_ManoEscalera_01 a poker:Jugador ;
+    rdfs:label "Escalera: 10-J-Q-K-A (escalera alta, mixta) — Jugador" .
+
+test:ManoEscalera_01 a poker:MejorMano , poker:Escalera ;
+    rdfs:label "Escalera: 10-J-Q-K-A (escalera alta, mixta)" ;
+    rdfs:comment "Escalera más alta posible con palos distintos (no es EscaleraColor)." ;
+    poker:tieneClasificacion poker:ClasificacionEscalera ;
+    poker:contieneCarta poker:DiezDePicas ;
+    poker:contieneCarta poker:JotaDeCorazones ;
+    poker:contieneCarta poker:ReinaDeDiamantes ;
+    poker:contieneCarta poker:ReyDeTreboles ;
+    poker:contieneCarta poker:AsDePicas ;
+    poker:tieneMejorMano test:Jugador_ManoEscalera_01 .
+
+test:Jugador_ManoEscalera_01 poker:tieneMejorMano test:ManoEscalera_01 .
+
+# --- Escalera Baja (Rueda): A-2-3-4-5 (mixta) — caso borde ---
+# Caso borde: la rueda. El As actúa como carta baja (valor 1). Palos distintos: no es EscaleraColor.
+
+test:Jugador_ManoEscalera_Rueda_01 a poker:Jugador ;
+    rdfs:label "Escalera Baja (Rueda): A-2-3-4-5 (mixta) — caso borde — Jugador" .
+
+test:ManoEscalera_Rueda_01 a poker:MejorMano , poker:Escalera ;
+    rdfs:label "Escalera Baja (Rueda): A-2-3-4-5 (mixta) — caso borde" ;
+    rdfs:comment "Caso borde: la rueda. El As actúa como carta baja (valor 1). Palos distintos: no es EscaleraColor." ;
+    poker:tieneClasificacion poker:ClasificacionEscalera ;
+    poker:contieneCarta poker:AsDeCorazones ;
+    poker:contieneCarta poker:DosDePicas ;
+    poker:contieneCarta poker:TresDeDiamantes ;
+    poker:contieneCarta poker:CuatroDeTreboles ;
+    poker:contieneCarta poker:CincoDePicas ;
+    poker:tieneMejorMano test:Jugador_ManoEscalera_Rueda_01 .
+
+test:Jugador_ManoEscalera_Rueda_01 poker:tieneMejorMano test:ManoEscalera_Rueda_01 .
+
+# --- Color: A-K-Q-J-9 de Picas ---
+# Color en Picas. Sin consecutivos completos: no es EscaleraColor.
+
+test:Jugador_ManoColor_01 a poker:Jugador ;
+    rdfs:label "Color: A-K-Q-J-9 de Picas — Jugador" .
+
+test:ManoColor_01 a poker:MejorMano , poker:Color ;
+    rdfs:label "Color: A-K-Q-J-9 de Picas" ;
+    rdfs:comment "Color en Picas. Sin consecutivos completos: no es EscaleraColor." ;
+    poker:tieneClasificacion poker:ClasificacionColor ;
+    poker:contieneCarta poker:AsDePicas ;
+    poker:contieneCarta poker:ReyDePicas ;
+    poker:contieneCarta poker:ReinaDePicas ;
+    poker:contieneCarta poker:JotaDePicas ;
+    poker:contieneCarta poker:NueveDePicas ;
+    poker:tieneMejorMano test:Jugador_ManoColor_01 .
+
+test:Jugador_ManoColor_01 poker:tieneMejorMano test:ManoColor_01 .
+
+# --- Color con As bajo: A-2-3-4-6 de Diamantes — caso borde ---
+# Caso borde: Color con As bajo. No forma rueda (falta el 5), así que es solo Color.
+
+test:Jugador_ManoColor_AsBajo_01 a poker:Jugador ;
+    rdfs:label "Color con As bajo: A-2-3-4-6 de Diamantes — caso borde — Jugador" .
+
+test:ManoColor_AsBajo_01 a poker:MejorMano , poker:Color ;
+    rdfs:label "Color con As bajo: A-2-3-4-6 de Diamantes — caso borde" ;
+    rdfs:comment "Caso borde: Color con As bajo. No forma rueda (falta el 5), así que es solo Color." ;
+    poker:tieneClasificacion poker:ClasificacionColor ;
+    poker:contieneCarta poker:AsDeDiamantes ;
+    poker:contieneCarta poker:DosDeDiamantes ;
+    poker:contieneCarta poker:TresDeDiamantes ;
+    poker:contieneCarta poker:CuatroDeDiamantes ;
+    poker:contieneCarta poker:SeisDeDiamantes ;
+    poker:tieneMejorMano test:Jugador_ManoColor_AsBajo_01 .
+
+test:Jugador_ManoColor_AsBajo_01 poker:tieneMejorMano test:ManoColor_AsBajo_01 .
+
+# --- Full House: A-A-A-K-K ---
+# Full house de Ases sobre Reyes.
+
+test:Jugador_ManoFullHouse_01 a poker:Jugador ;
+    rdfs:label "Full House: A-A-A-K-K — Jugador" .
+
+test:ManoFullHouse_01 a poker:MejorMano , poker:FullHouse ;
+    rdfs:label "Full House: A-A-A-K-K" ;
+    rdfs:comment "Full house de Ases sobre Reyes." ;
+    poker:tieneClasificacion poker:ClasificacionFullHouse ;
+    poker:contieneCarta poker:AsDePicas ;
+    poker:contieneCarta poker:AsDeCorazones ;
+    poker:contieneCarta poker:AsDeDiamantes ;
+    poker:contieneCarta poker:ReyDeTreboles ;
+    poker:contieneCarta poker:ReyDePicas ;
+    poker:tieneMejorMano test:Jugador_ManoFullHouse_01 .
+
+test:Jugador_ManoFullHouse_01 poker:tieneMejorMano test:ManoFullHouse_01 .
+
+# --- Póker: A-A-A-A-K ---
+# Cuatro Ases con kicker Rey.
+
+test:Jugador_ManoPoker_01 a poker:Jugador ;
+    rdfs:label "Póker: A-A-A-A-K — Jugador" .
+
+test:ManoPoker_01 a poker:MejorMano , poker:Poker ;
+    rdfs:label "Póker: A-A-A-A-K" ;
+    rdfs:comment "Cuatro Ases con kicker Rey." ;
+    poker:tieneClasificacion poker:ClasificacionPoker ;
+    poker:contieneCarta poker:AsDePicas ;
+    poker:contieneCarta poker:AsDeCorazones ;
+    poker:contieneCarta poker:AsDeDiamantes ;
+    poker:contieneCarta poker:AsDeTreboles ;
+    poker:contieneCarta poker:ReyDePicas ;
+    poker:tieneMejorMano test:Jugador_ManoPoker_01 .
+
+test:Jugador_ManoPoker_01 poker:tieneMejorMano test:ManoPoker_01 .
+
+# --- Escalera de Color: 9-10-J-Q-K de Corazones ---
+# Escalera de color más alta que no es Escalera Real. Carta alta: Rey de Corazones.
+
+test:Jugador_ManoEscaleraColor_01 a poker:Jugador ;
+    rdfs:label "Escalera de Color: 9-10-J-Q-K de Corazones — Jugador" .
+
+test:ManoEscaleraColor_01 a poker:MejorMano , poker:EscaleraColor ;
+    rdfs:label "Escalera de Color: 9-10-J-Q-K de Corazones" ;
+    rdfs:comment "Escalera de color más alta que no es Escalera Real. Carta alta: Rey de Corazones." ;
+    poker:tieneClasificacion poker:ClasificacionEscaleraColor ;
+    poker:contieneCarta poker:NueveDeCorazones ;
+    poker:contieneCarta poker:DiezDeCorazones ;
+    poker:contieneCarta poker:JotaDeCorazones ;
+    poker:contieneCarta poker:ReinaDeCorazones ;
+    poker:contieneCarta poker:ReyDeCorazones ;
+    poker:tieneMejorMano test:Jugador_ManoEscaleraColor_01 .
+
+test:Jugador_ManoEscaleraColor_01 poker:tieneMejorMano test:ManoEscaleraColor_01 .
+
+# --- Escalera de Color Baja (Rueda): A-2-3-4-5 de Treboles — caso borde ---
+# Caso borde: la rueda en el mismo palo. EscaleraColor pero NO EscaleraReal.
+
+test:Jugador_ManoEscaleraColor_Rueda_01 a poker:Jugador ;
+    rdfs:label "Escalera de Color Baja (Rueda): A-2-3-4-5 de Treboles — caso borde — Jugador" .
+
+test:ManoEscaleraColor_Rueda_01 a poker:MejorMano , poker:EscaleraColor ;
+    rdfs:label "Escalera de Color Baja (Rueda): A-2-3-4-5 de Treboles — caso borde" ;
+    rdfs:comment "Caso borde: la rueda en el mismo palo. EscaleraColor pero NO EscaleraReal." ;
+    poker:tieneClasificacion poker:ClasificacionEscaleraColor ;
+    poker:contieneCarta poker:AsDeTreboles ;
+    poker:contieneCarta poker:DosDeTreboles ;
+    poker:contieneCarta poker:TresDeTreboles ;
+    poker:contieneCarta poker:CuatroDeTreboles ;
+    poker:contieneCarta poker:CincoDeTreboles ;
+    poker:tieneMejorMano test:Jugador_ManoEscaleraColor_Rueda_01 .
+
+test:Jugador_ManoEscaleraColor_Rueda_01 poker:tieneMejorMano test:ManoEscaleraColor_Rueda_01 .
+
+# --- Escalera Real: 10-J-Q-K-A de Picas ---
+# La mano más alta posible en el póker. Única variante: solo cambia el palo.
+
+test:Jugador_ManoEscaleraReal_01 a poker:Jugador ;
+    rdfs:label "Escalera Real: 10-J-Q-K-A de Picas — Jugador" .
+
+test:ManoEscaleraReal_01 a poker:MejorMano , poker:EscaleraReal ;
+    rdfs:label "Escalera Real: 10-J-Q-K-A de Picas" ;
+    rdfs:comment "La mano más alta posible en el póker. Única variante: solo cambia el palo." ;
+    poker:tieneClasificacion poker:ClasificacionEscaleraReal ;
+    poker:contieneCarta poker:DiezDePicas ;
+    poker:contieneCarta poker:JotaDePicas ;
+    poker:contieneCarta poker:ReinaDePicas ;
+    poker:contieneCarta poker:ReyDePicas ;
+    poker:contieneCarta poker:AsDePicas ;
+    poker:tieneMejorMano test:Jugador_ManoEscaleraReal_01 .
+
+test:Jugador_ManoEscaleraReal_01 poker:tieneMejorMano test:ManoEscaleraReal_01 .
+
+# Las instancias de prueba son entidades distintas entre sí
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( test:ManoCartaAlta_01 test:ManoPar_01 test:ManoDoblePar_01 test:ManoTrio_01 test:ManoEscalera_01 test:ManoEscalera_Rueda_01 test:ManoColor_01 test:ManoColor_AsBajo_01 test:ManoFullHouse_01 test:ManoPoker_01 test:ManoEscaleraColor_01 test:ManoEscaleraColor_Rueda_01 test:ManoEscaleraReal_01 ) .

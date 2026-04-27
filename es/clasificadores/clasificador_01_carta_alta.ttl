@@ -1,0 +1,116 @@
+# =============================================================================
+# Clasificador de Mano: Carta Alta (High Card)
+# =============================================================================
+#
+# Importa   : ontologia_base_poker.ttl (v2.0.0)
+# Versión   : 1.0.0
+# Perfil OWL: OWL 2 DL
+#
+# Descripción
+# -----------
+# Define cuándo una MejorMano se clasifica como CartaAlta.
+# CartaAlta es la mano más débil: no existe ninguna combinación especial.
+# Se expresa como la negación de todas las combinaciones superiores, lo cual
+# obliga al razonador a descartar todas las demás clases antes de asignar
+# esta clasificación.
+#
+# Estrategia de inferencia
+# ------------------------
+# Dado que OWL opera bajo Open World Assumption, no basta con afirmar que
+# una mano "no tiene par". En cambio, se usa owl:complementOf sobre la
+# unión de todas las clasificaciones superiores para forzar la inferencia
+# por exclusión. El razonador (HermiT, Pellet) podrá concluir que una
+# MejorMano es CartaAlta sólo cuando ninguna otra clasificación sea aplicable.
+#
+# Patrón OWL usado
+# ----------------
+#   ManoCartaAlta ≡ MejorMano
+#         ∩ tieneClasificacion.(CartaAlta)
+#         ∩ ¬(tieneClasificacion.(Par ∪ DoblePar ∪ Trio ∪ Escalera
+#                                  ∪ Color ∪ FullHouse ∪ Poker
+#                                  ∪ EscaleraColor ∪ EscaleraReal))
+#
+# Nota sobre decidibilidad
+# ------------------------
+# owl:complementOf está soportado en OWL 2 DL. La combinación con
+# owl:intersectionOf y owl:unionOf es válida dentro del perfil.
+# =============================================================================
+
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix cls:   <http://www.poker-ontology.org/clasificadores#> .
+
+<http://www.poker-ontology.org/clasificadores/carta_alta>
+    a owl:Ontology ;
+    owl:imports <http://www.poker-ontology.org/poker> ;
+    rdfs:label "Clasificador de Carta Alta" ;
+    rdfs:comment "Módulo OWL que define la clase ManoCartaAlta mediante owl:equivalentClass. Importa la ontología base de póker." ;
+    owl:versionInfo "1.0.0" .
+
+
+# =============================================================================
+# Clase definida: ManoCartaAlta
+# =============================================================================
+# Una MejorMano es CartaAlta cuando:
+#   (a) Tiene exactamente una clasificación de tipo CartaAlta (asignada externamente), Y
+#   (b) No tiene ninguna clasificación de categoría superior.
+#
+# La condición (b) fuerza al razonador a verificar la ausencia de
+# cualquier otra combinación más fuerte.
+
+cls:ManoCartaAlta a owl:Class ;
+    rdfs:subClassOf poker:MejorMano ;
+    rdfs:label "Mano de Carta Alta" ;
+    rdfs:comment "Mejor mano sin combinación especial. Clasificada como CartaAlta por exclusión de todas las combinaciones superiores." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            # Condición base: es una MejorMano con 5 cartas y una clasificación
+            poker:MejorMano
+
+            # Condición (a): la clasificación asignada es CartaAlta
+            [ a owl:Restriction ;
+              owl:onProperty poker:tieneClasificacion ;
+              owl:someValuesFrom poker:CartaAlta ]
+
+            # Condición (b): NO tiene ninguna clasificación superior
+            # Se niega la existencia de clasificaciones de Par hacia arriba.
+            [ a owl:Class ;
+              owl:complementOf [
+                  a owl:Restriction ;
+                  owl:onProperty poker:tieneClasificacion ;
+                  owl:someValuesFrom [
+                      a owl:Class ;
+                      owl:unionOf (
+                          poker:Par
+                          poker:DoblePar
+                          poker:Trio
+                          poker:Escalera
+                          poker:Color
+                          poker:FullHouse
+                          poker:Poker
+                          poker:EscaleraColor
+                          poker:EscaleraReal
+                      )
+                  ]
+              ]
+            ]
+        )
+    ] .
+
+
+# =============================================================================
+# Subclase de clasificación inferida
+# =============================================================================
+# Refuerza la jerarquía: toda ManoCartaAlta tiene su clasificación
+# subsumida por ClasificacionMano, lo que permite al razonador usar
+# la cadena supera para comparaciones de fuerza.
+
+cls:ManoCartaAlta rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty poker:tieneClasificacion ;
+    owl:allValuesFrom poker:CartaAlta
+] .

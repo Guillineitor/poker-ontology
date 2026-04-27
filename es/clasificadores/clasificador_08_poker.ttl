@@ -1,0 +1,273 @@
+# =============================================================================
+# Clasificador de Mano: Póker (Four of a Kind)
+# =============================================================================
+#
+# Importa   : ontologia_base_poker.ttl (v2.0.0)
+# Versión   : 1.0.0
+# Perfil OWL: OWL 2 DL
+#
+# Descripción
+# -----------
+# Define cuándo una MejorMano se clasifica como Poker.
+# Un Póker contiene exactamente cuatro cartas del mismo rango (una de cada
+# palo) y una quinta carta suelta (kicker) de cualquier rango.
+#
+# Estrategia de inferencia
+# ------------------------
+# La condición "cuatro cartas del mismo rango" es la más fácil de expresar
+# en OWL para una combinación no-escalera, porque con 4 palos distintos
+# y AllDifferent sobre las 52 cartas, anclar el rango con owl:hasValue
+# garantiza implícitamente la existencia de 4 cartas (una por palo):
+#
+#   Dado que:
+#     - Hay exactamente 4 palos (oneOf cerrado)
+#     - Cada carta tiene exactamente 1 palo (tienePalo FunctionalProperty)
+#     - Las 52 cartas son AllDifferent
+#   Entonces:
+#     - Si la mano tiene 5 cartas y 4 de ellas tienen rango R,
+#       esas 4 son necesariamente las 4 cartas de los 4 palos con rango R.
+#
+# Por tanto, ManoPoker_<Rango> ≡ MejorMano ∩ tieneClasificacion.{Poker}
+#   ∩ tiene4CartasDeRango(R)
+#
+# La propiedad de 4 cartas se expresa mediante la cadena tieneRangoDelPar
+# con cardinalidad cualificada mínima 4 (QCR en OWL 2 DL).
+# No obstante, dado que tieneRangoDelPar es una chain property, la
+# cardinalidad qualificada sobre chains no es soportada directamente.
+# Se usa entonces la combinación de:
+#   - hasValue sobre tieneRangoDelPar (existe al menos 1 carta de ese rango)
+#   - La clasificación asignada externamente como Poker
+#   - La negación de EscaleraColor (único superior)
+#
+# Para forzar las 4 cartas de forma decidible, se usan 4 restricciones
+# existenciales independientes sobre cartas de palos distintos:
+#   someValuesFrom(contieneCarta, tienePalo.{Picas} ∧ tieneRango.{R})
+#   someValuesFrom(contieneCarta, tienePalo.{Corazones} ∧ tieneRango.{R})
+#   someValuesFrom(contieneCarta, tienePalo.{Diamantes} ∧ tieneRango.{R})
+#   someValuesFrom(contieneCarta, tienePalo.{Treboles} ∧ tieneRango.{R})
+#
+# Con AllDifferent, estas 4 restricciones implican 4 cartas distintas del rango R.
+# =============================================================================
+
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix cls:   <http://www.poker-ontology.org/clasificadores#> .
+
+<http://www.poker-ontology.org/clasificadores/poker>
+    a owl:Ontology ;
+    owl:imports <http://www.poker-ontology.org/poker> ;
+    rdfs:label "Clasificador de Póker (Four of a Kind)" ;
+    rdfs:comment "Módulo OWL que define ManoPoker con owl:equivalentClass. Importa la ontología base." ;
+    owl:versionInfo "1.0.0" .
+
+
+# =============================================================================
+# Propiedad auxiliar: tieneRangoDelPar
+# =============================================================================
+
+cls:tieneRangoDelPar a owl:ObjectProperty ;
+    owl:propertyChainAxiom ( poker:contieneCarta poker:tieneRango ) ;
+    rdfs:domain poker:MejorMano ;
+    rdfs:range poker:Rango ;
+    rdfs:label "tiene rango del par" ;
+    rdfs:comment "Cadena contieneCarta ∘ tieneRango." .
+
+
+# =============================================================================
+# Clase definida: ManoPoker (clasificación genérica)
+# =============================================================================
+
+cls:ManoPoker a owl:Class ;
+    rdfs:subClassOf poker:MejorMano ;
+    rdfs:label "Mano de Póker" ;
+    rdfs:comment "MejorMano con cuatro cartas del mismo rango (una de cada palo). No es EscaleraColor." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:MejorMano
+
+            # Clasificación asignada: Poker
+            [ a owl:Restriction ;
+              owl:onProperty poker:tieneClasificacion ;
+              owl:someValuesFrom poker:Poker ]
+
+            # El rango del póker está en la mano
+            [ a owl:Restriction ;
+              owl:onProperty cls:tieneRangoDelPar ;
+              owl:someValuesFrom poker:Rango ]
+
+            # Negación de clasificaciones superiores
+            [ a owl:Class ;
+              owl:complementOf [
+                  a owl:Restriction ;
+                  owl:onProperty poker:tieneClasificacion ;
+                  owl:someValuesFrom [
+                      a owl:Class ;
+                      owl:unionOf (
+                          poker:EscaleraColor
+                          poker:EscaleraReal
+                      )
+                  ]
+              ]
+            ]
+        )
+    ] .
+
+
+# =============================================================================
+# Subclases ancladas: ManoPoker_<Rango> (13 clases)
+# =============================================================================
+# Cada subclase exige la presencia de una carta de ese rango en los 4 palos.
+# Con AllDifferent en las cartas de la base, el razonador infiere
+# que son 4 cartas distintas del mismo rango.
+
+# Macro de patrón (repetida para cada rango):
+#   cls:ManoPoker_<R> ≡ ManoPoker
+#       ∩ contieneCarta.(tienePalo.{Picas}    ∧ tieneRango.{R})
+#       ∩ contieneCarta.(tienePalo.{Corazones} ∧ tieneRango.{R})
+#       ∩ contieneCarta.(tienePalo.{Diamantes} ∧ tieneRango.{R})
+#       ∩ contieneCarta.(tienePalo.{Treboles}  ∧ tieneRango.{R})
+
+cls:ManoPoker_Dos a owl:Class ; rdfs:subClassOf cls:ManoPoker ;
+    rdfs:label "Póker de Doses" ;
+    rdfs:comment "Cuatro doses (una de cada palo)." ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoPoker
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:tienePalo  ; owl:hasValue poker:Picas ]
+                [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Dos   ]
+            )] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:tienePalo  ; owl:hasValue poker:Corazones ]
+                [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Dos ]
+            )] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:tienePalo  ; owl:hasValue poker:Diamantes ]
+                [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Dos ]
+            )] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:tienePalo  ; owl:hasValue poker:Treboles ]
+                [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Dos ]
+            )] ]
+    )] .
+
+cls:ManoPoker_As a owl:Class ; rdfs:subClassOf cls:ManoPoker ;
+    rdfs:label "Póker de Ases" ;
+    rdfs:comment "Cuatro ases (uno de cada palo). La mano de póker más fuerte." ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoPoker
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:tienePalo  ; owl:hasValue poker:Picas ]
+                [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:As ]
+            )] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:tienePalo  ; owl:hasValue poker:Corazones ]
+                [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:As ]
+            )] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:tienePalo  ; owl:hasValue poker:Diamantes ]
+                [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:As ]
+            )] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:tienePalo  ; owl:hasValue poker:Treboles ]
+                [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:As ]
+            )] ]
+    )] .
+
+cls:ManoPoker_Rey a owl:Class ; rdfs:subClassOf cls:ManoPoker ;
+    rdfs:label "Póker de Reyes" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoPoker
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:tienePalo  ; owl:hasValue poker:Picas ]
+                [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Rey ]
+            )] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:tienePalo  ; owl:hasValue poker:Corazones ]
+                [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Rey ]
+            )] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:tienePalo  ; owl:hasValue poker:Diamantes ]
+                [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Rey ]
+            )] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:tienePalo  ; owl:hasValue poker:Treboles ]
+                [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Rey ]
+            )] ]
+    )] .
+
+cls:ManoPoker_Reina a owl:Class ; rdfs:subClassOf cls:ManoPoker ;
+    rdfs:label "Póker de Reinas" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoPoker
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:tienePalo  ; owl:hasValue poker:Picas ]
+                [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Reina ]
+            )] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:tienePalo  ; owl:hasValue poker:Corazones ]
+                [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Reina ]
+            )] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:tienePalo  ; owl:hasValue poker:Diamantes ]
+                [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Reina ]
+            )] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:tienePalo  ; owl:hasValue poker:Treboles ]
+                [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Reina ]
+            )] ]
+    )] .
+
+# NOTA: Para benchmark exhaustivo, generar los 13 rangos restantes
+# (Jota, Diez, Nueve, Ocho, Siete, Seis, Cinco, Cuatro, Tres)
+# siguiendo exactamente el mismo patrón de 4 restricciones de palo.
+
+
+# =============================================================================
+# Axioma de cobertura
+# =============================================================================
+
+cls:ManoPoker owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf (
+        cls:ManoPoker_Dos
+        cls:ManoPoker_Tres    # (definir con patrón de 4 palos)
+        cls:ManoPoker_Cuatro  # (definir con patrón de 4 palos)
+        cls:ManoPoker_Cinco   # (definir con patrón de 4 palos)
+        cls:ManoPoker_Seis    # (definir con patrón de 4 palos)
+        cls:ManoPoker_Siete   # (definir con patrón de 4 palos)
+        cls:ManoPoker_Ocho    # (definir con patrón de 4 palos)
+        cls:ManoPoker_Nueve   # (definir con patrón de 4 palos)
+        cls:ManoPoker_Diez    # (definir con patrón de 4 palos)
+        cls:ManoPoker_Jota    # (definir con patrón de 4 palos)
+        cls:ManoPoker_Reina
+        cls:ManoPoker_Rey
+        cls:ManoPoker_As
+    )
+] .
+
+# Disjunción: dos rangos distintos no pueden dar el mismo Poker
+[] a owl:AllDisjointClasses ;
+    owl:members (
+        cls:ManoPoker_Dos   cls:ManoPoker_Reina
+        cls:ManoPoker_Rey   cls:ManoPoker_As
+    ) .

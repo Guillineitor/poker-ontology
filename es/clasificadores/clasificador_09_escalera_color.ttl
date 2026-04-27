@@ -1,0 +1,293 @@
+# =============================================================================
+# Clasificador de Mano: Escalera de Color (Straight Flush)
+# =============================================================================
+#
+# Importa   : ontologia_base_poker.ttl (v2.0.0)
+# Versión   : 1.0.0
+# Perfil OWL: OWL 2 DL
+#
+# Descripción
+# -----------
+# Define cuándo una MejorMano se clasifica como EscaleraColor.
+# Una Escalera de Color combina las condiciones de Escalera Y Color:
+# cinco cartas de rangos consecutivos, todas del mismo palo.
+#
+# Estrategia de inferencia
+# ------------------------
+# Esta clase combina las dos estrategias anteriores:
+#   - Ancla de 5 rangos consecutivos (como en ManoEscalera)
+#   - allValuesFrom sobre el palo (como en ManoColor)
+#
+# Las 9 escaleras de color (por palo × por carta más alta) se definen
+# de la siguiente forma:
+#   - 4 palos × 9 escaleras (sin Rueda que se incluye) = 36 subclases
+#   Más:
+#   - 4 palos × 1 Rueda = 4 subclases adicionales
+#   Total: 40 escaleras de color posibles (las 4 EscaleraReal excluidas
+#          o incluidas en EscaleraColor según la jerarquía de la base).
+#
+# Nota sobre EscaleraReal:
+# EscaleraReal es subclase de EscaleraColor en la ontología base.
+# Por tanto, ManoEscaleraColor incluye también ManoEscaleraReal.
+# Las subclases de EscaleraColor que son 10-J-Q-K-A se marcan como
+# equivalentes a ManoEscaleraReal_<Palo>.
+#
+# Patrón OWL (ejemplo: Escalera de Color de Picas, carta alta Jota)
+# -----------------------------------------------------------------
+#   ManoEscaleraColor_Picas_Jota ≡ MejorMano
+#       ∩ tieneClasificacion.(EscaleraColor)
+#       ∩ allValuesFrom(contieneCarta, tienePalo.{Picas})
+#       ∩ tieneRangoDelPar.{Siete}
+#       ∩ tieneRangoDelPar.{Ocho}
+#       ∩ tieneRangoDelPar.{Nueve}
+#       ∩ tieneRangoDelPar.{Diez}
+#       ∩ tieneRangoDelPar.{Jota}
+# =============================================================================
+
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix cls:   <http://www.poker-ontology.org/clasificadores#> .
+
+<http://www.poker-ontology.org/clasificadores/escalera_color>
+    a owl:Ontology ;
+    owl:imports <http://www.poker-ontology.org/poker> ;
+    rdfs:label "Clasificador de Escalera de Color (Straight Flush)" ;
+    rdfs:comment "Módulo OWL que define ManoEscaleraColor con owl:equivalentClass. Importa la ontología base." ;
+    owl:versionInfo "1.0.0" .
+
+
+# =============================================================================
+# Propiedad auxiliar: tieneRangoDelPar
+# =============================================================================
+
+cls:tieneRangoDelPar a owl:ObjectProperty ;
+    owl:propertyChainAxiom ( poker:contieneCarta poker:tieneRango ) ;
+    rdfs:domain poker:MejorMano ;
+    rdfs:range poker:Rango ;
+    rdfs:label "tiene rango del par" ;
+    rdfs:comment "Cadena contieneCarta ∘ tieneRango." .
+
+
+# =============================================================================
+# Clase definida: ManoEscaleraColor (clasificación genérica)
+# =============================================================================
+
+cls:ManoEscaleraColor a owl:Class ;
+    rdfs:subClassOf poker:MejorMano ;
+    rdfs:label "Mano de Escalera de Color" ;
+    rdfs:comment "MejorMano con cinco rangos consecutivos del mismo palo. Incluye EscaleraReal como subclase." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:MejorMano
+
+            # Clasificación asignada: EscaleraColor
+            [ a owl:Restriction ;
+              owl:onProperty poker:tieneClasificacion ;
+              owl:someValuesFrom poker:EscaleraColor ]
+
+            # Todas las cartas son del mismo palo (especificado en subclases)
+            [ a owl:Restriction ;
+              owl:onProperty poker:contieneCarta ;
+              owl:someValuesFrom poker:Carta ]
+        )
+    ] .
+
+
+# =============================================================================
+# Macro de subclase por palo y escalera
+# =============================================================================
+# Se definen subclases para PICAS como ejemplo exhaustivo (9 escaleras + 1 Real).
+# Replicar el patrón para Corazones, Diamantes y Tréboles.
+
+# --- ESCALERAS DE COLOR DE PICAS ---
+
+cls:ManoEscaleraColor_Picas_Cinco a owl:Class ;
+    rdfs:subClassOf cls:ManoEscaleraColor ;
+    rdfs:label "Escalera de Color Picas: A-2-3-4-5 (Rueda)" ;
+    rdfs:comment "Escalera de color más baja posible en Picas." ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoEscaleraColor
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:allValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:someValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:As ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Dos ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Tres ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cuatro ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cinco ]
+    )] .
+
+cls:ManoEscaleraColor_Picas_Seis a owl:Class ;
+    rdfs:subClassOf cls:ManoEscaleraColor ;
+    rdfs:label "Escalera de Color Picas: 2-3-4-5-6" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoEscaleraColor
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:allValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:someValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Dos ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Tres ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cuatro ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cinco ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Seis ]
+    )] .
+
+cls:ManoEscaleraColor_Picas_Siete a owl:Class ;
+    rdfs:subClassOf cls:ManoEscaleraColor ;
+    rdfs:label "Escalera de Color Picas: 3-4-5-6-7" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoEscaleraColor
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:allValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:someValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Tres ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cuatro ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cinco ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Seis ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Siete ]
+    )] .
+
+cls:ManoEscaleraColor_Picas_Ocho a owl:Class ;
+    rdfs:subClassOf cls:ManoEscaleraColor ;
+    rdfs:label "Escalera de Color Picas: 4-5-6-7-8" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoEscaleraColor
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:allValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:someValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cuatro ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cinco ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Seis ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Siete ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Ocho ]
+    )] .
+
+cls:ManoEscaleraColor_Picas_Nueve a owl:Class ;
+    rdfs:subClassOf cls:ManoEscaleraColor ;
+    rdfs:label "Escalera de Color Picas: 5-6-7-8-9" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoEscaleraColor
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:allValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:someValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Cinco ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Seis ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Siete ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Ocho ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Nueve ]
+    )] .
+
+cls:ManoEscaleraColor_Picas_Diez a owl:Class ;
+    rdfs:subClassOf cls:ManoEscaleraColor ;
+    rdfs:label "Escalera de Color Picas: 6-7-8-9-10" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoEscaleraColor
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:allValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:someValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Seis ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Siete ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Ocho ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Nueve ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+    )] .
+
+cls:ManoEscaleraColor_Picas_Jota a owl:Class ;
+    rdfs:subClassOf cls:ManoEscaleraColor ;
+    rdfs:label "Escalera de Color Picas: 7-8-9-10-J" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoEscaleraColor
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:allValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:someValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Siete ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Ocho ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Nueve ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+    )] .
+
+cls:ManoEscaleraColor_Picas_Reina a owl:Class ;
+    rdfs:subClassOf cls:ManoEscaleraColor ;
+    rdfs:label "Escalera de Color Picas: 8-9-10-J-Q" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoEscaleraColor
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:allValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:someValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Ocho ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Nueve ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Reina ]
+    )] .
+
+cls:ManoEscaleraColor_Picas_Rey a owl:Class ;
+    rdfs:subClassOf cls:ManoEscaleraColor ;
+    rdfs:label "Escalera de Color Picas: 9-10-J-Q-K" ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        cls:ManoEscaleraColor
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:allValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+          owl:someValuesFrom [ a owl:Restriction ; owl:onProperty poker:tienePalo ; owl:hasValue poker:Picas ] ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Nueve ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Diez ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Jota ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Reina ]
+        [ a owl:Restriction ; owl:onProperty cls:tieneRangoDelPar ; owl:hasValue poker:Rey ]
+    )] .
+
+# La Escalera Real de Picas (10-J-Q-K-A) se define en el clasificador de EscaleraReal
+# pero se referencia aquí como subclase de EscaleraColor_Picas.
+# Se declara la implicación: ManoEscaleraReal_Picas rdfs:subClassOf ManoEscaleraColor
+
+cls:ManoEscaleraColor_Picas a owl:Class ;
+    rdfs:subClassOf cls:ManoEscaleraColor ;
+    rdfs:label "Escalera de Color de Picas (todas)" ;
+    rdfs:comment "Cualquier escalera de color en Picas, incluida la Real." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:unionOf (
+            cls:ManoEscaleraColor_Picas_Cinco
+            cls:ManoEscaleraColor_Picas_Seis
+            cls:ManoEscaleraColor_Picas_Siete
+            cls:ManoEscaleraColor_Picas_Ocho
+            cls:ManoEscaleraColor_Picas_Nueve
+            cls:ManoEscaleraColor_Picas_Diez
+            cls:ManoEscaleraColor_Picas_Jota
+            cls:ManoEscaleraColor_Picas_Reina
+            cls:ManoEscaleraColor_Picas_Rey
+            # cls:ManoEscaleraReal_Picas  -- definida en clasificador_10
+        )
+    ] .
+
+# NOTA: Replicar el bloque completo de 9+1 subclases para:
+#   Corazones, Diamantes, Tréboles
+# El patrón es idéntico sustituyendo poker:Picas por el palo correspondiente.
+
+# =============================================================================
+# Axioma de cobertura
+# =============================================================================
+
+cls:ManoEscaleraColor owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf (
+        cls:ManoEscaleraColor_Picas
+        # cls:ManoEscaleraColor_Corazones  -- definir con el mismo patrón
+        # cls:ManoEscaleraColor_Diamantes  -- definir con el mismo patrón
+        # cls:ManoEscaleraColor_Treboles   -- definir con el mismo patrón
+    )
+] .
