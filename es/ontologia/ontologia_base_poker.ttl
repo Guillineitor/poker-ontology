@@ -1182,44 +1182,44 @@ poker:Treboles a poker:Palo ;
 # consume la lógica externa (SPARQL, Python) para evaluar manos.
 
 poker:Dos a poker:Rango ;
-    poker:tieneValorRango 2 ;
+    poker:tieneValorRango "2"^^xsd:nonNegativeInteger ;
     rdfs:label "Dos" .
 poker:Tres a poker:Rango ;
-    poker:tieneValorRango 3 ;
+    poker:tieneValorRango "3"^^xsd:nonNegativeInteger ;
     rdfs:label "Tres" .
 poker:Cuatro a poker:Rango ;
-    poker:tieneValorRango 4 ;
+    poker:tieneValorRango "4"^^xsd:nonNegativeInteger ;
     rdfs:label "Cuatro" .
 poker:Cinco a poker:Rango ;
-    poker:tieneValorRango 5 ;
+    poker:tieneValorRango "5"^^xsd:nonNegativeInteger ;
     rdfs:label "Cinco" .
 poker:Seis a poker:Rango ;
-    poker:tieneValorRango 6 ;
+    poker:tieneValorRango "6"^^xsd:nonNegativeInteger ;
     rdfs:label "Seis" .
 poker:Siete a poker:Rango ;
-    poker:tieneValorRango 7 ;
+    poker:tieneValorRango "7"^^xsd:nonNegativeInteger ;
     rdfs:label "Siete" .
 poker:Ocho a poker:Rango ;
-    poker:tieneValorRango 8 ;
+    poker:tieneValorRango "8"^^xsd:nonNegativeInteger ;
     rdfs:label "Ocho" .
 poker:Nueve a poker:Rango ;
-    poker:tieneValorRango 9 ;
+    poker:tieneValorRango "9"^^xsd:nonNegativeInteger ;
     rdfs:label "Nueve" .
 poker:Diez a poker:Rango ;
-    poker:tieneValorRango 10 ;
+    poker:tieneValorRango "10"^^xsd:nonNegativeInteger ;
     rdfs:label "Diez" .
 poker:Jota a poker:Rango ;
-    poker:tieneValorRango 11 ;
+    poker:tieneValorRango "11"^^xsd:nonNegativeInteger ;
     rdfs:label "Jota" .
 poker:Reina a poker:Rango ;
-    poker:tieneValorRango 12 ;
+    poker:tieneValorRango "12"^^xsd:nonNegativeInteger ;
     rdfs:label "Reina" .
 poker:Rey a poker:Rango ;
-    poker:tieneValorRango 13 ;
+    poker:tieneValorRango "13"^^xsd:nonNegativeInteger ;
     rdfs:label "Rey" .
 poker:As a poker:Rango ;
-    poker:tieneValorRango 14 ;
-    poker:tieneValorRangoBajo 1 ;
+    poker:tieneValorRango "14"^^xsd:nonNegativeInteger ;
+    poker:tieneValorRangoBajo "1"^^xsd:nonNegativeInteger ;
     rdfs:label "As" .
 
 # Cadena estática de rangos para inferencia semántica.
