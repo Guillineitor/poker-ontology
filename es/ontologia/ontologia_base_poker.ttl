@@ -359,30 +359,24 @@ poker:JugadorCiegaGrande a owl:Class ;
 # =============================================================================
 
 # Partida es la clase central que une todos los elementos de una mano.
-# Sus restricciones estructurales son:
-#   - Entre 2 y 10 jugadores (minQC 2, maxQC 10)
-#   - Exactamente 1 PreFlop; Flop, Turn, River y Showdown (máximo 1 de cada uno) son opcionales si todos los jugadores se retiran.
-#   - Exactamente 3 CartaFlop, 1 CartaTurn y 1 CartaRiver en las cartas comunitarias
-#   - Al menos 1 BotePrincipal
-#   - Al menos 1 jugador ganador
-#
-# PreFlop exige que ocurran las acciones PonerCiegaPequena y PonerCiegaGrande.
-# Showdown no tiene acciones de apuesta (maxQC 0 sobre Accion).
-#
-# PartidaHeadsUp es una clase específica: Partida con exactamente 2 jugadores.
-# El razonador la infiere automáticamente a partir de la cardinalidad.
-
-# Definición de la clase Partida con sus restricciones estructurales.
 # Una partida de Texas Hold'em Poker tiene:
-# - Entre 2 y 10 jugadores
-# - 1 ronda se puede conformar por las etapas: PreFlop, Flop, Turn, River, Showdown.
-# - La etapa PreFlop exige que ocurran las acciones PonerCiegaPequena y PonerCiegaGrande, siendo esta etapa obligatoria siempre en una ronda.
-# - Las etapas Flop, Turn y River son opcionales si todos los jugadores se retiran en la etapa de PreFlop, sin embargo deben suceder en orden, es decir, no puede haber Turn sin Flop y no puede haber River sin Flop y Turn.
-# - La etapa Showdown exige que ocurran las acciones MostrarMejorMano si o solo si no todos los jugadores se retiraron en la etapa de River.
-# - La etapa Showdown no tiene acciones de apuesta (maxQC 0 sobre Accion).
-# - Exactamente 3 CartaFlop, 1 CartaTurn y 1 CartaRiver en las cartas comunitarias
-# - Al menos 1 BotePrincipal
-# - Al menos 1 jugador ganador
+#   - Entre 2 y 10 jugadores (minQC 2, maxQC 10).
+#   - Una secuencia de rondas que siempre comienza con PreFlop. Las etapas
+#     Flop, Turn, River y Showdown son opcionales si es que los jugadores 
+#     se retiran antes(máximo 1 de cada una),
+#     pero deben ocurrir en ese orden estricto: no puede existir una etapa
+#     sin que hayan ocurrido todas las anteriores.
+#   - El PreFlop exige las acciones obligatorias PonerCiegaPequena y
+#     PonerCiegaGrande antes de cualquier acción voluntaria.
+#   - El Showdown ocurre si y solo si al menos un jugador permanece activo
+#     al finalizar el River. En él solo se permite MostrarMano; las acciones
+#     de apuesta (Apostar, Subir, Igualar, Retirar, Pasar, PonerCiega) están prohibidas (maxQC 0 sobre cada una).
+#   - Máximo 1 CartaFlop, 1 CartaTurn y 1 CartaRiver en las cartas comunitarias.
+#   - Al menos 1 BotePrincipal.
+#   - Al menos 1 jugador ganador.
+#
+# PartidaHeadsUp es una clase definida: Partida con exactamente 2 jugadores.
+# El razonador la infiere automáticamente a partir de la cardinalidad.
 poker:Partida a owl:Class ;
     rdfs:label "Partida" ;
     rdfs:comment "Una partida completa de Texas Hold'em Poker." ;
@@ -519,7 +513,32 @@ poker:Showdown a owl:Class ;
     rdfs:subClassOf [
         a owl:Restriction ; owl:onProperty poker:tieneAccion ;
         owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:Accion
+        owl:onClass poker:Apostar
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
+        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+        owl:onClass poker:Subir
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
+        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+        owl:onClass poker:Igualar
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
+        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+        owl:onClass poker:Retirar
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
+        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+        owl:onClass poker:Pasar
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
+        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+        owl:onClass poker:PonerCiega
     ] ;
     rdfs:subClassOf [
         a owl:Restriction ; owl:onProperty poker:revelaCartas ;
@@ -527,7 +546,7 @@ poker:Showdown a owl:Class ;
         owl:onClass poker:CartasComunitarias
     ] ;
     rdfs:label "Showdown" ;
-    rdfs:comment "Ronda final en la que se comparan las manos. No admite acciones de apuesta ni revela nuevas cartas comunitarias." .
+    rdfs:comment "Ronda final en la que se comparan las manos. No admite acciones de apuesta ni revela nuevas cartas comunitarias, pero sí permite mostrar la mano." .
 
 
 # =============================================================================
@@ -562,7 +581,7 @@ poker:Accion a owl:Class ;
         a owl:Restriction ; owl:onProperty poker:realizadaEn ;
         owl:allValuesFrom [
             a owl:Class ;
-            owl:unionOf ( poker:PreFlop poker:Flop poker:Turn poker:River )
+            owl:unionOf ( poker:PreFlop poker:Flop poker:Turn poker:River poker:Showdown )
         ]
     ] ;
     rdfs:label "Acción" ;
@@ -657,6 +676,16 @@ poker:PonerCiegaGrande a owl:Class ;
     rdfs:label "Poner Ciega Grande" ;
     rdfs:comment "Ciega grande obligatoria, pagada por el JugadorCiegaGrande en el PreFlop." .
 
+
+# Definición de la clase MostrarMano.
+poker:MostrarMano a owl:Class ;
+    rdfs:subClassOf poker:Accion ;
+    rdfs:subClassOf [
+        a owl:Restriction ; owl:onProperty poker:realizadaEn ;
+        owl:someValuesFrom poker:Showdown
+    ] ;
+    rdfs:label "Mostrar Mano" ;
+    rdfs:comment "Acción de revelar las cartas privadas en el Showdown para ver las combinaciones de 5 cartas (y manos)." .
 
 # =============================================================================
 # Bote y Estructura de Apuesta
@@ -953,7 +982,7 @@ poker:tieneValorRango a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Rango ;
     rdfs:range xsd:integer ;
     rdfs:label "Tiene Valor De Rango" ;
-    rdfs:comment "Valor numérico del rango (2 para Dos, 14 para As)." .
+    rdfs:comment "Valor numérico del rango (2 para Dos, 14 para As). Usado por evaluadores externos." .
 
 # Definición de la propiedad tieneValorRangoBajo.
 poker:tieneValorRangoBajo a owl:DatatypeProperty , owl:FunctionalProperty ;
@@ -1073,6 +1102,13 @@ poker:PonerCiega owl:disjointWith poker:Pasar .
 poker:PonerCiega owl:disjointWith poker:Igualar .
 poker:PonerCiega owl:disjointWith poker:Apostar .
 poker:PonerCiega owl:disjointWith poker:Subir .
+
+poker:MostrarMano owl:disjointWith poker:Apostar .
+poker:MostrarMano owl:disjointWith poker:Subir .
+poker:MostrarMano owl:disjointWith poker:Igualar .
+poker:MostrarMano owl:disjointWith poker:Retirar .
+poker:MostrarMano owl:disjointWith poker:Pasar .
+poker:MostrarMano owl:disjointWith poker:PonerCiega .
 
 # Las tres estructuras de apuesta son mutuamente exclusivas.
 [] a owl:AllDisjointClasses ;
