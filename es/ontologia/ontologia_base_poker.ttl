@@ -1030,7 +1030,7 @@ poker:tieneMontoApuesta a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:label "Tiene Monto De Apuesta" ;
     rdfs:comment "Cantidad de fichas apostadas en una acción concreta." .
 
-# Definición de la propiedad tieneTamañoBote.
+# Definición de la propiedad tieneTamanoBote.
 poker:tieneTamanoBote a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Bote ;
     rdfs:range xsd:decimal ;
@@ -1125,6 +1125,13 @@ poker:MostrarMano owl:disjointWith poker:Retirar .
 poker:MostrarMano owl:disjointWith poker:Pasar .
 poker:MostrarMano owl:disjointWith poker:PonerCiega .
 
+# AllIn es incompatible con Retirar y Pasar: no se puede ir all-in retirándose ni pasando.
+# (La disyunción con Apostar, Igualar y Subir no aplica: AllIn siempre es uno de esos tres.)
+poker:AllIn owl:disjointWith poker:Retirar .
+poker:AllIn owl:disjointWith poker:Pasar .
+poker:AllIn owl:disjointWith poker:MostrarMano .
+poker:AllIn owl:disjointWith poker:PonerCiega .
+
 # Las tres estructuras de apuesta son mutuamente exclusivas.
 [] a owl:AllDisjointClasses ;
     owl:members ( poker:SinLimite poker:ConLimite poker:LimiteBote ) .
@@ -1136,6 +1143,11 @@ poker:MostrarMano owl:disjointWith poker:PonerCiega .
 # CartaFlop, CartaTurn y CartaRiver son grupos de cartas comunitarias distintos; nunca se solapan.
 [] a owl:AllDisjointClasses ;
     owl:members ( poker:CartaFlop poker:CartaTurn poker:CartaRiver ) .
+
+# Las tres subclases de Mano son mutuamente disjuntas: un objeto no puede ser a la vez
+# cartas privadas, cartas comunitarias y la mejor mano de un jugador.
+[] a owl:AllDisjointClasses ;
+    owl:members ( poker:CartasPrivadas poker:CartasComunitarias poker:MejorMano ) .
 
 # Un bote es principal o secundario, nunca los dos.
 poker:BotePrincipal owl:disjointWith poker:BoteSecundario .
@@ -1152,7 +1164,7 @@ poker:PosicionCiegaGrande owl:disjointWith poker:PosicionBoton .
 
 
 # =============================================================================
-# Individuos (ABox)
+# Instancias (ABox)
 # =============================================================================
 
 # La ABox define los individuos concretos del dominio.
@@ -1222,7 +1234,7 @@ poker:As a poker:Rango ;
     poker:tieneValorRangoBajo "1"^^xsd:nonNegativeInteger ;
     rdfs:label "As" .
 
-# Cadena estática de rangos para inferencia semántica.
+# Cadena estática de rangos para inferencia semántica en cuanto a orden (el siguiente en valor)
 poker:As poker:tieneRangoSiguiente poker:Dos .
 poker:Dos poker:tieneRangoSiguiente poker:Tres .
 poker:Tres poker:tieneRangoSiguiente poker:Cuatro .
