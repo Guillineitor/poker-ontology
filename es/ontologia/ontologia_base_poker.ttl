@@ -363,7 +363,7 @@ poker:JugadorCiegaGrande a owl:Class ;
 #   - Entre 2 y 10 jugadores (minQC 2, maxQC 10).
 #   - Una secuencia de rondas que siempre comienza con PreFlop. Las etapas
 #     Flop, Turn, River y Showdown son opcionales si es que los jugadores 
-#     se retiran antes(máximo 1 de cada una),
+#     se retiran antes (máximo 1 de cada una),
 #     pero deben ocurrir en ese orden estricto: no puede existir una etapa
 #     sin que hayan ocurrido todas las anteriores.
 #   - El PreFlop exige las acciones obligatorias PonerCiegaPequena y
@@ -465,6 +465,11 @@ poker:PreFlop a owl:Class ;
     rdfs:subClassOf poker:Ronda ;
     rdfs:subClassOf [
         a owl:Restriction ; owl:onProperty poker:tieneAccion ;
+        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+        owl:onClass poker:MostrarMano
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
         owl:someValuesFrom poker:PonerCiegaPequena
     ] ;
     rdfs:subClassOf [
@@ -478,6 +483,11 @@ poker:PreFlop a owl:Class ;
 poker:Flop a owl:Class ;
     rdfs:subClassOf poker:Ronda ;
     rdfs:subClassOf [
+        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
+        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+        owl:onClass poker:MostrarMano
+    ] ;
+    rdfs:subClassOf [
         a owl:Restriction ; owl:onProperty poker:revelaCartas ;
         owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
         owl:onClass poker:CartaFlop
@@ -489,6 +499,11 @@ poker:Flop a owl:Class ;
 poker:Turn a owl:Class ;
     rdfs:subClassOf poker:Ronda ;
     rdfs:subClassOf [
+        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
+        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+        owl:onClass poker:MostrarMano
+    ] ;
+    rdfs:subClassOf [
         a owl:Restriction ; owl:onProperty poker:revelaCartas ;
         owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
         owl:onClass poker:CartaTurn
@@ -499,6 +514,11 @@ poker:Turn a owl:Class ;
 # Definición de la clase River, con la carta comunitaria correspondiente.
 poker:River a owl:Class ;
     rdfs:subClassOf poker:Ronda ;
+    rdfs:subClassOf [
+        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
+        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+        owl:onClass poker:MostrarMano
+    ] ;
     rdfs:subClassOf [
         a owl:Restriction ; owl:onProperty poker:revelaCartas ;
         owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
@@ -565,6 +585,7 @@ poker:Showdown a owl:Class ;
 #   │     ├── AllInApostar            All-In como apuesta inicial
 #   │     ├── AllInIgualar            All-In igualando
 #   │     └── AllInSubir              All-In subiendo la apuesta
+#   ├── MostrarMano                   Revelar las cartas privadas en el Showdown
 #   └── PonerCiega                    Ciega obligatoria (no es una acción voluntaria)
 #         ├── PonerCiegaPequena       Puesta por el JugadorCiegaPequena en el PreFlop
 #         └── PonerCiegaGrande        Puesta por el JugadorCiegaGrande en el PreFlop
@@ -573,7 +594,8 @@ poker:Showdown a owl:Class ;
 # es simultáneamente uno de esos tres tipos de apuesta.
 #
 # La restricción allValuesFrom en Accion.realizadaEn garantiza que las
-# acciones solo pueden ocurrir en rondas de apuesta (nunca en Showdown).
+# acciones solo pueden ocurrir en rondas reconocidas: PreFlop, Flop, Turn,
+# River o Showdown. MostrarMano ocurre exclusivamente en el Showdown.
 
 # Definición de la clase Acción.
 poker:Accion a owl:Class ;
@@ -980,7 +1002,7 @@ poker:elegibleParaBote a owl:ObjectProperty ;
 # Definición de la propiedad tieneValorRango.
 poker:tieneValorRango a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Rango ;
-    rdfs:range xsd:integer ;
+    rdfs:range xsd:nonNegativeInteger ;
     rdfs:label "Tiene Valor De Rango" ;
     rdfs:comment "Valor numérico del rango (2 para Dos, 14 para As). Usado por evaluadores externos." .
 
@@ -990,14 +1012,14 @@ poker:tieneValorRangoBajo a owl:DatatypeProperty , owl:FunctionalProperty ;
         a owl:Class ;
         owl:oneOf ( poker:As )
     ] ;
-    rdfs:range xsd:integer ;
+    rdfs:range xsd:nonNegativeInteger ;
     rdfs:label "Tiene Valor De Rango Bajo" ;
     rdfs:comment "Valor alternativo bajo del As (= 1) para la escalera baja A-2-3-4-5 (Wheel). Restringido exclusivamente al As." .
 
 # Definición de la propiedad tieneConteoFichas.
 poker:tieneConteoFichas a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Jugador ;
-    rdfs:range xsd:integer ;
+    rdfs:range xsd:nonNegativeInteger ;
     rdfs:label "Tiene Conteo De Fichas" ;
     rdfs:comment "Número de fichas actuales del jugador." .
 
@@ -1014,13 +1036,6 @@ poker:tieneTamanoBote a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:range xsd:decimal ;
     rdfs:label "Tiene Tamaño Del Bote" ;
     rdfs:comment "Total de fichas acumuladas en el bote." .
-
-# Definición de la propiedad esCiega
-poker:esCiega a owl:DatatypeProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Jugador ;
-    rdfs:range xsd:boolean ;
-    rdfs:label "Es Ciega" ;
-    rdfs:comment "Verdadero si el jugador ocupa una posición de ciega (ciega pequeña o ciega grande)." .
 
 # Definición de la propiedad estaAllIn.
 poker:estaAllIn a owl:DatatypeProperty , owl:FunctionalProperty ;
@@ -1046,7 +1061,7 @@ poker:nombreJugador a owl:DatatypeProperty , owl:FunctionalProperty ;
 # Definición de la propiedad numeroAsiento.
 poker:numeroAsiento a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Jugador ;
-    rdfs:range xsd:integer ;
+    rdfs:range xsd:nonNegativeInteger ;
     rdfs:label "Número De Asiento" ;
     rdfs:comment "Número de asiento del jugador en la mesa (entre 1 y 10)." .
 
@@ -1060,14 +1075,14 @@ poker:idPartida a owl:DatatypeProperty , owl:FunctionalProperty ;
 # Definición de la propiedad numeroMano.
 poker:numeroMano a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Partida ;
-    rdfs:range xsd:integer ;
+    rdfs:range xsd:nonNegativeInteger ;
     rdfs:label "Número De Mano" ;
     rdfs:comment "Número secuencial de la mano dentro de la sesión." .
 
 # Definición de la propiedad secuenciaBote.
 poker:secuenciaBote a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:BoteSecundario ;
-    rdfs:range xsd:integer ;
+    rdfs:range xsd:nonNegativeInteger ;
     rdfs:label "Secuencia Del Bote" ;
     rdfs:comment "Número de orden del bote secundario (1 para el primero creado, 2 para el segundo, etc.)." .
 
