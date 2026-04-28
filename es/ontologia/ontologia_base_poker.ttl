@@ -11,11 +11,6 @@
 
 # =============================================================================
 #
-# Perfil        : OWL 2 DL
-# Serialización : Turtle (.ttl)
-# Espacio de nombres : http://www.poker-ontology.org/poker#
-# Versión       : 2.0.0
-#
 # Propósito
 # ---------
 # Ontología escrita en Ontology Web Language (OWL) para modelar la estructura y
@@ -30,7 +25,7 @@
 # OWL asume que lo que no está afirmado es desconocido, no falso necesariamente.
 # Para compensarlo, Palo y Rango se cierran con owl:oneOf (exactamente
 # 4 palos y 13 rangos), y los 52 individuos de cartas se declaran
-# AllDifferent para que el razonador los trate como entidades distintas (porque son
+# AllDifferent para que el razonador los trate como entidades distintas (porque
 # claramente son cartas distintas entre sí).
 # =============================================================================
 
@@ -44,7 +39,7 @@
 # Palos y Rangos de las Cartas
 # =============================================================================
 
-# Palo y Rango se definen como clases CERRADAS usando owl:equivalentClass +
+# Palo y Rango se definen como clases cerradas usando owl:equivalentClass +
 # owl:oneOf. Esto es necesario porque, bajo la Suposición de Mundo Abierto,
 # OWL admitiría la existencia de un quinto palo no declarado (y evidentemente no existe, 
 # pues el póker se juega con baraja inglesa). Con oneOf
@@ -305,20 +300,20 @@ poker:Posicion a owl:Class ;
 # Definición de la clase PosicionCiegaPequena
 poker:PosicionCiegaPequena a owl:Class ;
     rdfs:subClassOf poker:Posicion ;
-    rdfs:label "Posición Small Blind" ;
+    rdfs:label "Posición Ciega Pequeña" ;
     rdfs:comment "Posición del jugador que pone la ciega pequeña." .
 
 # Definición de la clase PosicionCiegaGrande
 poker:PosicionCiegaGrande a owl:Class ;
     rdfs:subClassOf poker:Posicion ;
-    rdfs:label "Posición Big Blind" ;
+    rdfs:label "Posición Ciega Grande" ;
     rdfs:comment "Posición del jugador que pone la ciega grande." .
 
 # Definición de la clase PosicionBoton
 poker:PosicionBoton a owl:Class ;
     rdfs:subClassOf poker:Posicion ;
     rdfs:label "Posición del Botón" ;
-    rdfs:comment "Posición del dealer (botón). En heads-up coincide con la ciega pequeña." .
+    rdfs:comment "Posición del botón del repartidor. En heads-up coincide con la ciega pequeña." .
 
 # Clases de rol definidas, donde un razonador las infiere a partir de tienePosicion.
 
@@ -332,7 +327,7 @@ poker:Repartidor a owl:Class ;
         )
     ] ;
     rdfs:label "Repartidor" ;
-    rdfs:comment "Jugador con el botón de repartidor (dealer). Clase definida: Jugador ∩ tienePosicion.{Boton}." .
+    rdfs:comment "Jugador con el botón del repartidor (dealer). Clase definida: Jugador ∩ tienePosicion.{Boton}." .
 
 # Definición de la clase JugadorCiegaPequena
 poker:JugadorCiegaPequena a owl:Class ;
@@ -366,7 +361,7 @@ poker:JugadorCiegaGrande a owl:Class ;
 # Partida es la clase central que une todos los elementos de una mano.
 # Sus restricciones estructurales son:
 #   - Entre 2 y 10 jugadores (minQC 2, maxQC 10)
-#   - Exactamente 1 ronda de cada tipo: PreFlop, Flop, Turn, River, Showdown
+#   - Exactamente 1 PreFlop; Flop, Turn, River y Showdown (máximo 1 de cada uno) son opcionales si todos los jugadores se retiran.
 #   - Exactamente 3 CartaFlop, 1 CartaTurn y 1 CartaRiver en las cartas comunitarias
 #   - Al menos 1 BotePrincipal
 #   - Al menos 1 jugador ganador
@@ -378,6 +373,16 @@ poker:JugadorCiegaGrande a owl:Class ;
 # El razonador la infiere automáticamente a partir de la cardinalidad.
 
 # Definición de la clase Partida con sus restricciones estructurales.
+# Una partida de Texas Hold'em Poker tiene:
+# - Entre 2 y 10 jugadores
+# - 1 ronda se puede conformar por las etapas: PreFlop, Flop, Turn, River, Showdown.
+# - La etapa PreFlop exige que ocurran las acciones PonerCiegaPequena y PonerCiegaGrande, siendo esta etapa obligatoria siempre en una ronda.
+# - Las etapas Flop, Turn y River son opcionales si todos los jugadores se retiran en la etapa de PreFlop, sin embargo deben suceder en orden, es decir, no puede haber Turn sin Flop y no puede haber River sin Flop y Turn.
+# - La etapa Showdown exige que ocurran las acciones MostrarMejorMano si o solo si no todos los jugadores se retiraron en la etapa de River.
+# - La etapa Showdown no tiene acciones de apuesta (maxQC 0 sobre Accion).
+# - Exactamente 3 CartaFlop, 1 CartaTurn y 1 CartaRiver en las cartas comunitarias
+# - Al menos 1 BotePrincipal
+# - Al menos 1 jugador ganador
 poker:Partida a owl:Class ;
     rdfs:label "Partida" ;
     rdfs:comment "Una partida completa de Texas Hold'em Poker." ;
@@ -393,8 +398,7 @@ poker:Partida a owl:Class ;
     ] ;
     rdfs:subClassOf [
         a owl:Restriction ; owl:onProperty poker:tieneRonda ;
-        owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-        owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+        owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
         owl:onClass poker:PreFlop
     ] ;
     rdfs:subClassOf [
@@ -564,7 +568,7 @@ poker:Accion a owl:Class ;
     rdfs:label "Acción" ;
     rdfs:comment "Acción realizada por un jugador durante una ronda de apuestas." .
 
-# Definición de las clase Retirar.
+# Definición de la clase Retirar.
 poker:Retirar a owl:Class ;
     rdfs:subClassOf poker:Accion ;
     rdfs:label "Retirada" ;
@@ -751,7 +755,7 @@ poker:tieneRangoSiguiente a owl:ObjectProperty ;
     rdfs:domain poker:Rango ;
     rdfs:range poker:Rango ;
     rdfs:label "Tiene Rango Siguiente" ;
-    rdfs:comment "Indica qué rango le sigue inmediatamente a este en la secuencia estática (apunta hacia adelante)." .
+    rdfs:comment "Indica qué rango le sigue inmediatamente en la secuencia. Forma un ciclo cerrado (Rey → As → Dos) para representar la naturaleza circular de la baraja. No es una propiedad transitiva ya que colapsaría todos los rangos en uno solo." .
 
 # --- Propiedades de Mano (Jugador ↔ Mano) ----------------------------------
 #
@@ -787,7 +791,7 @@ poker:repartidaA a owl:ObjectProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Carta ;
     rdfs:range poker:Jugador ;
     rdfs:label "Es Repartida A" ;
-    rdfs:comment "Indica a qué jugador fue repartida una carta privada." .
+    rdfs:comment "Indica a qué jugador fue repartida una carta (en particular, las cartas privadas)." .
 
 # --- Propiedades inversas (Partida ↔ Jugador / Accion ↔ Ronda) ---------------
 #
@@ -888,7 +892,7 @@ poker:tieneAccion a owl:ObjectProperty ;
     rdfs:comment "Inversa de realizadaEn: relaciona una ronda con las acciones que ocurren en ella." .
 
 # Definición de la propiedad tienePosicion.
-poker:tienePosicion a owl:ObjectProperty ;
+poker:tienePosicion a owl:ObjectProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Jugador ;
     rdfs:range poker:Posicion ;
     rdfs:label "Tiene Posición" ;
@@ -949,7 +953,7 @@ poker:tieneValorRango a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Rango ;
     rdfs:range xsd:integer ;
     rdfs:label "Tiene Valor De Rango" ;
-    rdfs:comment "Valor numérico del rango (2 para Dos, 14 para As). Usado por evaluadores externos." .
+    rdfs:comment "Valor numérico del rango (2 para Dos, 14 para As)." .
 
 # Definición de la propiedad tieneValorRangoBajo.
 poker:tieneValorRangoBajo a owl:DatatypeProperty , owl:FunctionalProperty ;
@@ -1089,8 +1093,10 @@ poker:BotePrincipal owl:disjointWith poker:BoteSecundario .
 # PosicionCiegaGrande es siempre exclusiva con todas las demás posiciones.
 # PosicionBoton NO es disjunta con PosicionCiegaPequena: en heads-up (2 jugadores)
 # el botón ocupa simultáneamente la posición de Small Blind.
+
 poker:PosicionCiegaGrande owl:disjointWith poker:PosicionCiegaPequena .
 poker:PosicionCiegaGrande owl:disjointWith poker:PosicionBoton .
+
 # NOTA: PosicionBoton NO siempre es disjunta con PosicionCiegaPequena (coinciden en heads-up)
 
 
@@ -1365,34 +1371,44 @@ poker:Boton a poker:PosicionBoton ;
 # Estructuras de apuesta (3 individuos) --------------------------------------
 
 poker:NLHE a poker:SinLimite ;
-    rdfs:label "No Limit Texas Hold'em" .
+    rdfs:label "Sin Límite" .
 poker:LHE a poker:ConLimite ;
-    rdfs:label "Limit Texas Hold'em" .
+    rdfs:label "Con Límite" .
 poker:PLHE a poker:LimiteBote ;
-    rdfs:label "Pot Limit Texas Hold'em" .
+    rdfs:label "Límite de Bote" .
 
 # Clasificaciones de mano (10 individuos) ------------------------------------
 
 poker:ClasificacionCartaAlta a poker:CartaAlta ;
-    rdfs:label "Clasificación Carta Alta" .
+    rdfs:label "Clasificación Carta Alta" ;
+    rdfs:comment "Individuo que representa la categoría Carta Alta en la cadena de orden supera." .
 poker:ClasificacionPar a poker:Par ;
-    rdfs:label "Clasificación Par" .
+    rdfs:label "Clasificación Par" ;
+    rdfs:comment "Individuo que representa la categoría Par en la cadena de orden supera." .
 poker:ClasificacionDoblePar a poker:DoblePar ;
-    rdfs:label "Clasificación Doble Par" .
+    rdfs:label "Clasificación Doble Par" ;
+    rdfs:comment "Individuo que representa la categoría Doble Par en la cadena de orden supera." .
 poker:ClasificacionTrio a poker:Trio ;
-    rdfs:label "Clasificación Trío" .
+    rdfs:label "Clasificación Trío" ;
+    rdfs:comment "Individuo que representa la categoría Trío en la cadena de orden supera." .
 poker:ClasificacionEscalera a poker:Escalera ;
-    rdfs:label "Clasificación Escalera" .
+    rdfs:label "Clasificación Escalera" ;
+    rdfs:comment "Individuo que representa la categoría Escalera en la cadena de orden supera." .
 poker:ClasificacionColor a poker:Color ;
-    rdfs:label "Clasificación Color" .
+    rdfs:label "Clasificación Color" ;
+    rdfs:comment "Individuo que representa la categoría Color en la cadena de orden supera." .
 poker:ClasificacionFullHouse a poker:FullHouse ;
-    rdfs:label "Clasificación Full House" .
+    rdfs:label "Clasificación Full House" ;
+    rdfs:comment "Individuo que representa la categoría Full House en la cadena de orden supera." .
 poker:ClasificacionPoker a poker:Poker ;
-    rdfs:label "Clasificación Póker" .
+    rdfs:label "Clasificación Póker" ;
+    rdfs:comment "Individuo que representa la categoría Póker en la cadena de orden supera." .
 poker:ClasificacionEscaleraColor a poker:EscaleraColor ;
-    rdfs:label "Clasificación Escalera de Color" .
+    rdfs:label "Clasificación Escalera de Color" ;
+    rdfs:comment "Individuo que representa la categoría Escalera de Color en la cadena de orden supera." .
 poker:ClasificacionEscaleraReal a poker:EscaleraReal ;
-    rdfs:label "Clasificación Escalera Real" .
+    rdfs:label "Clasificación Escalera Real" ;
+    rdfs:comment "Individuo que representa la categoría Escalera Real en la cadena de orden supera." .
 
 # Cadena de supera (9 relaciones directas → 45 pares inferidos por transitividad)
 # Orden de mayor a menor fortaleza:
