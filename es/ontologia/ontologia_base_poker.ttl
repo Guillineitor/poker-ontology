@@ -87,31 +87,31 @@ poker:Carta a owl:Class ;
     rdfs:comment "Una carta de la baraja inglesa estándar de 52 cartas." .
 
 # =============================================================================
-# Manos y Cartas Comunitarias
+# Grupos de Cartas
 # =============================================================================
 
-# Jerarquía de manos:
+# Jerarquía de grupos de cartas:
 #
-#   Mano
+#   GrupoDeCartas
 #   ├── CartasPrivadas      Las 2 cartas privadas del jugador
 #   ├── CartasComunitarias  Las cartas compartidas por todos
 #   │     ├── CartaFlop          Las 3 primeras cartas comunitarias
 #   │     ├── CartaTurn          La 4º carta comunitaria
 #   │     └── CartaRiver         La 5º y última carta comunitaria
-#   └── MejorMano           La mejor combinación de 5 cartas del jugador
+#   └── Mano           La mejor combinación de 5 cartas del jugador
 #
 # Las cardinalidades fijas (2 cartas en CartasPrivadas, 3 en CartaFlop, etc.) se
-# expresan con owl:qualifiedCardinality. MejorMano, además, requiere
+# expresan con owl:qualifiedCardinality. Mano, además, requiere
 # tener una clasificación asignada (tieneClasificacion someValuesFrom ClasificacionMano).
 
-# Definición de la clase Mano
-poker:Mano a owl:Class ;
-    rdfs:label "Mano" ;
-    rdfs:comment "Una mano de cartas en el juego." .
+# Definición de la clase GrupoDeCartas
+poker:GrupoDeCartas a owl:Class ;
+    rdfs:label "Grupo de Cartas" ;
+    rdfs:comment "Agrupación de cartas en el juego: puede ser las cartas privadas de un jugador, las cartas comunitarias del juego, o la mejor mano formada por un jugado" .
 
 # Definición de la clase CartasPrivadas
 poker:CartasPrivadas a owl:Class ;
-    rdfs:subClassOf poker:Mano ;
+    rdfs:subClassOf poker:GrupoDeCartas ;
     rdfs:subClassOf [
         a owl:Restriction ;
         owl:onProperty poker:contieneCarta ;
@@ -123,7 +123,7 @@ poker:CartasPrivadas a owl:Class ;
 
 # Definición de la clase CartasComunitarias
 poker:CartasComunitarias a owl:Class ;
-    rdfs:subClassOf poker:Mano ;
+    rdfs:subClassOf poker:GrupoDeCartas ;
     rdfs:label "Cartas Comunitarias" ;
     rdfs:comment "Las cartas comunitarias compartidas por todos los jugadores." .
 
@@ -163,9 +163,9 @@ poker:CartaRiver a owl:Class ;
     rdfs:label "Carta River" ;
     rdfs:comment "La 5.ª y última carta comunitaria." .
 
-# Definición de la clase MejorMano
-poker:MejorMano a owl:Class ;
-    rdfs:subClassOf poker:Mano ;
+# Definición de la clase Mano
+poker:Mano a owl:Class ;
+    rdfs:subClassOf poker:GrupoDeCartas ;
     rdfs:subClassOf [
         a owl:Restriction ;
         owl:onProperty poker:contieneCarta ;
@@ -177,7 +177,7 @@ poker:MejorMano a owl:Class ;
         owl:onProperty poker:tieneClasificacion ;
         owl:someValuesFrom poker:ClasificacionMano
     ] ;
-    rdfs:label "Mejor Mano" ;
+    rdfs:label "Mano" ;
     rdfs:comment "La mejor combinación de 5 cartas de un jugador, con su clasificación asignada." .
 
 
@@ -203,7 +203,7 @@ poker:MejorMano a owl:Class ;
 # caso particular de la Escalera de Color. Las 9 clases base son mutuamente disjuntas. 
 # Inferencialmente, alguna clasificación puede estar contenida dentro de otra 
 # (por ejemplo, un FullHouse es la combinación entre un trío y un par), pero no son subclases 
-# entre sí, sino clases disjuntas que se combinan en MejorMano.
+# entre sí, sino clases disjuntas que se combinan en Mano.
 
 # Definición de la clase ClasificacionMano
 poker:ClasificacionMano a owl:Class ;
@@ -796,7 +796,7 @@ poker:tieneRango a owl:ObjectProperty , owl:FunctionalProperty ;
 
 # Definición de la propiedad contieneCarta.
 poker:contieneCarta a owl:ObjectProperty ;
-    rdfs:domain poker:Mano ;
+    rdfs:domain poker:GrupoDeCartas ;
     rdfs:range poker:Carta ;
     rdfs:label "Contiene Carta" ;
     rdfs:comment "Relaciona una mano con cada una de las cartas que la componen." .
@@ -826,13 +826,13 @@ poker:tieneCartasPrivadas a owl:ObjectProperty , owl:FunctionalProperty , owl:In
 # Definición de la propiedad tieneMejorMano.
 poker:tieneMejorMano a owl:ObjectProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Jugador ;
-    rdfs:range poker:MejorMano ;
+    rdfs:range poker:Mano ;
     rdfs:label "Tiene Mejor Mano" ;
     rdfs:comment "Asocia un jugador con su mejor combinación de 5 cartas." .
 
 # Definición de la propiedad tieneClasificacion.
 poker:tieneClasificacion a owl:ObjectProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:MejorMano ;
+    rdfs:domain poker:Mano ;
     rdfs:range poker:ClasificacionMano ;
     rdfs:label "Tiene Clasificación de Mano" ;
     rdfs:comment "Asocia una mejor mano con su categoría de clasificación. Funcional: una mano tiene una sola categoría." .
@@ -959,7 +959,7 @@ poker:usaEstructura a owl:ObjectProperty , owl:FunctionalProperty ;
 # Definición de la propiedad ganaMano.
 poker:ganaMano a owl:ObjectProperty ;
     rdfs:domain poker:Jugador ;
-    rdfs:range poker:MejorMano ;
+    rdfs:range poker:Mano ;
     rdfs:label "Gana Mano" ;
     rdfs:comment "Relaciona un jugador con la mejor mano con la que ganó una partida." .
 
@@ -1144,10 +1144,10 @@ poker:AllIn owl:disjointWith poker:PonerCiega .
 [] a owl:AllDisjointClasses ;
     owl:members ( poker:CartaFlop poker:CartaTurn poker:CartaRiver ) .
 
-# Las tres subclases de Mano son mutuamente disjuntas: un objeto no puede ser a la vez
+# Las tres subclases de GrupoDeCartas son mutuamente disjuntas: un objeto no puede ser a la vez
 # cartas privadas, cartas comunitarias y la mejor mano de un jugador.
 [] a owl:AllDisjointClasses ;
-    owl:members ( poker:CartasPrivadas poker:CartasComunitarias poker:MejorMano ) .
+    owl:members ( poker:CartasPrivadas poker:CartasComunitarias poker:Mano ) .
 
 # Un bote es principal o secundario, nunca los dos.
 poker:BotePrincipal owl:disjointWith poker:BoteSecundario .
