@@ -275,17 +275,21 @@ poker:EscaleraReal a owl:Class ;
 # Jugadores, Posiciones y Roles
 # =============================================================================
 
-# Repartidor, JugadorCiegaPequena y JugadorCiegaGrande son clases definidas mediante
+# JugadorBoton, JugadorCiegaPequena y JugadorCiegaGrande son clases definidas mediante
 # owl:equivalentClass. Esto significa que el razonador puede inferir
 # automáticamente el rol de un jugador a partir de su posición, sin
 # necesidad de declararlo explícitamente:
 #
-#   Repartidor           ≡ Jugador ∩ tienePosicion.{Boton}
+#   JugadorBoton         ≡ Jugador ∩ tienePosicion.{Boton}
 #   JugadorCiegaPequena  ≡ Jugador ∩ tienePosicion.{CiegaPequena}
 #   JugadorCiegaGrande   ≡ Jugador ∩ tienePosicion.{CiegaGrande}
 #
+# Repartidor es una clase independiente (no subclase de Jugador): en casinos es
+# un empleado externo; en partidas informales coincide con el JugadorBoton.
+# Esa conexión no puede expresarse en OWL DL y se delega a la capa de aplicación.
+#
 # Nota sobre heads-up: PosicionBoton NO es disjunta con PosicionCiegaPequena
-# porque en una partida de 2 jugadores el Botón es la Ciega Pequena.
+# porque en una partida de 2 jugadores el Botón es la Ciega Pequeña.
 
 # Definición de la clase Jugador
 poker:Jugador a owl:Class ;
@@ -313,12 +317,32 @@ poker:PosicionCiegaGrande a owl:Class ;
 poker:PosicionBoton a owl:Class ;
     rdfs:subClassOf poker:Posicion ;
     rdfs:label "Posición del Botón" ;
-    rdfs:comment "Posición del botón del repartidor. En heads-up coincide con la ciega pequeña." .
+    rdfs:comment "Posición estratégica que determina el orden de apuesta, donde el jugador en esta posición actúa último en las rondas post-Flop" .
 
 # Clases de rol definidas, donde un razonador las infiere a partir de tienePosicion.
 
-# Definición de la clase Repartidor (Dealer)
+# Definición de las clases Repartidor y JugadorBoton
+#
+# Se separan dos conceptos que en distintas variantes de póker pueden coincidir o no:
+#
+#   Repartidor: quien reparte las cartas físicamente. En casinos es un empleado
+#               externo que no juega ni apuesta. En partidas informales puede ser
+#               uno de los jugadores. Por eso es una clase independiente, no
+#               subclase de Jugador.
+#
+#   JugadorBoton: el jugador que ocupa la posición del botón en
+#                 esa mano. Determina el orden de apuesta (actúa último en todas
+#                 las rondas post-Flop). En partidas informales suele coincidir con
+#                 el Repartidor, pero son roles conceptualmente distintos.
+#
+# La conexión entre ambos (en póker informal el JugadorBoton reparte) es una regla
+# de aplicación que no puede expresarse directamente en OWL DL.
+
 poker:Repartidor a owl:Class ;
+    rdfs:label "Repartidor" ;
+    rdfs:comment "Quien reparte las cartas en una mano. En casinos es un empleado externo ajeno al juego; en partidas informales es el jugador con el botón. Clase independiente de Jugador para cubrir ambos escenarios." .
+
+poker:JugadorBoton a owl:Class ;
     owl:equivalentClass [
         a owl:Class ;
         owl:intersectionOf (
@@ -326,8 +350,8 @@ poker:Repartidor a owl:Class ;
             [ a owl:Restriction ; owl:onProperty poker:tienePosicion ; owl:hasValue poker:Boton ]
         )
     ] ;
-    rdfs:label "Repartidor" ;
-    rdfs:comment "Jugador con el botón del repartidor (dealer). Clase definida: Jugador ∩ tienePosicion.{Boton}." .
+    rdfs:label "Jugador Botón" ;
+    rdfs:comment "Clase definida: Jugador ∩ tienePosicion.{Boton}. El jugador que ocupa la posición del botón en la mano, actuando último en todas las rondas post-Flop. En partidas informales suele coincidir con el Repartidor." .
 
 # Definición de la clase JugadorCiegaPequena
 poker:JugadorCiegaPequena a owl:Class ;
