@@ -96,8 +96,8 @@ poker:Carta a owl:Class ;
 #   ├── CartasPrivadas      Las 2 cartas privadas del jugador
 #   ├── CartasComunitarias  Las cartas compartidas por todos
 #   │     ├── CartaFlop          Las 3 primeras cartas comunitarias
-#   │     ├── CartaTurn          La 4º carta comunitaria
-#   │     └── CartaRiver         La 5º y última carta comunitaria
+#   │     ├── CartaTurn          La 4ª carta comunitaria
+#   │     └── CartaRiver         La 5ª y última carta comunitaria
 #   └── Mano           La mejor combinación de 5 cartas del jugador
 #
 # Las cardinalidades fijas (2 cartas en CartasPrivadas, 3 en CartaFlop, etc.) se
@@ -107,7 +107,7 @@ poker:Carta a owl:Class ;
 # Definición de la clase GrupoDeCartas
 poker:GrupoDeCartas a owl:Class ;
     rdfs:label "Grupo de Cartas" ;
-    rdfs:comment "Agrupación de cartas en el juego: puede ser las cartas privadas de un jugador, las cartas comunitarias del juego, o la mejor mano formada por un jugado" .
+    rdfs:comment "Agrupación de cartas en el juego: puede ser las cartas privadas de un jugador, las cartas comunitarias del juego, o la mejor mano formada por un jugador" .
 
 # Definición de la clase CartasPrivadas
 poker:CartasPrivadas a owl:Class ;
@@ -191,7 +191,7 @@ poker:Mano a owl:Class ;
 #   ├── CartaAlta      (1) Carta Alta: Sin combinación; gana la carta más alta
 #   ├── Par            (2) Par: Dos cartas del mismo rango
 #   ├── DoblePar       (3) Doble Par: Dos pares distintos
-#   ├── Trio           (4) Trío: Tres cartas del mismo rango
+#   ├── Trío           (4) Trío: Tres cartas del mismo rango
 #   ├── Escalera       (5) Escalera: Cinco cartas consecutivas de distintos palos
 #   ├── Color          (6) Color: Cinco cartas del mismo palo
 #   ├── FullHouse      (7) FullHouse: Un trío más un par
@@ -317,7 +317,7 @@ poker:PosicionCiegaGrande a owl:Class ;
 poker:PosicionBoton a owl:Class ;
     rdfs:subClassOf poker:Posicion ;
     rdfs:label "Posición del Botón" ;
-    rdfs:comment "Posición estratégica que determina el orden de apuesta, donde el jugador en esta posición actúa último en las rondas post-Flop" .
+    rdfs:comment "Posición estratégica que determina el orden de apuesta, donde el jugador en esta posición actúa último en las rondas post-Flop." .
 
 # Clases de rol definidas, donde un razonador las infiere a partir de tienePosicion.
 
@@ -463,6 +463,11 @@ poker:Partida a owl:Class ;
         a owl:Restriction ; owl:onProperty poker:tieneGanador ;
         owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
         owl:onClass poker:Jugador
+    ];
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty poker:usaEstructura ;
+        owl:someValuesFrom poker:EstructuraApuesta
     ] .
 
 # Definición de la clase PartidaHeadsUp. 
@@ -728,7 +733,7 @@ poker:MostrarMano a owl:Class ;
     rdfs:subClassOf poker:Accion ;
     rdfs:subClassOf [
         a owl:Restriction ; owl:onProperty poker:realizadaEn ;
-        owl:someValuesFrom poker:Showdown
+        owl:allValuesFrom poker:Showdown
     ] ;
     rdfs:label "Mostrar Mano" ;
     rdfs:comment "Acción de revelar las cartas privadas en el Showdown para ver las combinaciones de 5 cartas (y manos)." .
@@ -1082,13 +1087,6 @@ poker:nombreJugador a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:label "Nombre Del Jugador" ;
     rdfs:comment "Nombre o alias del jugador." .
 
-# Definición de la propiedad numeroAsiento.
-poker:numeroAsiento a owl:DatatypeProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Jugador ;
-    rdfs:range xsd:nonNegativeInteger ;
-    rdfs:label "Número De Asiento" ;
-    rdfs:comment "Número de asiento del jugador en la mesa (entre 1 y 10)." .
-
 # Definición de la propiedad idPartida.
 poker:idPartida a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Partida ;
@@ -1258,7 +1256,8 @@ poker:As a poker:Rango ;
     poker:tieneValorRangoBajo "1"^^xsd:nonNegativeInteger ;
     rdfs:label "As" .
 
-# Cadena estática de rangos para inferencia semántica en cuanto a orden (el siguiente en valor)
+# Cadena estática de rangos para inferencia semántica en cuanto a orden de posición (el siguiente en valor)
+# Ej: Dos → Tres → ... → Rey → As → Dos. Esto es usado sobretodo en las manos de Escalera de Color y Escalera Real. 
 poker:As poker:tieneRangoSiguiente poker:Dos .
 poker:Dos poker:tieneRangoSiguiente poker:Tres .
 poker:Tres poker:tieneRangoSiguiente poker:Cuatro .
@@ -1500,7 +1499,7 @@ poker:ClasificacionEscaleraReal a poker:EscaleraReal ;
 # Cadena de supera (9 relaciones directas → 45 pares inferidos por transitividad)
 # Orden de mayor a menor fortaleza:
 #   EscaleraReal > EscaleraColor > Poker > FullHouse > Color
-#   > Escalera > Trio > DoblePar > Par > CartaAlta
+#   > Escalera > Trío > DoblePar > Par > CartaAlta
 # El razonador infiere automáticamente los pares no adyacentes,
 # por ejemplo ClasificacionPoker supera ClasificacionPar.
 
@@ -1513,11 +1512,6 @@ poker:ClasificacionEscalera        poker:supera poker:ClasificacionTrio .
 poker:ClasificacionTrio    poker:supera poker:ClasificacionDoblePar .
 poker:ClasificacionDoblePar         poker:supera poker:ClasificacionPar .
 poker:ClasificacionPar              poker:supera poker:ClasificacionCartaAlta .
-
-# Axiomas AllDifferent -------------------------------------------------------
-# Bajo OWA, dos IRIs distintos podrían referirse al mismo individuo.
-# AllDifferent cierra ese mundo para cada grupo, garantizando que el
-# razonador los trate como entidades verdaderamente diferentes.
 
 # 4 palos distintos
 [] a owl:AllDifferent ;

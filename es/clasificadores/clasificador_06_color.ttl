@@ -243,3 +243,12 @@ cls:ManoColor owl:equivalentClass [
         cls:ManoColor_Diamantes
         cls:ManoColor_Treboles
     ) .
+
+
+# Un Color es una mano donde todas las cartas tienen el mismo palo
+poker:ColorDePicas owl:equivalentClass [
+    owl:intersectionOf (
+        poker:Mano
+        [ owl:allValuesFrom poker:Picas ; owl:onProperty poker:contieneCarta ]
+    )
+] .

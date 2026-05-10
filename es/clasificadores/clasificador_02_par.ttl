@@ -1,335 +1,174 @@
-# =============================================================================
-# Clasificador de Mano: Par (One Pair)
-# =============================================================================
-#
-# Importa   : ontologia_base_poker.ttl (v2.0.0)
-# Versión   : 1.0.0
-# Perfil OWL: OWL 2 DL
-#
-# Descripción
-# -----------
-# Define cuándo una MejorMano se clasifica como Par.
-# Un Par contiene exactamente dos cartas del mismo rango (y tres cartas
-# de rangos distintos entre sí y distintos del par).
-#
-# Estrategia de inferencia
-# ------------------------
-# OWL 2 DL no puede expresar directamente "exactamente dos cartas comparten
-# rango" sin cierres de clase explícitos, ya que la OWA impediría saber
-# cuántos rangos hay en total. La estrategia es:
-#
-#   1. Exigir que la mano contenga AL MENOS dos cartas con el mismo rango
-#      (mediante una propiedad de cadena o restricción existencial anidada).
-#   2. Anclar el rango compartido a un individuo conocido (uno de los 13
-#      rangos del cierre owl:oneOf de la base), usando owl:hasValue.
-#   3. Negar clasificaciones superiores para garantizar que es SÓLO un par
-#      y no DoblePar, Trio, FullHouse ni Poker.
-#
-# Patrón OWL usado (simplificado con ancla de rango)
-# ---------------------------------------------------
-#   ManoPar ≡ MejorMano
-#       ∩ tieneClasificacion.(Par)
-#       ∩ contieneCarta.(tieneRango.{R})          -- al menos 1 carta de rango R
-#       ∩ ∃c1,c2: contieneCarta.c1 ∧ contieneCarta.c2
-#                 ∧ c1≠c2 ∧ tieneRango(c1,R) ∧ tieneRango(c2,R)
-#       ∩ ¬(tieneClasificacion.(DoblePar ∪ Trio ∪ Escalera ∪ Color
-#                               ∪ FullHouse ∪ Poker ∪ EscaleraColor))
-#
-# Limitación OWL DL
-# -----------------
-# Expresar "al menos 2 cartas con el MISMO rango (no necesariamente conocido)"
-# requeriría roles de cadena no estándar. La clase ManoPar aquí definida
-# es una clase NECESARIA Y SUFICIENTE cuando el rango del par está anclado
-# mediante tieneRangoDelPar. Para el benchmark, se incluyen también
-# instancias de ManoPar con ancla explícita a cada uno de los 13 rangos.
-#
-# Para el clasificador genérico (sin ancla), se usa la combinación de:
-#   - tieneClasificacion someValuesFrom Par  (clasificación asignada externamente)
-#   - owl:complementOf de DoblePar en adelante (negación de superiores)
-# Esto es suficiente para razonadores como HermiT bajo CWA parcial.
-# =============================================================================
-
 @prefix poker: <http://www.poker-ontology.org/poker#> .
 @prefix owl:   <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
-@prefix cls:   <http://www.poker-ontology.org/clasificadores#> .
 
 <http://www.poker-ontology.org/clasificadores/par>
     a owl:Ontology ;
     owl:imports <http://www.poker-ontology.org/poker> ;
     rdfs:label "Clasificador de Par" ;
-    rdfs:comment "Módulo OWL que define ManoPar con owl:equivalentClass. Importa la ontología base." ;
-    owl:versionInfo "1.0.0" .
-
+    owl:versionInfo "2.0.0" .
 
 # =============================================================================
-# Propiedad auxiliar: tieneRangoDelPar
+# Clasificador: Par (One Pair)
 # =============================================================================
-# Propiedad de objeto que vincula una MejorMano directamente con el Rango
-# que forma el par. Esta cadena de propiedad permite al razonador inferir
-# la existencia del par sin contar cartas directamente.
+# Una Mano es un Par si y solo si existe algún rango R tal que la mano
+# contiene exactamente 2 cartas de rango R, independientemente del palo.
 #
-# Cadena: MejorMano --contieneCarta--> Carta --tieneRango--> Rango
-# Se declara aquí como subpropiedad de la cadena compuesta.
-
-cls:tieneRangoDelPar a owl:ObjectProperty ;
-    owl:propertyChainAxiom ( poker:contieneCarta poker:tieneRango ) ;
-    rdfs:domain poker:MejorMano ;
-    rdfs:range poker:Rango ;
-    rdfs:label "tiene rango del par" ;
-    rdfs:comment "Cadena de propiedad: MejorMano → contieneCarta → tieneRango. Permite restricciones sobre rangos de cartas en la mano." .
-
-
+# OWL DL no puede cuantificar "existe un R" genérico, así que se expresa
+# como la unión de 13 ramas, una por por cada rango. En cada rama:
+#   - min 2 cartas de rango R  → hay un par
+#   - max 2 cartas de rango R  → no es trío ni póker
+#   - tieneClasificacion = ClasificacionPar
+#
+# La disjunción de ClasificacionMano en la base impide que una misma mano
+# tenga simultáneamente ClasificacionPar y cualquier clasificación superior.
 # =============================================================================
-# Clase definida: ManoPar (clasificación genérica)
-# =============================================================================
-# Una MejorMano es un Par cuando tiene clasificación Par y NO tiene
-# ninguna clasificación de rango superior (DoblePar hacia arriba).
-# La condición de "exactamente un par" se refuerza por la negación
-# de DoblePar, Trio, FullHouse y Poker.
 
-cls:ManoPar a owl:Class ;
-    rdfs:subClassOf poker:MejorMano ;
-    rdfs:label "Mano de Par" ;
-    rdfs:comment "MejorMano con exactamente un par y sin combinación superior. Clasificada como Par." ;
+poker:ManoPar a owl:Class ;
+    rdfs:subClassOf poker:Mano ;
+    rdfs:label "Mano Par" ;
     owl:equivalentClass [
         a owl:Class ;
         owl:intersectionOf (
-            poker:MejorMano
-
-            # Clasificación asignada: Par
+            poker:Mano
             [ a owl:Restriction ;
               owl:onProperty poker:tieneClasificacion ;
-              owl:someValuesFrom poker:Par ]
-
-            # La mano contiene al menos una carta de algún rango (via cadena)
-            # La existencia de 2 cartas con ese rango es garantizada por
-            # las subclases ManoPar_<Rango> definidas abajo.
-            [ a owl:Restriction ;
-              owl:onProperty cls:tieneRangoDelPar ;
-              owl:someValuesFrom poker:Rango ]
-
-            # Negación de clasificaciones superiores
+              owl:hasValue poker:ClasificacionPar ]
             [ a owl:Class ;
-              owl:complementOf [
-                  a owl:Restriction ;
-                  owl:onProperty poker:tieneClasificacion ;
-                  owl:someValuesFrom [
-                      a owl:Class ;
-                      owl:unionOf (
-                          poker:DoblePar
-                          poker:Trio
-                          poker:Escalera
-                          poker:Color
-                          poker:FullHouse
-                          poker:Poker
-                          poker:EscaleraColor
-                          poker:EscaleraReal
-                      )
-                  ]
-              ]
+              owl:unionOf (
+                # Par de Doses
+                [ a owl:Class ; owl:intersectionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Dos ] ) ] ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Dos ] ) ] ] ) ]
+                # Par de Treses
+                [ a owl:Class ; owl:intersectionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Tres ] ) ] ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Tres ] ) ] ] ) ]
+                # Par de Cuatros
+                [ a owl:Class ; owl:intersectionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Cuatro ] ) ] ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Cuatro ] ) ] ] ) ]
+                # Par de Cincos
+                [ a owl:Class ; owl:intersectionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Cinco ] ) ] ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Cinco ] ) ] ] ) ]
+                # Par de Seises
+                [ a owl:Class ; owl:intersectionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Seis ] ) ] ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Seis ] ) ] ] ) ]
+                # Par de Sietes
+                [ a owl:Class ; owl:intersectionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Siete ] ) ] ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Siete ] ) ] ] ) ]
+                # Par de Ochos
+                [ a owl:Class ; owl:intersectionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Ocho ] ) ] ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Ocho ] ) ] ] ) ]
+                # Par de Nueves
+                [ a owl:Class ; owl:intersectionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Nueve ] ) ] ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Nueve ] ) ] ] ) ]
+                # Par de Dieces
+                [ a owl:Class ; owl:intersectionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Diez ] ) ] ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Diez ] ) ] ] ) ]
+                # Par de Jotas
+                [ a owl:Class ; owl:intersectionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Jota ] ) ] ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Jota ] ) ] ] ) ]
+                # Par de Reinas
+                [ a owl:Class ; owl:intersectionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Reina ] ) ] ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Reina ] ) ] ] ) ]
+                # Par de Reyes
+                [ a owl:Class ; owl:intersectionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Rey ] ) ] ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Rey ] ) ] ] ) ]
+                # Par de Ases
+                [ a owl:Class ; owl:intersectionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:As ] ) ] ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass [ a owl:Class ; owl:intersectionOf ( poker:Carta
+                          [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:As ] ) ] ] ) ]
+              )
             ]
         )
     ] .
-
-
-# =============================================================================
-# Subclases ancladas a cada rango (13 clases)
-# =============================================================================
-# Cada ManoPar_<Rango> es una MejorMano que contiene al menos 2 cartas
-# de ese rango concreto. Con AllDifferent en la base (52 cartas distintas),
-# el razonador puede inferir que son cartas distintas del mismo rango.
-# Esto es la forma OWL-decidible de expresar "tiene un par de X".
-
-# Auxiliar: cardinalidad mínima 2 sobre rango concreto, usando la cadena
-# contieneCarta ∘ tieneRango. OWL 2 DL soporta qualified cardinality
-# sobre restricciones existenciales anidadas.
-
-cls:ManoPar_Dos a owl:Class ;
-    rdfs:subClassOf cls:ManoPar ;
-    rdfs:label "Par de Doses" ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            cls:ManoPar
-            [ a owl:Restriction ;
-              owl:onProperty cls:tieneRangoDelPar ;
-              owl:hasValue poker:Dos ]
-        )
-    ] .
-
-cls:ManoPar_Tres a owl:Class ;
-    rdfs:subClassOf cls:ManoPar ;
-    rdfs:label "Par de Treses" ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            cls:ManoPar
-            [ a owl:Restriction ;
-              owl:onProperty cls:tieneRangoDelPar ;
-              owl:hasValue poker:Tres ]
-        )
-    ] .
-
-cls:ManoPar_Cuatro a owl:Class ;
-    rdfs:subClassOf cls:ManoPar ;
-    rdfs:label "Par de Cuatros" ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            cls:ManoPar
-            [ a owl:Restriction ;
-              owl:onProperty cls:tieneRangoDelPar ;
-              owl:hasValue poker:Cuatro ]
-        )
-    ] .
-
-cls:ManoPar_Cinco a owl:Class ;
-    rdfs:subClassOf cls:ManoPar ;
-    rdfs:label "Par de Cincos" ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            cls:ManoPar
-            [ a owl:Restriction ;
-              owl:onProperty cls:tieneRangoDelPar ;
-              owl:hasValue poker:Cinco ]
-        )
-    ] .
-
-cls:ManoPar_Seis a owl:Class ;
-    rdfs:subClassOf cls:ManoPar ;
-    rdfs:label "Par de Seises" ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            cls:ManoPar
-            [ a owl:Restriction ;
-              owl:onProperty cls:tieneRangoDelPar ;
-              owl:hasValue poker:Seis ]
-        )
-    ] .
-
-cls:ManoPar_Siete a owl:Class ;
-    rdfs:subClassOf cls:ManoPar ;
-    rdfs:label "Par de Sietes" ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            cls:ManoPar
-            [ a owl:Restriction ;
-              owl:onProperty cls:tieneRangoDelPar ;
-              owl:hasValue poker:Siete ]
-        )
-    ] .
-
-cls:ManoPar_Ocho a owl:Class ;
-    rdfs:subClassOf cls:ManoPar ;
-    rdfs:label "Par de Ochos" ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            cls:ManoPar
-            [ a owl:Restriction ;
-              owl:onProperty cls:tieneRangoDelPar ;
-              owl:hasValue poker:Ocho ]
-        )
-    ] .
-
-cls:ManoPar_Nueve a owl:Class ;
-    rdfs:subClassOf cls:ManoPar ;
-    rdfs:label "Par de Nueves" ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            cls:ManoPar
-            [ a owl:Restriction ;
-              owl:onProperty cls:tieneRangoDelPar ;
-              owl:hasValue poker:Nueve ]
-        )
-    ] .
-
-cls:ManoPar_Diez a owl:Class ;
-    rdfs:subClassOf cls:ManoPar ;
-    rdfs:label "Par de Dieces" ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            cls:ManoPar
-            [ a owl:Restriction ;
-              owl:onProperty cls:tieneRangoDelPar ;
-              owl:hasValue poker:Diez ]
-        )
-    ] .
-
-cls:ManoPar_Jota a owl:Class ;
-    rdfs:subClassOf cls:ManoPar ;
-    rdfs:label "Par de Jotas" ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            cls:ManoPar
-            [ a owl:Restriction ;
-              owl:onProperty cls:tieneRangoDelPar ;
-              owl:hasValue poker:Jota ]
-        )
-    ] .
-
-cls:ManoPar_Reina a owl:Class ;
-    rdfs:subClassOf cls:ManoPar ;
-    rdfs:label "Par de Reinas" ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            cls:ManoPar
-            [ a owl:Restriction ;
-              owl:onProperty cls:tieneRangoDelPar ;
-              owl:hasValue poker:Reina ]
-        )
-    ] .
-
-cls:ManoPar_Rey a owl:Class ;
-    rdfs:subClassOf cls:ManoPar ;
-    rdfs:label "Par de Reyes" ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            cls:ManoPar
-            [ a owl:Restriction ;
-              owl:onProperty cls:tieneRangoDelPar ;
-              owl:hasValue poker:Rey ]
-        )
-    ] .
-
-cls:ManoPar_As a owl:Class ;
-    rdfs:subClassOf cls:ManoPar ;
-    rdfs:label "Par de Ases" ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            cls:ManoPar
-            [ a owl:Restriction ;
-              owl:onProperty cls:tieneRangoDelPar ;
-              owl:hasValue poker:As ]
-        )
-    ] .
-
-
-# =============================================================================
-# Axioma de cobertura de subclases
-# =============================================================================
-# Todo ManoPar es par de alguno de los 13 rangos posibles.
-# Esto cierra la clase y permite al razonador verificar completitud.
-
-cls:ManoPar owl:equivalentClass [
-    a owl:Class ;
-    owl:unionOf (
-        cls:ManoPar_Dos  cls:ManoPar_Tres   cls:ManoPar_Cuatro
-        cls:ManoPar_Cinco cls:ManoPar_Seis  cls:ManoPar_Siete
-        cls:ManoPar_Ocho  cls:ManoPar_Nueve cls:ManoPar_Diez
-        cls:ManoPar_Jota  cls:ManoPar_Reina cls:ManoPar_Rey
-        cls:ManoPar_As
-    )
-] .
