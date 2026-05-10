@@ -69,7 +69,7 @@ poker:Rango a owl:Class ;
     rdfs:comment "Rango de una carta. Clase cerrada: exactamente Dos, Tres, Cuatro, Cinco, Seis, Siete, Ocho, Nueve, Diez, Jota, Reina, Rey y As ." .
 
 # Carta es cualquier carta de la baraja inglesa estándar. Cada carta debe tener
-# al menos un palo (tienePalo) y un rango (tieneRango). Las cardinalidades
+# un palo (tienePalo) y un rango (tieneRango). Las cardinalidades
 # exactas se garantizan marcando esas propiedades como FunctionalProperty
 
 # Definición de la clase Carta, con restricciones sobre sus propiedades.
@@ -87,6 +87,49 @@ poker:Carta a owl:Class ;
     rdfs:label "Carta" ;
     rdfs:comment "Una carta de la baraja inglesa estándar de 52 cartas." .
 
+# Subclases de Carta por palo, usadas por los clasificadores de manos.
+# Cada clase agrupa todas las cartas de un palo específico (corazones, diamantes, picas, tréboles) mediante owl:hasValue.
+
+poker:CartaDeCorazones a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:hasValue poker:Corazones
+    ] ;
+    rdfs:label "Carta de Corazones" ;
+    rdfs:comment "Una carta de la baraja inglesa estándar de 52 cartas, del palo de corazones." .
+
+poker:CartaDeDiamantes a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:hasValue poker:Diamantes
+    ] ;
+    rdfs:label "Carta de Diamantes" ;
+    rdfs:comment "Una carta de la baraja inglesa estándar de 52 cartas, del palo de diamantes." .
+
+poker:CartaDePicas a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:hasValue poker:Picas
+    ] ;
+    rdfs:label "Carta de Picas" ;
+    rdfs:comment "Una carta de la baraja inglesa estándar de 52 cartas, del palo de picas." .
+
+poker:CartaDeTreboles a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:hasValue poker:Treboles
+    ] ;
+    rdfs:label "Carta de Tréboles" ;
+    rdfs:comment "Una carta de la baraja inglesa estándar de 52 cartas, del palo de tréboles." .
+
 
 # =============================================================================
 # Grupos de Cartas
@@ -96,8 +139,6 @@ poker:Carta a owl:Class ;
 #
 #   GrupoDeCartas
 #   └── Mano           La mejor combinación de 5 cartas del jugador
-#
-# Requiere tener una clasificación asignada (tieneClasificacion someValuesFrom ClasificacionMano).
 
 # Definición de la clase GrupoDeCartas
 poker:GrupoDeCartas a owl:Class ;
@@ -110,25 +151,21 @@ poker:Mano a owl:Class ;
     rdfs:subClassOf [
         a owl:Restriction ;
         owl:onProperty poker:contieneCarta ;
-        owl:qualifiedCardinality "5"^^xsd:nonNegativeInteger ;
+        owl:maxQualifiedCardinality "5"^^xsd:nonNegativeInteger ;
         owl:onClass poker:Carta
     ] ;
     rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty poker:tieneClasificacion ;
-        owl:someValuesFrom poker:ClasificacionMano
+        owl:onProperty poker:contieneCarta ;
+        owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ;
+        owl:onClass poker:Carta
     ] ;
     rdfs:label "Mano" ;
-    rdfs:comment "La mejor combinación de 5 cartas de un jugador, con su clasificación asignada." .
+    rdfs:comment "La mejor combinación de 5 cartas de un jugador." .
 
-
-# =============================================================================
-# Clasificación de Manos
-# =============================================================================
-
-# Jerarquía de clasificaciones, de menor a mayor fortaleza:
+# Jerarquía de tipos de mano, de menor a mayor fortaleza:
 #
-#   ClasificacionMano
+#   Mano
 #   ├── CartaAlta      (1) Carta Alta: Sin combinación; gana la carta más alta
 #   ├── Par            (2) Par: Dos cartas del mismo rango
 #   ├── DoblePar       (3) Doble Par: Dos pares distintos
@@ -144,64 +181,74 @@ poker:Mano a owl:Class ;
 # caso particular de la Escalera de Color. Las 9 clases base son mutuamente disjuntas. 
 # Inferencialmente, alguna clasificación puede estar contenida dentro de otra 
 # (por ejemplo, un FullHouse es la combinación entre un trío y un par), pero no son subclases 
-# entre sí, sino clases disjuntas que se combinan en Mano.
-
-# Definición de la clase ClasificacionMano
-poker:ClasificacionMano a owl:Class ;
-    rdfs:label "Clasificación de Mano" ;
-    rdfs:comment "Categoría que describe el valor de una mano de póker." .
-
+# entre sí, sino clases disjuntas bajo Mano.
+#
 # Definición de la clase CartaAlta
 poker:CartaAlta a owl:Class ;
-    rdfs:subClassOf poker:ClasificacionMano ;
+    rdfs:subClassOf poker:Mano ;
     rdfs:label "Carta Alta" ;
     rdfs:comment "Sin combinación; la carta más alta decide el ganador." .
 
 # Definición de la clase Par
 poker:Par a owl:Class ;
-    rdfs:subClassOf poker:ClasificacionMano ;
+    rdfs:subClassOf poker:Mano ;
     rdfs:label "Par" ;
     rdfs:comment "Dos cartas del mismo rango." .
 
 # Definición de la clase DoblePar
 poker:DoblePar a owl:Class ;
-    rdfs:subClassOf poker:ClasificacionMano ;
+    rdfs:subClassOf poker:Mano ;
     rdfs:label "Doble Par" ;
     rdfs:comment "Dos pares de rangos distintos." .
 
 # Definición de la clase Trio
 poker:Trio a owl:Class ;
-    rdfs:subClassOf poker:ClasificacionMano ;
+    rdfs:subClassOf poker:Mano ;
     rdfs:label "Trío" ;
     rdfs:comment "Tres cartas del mismo rango." .
 
 # Definición de la clase Escalera
 poker:Escalera a owl:Class ;
-    rdfs:subClassOf poker:ClasificacionMano ;
+    rdfs:subClassOf poker:Mano ;
     rdfs:label "Escalera" ;
     rdfs:comment "Cinco cartas de rangos consecutivos con distintos palos." .
 
 # Definición de la clase Color
 poker:Color a owl:Class ;
-    rdfs:subClassOf poker:ClasificacionMano ;
+    rdfs:subClassOf poker:Mano ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:allValuesFrom poker:CartaDeCorazones ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:allValuesFrom poker:CartaDeDiamantes ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:allValuesFrom poker:CartaDePicas ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:allValuesFrom poker:CartaDeTreboles ]
+                )
+            ]
+        )
+    ] ;
     rdfs:label "Color" ;
     rdfs:comment "Cinco cartas del mismo palo." .
 
 # Definición de la clase FullHouse
 poker:FullHouse a owl:Class ;
-    rdfs:subClassOf poker:ClasificacionMano ;
+    rdfs:subClassOf poker:Mano ;
     rdfs:label "Full House" ;
     rdfs:comment "Un trío más un par." .
 
 # Definición de la clase Poker
 poker:Poker a owl:Class ;
-    rdfs:subClassOf poker:ClasificacionMano ;
+    rdfs:subClassOf poker:Mano ;
     rdfs:label "Póker" ;
     rdfs:comment "Cuatro cartas del mismo rango." .
 
 # Definición de la clase EscaleraColor
 poker:EscaleraColor a owl:Class ;
-    rdfs:subClassOf poker:ClasificacionMano ;
+    rdfs:subClassOf poker:Mano ;
     rdfs:label "Escalera de Color" ;
     rdfs:comment "Cinco cartas consecutivas del mismo palo." .
 
@@ -215,15 +262,6 @@ poker:EscaleraReal a owl:Class ;
 # =============================================================================
 # Propiedades de Objeto
 # =============================================================================
-
-# --- Propiedades de Manos ----------------------------
-
-# Definición de la propiedad tieneClasificacion.
-poker:tieneClasificacion a owl:ObjectProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Mano ;
-    rdfs:range poker:ClasificacionMano ;
-    rdfs:label "Tiene Clasificación de Mano" ;
-    rdfs:comment "Asocia una mejor mano con su categoría de clasificación. Funcional: una mano tiene una sola categoría." .
 
 # --- Propiedades de Carta (Carta → Palo / Rango) ----------------------------
 #
@@ -259,23 +297,6 @@ poker:tieneRangoSiguiente a owl:ObjectProperty ;
     rdfs:range poker:Rango ;
     rdfs:label "Tiene Rango Siguiente" ;
     rdfs:comment "Indica qué rango le sigue inmediatamente en la secuencia. Forma un ciclo cerrado (Rey → As → Dos) para representar la naturaleza circular de la baraja. No es una propiedad transitiva ya que colapsaría todos los rangos en uno solo." .
-
-# --- Propiedad supera (TransitiveProperty) ---------------------------------
-#
-# supera ordena las clasificaciones de mayor a menor fortaleza. Al ser
-# transitiva, el razonador deriva automáticamente todas las comparaciones
-# indirectas: basta declarar 9 relaciones directas para obtener los
-# 45 pares completos. Ejemplo: si ClasificacionEscaleraReal supera ClasificacionEscaleraColor y
-# ClasificacionEscaleraColor supera ClasificacionPoker, el razonador infiere que
-# ClasificacionEscaleraReal supera ClasificacionPoker sin declaración adicional.
-
-# Definición de la propiedad supera 
-poker:supera a owl:ObjectProperty , owl:TransitiveProperty ;
-    rdfs:domain poker:ClasificacionMano ;
-    rdfs:range poker:ClasificacionMano ;
-    rdfs:label "Supera" ;
-    rdfs:comment "Indica que una clasificación de mano supera a otra. Transitiva: el razonador cierra el orden completo." .
-
 
 # =============================================================================
 # Propiedades de datos
@@ -315,7 +336,7 @@ poker:tieneValorRangoBajo a owl:DatatypeProperty , owl:FunctionalProperty ;
 # Si se viola alguno, por ejemplo, clasificando algo como BotePrincipal y BoteSecundario
 # a la vez, un razonador como HermiT o Pellet detectará la inconsistencia.
 
-# Las 9 clases base de ClasificacionMano son mutuamente disjuntas.
+# Las 9 clases base de Mano son mutuamente disjuntas.
 # EscaleraReal queda excluido porque es subclase de EscaleraColor, no independiente.
 [] a owl:AllDisjointClasses ;
     owl:members ( poker:CartaAlta poker:Par poker:DoblePar poker:Trio
@@ -328,11 +349,10 @@ poker:tieneValorRangoBajo a owl:DatatypeProperty , owl:FunctionalProperty ;
 # =============================================================================
 
 # La ABox define los individuos concretos del dominio.
-# Total: 79 individuos
+# Total: 69 individuos
 #    4  palos (Palo)                       cerrados por owl:oneOf en la TBox
 #   13  rangos (Rango)                     el As tiene valor dual: 14 (alto) y 1 (bajo)
 #   52  cartas (Carta)                     13 rangos × 4 palos
-#   10  clasificaciones de mano (ClasificacionMano), incluyendo EscaleraReal
 
 # Palos (4 individuos) -------------------------------------------------------
 
@@ -581,56 +601,6 @@ poker:AsDeTreboles a poker:Carta ;
     poker:tienePalo poker:Treboles ; poker:tieneRango poker:As ;
     rdfs:label "As de Tréboles" .
 
-# Clasificaciones de mano (10 individuos) ------------------------------------
-
-poker:ClasificacionCartaAlta a poker:CartaAlta ;
-    rdfs:label "Clasificación Carta Alta" ;
-    rdfs:comment "Individuo que representa la categoría Carta Alta en la cadena de orden supera." .
-poker:ClasificacionPar a poker:Par ;
-    rdfs:label "Clasificación Par" ;
-    rdfs:comment "Individuo que representa la categoría Par en la cadena de orden supera." .
-poker:ClasificacionDoblePar a poker:DoblePar ;
-    rdfs:label "Clasificación Doble Par" ;
-    rdfs:comment "Individuo que representa la categoría Doble Par en la cadena de orden supera." .
-poker:ClasificacionTrio a poker:Trio ;
-    rdfs:label "Clasificación Trío" ;
-    rdfs:comment "Individuo que representa la categoría Trío en la cadena de orden supera." .
-poker:ClasificacionEscalera a poker:Escalera ;
-    rdfs:label "Clasificación Escalera" ;
-    rdfs:comment "Individuo que representa la categoría Escalera en la cadena de orden supera." .
-poker:ClasificacionColor a poker:Color ;
-    rdfs:label "Clasificación Color" ;
-    rdfs:comment "Individuo que representa la categoría Color en la cadena de orden supera." .
-poker:ClasificacionFullHouse a poker:FullHouse ;
-    rdfs:label "Clasificación Full House" ;
-    rdfs:comment "Individuo que representa la categoría Full House en la cadena de orden supera." .
-poker:ClasificacionPoker a poker:Poker ;
-    rdfs:label "Clasificación Póker" ;
-    rdfs:comment "Individuo que representa la categoría Póker en la cadena de orden supera." .
-poker:ClasificacionEscaleraColor a poker:EscaleraColor ;
-    rdfs:label "Clasificación Escalera de Color" ;
-    rdfs:comment "Individuo que representa la categoría Escalera de Color en la cadena de orden supera." .
-poker:ClasificacionEscaleraReal a poker:EscaleraReal ;
-    rdfs:label "Clasificación Escalera Real" ;
-    rdfs:comment "Individuo que representa la categoría Escalera Real en la cadena de orden supera." .
-
-# Cadena de supera (9 relaciones directas → 45 pares inferidos por transitividad)
-# Orden de mayor a menor fortaleza:
-#   EscaleraReal > EscaleraColor > Poker > FullHouse > Color
-#   > Escalera > Trío > DoblePar > Par > CartaAlta
-# El razonador infiere automáticamente los pares no adyacentes,
-# por ejemplo ClasificacionPoker supera ClasificacionPar.
-
-poker:ClasificacionEscaleraReal      poker:supera poker:ClasificacionEscaleraColor .
-poker:ClasificacionEscaleraColor   poker:supera poker:ClasificacionPoker .
-poker:ClasificacionPoker     poker:supera poker:ClasificacionFullHouse .
-poker:ClasificacionFullHouse       poker:supera poker:ClasificacionColor .
-poker:ClasificacionColor           poker:supera poker:ClasificacionEscalera .
-poker:ClasificacionEscalera        poker:supera poker:ClasificacionTrio .
-poker:ClasificacionTrio    poker:supera poker:ClasificacionDoblePar .
-poker:ClasificacionDoblePar         poker:supera poker:ClasificacionPar .
-poker:ClasificacionPar              poker:supera poker:ClasificacionCartaAlta .
-
 # 4 palos distintos
 [] a owl:AllDifferent ;
     owl:distinctMembers ( poker:Picas poker:Corazones poker:Diamantes poker:Treboles ) .
@@ -662,11 +632,6 @@ poker:ClasificacionPar              poker:supera poker:ClasificacionCartaAlta .
         poker:AsDeTreboles
     ) .
 
-# 10 clasificaciones de mano distintas
-[] a owl:AllDifferent ;
-    owl:distinctMembers ( poker:ClasificacionCartaAlta poker:ClasificacionPar poker:ClasificacionDoblePar
-                          poker:ClasificacionTrio poker:ClasificacionEscalera poker:ClasificacionColor
-                          poker:ClasificacionFullHouse poker:ClasificacionPoker
-                          poker:ClasificacionEscaleraColor poker:ClasificacionEscaleraReal ) .
+
 
 

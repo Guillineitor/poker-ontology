@@ -1,0 +1,171 @@
+# =============================================================================
+# Instancias de prueba — Manos de tipo Color
+# =============================================================================
+
+@prefix ex:    <http://www.poker-ontology.org/instancias#> .
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias>
+    a owl:Ontology ;
+    owl:imports <http://www.poker-ontology.org/poker> ;
+    rdfs:label "Instancias de prueba — Color" ;
+    rdfs:comment "ABox con 20 manos de tipo Color, 5 por palo. Para verificar el clasificador poker:Color." .
+
+
+# =============================================================================
+# Manos de Color — Corazones (5 manos)
+# =============================================================================
+
+ex:AHKH8H6H3H a poker:Mano ;
+    rdfs:label "As Rey Ocho Seis Tres de Corazones" ;
+    poker:contieneCarta poker:AsDeCorazones, poker:ReyDeCorazones,
+                        poker:OchoDeCorazones, poker:SeisDeCorazones,
+                        poker:TresDeCorazones .
+
+ex:QH10H7H5H3H a poker:Mano ;
+    rdfs:label "Reina Diez Siete Cinco Tres de Corazones" ;
+    poker:contieneCarta poker:ReinaDeCorazones, poker:DiezDeCorazones,
+                        poker:SieteDeCorazones, poker:CincoDeCorazones,
+                        poker:TresDeCorazones .
+
+ex:JH9H6H4H2H a poker:Mano ;
+    rdfs:label "Jota Nueve Seis Cuatro Dos de Corazones" ;
+    poker:contieneCarta poker:JotaDeCorazones, poker:NueveDeCorazones,
+                        poker:SeisDeCorazones, poker:CuatroDeCorazones,
+                        poker:DosDeCorazones .
+
+ex:KH10H8H5H2H a poker:Mano ;
+    rdfs:label "Rey Diez Ocho Cinco Dos de Corazones" ;
+    poker:contieneCarta poker:ReyDeCorazones, poker:DiezDeCorazones,
+                        poker:OchoDeCorazones, poker:CincoDeCorazones,
+                        poker:DosDeCorazones .
+
+ex:AH9H7H4H2H a poker:Mano ;
+    rdfs:label "As Nueve Siete Cuatro Dos de Corazones" ;
+    poker:contieneCarta poker:AsDeCorazones, poker:NueveDeCorazones,
+                        poker:SieteDeCorazones, poker:CuatroDeCorazones,
+                        poker:DosDeCorazones .
+
+
+# =============================================================================
+# Manos de Color — Diamantes (5 manos)
+# =============================================================================
+
+ex:JD9D7D4D2D a poker:Mano ;
+    rdfs:label "Jota Nueve Siete Cuatro Dos de Diamantes" ;
+    poker:contieneCarta poker:JotaDeDiamantes, poker:NueveDeDiamantes,
+                        poker:SieteDeDiamantes, poker:CuatroDeDiamantes,
+                        poker:DosDeDiamantes .
+
+ex:ADKD8D5D3D a poker:Mano ;
+    rdfs:label "As Rey Ocho Cinco Tres de Diamantes" ;
+    poker:contieneCarta poker:AsDeDiamantes, poker:ReyDeDiamantes,
+                        poker:OchoDeDiamantes, poker:CincoDeDiamantes,
+                        poker:TresDeDiamantes .
+
+ex:QD10D6D4D2D a poker:Mano ;
+    rdfs:label "Reina Diez Seis Cuatro Dos de Diamantes" ;
+    poker:contieneCarta poker:ReinaDeDiamantes, poker:DiezDeDiamantes,
+                        poker:SeisDeDiamantes, poker:CuatroDeDiamantes,
+                        poker:DosDeDiamantes .
+
+ex:KD9D7D5D3D a poker:Mano ;
+    rdfs:label "Rey Nueve Siete Cinco Tres de Diamantes" ;
+    poker:contieneCarta poker:ReyDeDiamantes, poker:NueveDeDiamantes,
+                        poker:SieteDeDiamantes, poker:CincoDeDiamantes,
+                        poker:TresDeDiamantes .
+
+ex:JD8D6D4D2D a poker:Mano ;
+    rdfs:label "Jota Ocho Seis Cuatro Dos de Diamantes" ;
+    poker:contieneCarta poker:JotaDeDiamantes, poker:OchoDeDiamantes,
+                        poker:SeisDeDiamantes, poker:CuatroDeDiamantes,
+                        poker:DosDeDiamantes .
+
+
+# =============================================================================
+# Manos de Color — Picas (5 manos)
+# =============================================================================
+
+ex:KS10S7S5S2S a poker:Mano ;
+    rdfs:label "Rey Diez Siete Cinco Dos de Picas" ;
+    poker:contieneCarta poker:ReyDePicas, poker:DiezDePicas,
+                        poker:SieteDePicas, poker:CincoDePicas,
+                        poker:DosDePicas .
+
+ex:ASJS8S6S3S a poker:Mano ;
+    rdfs:label "As Jota Ocho Seis Tres de Picas" ;
+    poker:contieneCarta poker:AsDePicas, poker:JotaDePicas,
+                        poker:OchoDePicas, poker:SeisDePicas,
+                        poker:TresDePicas .
+
+ex:QS9S7S4S2S a poker:Mano ;
+    rdfs:label "Reina Nueve Siete Cuatro Dos de Picas" ;
+    poker:contieneCarta poker:ReinaDePicas, poker:NueveDePicas,
+                        poker:SieteDePicas, poker:CuatroDePicas,
+                        poker:DosDePicas .
+
+ex:KS8S6S4S2S a poker:Mano ;
+    rdfs:label "Rey Ocho Seis Cuatro Dos de Picas" ;
+    poker:contieneCarta poker:ReyDePicas, poker:OchoDePicas,
+                        poker:SeisDePicas, poker:CuatroDePicas,
+                        poker:DosDePicas .
+
+ex:JS10S9S5S3S a poker:Mano ;
+    rdfs:label "Jota Diez Nueve Cinco Tres de Picas" ;
+    poker:contieneCarta poker:JotaDePicas, poker:DiezDePicas,
+                        poker:NueveDePicas, poker:CincoDePicas,
+                        poker:TresDePicas .
+
+
+# =============================================================================
+# Manos de Color — Tréboles (5 manos)
+# =============================================================================
+
+ex:QC9C6C4C2C a poker:Mano ;
+    rdfs:label "Reina Nueve Seis Cuatro Dos de Tréboles" ;
+    poker:contieneCarta poker:ReinaDeTreboles, poker:NueveDeTreboles,
+                        poker:SeisDeTreboles, poker:CuatroDeTreboles,
+                        poker:DosDeTreboles .
+
+ex:ACKC7C5C3C a poker:Mano ;
+    rdfs:label "As Rey Siete Cinco Tres de Tréboles" ;
+    poker:contieneCarta poker:AsDeTreboles, poker:ReyDeTreboles,
+                        poker:SieteDeTreboles, poker:CincoDeTreboles,
+                        poker:TresDeTreboles .
+
+ex:JC10C8C6C2C a poker:Mano ;
+    rdfs:label "Jota Diez Ocho Seis Dos de Tréboles" ;
+    poker:contieneCarta poker:JotaDeTreboles, poker:DiezDeTreboles,
+                        poker:OchoDeTreboles, poker:SeisDeTreboles,
+                        poker:DosDeTreboles .
+
+ex:KC9C7C4C2C a poker:Mano ;
+    rdfs:label "Rey Nueve Siete Cuatro Dos de Tréboles" ;
+    poker:contieneCarta poker:ReyDeTreboles, poker:NueveDeTreboles,
+                        poker:SieteDeTreboles, poker:CuatroDeTreboles,
+                        poker:DosDeTreboles .
+
+ex:QC8C6C5C3C a poker:Mano ;
+    rdfs:label "Reina Ocho Seis Cinco Tres de Tréboles" ;
+    poker:contieneCarta poker:ReinaDeTreboles, poker:OchoDeTreboles,
+                        poker:SeisDeTreboles, poker:CincoDeTreboles,
+                        poker:TresDeTreboles .
+
+
+# =============================================================================
+# Unicidad de instancias
+# =============================================================================
+
+[] a owl:AllDifferent ;
+    owl:distinctMembers (
+        ex:AHKH8H6H3H   ex:QH10H7H5H3H  ex:JH9H6H4H2H
+        ex:KH10H8H5H2H  ex:AH9H7H4H2H
+        ex:JD9D7D4D2D   ex:ADKD8D5D3D   ex:QD10D6D4D2D
+        ex:KD9D7D5D3D   ex:JD8D6D4D2D
+        ex:KS10S7S5S2S  ex:ASJS8S6S3S   ex:QS9S7S4S2S
+        ex:KS8S6S4S2S   ex:JS10S9S5S3S
+        ex:QC9C6C4C2C   ex:ACKC7C5C3C   ex:JC10C8C6C2C
+        ex:KC9C7C4C2C   ex:QC8C6C5C3C
+    ) .
