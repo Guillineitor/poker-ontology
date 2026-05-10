@@ -35,6 +35,7 @@
     rdfs:comment "Ontología OWL 2 DL que modela el juego de Texas Hold'em Poker." ;
     owl:versionInfo "2.0.0" .
 
+
 # =============================================================================
 # Palos y Rangos de las Cartas
 # =============================================================================
@@ -86,6 +87,7 @@ poker:Carta a owl:Class ;
     rdfs:label "Carta" ;
     rdfs:comment "Una carta de la baraja inglesa estándar de 52 cartas." .
 
+
 # =============================================================================
 # Grupos de Cartas
 # =============================================================================
@@ -93,75 +95,14 @@ poker:Carta a owl:Class ;
 # Jerarquía de grupos de cartas:
 #
 #   GrupoDeCartas
-#   ├── CartasPrivadas      Las 2 cartas privadas del jugador
-#   ├── CartasComunitarias  Las cartas compartidas por todos
-#   │     ├── CartaFlop          Las 3 primeras cartas comunitarias
-#   │     ├── CartaTurn          La 4ª carta comunitaria
-#   │     └── CartaRiver         La 5ª y última carta comunitaria
 #   └── Mano           La mejor combinación de 5 cartas del jugador
 #
-# Las cardinalidades fijas (2 cartas en CartasPrivadas, 3 en CartaFlop, etc.) se
-# expresan con owl:qualifiedCardinality. Mano, además, requiere
-# tener una clasificación asignada (tieneClasificacion someValuesFrom ClasificacionMano).
+# Requiere tener una clasificación asignada (tieneClasificacion someValuesFrom ClasificacionMano).
 
 # Definición de la clase GrupoDeCartas
 poker:GrupoDeCartas a owl:Class ;
     rdfs:label "Grupo de Cartas" ;
-    rdfs:comment "Agrupación de cartas en el juego: puede ser las cartas privadas de un jugador, las cartas comunitarias del juego, o la mejor mano formada por un jugador" .
-
-# Definición de la clase CartasPrivadas
-poker:CartasPrivadas a owl:Class ;
-    rdfs:subClassOf poker:GrupoDeCartas ;
-    rdfs:subClassOf [
-        a owl:Restriction ;
-        owl:onProperty poker:contieneCarta ;
-        owl:qualifiedCardinality "2"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:Carta
-    ] ;
-    rdfs:label "Cartas Privadas" ;
-    rdfs:comment "Las 2 cartas privadas repartidas a cada jugador." .
-
-# Definición de la clase CartasComunitarias
-poker:CartasComunitarias a owl:Class ;
-    rdfs:subClassOf poker:GrupoDeCartas ;
-    rdfs:label "Cartas Comunitarias" ;
-    rdfs:comment "Las cartas comunitarias compartidas por todos los jugadores." .
-
-# Definición de la clase CartaFlop
-poker:CartaFlop a owl:Class ;
-    rdfs:subClassOf poker:CartasComunitarias ;
-    rdfs:subClassOf [
-        a owl:Restriction ;
-        owl:onProperty poker:contieneCarta ;
-        owl:qualifiedCardinality "3"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:Carta
-    ] ;
-    rdfs:label "Carta Flop" ;
-    rdfs:comment "Las 3 primeras cartas comunitarias." .
-
-# Definición de la clase CartaTurn
-poker:CartaTurn a owl:Class ;
-    rdfs:subClassOf poker:CartasComunitarias ;
-    rdfs:subClassOf [
-        a owl:Restriction ;
-        owl:onProperty poker:contieneCarta ;
-        owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:Carta
-    ] ;
-    rdfs:label "Carta Turn" ;
-    rdfs:comment "La 4.ª carta comunitaria." .
-
-# Definición de la clase CartaRiver
-poker:CartaRiver a owl:Class ;
-    rdfs:subClassOf poker:CartasComunitarias ;
-    rdfs:subClassOf [
-        a owl:Restriction ;
-        owl:onProperty poker:contieneCarta ;
-        owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:Carta
-    ] ;
-    rdfs:label "Carta River" ;
-    rdfs:comment "La 5.ª y última carta comunitaria." .
+    rdfs:comment "Agrupación de cartas en el juego: la mejor mano formada por un jugador." .
 
 # Definición de la clase Mano
 poker:Mano a owl:Class ;
@@ -272,535 +213,17 @@ poker:EscaleraReal a owl:Class ;
 
 
 # =============================================================================
-# Jugadores, Posiciones y Roles
-# =============================================================================
-
-# JugadorBoton, JugadorCiegaPequena y JugadorCiegaGrande son clases definidas mediante
-# owl:equivalentClass. Esto significa que el razonador puede inferir
-# automáticamente el rol de un jugador a partir de su posición, sin
-# necesidad de declararlo explícitamente:
-#
-#   JugadorBoton         ≡ Jugador ∩ tienePosicion.{Boton}
-#   JugadorCiegaPequena  ≡ Jugador ∩ tienePosicion.{CiegaPequena}
-#   JugadorCiegaGrande   ≡ Jugador ∩ tienePosicion.{CiegaGrande}
-#
-# Repartidor es una clase independiente (no subclase de Jugador): en casinos es
-# un empleado externo; en partidas informales coincide con el JugadorBoton.
-# Esa conexión no puede expresarse en OWL DL y se delega a la capa de aplicación.
-#
-# Nota sobre heads-up: PosicionBoton NO es disjunta con PosicionCiegaPequena
-# porque en una partida de 2 jugadores el Botón es la Ciega Pequeña.
-
-# Definición de la clase Jugador
-poker:Jugador a owl:Class ;
-    rdfs:label "Jugador" ;
-    rdfs:comment "Un jugador de póker." .
-
-# Definición de la clase Posicion
-poker:Posicion a owl:Class ;
-    rdfs:label "Posición" ;
-    rdfs:comment "La posición de un jugador en la mesa durante una mano." .
-
-# Definición de la clase PosicionCiegaPequena
-poker:PosicionCiegaPequena a owl:Class ;
-    rdfs:subClassOf poker:Posicion ;
-    rdfs:label "Posición Ciega Pequeña" ;
-    rdfs:comment "Posición del jugador que pone la ciega pequeña." .
-
-# Definición de la clase PosicionCiegaGrande
-poker:PosicionCiegaGrande a owl:Class ;
-    rdfs:subClassOf poker:Posicion ;
-    rdfs:label "Posición Ciega Grande" ;
-    rdfs:comment "Posición del jugador que pone la ciega grande." .
-
-# Definición de la clase PosicionBoton
-poker:PosicionBoton a owl:Class ;
-    rdfs:subClassOf poker:Posicion ;
-    rdfs:label "Posición del Botón" ;
-    rdfs:comment "Posición estratégica que determina el orden de apuesta, donde el jugador en esta posición actúa último en las rondas post-Flop." .
-
-# Clases de rol definidas, donde un razonador las infiere a partir de tienePosicion.
-
-# Definición de las clases Repartidor y JugadorBoton
-#
-# Se separan dos conceptos que en distintas variantes de póker pueden coincidir o no:
-#
-#   Repartidor: quien reparte las cartas físicamente. En casinos es un empleado
-#               externo que no juega ni apuesta. En partidas informales puede ser
-#               uno de los jugadores. Por eso es una clase independiente, no
-#               subclase de Jugador.
-#
-#   JugadorBoton: el jugador que ocupa la posición del botón en
-#                 esa mano. Determina el orden de apuesta (actúa último en todas
-#                 las rondas post-Flop). En partidas informales suele coincidir con
-#                 el Repartidor, pero son roles conceptualmente distintos.
-#
-# La conexión entre ambos (en póker informal el JugadorBoton reparte) es una regla
-# de aplicación que no puede expresarse directamente en OWL DL.
-
-poker:Repartidor a owl:Class ;
-    rdfs:label "Repartidor" ;
-    rdfs:comment "Quien reparte las cartas en una mano. En casinos es un empleado externo ajeno al juego; en partidas informales es el jugador con el botón. Clase independiente de Jugador para cubrir ambos escenarios." .
-
-poker:JugadorBoton a owl:Class ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            poker:Jugador
-            [ a owl:Restriction ; owl:onProperty poker:tienePosicion ; owl:hasValue poker:Boton ]
-        )
-    ] ;
-    rdfs:label "Jugador Botón" ;
-    rdfs:comment "Clase definida: Jugador ∩ tienePosicion.{Boton}. El jugador que ocupa la posición del botón en la mano, actuando último en todas las rondas post-Flop. En partidas informales suele coincidir con el Repartidor." .
-
-# Definición de la clase JugadorCiegaPequena
-poker:JugadorCiegaPequena a owl:Class ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            poker:Jugador
-            [ a owl:Restriction ; owl:onProperty poker:tienePosicion ; owl:hasValue poker:CiegaPequena ]
-        )
-    ] ;
-    rdfs:label "Jugador Ciega Pequeña" ;
-    rdfs:comment "Jugador en posición de ciega pequeña. Clase definida: Jugador ∩ tienePosicion.{CiegaPequena}." .
-
-# Definición de la clase JugadorCiegaGrande
-poker:JugadorCiegaGrande a owl:Class ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            poker:Jugador
-            [ a owl:Restriction ; owl:onProperty poker:tienePosicion ; owl:hasValue poker:CiegaGrande ]
-        )
-    ] ;
-    rdfs:label "Jugador Ciega Grande" ;
-    rdfs:comment "Jugador en posición de ciega grande. Clase definida: Jugador ∩ tienePosicion.{CiegaGrande}." .
-
-
-# =============================================================================
-# Estructura del juego: Partida y Ronda
-# =============================================================================
-
-# Partida es la clase central que une todos los elementos de una mano.
-# Una partida de Texas Hold'em Poker tiene:
-#   - Entre 2 y 10 jugadores (minQC 2, maxQC 10).
-#   - Una secuencia de rondas que siempre comienza con PreFlop. Las etapas
-#     Flop, Turn, River y Showdown son opcionales si es que los jugadores 
-#     se retiran antes (máximo 1 de cada una),
-#     pero deben ocurrir en ese orden estricto: no puede existir una etapa
-#     sin que hayan ocurrido todas las anteriores.
-#   - El PreFlop exige las acciones obligatorias PonerCiegaPequena y
-#     PonerCiegaGrande antes de cualquier acción voluntaria.
-#   - El Showdown ocurre si y solo si al menos un jugador permanece activo
-#     al finalizar el River. En él solo se permite MostrarMano; las acciones
-#     de apuesta (Apostar, Subir, Igualar, Retirar, Pasar, PonerCiega) están prohibidas (maxQC 0 sobre cada una).
-#   - Máximo 1 CartaFlop, 1 CartaTurn y 1 CartaRiver en las cartas comunitarias.
-#   - Al menos 1 BotePrincipal.
-#   - Al menos 1 jugador ganador.
-#
-# PartidaHeadsUp es una clase definida: Partida con exactamente 2 jugadores.
-# El razonador la infiere automáticamente a partir de la cardinalidad.
-poker:Partida a owl:Class ;
-    rdfs:label "Partida" ;
-    rdfs:comment "Una partida completa de Texas Hold'em Poker." ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneJugador ;
-        owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:Jugador
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneJugador ;
-        owl:maxQualifiedCardinality "10"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:Jugador
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneRonda ;
-        owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:PreFlop
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneRonda ;
-        owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:Flop
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneRonda ;
-        owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:Turn
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneRonda ;
-        owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:River
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneRonda ;
-        owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:Showdown
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneCartasComunitarias ;
-        owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:CartaFlop
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneCartasComunitarias ;
-        owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:CartaTurn
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneCartasComunitarias ;
-        owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:CartaRiver
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneBote ;
-        owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:BotePrincipal
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneGanador ;
-        owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:Jugador
-    ];
-    rdfs:subClassOf [
-        a owl:Restriction ;
-        owl:onProperty poker:usaEstructura ;
-        owl:someValuesFrom poker:EstructuraApuesta
-    ] .
-
-# Definición de la clase PartidaHeadsUp. 
-poker:PartidaHeadsUp a owl:Class ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:intersectionOf (
-            poker:Partida
-            [ a owl:Restriction ; owl:onProperty poker:tieneJugador ;
-              owl:qualifiedCardinality "2"^^xsd:nonNegativeInteger ;
-              owl:onClass poker:Jugador ]
-        )
-    ] ;
-    rdfs:label "Partida Heads-Up" ;
-    rdfs:comment "Partida entre exactamente 2 jugadores. Clase definida inferida por el razonador a partir de la cardinalidad." .
-
-# Definición de la clase Ronda, con sus subclases para cada etapa del juego.
-poker:Ronda a owl:Class ;
-    rdfs:label "Ronda" ;
-    rdfs:comment "Una ronda de juego dentro de una partida de póker." .
-
-# Definición de la clase PreFlop, con las acciones obligatorias de ciegas.
-poker:PreFlop a owl:Class ;
-    rdfs:subClassOf poker:Ronda ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
-        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:MostrarMano
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
-        owl:someValuesFrom poker:PonerCiegaPequena
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
-        owl:someValuesFrom poker:PonerCiegaGrande
-    ] ;
-    rdfs:label "Pre-Flop" ;
-    rdfs:comment "Primera ronda de apuestas, antes de las cartas comunitarias. Incluye las ciegas obligatorias." .
-
-# Definición de la clase Flop, con las 3 cartas comunitarias correspondientes.
-poker:Flop a owl:Class ;
-    rdfs:subClassOf poker:Ronda ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
-        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:MostrarMano
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:revelaCartas ;
-        owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:CartaFlop
-    ] ;
-    rdfs:label "Flop" ;
-    rdfs:comment "Ronda de apuestas tras revelar el Flop." .
-
-# Definición de la clase Turn, con la carta comunitaria correspondiente.
-poker:Turn a owl:Class ;
-    rdfs:subClassOf poker:Ronda ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
-        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:MostrarMano
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:revelaCartas ;
-        owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:CartaTurn
-    ] ;
-    rdfs:label "Turn" ;
-    rdfs:comment "Ronda de apuestas tras revelar el Turn." .
-
-# Definición de la clase River, con la carta comunitaria correspondiente.
-poker:River a owl:Class ;
-    rdfs:subClassOf poker:Ronda ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
-        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:MostrarMano
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:revelaCartas ;
-        owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:CartaRiver
-    ] ;
-    rdfs:label "River" ;
-    rdfs:comment "Ronda de apuestas tras revelar el River." .
-
-# Definición de la clase Showdown, sin acciones de apuesta ni cartas reveladas.
-poker:Showdown a owl:Class ;
-    rdfs:subClassOf poker:Ronda ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
-        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:Apostar
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
-        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:Subir
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
-        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:Igualar
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
-        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:Retirar
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
-        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:Pasar
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:tieneAccion ;
-        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:PonerCiega
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:revelaCartas ;
-        owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
-        owl:onClass poker:CartasComunitarias
-    ] ;
-    rdfs:label "Showdown" ;
-    rdfs:comment "Ronda final en la que se comparan las manos. No admite acciones de apuesta ni revela nuevas cartas comunitarias, pero sí permite mostrar la mano." .
-
-
-# =============================================================================
-# Acciones y Apuestas
-# =============================================================================
-
-# Jerarquía de acciones:
-#
-#   Acción
-#   ├── Retirar                       Retirarse de la mano
-#   ├── Pasar                         Pasar sin apostar (solo si no hay apuesta previa)
-#   ├── Igualar                       Igualar la apuesta actual
-#   ├── Apostar                       Abrir una apuesta 
-#   ├── Subir                         Subir una apuesta existente
-#   ├── AllIn                         Apostar todas las fichas (clase que se combina con Apostar/Igualar/Subir)
-#   │     ├── AllInApostar            All-In como apuesta inicial
-#   │     ├── AllInIgualar            All-In igualando
-#   │     └── AllInSubir              All-In subiendo la apuesta
-#   ├── MostrarMano                   Revelar las cartas privadas en el Showdown
-#   └── PonerCiega                    Ciega obligatoria (no es una acción voluntaria)
-#         ├── PonerCiegaPequena       Puesta por el JugadorCiegaPequena en el PreFlop
-#         └── PonerCiegaGrande        Puesta por el JugadorCiegaGrande en el PreFlop
-#
-# All-In no es disjunto con Apostar, Igualar ni Subir porque un All-In siempre
-# es simultáneamente uno de esos tres tipos de apuesta.
-#
-# La restricción allValuesFrom en Accion.realizadaEn garantiza que las
-# acciones solo pueden ocurrir en rondas reconocidas: PreFlop, Flop, Turn,
-# River o Showdown. MostrarMano ocurre exclusivamente en el Showdown.
-
-# Definición de la clase Acción.
-poker:Accion a owl:Class ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:realizadaEn ;
-        owl:allValuesFrom [
-            a owl:Class ;
-            owl:unionOf ( poker:PreFlop poker:Flop poker:Turn poker:River poker:Showdown )
-        ]
-    ] ;
-    rdfs:label "Acción" ;
-    rdfs:comment "Acción realizada por un jugador durante una ronda de apuestas." .
-
-# Definición de la clase Retirar.
-poker:Retirar a owl:Class ;
-    rdfs:subClassOf poker:Accion ;
-    rdfs:label "Retirada" ;
-    rdfs:comment "Retirarse de la mano, abandonando las fichas apostadas." .
-
-# Definición de la clase Pasar.
-poker:Pasar a owl:Class ;
-    rdfs:subClassOf poker:Accion ;
-    rdfs:label "Pasar" ;
-    rdfs:comment "Pasar el turno sin apostar, disponible solo cuando no hay apuesta previa." .
-
-# Definición de la clase Igualar.
-poker:Igualar a owl:Class ;
-    rdfs:subClassOf poker:Accion ;
-    rdfs:label "Igualar" ;
-    rdfs:comment "Igualar la apuesta actual para continuar en la mano." .
-
-# Definición de la clase Apostar.
-poker:Apostar a owl:Class ;
-    rdfs:subClassOf poker:Accion ;
-    rdfs:label "Apostar" ;
-    rdfs:comment "Realizar la primera apuesta de una calle." .
-
-# Definición de la clase Subir.
-poker:Subir a owl:Class ;
-    rdfs:subClassOf poker:Accion ;
-    rdfs:label "Subir" ;
-    rdfs:comment "Aumentar una apuesta ya existente en la misma calle." .
-
-# Definición de la clase All-In, que se combina con Apostar, Igualar o Subir.
-poker:AllIn a owl:Class ;
-    rdfs:subClassOf poker:Accion ;
-    rdfs:label "All-In" ;
-    rdfs:comment "Apostar la totalidad de las fichas disponibles. Siempre es también un Bet, Call o Raise." .
-
-# Definición de las clases específicas de All-In según su función en la apuesta.
-# Definición de la clase AllInApostar.
-poker:AllInApostar a owl:Class ;
-    rdfs:subClassOf poker:AllIn , poker:Apostar ;
-    rdfs:label "All-In Apostar" ;
-    rdfs:comment "All-in que abre la apuesta en la calle." .
-
-# Definición de la clase AllInIgualar.
-poker:AllInIgualar a owl:Class ;
-    rdfs:subClassOf poker:AllIn , poker:Igualar ;
-    rdfs:label "All-In Igualar" ;
-    rdfs:comment "All-in que iguala la apuesta actual." .
-
-# Definición de la clase AllInSubir.
-poker:AllInSubir a owl:Class ;
-    rdfs:subClassOf poker:AllIn , poker:Subir ;
-    rdfs:label "All-In Subir" ;
-    rdfs:comment "All-in que sube la apuesta actual." .
-
-# Definición de la clase PonerCiega, con sus subclases para ciega pequeña y grande.
-poker:PonerCiega a owl:Class ;
-    rdfs:subClassOf poker:Accion ;
-    rdfs:label "Poner Ciega" ;
-    rdfs:comment "Apuesta de ciega obligatoria, no voluntaria. Disjunta con todas las acciones voluntarias." .
-
-# Definición de la clase PonerCiegaPequena.
-poker:PonerCiegaPequena a owl:Class ;
-    rdfs:subClassOf poker:PonerCiega ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:realizadaEn ;
-        owl:someValuesFrom poker:PreFlop
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:realizadaPor ;
-        owl:someValuesFrom poker:JugadorCiegaPequena
-    ] ;
-    rdfs:label "Poner Ciega Pequeña" ;
-    rdfs:comment "Ciega pequeña obligatoria, pagada por el JugadorCiegaPequena en el PreFlop." .
-
-# Definición de la clase PonerCiegaGrande.
-poker:PonerCiegaGrande a owl:Class ;
-    rdfs:subClassOf poker:PonerCiega ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:realizadaEn ;
-        owl:someValuesFrom poker:PreFlop
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:realizadaPor ;
-        owl:someValuesFrom poker:JugadorCiegaGrande
-    ] ;
-    rdfs:label "Poner Ciega Grande" ;
-    rdfs:comment "Ciega grande obligatoria, pagada por el JugadorCiegaGrande en el PreFlop." .
-
-
-# Definición de la clase MostrarMano.
-poker:MostrarMano a owl:Class ;
-    rdfs:subClassOf poker:Accion ;
-    rdfs:subClassOf [
-        a owl:Restriction ; owl:onProperty poker:realizadaEn ;
-        owl:allValuesFrom poker:Showdown
-    ] ;
-    rdfs:label "Mostrar Mano" ;
-    rdfs:comment "Acción de revelar las cartas privadas en el Showdown para ver las combinaciones de 5 cartas (y manos)." .
-
-# =============================================================================
-# Bote y Estructura de Apuesta
-# =============================================================================
-
-# Jerarquía de botes:
-#
-#   Bote
-#   ├── BotePrincipal    Bote principal, siempre presente (al menos 1 por partida)
-#   └── BoteSecundario   Bote secundario, creado cuando un jugador va All-In por
-#                    menos del total apostado. Cada BoteSecundario tiene un número de
-#                    orden (secuenciaBote) y un conjunto de jugadores elegibles.
-#
-# BotePrincipal y BoteSecundario son disjuntos.
-#
-# Estructuras de apuesta disponibles:
-#   SinLimite   Sin límite de apuesta; se puede apostar todo.
-#   ConLimite   Tamaño de apuesta fijo.
-#   LimiteBote  La apuesta máxima es el tamaño del bote en ese momento.
-
-# Definición de la clase Bote, con sus subclases para bote principal y secundario.
-poker:Bote a owl:Class ;
-    rdfs:label "Bote" ;
-    rdfs:comment "El conjunto de fichas en juego durante una mano." .
-
-# Definición de la clase BotePrincipal.
-poker:BotePrincipal a owl:Class ;
-    rdfs:subClassOf poker:Bote ;
-    rdfs:label "Bote Principal" ;
-    rdfs:comment "Bote principal de la partida, al que pueden optar todos los jugadores activos." .
-
-# Definición de la clase BoteSecundario.
-poker:BoteSecundario a owl:Class ;
-    rdfs:subClassOf poker:Bote ;
-    rdfs:label "Bote Secundario" ;
-    rdfs:comment "Bote adicional creado cuando un jugador va all-in por menos del total apostado." .
-
-# Definición de la clase EstructuraApuesta, con sus subclases para cada tipo de estructura.
-poker:EstructuraApuesta a owl:Class ;
-    rdfs:label "Estructura de Apuesta" ;
-    rdfs:comment "Tipo de estructura que regula los límites y el tamaño de las apuestas." .
-
-# Definición de la clase SinLimite.
-poker:SinLimite a owl:Class ;
-    rdfs:subClassOf poker:EstructuraApuesta ;
-    rdfs:label "Sin Límite" ;
-    rdfs:comment "Sin límite de apuesta: un jugador puede apostar todas sus fichas en cualquier momento." .
-
-# Definición de la clase ConLimite.
-poker:ConLimite a owl:Class ;
-    rdfs:subClassOf poker:EstructuraApuesta ;
-    rdfs:label "Con Límite" ;
-    rdfs:comment "Las apuestas y subidas tienen un tamaño fijo predefinido por calle." .
-
-# Definición de la clase LimiteBote.
-poker:LimiteBote a owl:Class ;
-    rdfs:subClassOf poker:EstructuraApuesta ;
-    rdfs:label "Límite del Bote" ;
-    rdfs:comment "La apuesta máxima es el tamaño actual del bote." .
-
-
-# =============================================================================
 # Propiedades de Objeto
 # =============================================================================
+
+# --- Propiedades de Manos ----------------------------
+
+# Definición de la propiedad tieneClasificacion.
+poker:tieneClasificacion a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain poker:Mano ;
+    rdfs:range poker:ClasificacionMano ;
+    rdfs:label "Tiene Clasificación de Mano" ;
+    rdfs:comment "Asocia una mejor mano con su categoría de clasificación. Funcional: una mano tiene una sola categoría." .
 
 # --- Propiedades de Carta (Carta → Palo / Rango) ----------------------------
 #
@@ -837,161 +260,6 @@ poker:tieneRangoSiguiente a owl:ObjectProperty ;
     rdfs:label "Tiene Rango Siguiente" ;
     rdfs:comment "Indica qué rango le sigue inmediatamente en la secuencia. Forma un ciclo cerrado (Rey → As → Dos) para representar la naturaleza circular de la baraja. No es una propiedad transitiva ya que colapsaría todos los rangos en uno solo." .
 
-# --- Propiedades de Mano (Jugador ↔ Mano) ----------------------------------
-#
-# tieneCartasPrivadas es FunctionalProperty e InverseFunctionalProperty: cada
-# jugador tiene un único CartasPrivadas y cada CartasPrivadas pertenece a un solo
-# jugador. Esta bidireccionalidad evita ambigüedades.
-# tieneMejorMano y tieneClasificacion son Functional: un jugador tiene una sola
-# mejor mano y esa mano tiene una sola clasificación.
-
-# Definición de la propiedad tieneCartasPrivadas.
-poker:tieneCartasPrivadas a owl:ObjectProperty , owl:FunctionalProperty , owl:InverseFunctionalProperty ;
-    rdfs:domain poker:Jugador ;
-    rdfs:range poker:CartasPrivadas ;
-    rdfs:label "Tiene Cartas Privadas" ;
-    rdfs:comment "Asocia un jugador con sus 2 cartas privadas. Funcional e InverseFuncional: la relación es biyectiva." .
-
-# Definición de la propiedad tieneMejorMano.
-poker:tieneMejorMano a owl:ObjectProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Jugador ;
-    rdfs:range poker:Mano ;
-    rdfs:label "Tiene Mejor Mano" ;
-    rdfs:comment "Asocia un jugador con su mejor combinación de 5 cartas." .
-
-# Definición de la propiedad tieneClasificacion.
-poker:tieneClasificacion a owl:ObjectProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Mano ;
-    rdfs:range poker:ClasificacionMano ;
-    rdfs:label "Tiene Clasificación de Mano" ;
-    rdfs:comment "Asocia una mejor mano con su categoría de clasificación. Funcional: una mano tiene una sola categoría." .
-
-# Definición de la propiedad repartidaA.
-poker:repartidaA a owl:ObjectProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Carta ;
-    rdfs:range poker:Jugador ;
-    rdfs:label "Es Repartida A" ;
-    rdfs:comment "Indica a qué jugador fue repartida una carta (en particular, las cartas privadas)." .
-
-# --- Propiedades inversas (Partida ↔ Jugador / Accion ↔ Ronda) ---------------
-#
-# Los pares tieneJugador/participaEn, realizaAccion/realizadaPor y
-# realizadaEn/tieneAccion son inversos entre sí. Declarar la inversión
-# permite al razonador derivar una dirección a partir de la otra.
-# tieneBoteSecundario es subPropertyOf tieneBote: todo bote secundario es también un bote.
-
-# Definición de la propiedad tieneJugador.
-poker:tieneJugador a owl:ObjectProperty ;
-    rdfs:domain poker:Partida ;
-    rdfs:range poker:Jugador ;
-    owl:inverseOf poker:participaEn ;
-    rdfs:label "Tiene Jugador" ;
-    rdfs:comment "Relaciona una partida con cada uno de sus jugadores." .
-
-# Definición de la propiedad participaEn.
-poker:participaEn a owl:ObjectProperty ;
-    rdfs:domain poker:Jugador ;
-    rdfs:range poker:Partida ;
-    owl:inverseOf poker:tieneJugador ;
-    rdfs:label "Participa En" ;
-    rdfs:comment "Inversa de tieneJugador: relaciona un jugador con la partida en la que juega." .
-
-# Definición de la propiedad tieneGanador.
-poker:tieneGanador a owl:ObjectProperty ;
-    rdfs:domain poker:Partida ;
-    rdfs:range poker:Jugador ;
-    rdfs:label "Tiene Ganador" ;
-    rdfs:comment "Relaciona una partida con el o los jugadores que la ganan." .
-
-# Definición de la propiedad tieneRonda.
-poker:tieneRonda a owl:ObjectProperty ;
-    rdfs:domain poker:Partida ;
-    rdfs:range poker:Ronda ;
-    rdfs:label "Tiene Ronda" ;
-    rdfs:comment "Relaciona una partida con cada una de sus rondas de juego." .
-
-# Definición de la propiedad tieneBote.
-poker:tieneBote a owl:ObjectProperty ;
-    rdfs:domain poker:Partida ;
-    rdfs:range poker:Bote ;
-    rdfs:label "Tiene Bote" ;
-    rdfs:comment "Relaciona una partida con un bote (principal o secundario)." .
-
-# Definición de la propiedad tieneBoteSecundario
-poker:tieneBoteSecundario a owl:ObjectProperty ;
-    rdfs:subPropertyOf poker:tieneBote ;
-    rdfs:domain poker:Partida ;
-    rdfs:range poker:BoteSecundario ;
-    rdfs:label "Tiene Bote Secundario" ;
-    rdfs:comment "Subpropiedad de tieneBote. Relaciona una partida con sus botes secundarios." .
-
-# Definición de la propiedad tieneCartasComunitarias.
-poker:tieneCartasComunitarias a owl:ObjectProperty ;
-    rdfs:domain poker:Partida ;
-    rdfs:range poker:CartasComunitarias ;
-    rdfs:label "Tiene Cartas Comunitarias" ;
-    rdfs:comment "Relaciona una partida con sus cartas comunitarias (que hay en Flop, Turn y River)." .
-
-# Definición de la propiedad revelaCartas.
-poker:revelaCartas a owl:ObjectProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Ronda ;
-    rdfs:range poker:CartasComunitarias ;
-    rdfs:label "Revela Cartas" ;
-    rdfs:comment "Relaciona una ronda con el grupo de cartas comunitarias que se revelan en ella. Funcional: cada ronda revela exactamente un grupo." .
-
-# Definición de la propiedad realizaAccion.
-poker:realizaAccion a owl:ObjectProperty ;
-    rdfs:domain poker:Jugador ;
-    rdfs:range poker:Accion ;
-    owl:inverseOf poker:realizadaPor ;
-    rdfs:label "Realiza Acción" ;
-    rdfs:comment "Relaciona un jugador con una acción que ejecuta." .
-
-# Definición de la propiedad realizadaPor.
-poker:realizadaPor a owl:ObjectProperty ;
-    rdfs:domain poker:Accion ;
-    rdfs:range poker:Jugador ;
-    owl:inverseOf poker:realizaAccion ;
-    rdfs:label "Realizada Por" ;
-    rdfs:comment "Inversa de realizaAccion: indica qué jugador ejecutó una acción." .
-
-# Definición de la propiedad realizadaEn.
-poker:realizadaEn a owl:ObjectProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Accion ;
-    rdfs:range poker:Ronda ;
-    owl:inverseOf poker:tieneAccion ;
-    rdfs:label "Realizada En" ;
-    rdfs:comment "Indica en qué ronda ocurrió una acción. Funcional: cada acción pertenece a una sola ronda." .
-
-# Definición de la propiedad tieneAccion.
-poker:tieneAccion a owl:ObjectProperty ;
-    rdfs:domain poker:Ronda ;
-    rdfs:range poker:Accion ;
-    owl:inverseOf poker:realizadaEn ;
-    rdfs:label "Tiene Acción" ;
-    rdfs:comment "Inversa de realizadaEn: relaciona una ronda con las acciones que ocurren en ella." .
-
-# Definición de la propiedad tienePosicion.
-poker:tienePosicion a owl:ObjectProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Jugador ;
-    rdfs:range poker:Posicion ;
-    rdfs:label "Tiene Posición" ;
-    rdfs:comment "Relaciona un jugador con su posición en la mesa durante la mano." .
-
-# Definición de la propiedad usaEstructura.
-poker:usaEstructura a owl:ObjectProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Partida ;
-    rdfs:range poker:EstructuraApuesta ;
-    rdfs:label "Usa Estructura" ;
-    rdfs:comment "Indica la estructura de apuesta de la partida. Funcional: una partida usa una sola estructura." .
-
-# Definición de la propiedad ganaMano.
-poker:ganaMano a owl:ObjectProperty ;
-    rdfs:domain poker:Jugador ;
-    rdfs:range poker:Mano ;
-    rdfs:label "Gana Mano" ;
-    rdfs:comment "Relaciona un jugador con la mejor mano con la que ganó una partida." .
-
 # --- Propiedad supera (TransitiveProperty) ---------------------------------
 #
 # supera ordena las clasificaciones de mayor a menor fortaleza. Al ser
@@ -1007,13 +275,6 @@ poker:supera a owl:ObjectProperty , owl:TransitiveProperty ;
     rdfs:range poker:ClasificacionMano ;
     rdfs:label "Supera" ;
     rdfs:comment "Indica que una clasificación de mano supera a otra. Transitiva: el razonador cierra el orden completo." .
-
-# Definición de la propiedad elegibleParaBote.
-poker:elegibleParaBote a owl:ObjectProperty ;
-    rdfs:domain poker:Jugador ;
-    rdfs:range poker:Bote ;
-    rdfs:label "Elegible Para Bote" ;
-    rdfs:comment "Indica que un jugador tiene derecho a ganar un bote determinado (relevante para botes secundarios)." .
 
 
 # =============================================================================
@@ -1045,69 +306,6 @@ poker:tieneValorRangoBajo a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:label "Tiene Valor De Rango Bajo" ;
     rdfs:comment "Valor alternativo bajo del As (= 1) para la escalera baja A-2-3-4-5 (Wheel). Restringido exclusivamente al As." .
 
-# Definición de la propiedad tieneConteoFichas.
-poker:tieneConteoFichas a owl:DatatypeProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Jugador ;
-    rdfs:range xsd:nonNegativeInteger ;
-    rdfs:label "Tiene Conteo De Fichas" ;
-    rdfs:comment "Número de fichas actuales del jugador." .
-
-# Definición de la propiedad tieneMontoApuesta.
-poker:tieneMontoApuesta a owl:DatatypeProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Accion ;
-    rdfs:range xsd:decimal ;
-    rdfs:label "Tiene Monto De Apuesta" ;
-    rdfs:comment "Cantidad de fichas apostadas en una acción concreta." .
-
-# Definición de la propiedad tieneTamanoBote.
-poker:tieneTamanoBote a owl:DatatypeProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Bote ;
-    rdfs:range xsd:decimal ;
-    rdfs:label "Tiene Tamaño Del Bote" ;
-    rdfs:comment "Total de fichas acumuladas en el bote." .
-
-# Definición de la propiedad estaAllIn.
-poker:estaAllIn a owl:DatatypeProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Jugador ;
-    rdfs:range xsd:boolean ;
-    rdfs:label "Está All-In" ;
-    rdfs:comment "Verdadero si el jugador ha apostado todas sus fichas (estado all-in)." .
-
-# Definición de la propiedad seRetiro.
-poker:seRetiro a owl:DatatypeProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Jugador ;
-    rdfs:range xsd:boolean ;
-    rdfs:label "Se Retiró" ;
-    rdfs:comment "Verdadero si el jugador se ha retirado en la mano actual." .
-
-# Definición de la propiedad nombreJugador.
-poker:nombreJugador a owl:DatatypeProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Jugador ;
-    rdfs:range xsd:string ;
-    rdfs:label "Nombre Del Jugador" ;
-    rdfs:comment "Nombre o alias del jugador." .
-
-# Definición de la propiedad idPartida.
-poker:idPartida a owl:DatatypeProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Partida ;
-    rdfs:range xsd:string ;
-    rdfs:label "ID de Partida" ;
-    rdfs:comment "Identificador único de la partida." .
-
-# Definición de la propiedad numeroMano.
-poker:numeroMano a owl:DatatypeProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Partida ;
-    rdfs:range xsd:nonNegativeInteger ;
-    rdfs:label "Número De Mano" ;
-    rdfs:comment "Número secuencial de la mano dentro de la sesión." .
-
-# Definición de la propiedad secuenciaBote.
-poker:secuenciaBote a owl:DatatypeProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:BoteSecundario ;
-    rdfs:range xsd:nonNegativeInteger ;
-    rdfs:label "Secuencia Del Bote" ;
-    rdfs:comment "Número de orden del bote secundario (1 para el primero creado, 2 para el segundo, etc.)." .
-
 
 # =============================================================================
 # Axiomas Estructurales y Restricciones de Disyunción
@@ -1124,78 +322,16 @@ poker:secuenciaBote a owl:DatatypeProperty , owl:FunctionalProperty ;
                   poker:Escalera poker:Color poker:FullHouse poker:Poker
                   poker:EscaleraColor ) .
 
-# Una ronda no puede ser dos tipos distintos al mismo tiempo.
-[] a owl:AllDisjointClasses ;
-    owl:members ( poker:PreFlop poker:Flop poker:Turn poker:River poker:Showdown ) .
-
-# Las acciones voluntarias base son mutuamente disjuntas.
-# AllIn queda fuera porque es una clase compuesta que coexiste con Apostar, Igualar o Subir.
-[] a owl:AllDisjointClasses ;
-    owl:members ( poker:Retirar poker:Pasar poker:Igualar poker:Apostar poker:Subir ) .
-
-# PonerCiega (ciega obligatoria) es disjunta de todas las acciones voluntarias.
-poker:PonerCiega owl:disjointWith poker:Retirar .
-poker:PonerCiega owl:disjointWith poker:Pasar .
-poker:PonerCiega owl:disjointWith poker:Igualar .
-poker:PonerCiega owl:disjointWith poker:Apostar .
-poker:PonerCiega owl:disjointWith poker:Subir .
-
-poker:MostrarMano owl:disjointWith poker:Apostar .
-poker:MostrarMano owl:disjointWith poker:Subir .
-poker:MostrarMano owl:disjointWith poker:Igualar .
-poker:MostrarMano owl:disjointWith poker:Retirar .
-poker:MostrarMano owl:disjointWith poker:Pasar .
-poker:MostrarMano owl:disjointWith poker:PonerCiega .
-
-# AllIn es incompatible con Retirar y Pasar: no se puede ir all-in retirándose ni pasando.
-# (La disyunción con Apostar, Igualar y Subir no aplica: AllIn siempre es uno de esos tres.)
-poker:AllIn owl:disjointWith poker:Retirar .
-poker:AllIn owl:disjointWith poker:Pasar .
-poker:AllIn owl:disjointWith poker:MostrarMano .
-poker:AllIn owl:disjointWith poker:PonerCiega .
-
-# Las tres estructuras de apuesta son mutuamente exclusivas.
-[] a owl:AllDisjointClasses ;
-    owl:members ( poker:SinLimite poker:ConLimite poker:LimiteBote ) .
-
-# Flop, Turn y River son rondas distintas; nunca se solapan.
-[] a owl:AllDisjointClasses ;
-    owl:members ( poker:Flop poker:Turn poker:River ) .
-
-# CartaFlop, CartaTurn y CartaRiver son grupos de cartas comunitarias distintos; nunca se solapan.
-[] a owl:AllDisjointClasses ;
-    owl:members ( poker:CartaFlop poker:CartaTurn poker:CartaRiver ) .
-
-# Las tres subclases de GrupoDeCartas son mutuamente disjuntas: un objeto no puede ser a la vez
-# cartas privadas, cartas comunitarias y la mejor mano de un jugador.
-[] a owl:AllDisjointClasses ;
-    owl:members ( poker:CartasPrivadas poker:CartasComunitarias poker:Mano ) .
-
-# Un bote es principal o secundario, nunca los dos.
-poker:BotePrincipal owl:disjointWith poker:BoteSecundario .
-
-# Disyunciones de posición.
-# PosicionCiegaGrande es siempre exclusiva con todas las demás posiciones.
-# PosicionBoton NO es disjunta con PosicionCiegaPequena: en heads-up (2 jugadores)
-# el botón ocupa simultáneamente la posición de Small Blind.
-
-poker:PosicionCiegaGrande owl:disjointWith poker:PosicionCiegaPequena .
-poker:PosicionCiegaGrande owl:disjointWith poker:PosicionBoton .
-
-# NOTA: PosicionBoton NO siempre es disjunta con PosicionCiegaPequena (coinciden en heads-up)
-
 
 # =============================================================================
 # Instancias (ABox)
 # =============================================================================
 
 # La ABox define los individuos concretos del dominio.
-# Total: 85 individuos
+# Total: 79 individuos
 #    4  palos (Palo)                       cerrados por owl:oneOf en la TBox
 #   13  rangos (Rango)                     el As tiene valor dual: 14 (alto) y 1 (bajo)
 #   52  cartas (Carta)                     13 rangos × 4 palos
-#    3  posiciones (Posicion)
-#    3  estructuras de apuesta (EstructuraApuesta)
 #   10  clasificaciones de mano (ClasificacionMano), incluyendo EscaleraReal
 
 # Palos (4 individuos) -------------------------------------------------------
@@ -1445,24 +581,6 @@ poker:AsDeTreboles a poker:Carta ;
     poker:tienePalo poker:Treboles ; poker:tieneRango poker:As ;
     rdfs:label "As de Tréboles" .
 
-# Posiciones (3 individuos) --------------------------------------------------
-
-poker:CiegaPequena a poker:PosicionCiegaPequena ;
-    rdfs:label "Ciega Pequeña" .
-poker:CiegaGrande a poker:PosicionCiegaGrande ;
-    rdfs:label "Ciega Grande" .
-poker:Boton a poker:PosicionBoton ;
-    rdfs:label "Botón" .
-
-# Estructuras de apuesta (3 individuos) --------------------------------------
-
-poker:NLHE a poker:SinLimite ;
-    rdfs:label "Sin Límite" .
-poker:LHE a poker:ConLimite ;
-    rdfs:label "Con Límite" .
-poker:PLHE a poker:LimiteBote ;
-    rdfs:label "Límite de Bote" .
-
 # Clasificaciones de mano (10 individuos) ------------------------------------
 
 poker:ClasificacionCartaAlta a poker:CartaAlta ;
@@ -1544,10 +662,6 @@ poker:ClasificacionPar              poker:supera poker:ClasificacionCartaAlta .
         poker:AsDeTreboles
     ) .
 
-# 3 posiciones distintas
-[] a owl:AllDifferent ;
-    owl:distinctMembers ( poker:CiegaPequena poker:CiegaGrande poker:Boton ) .
-
 # 10 clasificaciones de mano distintas
 [] a owl:AllDifferent ;
     owl:distinctMembers ( poker:ClasificacionCartaAlta poker:ClasificacionPar poker:ClasificacionDoblePar
@@ -1555,6 +669,4 @@ poker:ClasificacionPar              poker:supera poker:ClasificacionCartaAlta .
                           poker:ClasificacionFullHouse poker:ClasificacionPoker
                           poker:ClasificacionEscaleraColor poker:ClasificacionEscaleraReal ) .
 
-# 3 estructuras de apuesta distintas
-[] a owl:AllDifferent ;
-    owl:distinctMembers ( poker:NLHE poker:LHE poker:PLHE ) .
+
