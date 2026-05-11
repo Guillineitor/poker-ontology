@@ -87,7 +87,7 @@ poker:Carta a owl:Class ;
     rdfs:label "Carta" ;
     rdfs:comment "Una carta de la baraja inglesa estándar de 52 cartas." .
 
-# Subclases de Carta por palo, usadas por los clasificadores de manos.
+# Subclases de Carta por Palo, usadas por los clasificadores de manos.
 # Cada clase agrupa todas las cartas de un palo específico (corazones, diamantes, picas, tréboles) mediante owl:hasValue.
 
 poker:CartaDeCorazones a owl:Class ;
@@ -129,6 +129,74 @@ poker:CartaDeTreboles a owl:Class ;
     ] ;
     rdfs:label "Carta de Tréboles" ;
     rdfs:comment "Una carta de la baraja inglesa estándar de 52 cartas, del palo de tréboles." .
+
+# Subclases de Carta por Rango, usadas por los clasificadores de ciertos tipos de manos.
+# Cada clase agrupa las 4 cartas de un rango específico mediante owl:hasValue.
+
+poker:CartaDeDos a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Dos ] ;
+    rdfs:label "Carta de Dos" .
+
+poker:CartaDeTres a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Tres ] ;
+    rdfs:label "Carta de Tres" .
+
+poker:CartaDeCuatro a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Cuatro ] ;
+    rdfs:label "Carta de Cuatro" .
+
+poker:CartaDeCinco a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Cinco ] ;
+    rdfs:label "Carta de Cinco" .
+
+poker:CartaDeSeis a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Seis ] ;
+    rdfs:label "Carta de Seis" .
+
+poker:CartaDeSiete a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Siete ] ;
+    rdfs:label "Carta de Siete" .
+
+poker:CartaDeOcho a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Ocho ] ;
+    rdfs:label "Carta de Ocho" .
+
+poker:CartaDeNueve a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Nueve ] ;
+    rdfs:label "Carta de Nueve" .
+
+poker:CartaDeDiez a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Diez ] ;
+    rdfs:label "Carta de Diez" .
+
+poker:CartaDeJota a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Jota ] ;
+    rdfs:label "Carta de Jota" .
+
+poker:CartaDeReina a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Reina ] ;
+    rdfs:label "Carta de Reina" .
+
+poker:CartaDeRey a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Rey ] ;
+    rdfs:label "Carta de Rey" .
+
+poker:CartaDeAs a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:As ] ;
+    rdfs:label "Carta de As" .
 
 
 # =============================================================================
@@ -192,8 +260,32 @@ poker:CartaAlta a owl:Class ;
 # Definición de la clase Par
 poker:Par a owl:Class ;
     rdfs:subClassOf poker:Mano ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ]
+                )
+            ]
+        )
+    ] ;
     rdfs:label "Par" ;
-    rdfs:comment "Dos cartas del mismo rango." .
+    rdfs:comment "Dos o más cartas del mismo rango." .
 
 # Definición de la clase DoblePar
 poker:DoblePar a owl:Class ;
@@ -204,6 +296,30 @@ poker:DoblePar a owl:Class ;
 # Definición de la clase Trio
 poker:Trio a owl:Class ;
     rdfs:subClassOf poker:Mano ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ]
+                )
+            ]
+        )
+    ] ;
     rdfs:label "Trío" ;
     rdfs:comment "Tres cartas del mismo rango." .
 
@@ -336,12 +452,15 @@ poker:tieneValorRangoBajo a owl:DatatypeProperty , owl:FunctionalProperty ;
 # Si se viola alguno, por ejemplo, clasificando algo como BotePrincipal y BoteSecundario
 # a la vez, un razonador como HermiT o Pellet detectará la inconsistencia.
 
-# Las 9 clases base de Mano son mutuamente disjuntas.
+# =============================================================================
+# Descartado para más adelante
+# =============================================================================
+# Las 9 clases base de Mano son mutuamente disjuntas (descartado por ahora)
 # EscaleraReal queda excluido porque es subclase de EscaleraColor, no independiente.
-[] a owl:AllDisjointClasses ;
-    owl:members ( poker:CartaAlta poker:Par poker:DoblePar poker:Trio
-                  poker:Escalera poker:Color poker:FullHouse poker:Poker
-                  poker:EscaleraColor ) .
+#[] a owl:AllDisjointClasses ;
+#    owl:members ( poker:CartaAlta poker:Par poker:DoblePar poker:Trio
+#                  poker:Escalera poker:Color poker:FullHouse poker:Poker
+#                  poker:EscaleraColor ) .
 
 
 # =============================================================================
