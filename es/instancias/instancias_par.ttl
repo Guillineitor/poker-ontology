@@ -2,12 +2,12 @@
 # Instancias de prueba — Manos de tipo Par
 # =============================================================================
 
-@prefix ex:    <http://www.poker-ontology.org/instancias#> .
+@prefix ex:    <http://www.poker-ontology.org/instancias/par#> .
 @prefix poker: <http://www.poker-ontology.org/poker#> .
 @prefix owl:   <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 
-<http://www.poker-ontology.org/instancias>
+<http://www.poker-ontology.org/instancias/par>
     a owl:Ontology ;
     owl:imports <http://www.poker-ontology.org/poker> ;
     rdfs:label "Instancias de prueba — Par" ;

@@ -1,0 +1,171 @@
+﻿# =============================================================================
+# Instancias de prueba — Manos de tipo Doble Par
+# =============================================================================
+
+@prefix ex:    <http://www.poker-ontology.org/instancias/doblepar#> .
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/doblepar>
+    a owl:Ontology ;
+    owl:imports <http://www.poker-ontology.org/poker> ;
+    rdfs:label "Instancias de prueba — Doble Par" ;
+    rdfs:comment "ABox con 20 manos de tipo Doble Par. Para verificar el clasificador poker:DoblePar." .
+
+
+# =============================================================================
+# Manos de Doble Par — Ases y Reyes (5 manos)
+# =============================================================================
+
+ex:AAKKHQ a poker:Mano ;
+    rdfs:label "Doble Par de Ases y Reyes con Reina" ;
+    poker:contieneCarta poker:AsDeCorazones, poker:ReyDePicas,
+                        poker:ReinaDeTreboles, poker:AsDePicas,
+                        poker:ReyDeCorazones .
+
+ex:AAKKHJ a poker:Mano ;
+    rdfs:label "Doble Par de Ases y Reyes con Jota" ;
+    poker:contieneCarta poker:ReyDeDiamantes, poker:AsDeCorazones,
+                        poker:JotaDePicas, poker:AsDeTreboles,
+                        poker:ReyDeTreboles .
+
+ex:AAKKHT a poker:Mano ;
+    rdfs:label "Doble Par de Ases y Reyes con Diez" ;
+    poker:contieneCarta poker:AsDePicas, poker:ReyDeCorazones,
+                        poker:AsDeDiamantes, poker:DiezDeTreboles,
+                        poker:ReyDeDiamantes .
+
+ex:AAKKH9 a poker:Mano ;
+    rdfs:label "Doble Par de Ases y Reyes con Nueve" ;
+    poker:contieneCarta poker:ReyDePicas, poker:AsDeCorazones,
+                        poker:NueveDeDiamantes, poker:ReyDeTreboles,
+                        poker:AsDeTreboles .
+
+ex:AAKKH8 a poker:Mano ;
+    rdfs:label "Doble Par de Ases y Reyes con Ocho" ;
+    poker:contieneCarta poker:AsDeCorazones, poker:OchoDeCorazones,
+                        poker:ReyDePicas, poker:AsDeDiamantes,
+                        poker:ReyDeTreboles .
+
+
+# =============================================================================
+# Manos de Doble Par — Reinas y Jotas (5 manos)
+# =============================================================================
+
+ex:QQJJHA a poker:Mano ;
+    rdfs:label "Doble Par de Reinas y Jotas con As" ;
+    poker:contieneCarta poker:ReinaDeCorazones, poker:JotaDePicas,
+                        poker:AsDeTreboles, poker:ReinaDePicas,
+                        poker:JotaDeCorazones .
+
+ex:QQJJHK a poker:Mano ;
+    rdfs:label "Doble Par de Reinas y Jotas con Rey" ;
+    poker:contieneCarta poker:JotaDeDiamantes, poker:ReinaDeCorazones,
+                        poker:ReyDePicas, poker:JotaDeTreboles,
+                        poker:ReinaDeDiamantes .
+
+ex:QQJJHT a poker:Mano ;
+    rdfs:label "Doble Par de Reinas y Jotas con Diez" ;
+    poker:contieneCarta poker:ReinaDePicas, poker:DiezDeCorazones,
+                        poker:JotaDeCorazones, poker:ReinaDeTreboles,
+                        poker:JotaDeDiamantes .
+
+ex:QQJJH9 a poker:Mano ;
+    rdfs:label "Doble Par de Reinas y Jotas con Nueve" ;
+    poker:contieneCarta poker:JotaDePicas, poker:ReinaDeCorazones,
+                        poker:NueveDePicas, poker:JotaDeTreboles,
+                        poker:ReinaDeDiamantes .
+
+ex:QQJJH7 a poker:Mano ;
+    rdfs:label "Doble Par de Reinas y Jotas con Siete" ;
+    poker:contieneCarta poker:ReinaDePicas, poker:JotaDeCorazones,
+                        poker:SieteDeDiamantes, poker:ReinaDeTreboles,
+                        poker:JotaDePicas .
+
+
+# =============================================================================
+# Manos de Doble Par — Doses y Treses (5 manos)
+# =============================================================================
+
+ex:2233HA a poker:Mano ;
+    rdfs:label "Doble Par de Doses y Treses con As" ;
+    poker:contieneCarta poker:DosDeCorazones, poker:TresDePicas,
+                        poker:AsDeCorazones, poker:DosDePicas,
+                        poker:TresDeCorazones .
+
+ex:2233HK a poker:Mano ;
+    rdfs:label "Doble Par de Doses y Treses con Rey" ;
+    poker:contieneCarta poker:TresDeDiamantes, poker:DosDeCorazones,
+                        poker:ReyDePicas, poker:TresDeTreboles,
+                        poker:DosDeDiamantes .
+
+ex:2233HQ a poker:Mano ;
+    rdfs:label "Doble Par de Doses y Treses con Reina" ;
+    poker:contieneCarta poker:DosDePicas, poker:TresDeCorazones,
+                        poker:ReinaDeCorazones, poker:DosDeDiamantes,
+                        poker:TresDeDiamantes .
+
+ex:2233HJ a poker:Mano ;
+    rdfs:label "Doble Par de Doses y Treses con Jota" ;
+    poker:contieneCarta poker:TresDePicas, poker:DosDeCorazones,
+                        poker:JotaDeDiamantes, poker:TresDeTreboles,
+                        poker:DosDeTreboles .
+
+ex:2233HT a poker:Mano ;
+    rdfs:label "Doble Par de Doses y Treses con Diez" ;
+    poker:contieneCarta poker:DosDeCorazones, poker:TresDePicas,
+                        poker:DosDeDiamantes, poker:DiezDeCorazones,
+                        poker:TresDeTreboles .
+
+
+# =============================================================================
+# Manos de Doble Par — Ochos y Cincos (5 manos)
+# =============================================================================
+
+ex:8855HA a poker:Mano ;
+    rdfs:label "Doble Par de Ochos y Cincos con As" ;
+    poker:contieneCarta poker:OchoDeCorazones, poker:CincoDePicas,
+                        poker:AsDeTreboles, poker:OchoDePicas,
+                        poker:CincoDeCorazones .
+
+ex:8855HK a poker:Mano ;
+    rdfs:label "Doble Par de Ochos y Cincos con Rey" ;
+    poker:contieneCarta poker:CincoDeDiamantes, poker:OchoDeCorazones,
+                        poker:ReyDePicas, poker:CincoDeTreboles,
+                        poker:OchoDeDiamantes .
+
+ex:8855HQ a poker:Mano ;
+    rdfs:label "Doble Par de Ochos y Cincos con Reina" ;
+    poker:contieneCarta poker:OchoDePicas, poker:CincoDeCorazones,
+                        poker:ReinaDeCorazones, poker:OchoDeDiamantes,
+                        poker:CincoDeDiamantes .
+
+ex:8855HJ a poker:Mano ;
+    rdfs:label "Doble Par de Ochos y Cincos con Jota" ;
+    poker:contieneCarta poker:CincoDePicas, poker:OchoDeCorazones,
+                        poker:JotaDeDiamantes, poker:CincoDeTreboles,
+                        poker:OchoDeTreboles .
+
+ex:8855H7 a poker:Mano ;
+    rdfs:label "Doble Par de Ochos y Cincos con Siete" ;
+    poker:contieneCarta poker:OchoDeCorazones, poker:CincoDePicas,
+                        poker:OchoDeTreboles, poker:SieteDeCorazones,
+                        poker:CincoDeCorazones .
+
+
+# =============================================================================
+# Unicidad de instancias
+# =============================================================================
+
+[] a owl:AllDifferent ;
+    owl:distinctMembers (
+        ex:AAKKHQ     ex:AAKKHJ     ex:AAKKHT
+        ex:AAKKH9     ex:AAKKH8
+        ex:QQJJHA     ex:QQJJHK     ex:QQJJHT
+        ex:QQJJH9     ex:QQJJH7
+        ex:2233HA     ex:2233HK     ex:2233HQ
+        ex:2233HJ     ex:2233HT
+        ex:8855HA     ex:8855HK     ex:8855HQ
+        ex:8855HJ     ex:8855H7
+    ) .
