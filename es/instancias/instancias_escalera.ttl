@@ -11,7 +11,7 @@
     a owl:Ontology ;
     owl:imports <http://www.poker-ontology.org/poker> ;
     rdfs:label "Instancias de prueba — Escalera" ;
-    rdfs:comment "ABox con 20 manos de tipo Escalera, 2 por cada una de las 10 secuencias posibles. Para verificar el clasificador poker:Escalera." .
+    rdfs:comment "ABox con 10 manos de tipo Escalera, una por cada una de las 10 secuencias posibles. Para verificar el clasificador poker:Escalera." .
 
 
 # =============================================================================

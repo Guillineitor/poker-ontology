@@ -472,7 +472,7 @@ poker:DoblePar a owl:Class ;
     ] ;
     rdfs:label "Doble Par" ;
     rdfs:comment "Dos pares de rangos distintos, independientemente del palo." .
-    
+
 # Definición de la clase Trio
 poker:Trio a owl:Class ;
     rdfs:subClassOf poker:Mano ;
@@ -643,8 +643,32 @@ poker:FullHouse a owl:Class ;
 # Definición de la clase Poker
 poker:Poker a owl:Class ;
     rdfs:subClassOf poker:Mano ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ]
+                )
+            ]
+        )
+    ] ;
     rdfs:label "Póker" ;
-    rdfs:comment "Cuatro cartas del mismo rango." .
+    rdfs:comment "Cuatro cartas del mismo rango, independientemente del palo." .
 
 # Definición de la clase EscaleraColor
 poker:EscaleraColor a owl:Class ;
