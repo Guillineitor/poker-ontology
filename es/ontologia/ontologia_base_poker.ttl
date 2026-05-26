@@ -635,10 +635,229 @@ poker:Color a owl:Class ;
     rdfs:comment "Cinco cartas del mismo palo." .
 
 # Definición de la clase FullHouse
+#
+# Estrategia O(n): en lugar de enumerar las C(13,2)×2 = 156 combinaciones
+# (trío_de_X + par_de_Y) explícitamente, aprovechamos que:
+#
+# Si una mano de 5 cartas contiene, para CADA rango, exactamente
+# 0, 2 o 3 cartas (nunca 1, nunca 4), entonces la única partición
+# posible de 5 con valores del conjunto {0, 2, 3} es 3+2.
+# Esto es exactamente un Full House.
+#
+# Para cada rango R expresamos la condición con dos restricciones:
+#   1. maxQualifiedCardinality 0 CartaDeR  ∪  minQualifiedCardinality 2 CartaDeR
+#        → la mano NO contiene exactamente 1 carta de rango R
+#   2. maxQualifiedCardinality 3 CartaDeR
+#        → la mano NO contiene 4 cartas de rango R
+#
+# La intersección de las 13 condiciones (una por rango) más Mano
+# produce exactamente los Full House, en OWL 2 DL puro.
+#
 poker:FullHouse a owl:Class ;
     rdfs:subClassOf poker:Mano ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:Mano
+
+            # ── Dos: la mano tiene 0, 2 ó 3 cartas de Dos ──────────────────
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                  owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                  owl:onClass poker:CartaDeDos ]
+                [ a owl:Class ; owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeDos ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeDos ]
+                )]
+            )]
+
+            # ── Tres: la mano tiene 0, 2 ó 3 cartas de Tres ─────────────────
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                  owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                  owl:onClass poker:CartaDeTres ]
+                [ a owl:Class ; owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeTres ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeTres ]
+                )]
+            )]
+
+            # ── Cuatro: la mano tiene 0, 2 ó 3 cartas de Cuatro ─────────────
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                  owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                  owl:onClass poker:CartaDeCuatro ]
+                [ a owl:Class ; owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeCuatro ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeCuatro ]
+                )]
+            )]
+
+            # ── Cinco: la mano tiene 0, 2 ó 3 cartas de Cinco ───────────────
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                  owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                  owl:onClass poker:CartaDeCinco ]
+                [ a owl:Class ; owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeCinco ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeCinco ]
+                )]
+            )]
+
+            # ── Seis: la mano tiene 0, 2 ó 3 cartas de Seis ─────────────────
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                  owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                  owl:onClass poker:CartaDeSeis ]
+                [ a owl:Class ; owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeSeis ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeSeis ]
+                )]
+            )]
+
+            # ── Siete: la mano tiene 0, 2 ó 3 cartas de Siete ───────────────
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                  owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                  owl:onClass poker:CartaDeSiete ]
+                [ a owl:Class ; owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeSiete ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeSiete ]
+                )]
+            )]
+
+            # ── Ocho: la mano tiene 0, 2 ó 3 cartas de Ocho ─────────────────
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                  owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                  owl:onClass poker:CartaDeOcho ]
+                [ a owl:Class ; owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeOcho ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeOcho ]
+                )]
+            )]
+
+            # ── Nueve: la mano tiene 0, 2 ó 3 cartas de Nueve ───────────────
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                  owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                  owl:onClass poker:CartaDeNueve ]
+                [ a owl:Class ; owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeNueve ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeNueve ]
+                )]
+            )]
+
+            # ── Diez: la mano tiene 0, 2 ó 3 cartas de Diez ─────────────────
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                  owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                  owl:onClass poker:CartaDeDiez ]
+                [ a owl:Class ; owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeDiez ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeDiez ]
+                )]
+            )]
+
+            # ── Jota: la mano tiene 0, 2 ó 3 cartas de Jota ─────────────────
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                  owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                  owl:onClass poker:CartaDeJota ]
+                [ a owl:Class ; owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeJota ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeJota ]
+                )]
+            )]
+
+            # ── Reina: la mano tiene 0, 2 ó 3 cartas de Reina ───────────────
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                  owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                  owl:onClass poker:CartaDeReina ]
+                [ a owl:Class ; owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeReina ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeReina ]
+                )]
+            )]
+
+            # ── Rey: la mano tiene 0, 2 ó 3 cartas de Rey ───────────────────
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                  owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                  owl:onClass poker:CartaDeRey ]
+                [ a owl:Class ; owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeRey ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeRey ]
+                )]
+            )]
+
+            # ── As: la mano tiene 0, 2 ó 3 cartas de As ─────────────────────
+            [ a owl:Class ; owl:intersectionOf (
+                [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                  owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                  owl:onClass poker:CartaDeAs ]
+                [ a owl:Class ; owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeAs ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+                      owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                      owl:onClass poker:CartaDeAs ]
+                )]
+            )]
+        )
+    ] ;
     rdfs:label "Full House" ;
-    rdfs:comment "Un trío más un par." .
+    rdfs:comment "Un trío más un par. Clasificado por exclusión: cada rango aporta 0, 2 ó 3 cartas (nunca 1, nunca 4); la única partición de 5 en {0,2,3} es 3+2." .
 
 # Definición de la clase Poker
 poker:Poker a owl:Class ;

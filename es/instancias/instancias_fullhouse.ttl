@@ -1,0 +1,215 @@
+# =============================================================================
+# Instancias de prueba — Manos de tipo Full House
+# =============================================================================
+
+@prefix ex:    <http://www.poker-ontology.org/instancias/fullhouse#> .
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/fullhouse>
+    a owl:Ontology ;
+    owl:imports <http://www.poker-ontology.org/poker> ;
+    rdfs:label "Instancias de prueba — Full House" ;
+    rdfs:comment "ABox con 20 manos de tipo Full House, agrupadas en 4 grupos de 5 por rango del trío. Para verificar el clasificador poker:FullHouse." .
+
+
+# =============================================================================
+# Full House — Trío de Ases (5 manos)
+# Trío fijo: AsDePicas, AsDeCorazones, AsDeDiamantes
+# =============================================================================
+
+ex:AAAFKKsh a poker:Mano ;
+    rdfs:label "Full House — Trío de Ases con Par de Reyes" ;
+    poker:contieneCarta poker:AsDePicas,
+                        poker:AsDeCorazones,
+                        poker:AsDeDiamantes,
+                        poker:ReyDePicas,
+                        poker:ReyDeCorazones .
+
+ex:AAAFQQdc a poker:Mano ;
+    rdfs:label "Full House — Trío de Ases con Par de Reinas" ;
+    poker:contieneCarta poker:AsDePicas,
+                        poker:AsDeCorazones,
+                        poker:AsDeDiamantes,
+                        poker:ReinaDeDiamantes,
+                        poker:ReinaDeTreboles .
+
+ex:AAAFJJsc a poker:Mano ;
+    rdfs:label "Full House — Trío de Ases con Par de Jotas" ;
+    poker:contieneCarta poker:AsDePicas,
+                        poker:AsDeCorazones,
+                        poker:AsDeDiamantes,
+                        poker:JotaDePicas,
+                        poker:JotaDeTreboles .
+
+ex:AAAFTThd a poker:Mano ;
+    rdfs:label "Full House — Trío de Ases con Par de Dieces" ;
+    poker:contieneCarta poker:AsDePicas,
+                        poker:AsDeCorazones,
+                        poker:AsDeDiamantes,
+                        poker:DiezDeCorazones,
+                        poker:DiezDeDiamantes .
+
+ex:AAAF22cs a poker:Mano ;
+    rdfs:label "Full House — Trío de Ases con Par de Doses" ;
+    poker:contieneCarta poker:AsDePicas,
+                        poker:AsDeCorazones,
+                        poker:AsDeDiamantes,
+                        poker:DosDeTreboles,
+                        poker:DosDePicas .
+
+
+# =============================================================================
+# Full House — Trío de Reyes (5 manos)
+# Trío fijo: ReyDePicas, ReyDeCorazones, ReyDeDiamantes
+# =============================================================================
+
+ex:KKKFAAch a poker:Mano ;
+    rdfs:label "Full House — Trío de Reyes con Par de Ases" ;
+    poker:contieneCarta poker:ReyDePicas,
+                        poker:ReyDeCorazones,
+                        poker:ReyDeDiamantes,
+                        poker:AsDeTreboles,
+                        poker:AsDeCorazones .
+
+ex:KKKFQQsd a poker:Mano ;
+    rdfs:label "Full House — Trío de Reyes con Par de Reinas" ;
+    poker:contieneCarta poker:ReyDePicas,
+                        poker:ReyDeCorazones,
+                        poker:ReyDeDiamantes,
+                        poker:ReinaDePicas,
+                        poker:ReinaDeDiamantes .
+
+ex:KKKFJJhc a poker:Mano ;
+    rdfs:label "Full House — Trío de Reyes con Par de Jotas" ;
+    poker:contieneCarta poker:ReyDePicas,
+                        poker:ReyDeCorazones,
+                        poker:ReyDeDiamantes,
+                        poker:JotaDeCorazones,
+                        poker:JotaDeTreboles .
+
+ex:KKKF99sh a poker:Mano ;
+    rdfs:label "Full House — Trío de Reyes con Par de Nueves" ;
+    poker:contieneCarta poker:ReyDePicas,
+                        poker:ReyDeCorazones,
+                        poker:ReyDeDiamantes,
+                        poker:NueveDePicas,
+                        poker:NueveDeCorazones .
+
+ex:KKKF33dc a poker:Mano ;
+    rdfs:label "Full House — Trío de Reyes con Par de Treses" ;
+    poker:contieneCarta poker:ReyDePicas,
+                        poker:ReyDeCorazones,
+                        poker:ReyDeDiamantes,
+                        poker:TresDeDiamantes,
+                        poker:TresDeTreboles .
+
+
+# =============================================================================
+# Full House — Trío de Jotas (5 manos)
+# Trío fijo: JotaDePicas, JotaDeCorazones, JotaDeDiamantes
+# =============================================================================
+
+ex:JJJFAAsc a poker:Mano ;
+    rdfs:label "Full House — Trío de Jotas con Par de Ases" ;
+    poker:contieneCarta poker:JotaDePicas,
+                        poker:JotaDeCorazones,
+                        poker:JotaDeDiamantes,
+                        poker:AsDePicas,
+                        poker:AsDeTreboles .
+
+ex:JJJFKKhc a poker:Mano ;
+    rdfs:label "Full House — Trío de Jotas con Par de Reyes" ;
+    poker:contieneCarta poker:JotaDePicas,
+                        poker:JotaDeCorazones,
+                        poker:JotaDeDiamantes,
+                        poker:ReyDeCorazones,
+                        poker:ReyDeTreboles .
+
+ex:JJJFQQdh a poker:Mano ;
+    rdfs:label "Full House — Trío de Jotas con Par de Reinas" ;
+    poker:contieneCarta poker:JotaDePicas,
+                        poker:JotaDeCorazones,
+                        poker:JotaDeDiamantes,
+                        poker:ReinaDeDiamantes,
+                        poker:ReinaDeCorazones .
+
+ex:JJJF77sc a poker:Mano ;
+    rdfs:label "Full House — Trío de Jotas con Par de Sietes" ;
+    poker:contieneCarta poker:JotaDePicas,
+                        poker:JotaDeCorazones,
+                        poker:JotaDeDiamantes,
+                        poker:SieteDePicas,
+                        poker:SieteDeTreboles .
+
+ex:JJJF55hd a poker:Mano ;
+    rdfs:label "Full House — Trío de Jotas con Par de Cincos" ;
+    poker:contieneCarta poker:JotaDePicas,
+                        poker:JotaDeCorazones,
+                        poker:JotaDeDiamantes,
+                        poker:CincoDeCorazones,
+                        poker:CincoDeDiamantes .
+
+
+# =============================================================================
+# Full House — Trío de Doses (5 manos)
+# Trío fijo: DosDePicas, DosDeCorazones, DosDeDiamantes
+# =============================================================================
+
+ex:222FAAcs a poker:Mano ;
+    rdfs:label "Full House — Trío de Doses con Par de Ases" ;
+    poker:contieneCarta poker:DosDePicas,
+                        poker:DosDeCorazones,
+                        poker:DosDeDiamantes,
+                        poker:AsDeTreboles,
+                        poker:AsDePicas .
+
+ex:222FKKhc a poker:Mano ;
+    rdfs:label "Full House — Trío de Doses con Par de Reyes" ;
+    poker:contieneCarta poker:DosDePicas,
+                        poker:DosDeCorazones,
+                        poker:DosDeDiamantes,
+                        poker:ReyDeCorazones,
+                        poker:ReyDeTreboles .
+
+ex:222FQQsd a poker:Mano ;
+    rdfs:label "Full House — Trío de Doses con Par de Reinas" ;
+    poker:contieneCarta poker:DosDePicas,
+                        poker:DosDeCorazones,
+                        poker:DosDeDiamantes,
+                        poker:ReinaDePicas,
+                        poker:ReinaDeDiamantes .
+
+ex:222F88ch a poker:Mano ;
+    rdfs:label "Full House — Trío de Doses con Par de Ochos" ;
+    poker:contieneCarta poker:DosDePicas,
+                        poker:DosDeCorazones,
+                        poker:DosDeDiamantes,
+                        poker:OchoDeTreboles,
+                        poker:OchoDeCorazones .
+
+ex:222F66sd a poker:Mano ;
+    rdfs:label "Full House — Trío de Doses con Par de Seises" ;
+    poker:contieneCarta poker:DosDePicas,
+                        poker:DosDeCorazones,
+                        poker:DosDeDiamantes,
+                        poker:SeisDePicas,
+                        poker:SeisDeDiamantes .
+
+
+# =============================================================================
+# Unicidad de instancias
+# =============================================================================
+
+[] a owl:AllDifferent ;
+    owl:distinctMembers (
+        ex:AAAFKKsh   ex:AAAFQQdc   ex:AAAFJJsc
+        ex:AAAFTThd   ex:AAAF22cs
+        ex:KKKFAAch   ex:KKKFQQsd   ex:KKKFJJhc
+        ex:KKKF99sh   ex:KKKF33dc
+        ex:JJJFAAsc   ex:JJJFKKhc   ex:JJJFQQdh
+        ex:JJJF77sc   ex:JJJF55hd
+        ex:222FAAcs   ex:222FKKhc   ex:222FQQsd
+        ex:222F88ch   ex:222F66sd
+    ) .
