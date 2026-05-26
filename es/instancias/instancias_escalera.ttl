@@ -19,7 +19,7 @@
 # =============================================================================
 
 ex:A2345 a poker:Mano ;
-    rdfs:label "Escalera As-2-3-4-5" ;
+    rdfs:label "Escalera A-2-3-4-5" ;
     poker:contieneCarta poker:AsDePicas, poker:DosDeCorazones,
                         poker:TresDeDiamantes, poker:CuatroDeTreboles,
                         poker:CincoDePicas .
@@ -118,7 +118,7 @@ ex:9TJQK a poker:Mano ;
 # =============================================================================
 
 ex:TJQKA a poker:Mano ;
-    rdfs:label "Escalera 10-J-Q-K-As" ;
+    rdfs:label "Escalera 10-J-Q-K-A" ;
     poker:contieneCarta poker:DiezDeDiamantes, poker:JotaDeTreboles,
                         poker:ReinaDePicas, poker:ReyDeCorazones,
                         poker:AsDeDiamantes .
