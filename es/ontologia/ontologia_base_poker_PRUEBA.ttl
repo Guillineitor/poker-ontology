@@ -438,8 +438,24 @@ poker:EscaleraColor a owl:Class ;
 # Definición de la clase EscaleraReal
 poker:EscaleraReal a owl:Class ;
     rdfs:subClassOf poker:EscaleraColor ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:EscaleraColor
+            [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+              owl:someValuesFrom poker:CartaDeDiez ]
+            [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+              owl:someValuesFrom poker:CartaDeJota ]
+            [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+              owl:someValuesFrom poker:CartaDeReina ]
+            [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+              owl:someValuesFrom poker:CartaDeRey ]
+            [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
+              owl:someValuesFrom poker:CartaDeAs ]
+        )
+    ] ;
     rdfs:label "Escalera Real" ;
-    rdfs:comment "Escalera de color de Diez a As (10-J-Q-K-A del mismo palo). Subclase de EscaleraColor." .
+    rdfs:comment "Mano formada por las cinco cartas de mayor rango consecutivas (10-J-Q-K-A)" .
 
 
 # =============================================================================
