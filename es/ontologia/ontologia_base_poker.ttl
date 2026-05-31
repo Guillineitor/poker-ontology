@@ -257,7 +257,7 @@ poker:CartaAlta a owl:Class ;
     rdfs:label "Carta Alta" ;
     rdfs:comment "Sin combinación; la carta más alta decide el ganador." .
 
-# Definición de la clase Par
+# Definición de la clase Par.
 poker:Par a owl:Class ;
     rdfs:subClassOf poker:Mano ;
     owl:equivalentClass [
@@ -267,38 +267,38 @@ poker:Par a owl:Class ;
             [
                 a owl:Class ;
                 owl:unionOf (
-                    # Dos de cualquier rango
+                    # Par de Dos de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ]
-                    # Tres de cualquier rango
+                    # Par de Tres de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ]
-                    # Cuatro de cualquier rango
+                    # Par de Cuatro de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ]
-                    # Cinco de cualquier rango
+                    # Par de Cinco de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ]
-                    # Seis de cualquier rango
+                    # Par de Seis de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ]
-                    # Siete de cualquier rango
+                    # Par de Siete de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ]
-                    # Ocho de cualquier rango
+                    # Par de Ocho de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ]
-                    # Nueve de cualquier rango
+                    # Par de Nueve de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ]
-                    # Diez de cualquier rango
+                    # Par de Diez de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ]
-                    # Jota de cualquier rango
+                    # Par de Jota de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ]
-                    # Reina de cualquier rango
+                    # Par de Reina de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ]
-                    # Rey de cualquier rango
+                    # Par de Rey de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ]
-                    # As de cualquier rango
+                    # Par de As de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ]
                 )
             ]
         )
     ] ;
     rdfs:label "Par" ;
-    rdfs:comment "Dos cartas del mismo rango, independientemente del palo." .
+    rdfs:comment "Mano formada por dos cartas del mismo rango más tres cartas adicionales de rango distinto de la pareja y distintas entre sí" .
 
 # Definición de la clase DoblePar
 poker:DoblePar a owl:Class ;
@@ -473,7 +473,7 @@ poker:DoblePar a owl:Class ;
     rdfs:label "Doble Par" ;
     rdfs:comment "Dos pares de rangos distintos, independientemente del palo." .
 
-# Definición de la clase Trio
+# Definición de la clase Trio.
 poker:Trio a owl:Class ;
     rdfs:subClassOf poker:Mano ;
     owl:equivalentClass [
@@ -483,40 +483,40 @@ poker:Trio a owl:Class ;
             [
                 a owl:Class ;
                 owl:unionOf (
-                    # Dos de cualquier rango
+                    # Trío de Dos de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ]
-                    # Tres de cualquier rango
+                    # Trío de Tres de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ]
-                    # Cuatro de cualquier rango
+                    # Trío de Cuatro de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ]
-                    # Cinco de cualquier rango
+                    # Trío de Cinco de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ]
-                    # Seis de cualquier rango
+                    # Trío de Seis de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ]
-                    # Siete de cualquier rango
+                    # Trío de Siete de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ]
-                    # Ocho de cualquier rango
+                    # Trío de Ocho de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ]
-                    # Nueve de cualquier rango
+                    # Trío de Nueve de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ]
-                    # Diez de cualquier rango
+                    # Trío de Diez de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ]
-                    # Jota de cualquier rango
+                    # Trío de Jota de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ]
-                    # Reina de cualquier rango
+                    # Trío de Reina de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ]
-                    # Rey de cualquier rango
+                    # Trío de Rey de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ]
-                    # As de cualquier rango
+                    # Trío de As de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ]
                 )
             ]
         )
     ] ;
     rdfs:label "Trío" ;
-    rdfs:comment "Tres cartas del mismo rango, independientemente del palo." .
+    rdfs:comment "Mano formada por tres cartas del mismo rango y otras dos cartas distintas al trío y distintas entre sí. " .
 
-# Definición de la clase Escalera
+# Definición de la clase Escalera.
 poker:Escalera a owl:Class ;
     rdfs:subClassOf poker:Mano ;
     owl:equivalentClass [
@@ -526,7 +526,7 @@ poker:Escalera a owl:Class ;
             [
                 a owl:Class ;
                 owl:unionOf (
-                    # A-2-3-4-5 
+                    # Escalera A-2-3-4-5. 
                     [ a owl:Class ; owl:intersectionOf (
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeAs ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDos ]
@@ -534,7 +534,7 @@ poker:Escalera a owl:Class ;
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCuatro ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCinco ]
                     )]
-                    # 2-3-4-5-6
+                    # Escalera 2-3-4-5-6.
                     [ a owl:Class ; owl:intersectionOf (
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDos ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeTres ]
@@ -542,7 +542,7 @@ poker:Escalera a owl:Class ;
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCinco ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSeis ]
                     )]
-                    # 3-4-5-6-7
+                    # Escalera 3-4-5-6-7.
                     [ a owl:Class ; owl:intersectionOf (
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeTres ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCuatro ]
@@ -550,7 +550,7 @@ poker:Escalera a owl:Class ;
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSeis ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSiete ]
                     )]
-                    # 4-5-6-7-8
+                    # Escalera 4-5-6-7-8.
                     [ a owl:Class ; owl:intersectionOf (
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCuatro ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCinco ]
@@ -558,7 +558,7 @@ poker:Escalera a owl:Class ;
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSiete ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeOcho ]
                     )]
-                    # 5-6-7-8-9
+                    # Escalera 5-6-7-8-9.
                     [ a owl:Class ; owl:intersectionOf (
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCinco ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSeis ]
@@ -566,7 +566,7 @@ poker:Escalera a owl:Class ;
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeOcho ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeNueve ]
                     )]
-                    # 6-7-8-9-10
+                    # Escalera 6-7-8-9-10.
                     [ a owl:Class ; owl:intersectionOf (
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSeis ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSiete ]
@@ -574,7 +574,7 @@ poker:Escalera a owl:Class ;
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeNueve ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiez ]
                     )]
-                    # 7-8-9-10-J
+                    # Escalera 7-8-9-10-J.
                     [ a owl:Class ; owl:intersectionOf (
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSiete ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeOcho ]
@@ -582,7 +582,7 @@ poker:Escalera a owl:Class ;
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiez ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeJota ]
                     )]
-                    # 8-9-10-J-Q
+                    # Escalera 8-9-10-J-Q.
                     [ a owl:Class ; owl:intersectionOf (
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeOcho ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeNueve ]
@@ -590,7 +590,7 @@ poker:Escalera a owl:Class ;
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeJota ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeReina ]
                     )]
-                    # 9-10-J-Q-K
+                    # Escalera 9-10-J-Q-K.
                     [ a owl:Class ; owl:intersectionOf (
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeNueve ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiez ]
@@ -598,7 +598,7 @@ poker:Escalera a owl:Class ;
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeReina ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeRey ]
                     )]
-                    # 10-J-Q-K-A 
+                    # Escalera 10-J-Q-K-A. 
                     [ a owl:Class ; owl:intersectionOf (
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiez ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeJota ]
@@ -611,9 +611,9 @@ poker:Escalera a owl:Class ;
         )
     ] ;
     rdfs:label "Escalera" ;
-    rdfs:comment "Cinco cartas de rangos consecutivos, independientemente del palo." .
+    rdfs:comment "Mano formada por cinco cartas de rangos consecutivos, no necesariamente del mismo palo. " .
     
-# Definición de la clase Color
+# Definición de la clase Color.
 poker:Color a owl:Class ;
     rdfs:subClassOf poker:Mano ;
     owl:equivalentClass [
@@ -623,18 +623,22 @@ poker:Color a owl:Class ;
             [
                 a owl:Class ;
                 owl:unionOf (
+                    # Color de Corazones.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:allValuesFrom poker:CartaDeCorazones ]
+                    # Color de Diamantes.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:allValuesFrom poker:CartaDeDiamantes ]
+                    # Color de Picas.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:allValuesFrom poker:CartaDePicas ]
+                    # Color de Tréboles.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:allValuesFrom poker:CartaDeTreboles ]
                 )
             ]
         )
     ] ;
     rdfs:label "Color" ;
-    rdfs:comment "Cinco cartas del mismo palo." .
+    rdfs:comment "Mano formada por cinco cartas del mismo palo, no necesariamente consecutivas entre sí." .
 
-# Definición de la clase FullHouse
+# Definición de la clase FullHouse.
 #
 # Estrategia O(n): en lugar de enumerar las C(13,2)×2 = 156 combinaciones
 # (trío_de_X + par_de_Y) explícitamente, aprovechamos que:
@@ -859,7 +863,7 @@ poker:FullHouse a owl:Class ;
     rdfs:label "Full House" ;
     rdfs:comment "Un trío más un par. Clasificado por exclusión: cada rango aporta 0, 2 ó 3 cartas (nunca 1, nunca 4); la única partición de 5 en {0,2,3} es 3+2." .
 
-# Definición de la clase Poker
+# Definición de la clase Poker.
 poker:Poker a owl:Class ;
     rdfs:subClassOf poker:Mano ;
     owl:equivalentClass [
@@ -869,372 +873,59 @@ poker:Poker a owl:Class ;
             [
                 a owl:Class ;
                 owl:unionOf (
+                    # Póker de Dos de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ]
+                    # Póker de Tres de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ]
+                    # Póker de Cuatro de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ]
+                    # Póker de Cinco de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ]
+                    # Póker de Seis de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ]
+                    # Póker de Siete de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ]
+                    # Póker de Ocho de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ]
+                    # Póker de Nueve de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ]
+                    # Póker de Diez de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ]
+                    # Póker de Jota de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ]
+                    # Póker de Reina de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ]
+                    # Póker de Rey de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ]
+                    # Póker de As de cualquier palo.
                     [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ]
                 )
             ]
         )
     ] ;
     rdfs:label "Póker" ;
-    rdfs:comment "Cuatro cartas del mismo rango, independientemente del palo." .
+    rdfs:comment "Mano formada por cuatro cartas del mismo rango y una carta cualquiera " .
 
-# Definición de la clase EscaleraColor
+# Definición de la clase EscaleraColor.
+# Observación: La Escalera de Color es la intersección de Escalera y Color, por lo que se define como equivalente a la intersección de ambas. 
+# La Escalera Real es un caso especial de Escalera de Color, por lo que se define como subclase de EscaleraColor más adelante.
 poker:EscaleraColor a owl:Class ;
     rdfs:subClassOf poker:Mano ;
     owl:equivalentClass [
         a owl:Class ;
         owl:intersectionOf (
-            poker:Mano
-            [
-                a owl:Class ;
-                owl:unionOf (
-
-                    # -------------------------------------------------------
-                    # A-2-3-4-5
-                    # -------------------------------------------------------
-                    # A-2-3-4-5 Picas
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeAs    poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDos    poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeTres   poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCuatro poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDePicas ) ] ]
-                    )]
-                    # A-2-3-4-5 Corazones
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeAs    poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDos    poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeTres   poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCuatro poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDeCorazones ) ] ]
-                    )]
-                    # A-2-3-4-5 Diamantes
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeAs    poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDos    poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeTres   poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCuatro poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDeDiamantes ) ] ]
-                    )]
-                    # A-2-3-4-5 Tréboles
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeAs    poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDos    poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeTres   poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCuatro poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDeTreboles ) ] ]
-                    )]
-
-                    # -------------------------------------------------------
-                    # 2-3-4-5-6
-                    # -------------------------------------------------------
-                    # 2-3-4-5-6 Picas
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDos    poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeTres   poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCuatro poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDePicas ) ] ]
-                    )]
-                    # 2-3-4-5-6 Corazones
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDos    poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeTres   poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCuatro poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDeCorazones ) ] ]
-                    )]
-                    # 2-3-4-5-6 Diamantes
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDos    poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeTres   poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCuatro poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDeDiamantes ) ] ]
-                    )]
-                    # 2-3-4-5-6 Tréboles
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDos    poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeTres   poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCuatro poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDeTreboles ) ] ]
-                    )]
-
-                    # -------------------------------------------------------
-                    # 3-4-5-6-7
-                    # -------------------------------------------------------
-                    # 3-4-5-6-7 Picas
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeTres   poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCuatro poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDePicas ) ] ]
-                    )]
-                    # 3-4-5-6-7 Corazones
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeTres   poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCuatro poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDeCorazones ) ] ]
-                    )]
-                    # 3-4-5-6-7 Diamantes
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeTres   poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCuatro poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDeDiamantes ) ] ]
-                    )]
-                    # 3-4-5-6-7 Tréboles
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeTres   poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCuatro poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDeTreboles ) ] ]
-                    )]
-
-                    # -------------------------------------------------------
-                    # 4-5-6-7-8
-                    # -------------------------------------------------------
-                    # 4-5-6-7-8 Picas
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCuatro poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDePicas ) ] ]
-                    )]
-                    # 4-5-6-7-8 Corazones
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCuatro poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDeCorazones ) ] ]
-                    )]
-                    # 4-5-6-7-8 Diamantes
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCuatro poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDeDiamantes ) ] ]
-                    )]
-                    # 4-5-6-7-8 Tréboles
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCuatro poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDeTreboles ) ] ]
-                    )]
-
-                    # -------------------------------------------------------
-                    # 5-6-7-8-9
-                    # -------------------------------------------------------
-                    # 5-6-7-8-9 Picas
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDePicas ) ] ]
-                    )]
-                    # 5-6-7-8-9 Corazones
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDeCorazones ) ] ]
-                    )]
-                    # 5-6-7-8-9 Diamantes
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDeDiamantes ) ] ]
-                    )]
-                    # 5-6-7-8-9 Tréboles
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeCinco  poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDeTreboles ) ] ]
-                    )]
-
-                    # -------------------------------------------------------
-                    # 6-7-8-9-10
-                    # -------------------------------------------------------
-                    # 6-7-8-9-10 Picas
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDiez   poker:CartaDePicas ) ] ]
-                    )]
-                    # 6-7-8-9-10 Corazones
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDiez   poker:CartaDeCorazones ) ] ]
-                    )]
-                    # 6-7-8-9-10 Diamantes
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDiez   poker:CartaDeDiamantes ) ] ]
-                    )]
-                    # 6-7-8-9-10 Tréboles
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSeis   poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDiez   poker:CartaDeTreboles ) ] ]
-                    )]
-
-                    # -------------------------------------------------------
-                    # 7-8-9-10-J
-                    # -------------------------------------------------------
-                    # 7-8-9-10-J Picas
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDiez   poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeJota   poker:CartaDePicas ) ] ]
-                    )]
-                    # 7-8-9-10-J Corazones
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDiez   poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeJota   poker:CartaDeCorazones ) ] ]
-                    )]
-                    # 7-8-9-10-J Diamantes
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDiez   poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeJota   poker:CartaDeDiamantes ) ] ]
-                    )]
-                    # 7-8-9-10-J Tréboles
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeSiete  poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDiez   poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeJota   poker:CartaDeTreboles ) ] ]
-                    )]
-
-                    # -------------------------------------------------------
-                    # 8-9-10-J-Q
-                    # -------------------------------------------------------
-                    # 8-9-10-J-Q Picas
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDiez   poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeJota   poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeReina  poker:CartaDePicas ) ] ]
-                    )]
-                    # 8-9-10-J-Q Corazones
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDiez   poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeJota   poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeReina  poker:CartaDeCorazones ) ] ]
-                    )]
-                    # 8-9-10-J-Q Diamantes
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDiez   poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeJota   poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeReina  poker:CartaDeDiamantes ) ] ]
-                    )]
-                    # 8-9-10-J-Q Tréboles
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeOcho   poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDiez   poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeJota   poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeReina  poker:CartaDeTreboles ) ] ]
-                    )]
-
-                    # -------------------------------------------------------
-                    # 9-10-J-Q-K
-                    # -------------------------------------------------------
-                    # 9-10-J-Q-K Picas
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDiez   poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeJota   poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeReina  poker:CartaDePicas ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeRey    poker:CartaDePicas ) ] ]
-                    )]
-                    # 9-10-J-Q-K Corazones
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDiez   poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeJota   poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeReina  poker:CartaDeCorazones ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeRey    poker:CartaDeCorazones ) ] ]
-                    )]
-                    # 9-10-J-Q-K Diamantes
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDiez   poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeJota   poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeReina  poker:CartaDeDiamantes ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeRey    poker:CartaDeDiamantes ) ] ]
-                    )]
-                    # 9-10-J-Q-K Tréboles
-                    [ a owl:Class ; owl:intersectionOf (
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeNueve  poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeDiez   poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeJota   poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeReina  poker:CartaDeTreboles ) ] ]
-                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom [ a owl:Class ; owl:intersectionOf ( poker:CartaDeRey    poker:CartaDeTreboles ) ] ]
-                    )]
-                )
-            ]
+            poker:Escalera
+            poker:Color
         )
     ] ;
     rdfs:label "Escalera de Color" ;
-    rdfs:comment "Cinco cartas consecutivas del mismo palo. Excluye 10-J-Q-K-A (EscaleraReal)." .
+    rdfs:comment "Mano formada por cinco cartas consecutivas del mismo palo." .
 
 # Definición de la clase EscaleraReal
 poker:EscaleraReal a owl:Class ;
     rdfs:subClassOf poker:EscaleraColor ;
     rdfs:label "Escalera Real" ;
-    rdfs:comment "Escalera de color de Diez a As (10-J-Q-K-A del mismo palo). Subclase de EscaleraColor." .
+    rdfs:comment "Escalera de Real de Diez a As (10-J-Q-K-A del mismo palo). Subclase de EscaleraColor." .
 
 
 # =============================================================================
