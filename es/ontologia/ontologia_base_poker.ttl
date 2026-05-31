@@ -2,7 +2,6 @@
 # Ontología de Póker Texas Hold'em (Español)
 # =============================================================================
 
-@prefix : <http://www.poker-ontology.org/poker#> .
 @prefix poker: <http://www.poker-ontology.org/poker#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -203,19 +202,8 @@ poker:CartaDeAs a owl:Class ;
 # Grupos de Cartas
 # =============================================================================
 
-# Jerarquía de grupos de cartas:
-#
-#   GrupoDeCartas
-#   └── Mano           La mejor combinación de 5 cartas del jugador
-
-# Definición de la clase GrupoDeCartas
-poker:GrupoDeCartas a owl:Class ;
-    rdfs:label "Grupo de Cartas" ;
-    rdfs:comment "Agrupación de cartas en el juego: la mejor mano formada por un jugador." .
-
 # Definición de la clase Mano
 poker:Mano a owl:Class ;
-    rdfs:subClassOf poker:GrupoDeCartas ;
     rdfs:subClassOf [
         a owl:Restriction ;
         owl:onProperty poker:contieneCarta ;
@@ -259,7 +247,6 @@ poker:CartaAlta a owl:Class ;
 
 # Definición de la clase Par.
 poker:Par a owl:Class ;
-    rdfs:subClassOf poker:Mano ;
     owl:equivalentClass [
         a owl:Class ;
         owl:intersectionOf (
@@ -301,8 +288,8 @@ poker:Par a owl:Class ;
     rdfs:comment "Mano formada por dos cartas del mismo rango más tres cartas adicionales de rango distinto de la pareja y distintas entre sí" .
 
 # Definición de la clase DoblePar
+# Definición de la clase DoblePar
 poker:DoblePar a owl:Class ;
-    rdfs:subClassOf poker:Mano ;
     owl:equivalentClass [
         a owl:Class ;
         owl:intersectionOf (
@@ -310,161 +297,161 @@ poker:DoblePar a owl:Class ;
             [
                 a owl:Class ;
                 owl:unionOf (
-                    # Dos + Tres, de cualquier rango
+                    # Dos + Tres, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ] ) ]
-                    # Dos + Cuatro, de cualquier rango
+                    # Dos + Cuatro, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ] ) ]
-                    # Dos + Cinco, de cualquier rango
+                    # Dos + Cinco, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ] ) ]
-                    # Dos + Seis, de cualquier rango
+                    # Dos + Seis, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ] ) ]
-                    # Dos + Siete, de cualquier rango
+                    # Dos + Siete, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ] ) ]
-                    # Dos + Ocho, de cualquier rango
+                    # Dos + Ocho, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ] ) ]
-                    # Dos + Nueve, de cualquier rango
+                    # Dos + Nueve, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ] ) ]
-                    # Dos + Diez, de cualquier rango
+                    # Dos + Diez, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ] ) ]
-                    # Dos + Jota, de cualquier rango
+                    # Dos + Jota, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ] ) ]
-                    # Dos + Reina, de cualquier rango
+                    # Dos + Reina, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ] ) ]
-                    # Dos + Rey, de cualquier rango
+                    # Dos + Rey, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ] ) ]
-                    # Dos + As, de cualquier rango
+                    # Dos + As, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ] ) ]
-                    # Tres + Cuatro, de cualquier rango
+                    # Tres + Cuatro, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ] ) ]
-                    # Tres + Cinco, de cualquier rango
+                    # Tres + Cinco, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ] ) ]
-                    # Tres + Seis, de cualquier rango
+                    # Tres + Seis, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ] ) ]
-                    # Tres + Siete, de cualquier rango
+                    # Tres + Siete, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ] ) ]
-                    # Tres + Ocho, de cualquier rango
+                    # Tres + Ocho, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ] ) ]
-                    # Tres + Nueve, de cualquier rango
+                    # Tres + Nueve, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ] ) ]
-                    # Tres + Diez, de cualquier rango
+                    # Tres + Diez, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ] ) ]
-                    # Tres + Jota, de cualquier rango
+                    # Tres + Jota, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ] ) ]
-                    # Tres + Reina, de cualquier rango
+                    # Tres + Reina, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ] ) ]
-                    # Tres + Rey, de cualquier rango
+                    # Tres + Rey, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ] ) ]
-                    # Tres + As, de cualquier rango
+                    # Tres + As, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ] ) ]
-                    # Cuatro + Cinco, de cualquier rango
+                    # Cuatro + Cinco, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ] ) ]
-                    # Cuatro + Seis, de cualquier rango
+                    # Cuatro + Seis, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ] ) ]
-                    # Cuatro + Siete, de cualquier rango
+                    # Cuatro + Siete, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ] ) ]
-                    # Cuatro + Ocho, de cualquier rango
+                    # Cuatro + Ocho, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ] ) ]
-                    # Cuatro + Nueve, de cualquier rango
+                    # Cuatro + Nueve, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ] ) ]
-                    # Cuatro + Diez, de cualquier rango
+                    # Cuatro + Diez, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ] ) ]
-                    # Cuatro + Jota, de cualquier rango 
+                    # Cuatro + Jota, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ] ) ]
-                    # Cuatro + Reina, de cualquier rango    
+                    # Cuatro + Reina, de cualquier palo.   
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ] ) ]
-                    # Cuatro + Rey, de cualquier rango
+                    # Cuatro + Rey, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ] ) ]
-                    # Cuatro + As, de cualquier rango
+                    # Cuatro + As, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ] ) ]
-                    # Cinco + Seis, de cualquier rango
+                    # Cinco + Seis, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ] ) ]
-                    # Cinco + Siete, de cualquier rango
+                    # Cinco + Siete, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ] ) ]
-                    # Cinco + Ocho, de cualquier rango
+                    # Cinco + Ocho, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ] ) ]
-                    # Cinco + Nueve, de cualquier rango
+                    # Cinco + Nueve, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ] ) ]
-                    # Cinco + Diez, de cualquier rango
+                    # Cinco + Diez, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ] ) ]
-                    # Cinco + Jota, de cualquier rango
+                    # Cinco + Jota, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ] ) ]
-                    # Cinco + Reina, de cualquier rango
+                    # Cinco + Reina, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ] ) ]
-                    # Cinco + Rey, de cualquier rango
+                    # Cinco + Rey, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ] ) ]
-                    # Cinco + As, de cualquier rango
+                    # Cinco + As, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ] ) ]
-                    # Seis + Siete, de cualquier rango
+                    # Seis + Siete, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ] ) ]
-                    # Seis + Ocho, de cualquier rango
+                    # Seis + Ocho, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ] ) ]
-                    # Seis + Nueve, de cualquier rango
+                    # Seis + Nueve, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ] ) ]
-                    # Seis + Diez, de cualquier rango
+                    # Seis + Diez, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ] ) ]
-                    # Seis + Jota, de cualquier rango
+                    # Seis + Jota, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ] ) ]
-                    # Seis + Reina, de cualquier rango
+                    # Seis + Reina, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ] ) ]
-                    # Seis + Rey, de cualquier rango
+                    # Seis + Rey, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ] ) ]
-                    # Seis + As, de cualquier rango
+                    # Seis + As, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ] ) ]
-                    # Siete + Ocho, de cualquier rango
+                    # Siete + Ocho, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ] ) ]
-                    # Siete + Nueve, de cualquier rango
+                    # Siete + Nueve, de cualquier palo
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ] ) ]
-                    # Siete + Diez, de cualquier rango
+                    # Siete + Diez, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ] ) ]
-                    # Siete + Jota, de cualquier rango
+                    # Siete + Jota, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ] ) ]
-                    # Siete + Reina, de cualquier rango
+                    # Siete + Reina, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ] ) ]
-                    # Siete + Rey, de cualquier rango
+                    # Siete + Rey, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ] ) ]
-                    # Siete + As, de cualquier rango
+                    # Siete + As, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ] ) ]
-                    # Ocho + Nueve, de cualquier rango
+                    # Ocho + Nueve, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ] ) ]
-                    # Ocho + Diez, de cualquier rango
+                    # Ocho + Diez, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ] ) ]
-                    # Ocho + Jota, de cualquier rango
+                    # Ocho + Jota, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ] ) ]
-                    # Ocho + Reina, de cualquier rango
+                    # Ocho + Reina, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ] ) ]
-                    # Ocho + Rey, de cualquier rango
+                    # Ocho + Rey, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ] ) ]
-                    # Ocho + As, de cualquier rango
+                    # Ocho + As, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ] ) ]
-                    # Nueve + Diez, de cualquier rango
+                    # Nueve + Diez, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ] ) ]
-                    # Nueve + Jota, de cualquier rango
+                    # Nueve + Jota, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ] ) ]
-                    # Nueve + Reina, de cualquier rango
+                    # Nueve + Reina, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ] ) ]
-                    # Nueve + Rey, de cualquier rango
+                    # Nueve + Rey, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ] ) ]
-                    # Nueve + As, de cualquier rango
+                    # Nueve + As, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ] ) ]
-                    # Diez + Jota, de cualquier rango
+                    # Diez + Jota, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ] ) ]
-                    # Diez + Reina, de cualquier rango
+                    # Diez + Reina, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ] ) ]
-                    # Diez + Rey, de cualquier rango
+                    # Diez + Rey, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ] ) ]
-                    # Diez + As, de cualquier rango
+                    # Diez + As, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ] ) ]
-                    # Jota + Reina, de cualquier rango
+                    # Jota + Reina, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ] ) ]
-                    # Jota + Rey, de cualquier rango
+                    # Jota + Rey, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ] ) ]
-                    # Jota + As, de cualquier rango
+                    # Jota + As, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeJota ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ] ) ]
-                    # Reina + Rey, de cualquier rango
+                    # Reina + Rey, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ] ) ]
-                    # Reina + As, de cualquier rango
+                    # Reina + As, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeReina ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ] ) ]
-                    # Rey + As, de cualquier rango
+                    # Rey + As, de cualquier palo.
                     [ a owl:Class ; owl:intersectionOf ( [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRey ] [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAs ] ) ]
                 )
             ]
@@ -475,7 +462,6 @@ poker:DoblePar a owl:Class ;
 
 # Definición de la clase Trio.
 poker:Trio a owl:Class ;
-    rdfs:subClassOf poker:Mano ;
     owl:equivalentClass [
         a owl:Class ;
         owl:intersectionOf (
@@ -518,7 +504,6 @@ poker:Trio a owl:Class ;
 
 # Definición de la clase Escalera.
 poker:Escalera a owl:Class ;
-    rdfs:subClassOf poker:Mano ;
     owl:equivalentClass [
         a owl:Class ;
         owl:intersectionOf (
@@ -615,7 +600,6 @@ poker:Escalera a owl:Class ;
     
 # Definición de la clase Color.
 poker:Color a owl:Class ;
-    rdfs:subClassOf poker:Mano ;
     owl:equivalentClass [
         a owl:Class ;
         owl:intersectionOf (
@@ -639,32 +623,19 @@ poker:Color a owl:Class ;
     rdfs:comment "Mano formada por cinco cartas del mismo palo, no necesariamente consecutivas entre sí." .
 
 # Definición de la clase FullHouse.
-#
-# Estrategia O(n): en lugar de enumerar las C(13,2)×2 = 156 combinaciones
+# Observación: En lugar de enumerar las C(13,2)×2 = 156 combinaciones
 # (trío_de_X + par_de_Y) explícitamente, aprovechamos que:
-#
 # Si una mano de 5 cartas contiene, para CADA rango, exactamente
 # 0, 2 o 3 cartas (nunca 1, nunca 4), entonces la única partición
 # posible de 5 con valores del conjunto {0, 2, 3} es 3+2.
-# Esto es exactamente un Full House.
-#
-# Para cada rango R expresamos la condición con dos restricciones:
-#   1. maxQualifiedCardinality 0 CartaDeR  ∪  minQualifiedCardinality 2 CartaDeR
-#        → la mano NO contiene exactamente 1 carta de rango R
-#   2. maxQualifiedCardinality 3 CartaDeR
-#        → la mano NO contiene 4 cartas de rango R
-#
-# La intersección de las 13 condiciones (una por rango) más Mano
-# produce exactamente los Full House, en OWL 2 DL puro.
-#
+# lo cuál equivale a que la mano sea de tipo Full House.
 poker:FullHouse a owl:Class ;
-    rdfs:subClassOf poker:Mano ;
     owl:equivalentClass [
         a owl:Class ;
         owl:intersectionOf (
             poker:Mano
 
-            # ── Dos: la mano tiene 0, 2 ó 3 cartas de Dos ──────────────────
+            # Casos donde la mano tiene 0, 2 ó 3 cartas de Dos.
             [ a owl:Class ; owl:intersectionOf (
                 [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
                   owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
@@ -679,7 +650,7 @@ poker:FullHouse a owl:Class ;
                 )]
             )]
 
-            # ── Tres: la mano tiene 0, 2 ó 3 cartas de Tres ─────────────────
+            # Casos donde la mano tiene 0, 2 ó 3 cartas de Tres.
             [ a owl:Class ; owl:intersectionOf (
                 [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
                   owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
@@ -694,7 +665,7 @@ poker:FullHouse a owl:Class ;
                 )]
             )]
 
-            # ── Cuatro: la mano tiene 0, 2 ó 3 cartas de Cuatro ─────────────
+            # Casos donde la mano tiene 0, 2 ó 3 cartas de Cuatro.
             [ a owl:Class ; owl:intersectionOf (
                 [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
                   owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
@@ -709,7 +680,7 @@ poker:FullHouse a owl:Class ;
                 )]
             )]
 
-            # ── Cinco: la mano tiene 0, 2 ó 3 cartas de Cinco ───────────────
+            # Casos donde la mano tiene 0, 2 ó 3 cartas de Cinco.
             [ a owl:Class ; owl:intersectionOf (
                 [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
                   owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
@@ -724,7 +695,7 @@ poker:FullHouse a owl:Class ;
                 )]
             )]
 
-            # ── Seis: la mano tiene 0, 2 ó 3 cartas de Seis ─────────────────
+            # Casos donde la mano tiene 0, 2 ó 3 cartas de Seis.
             [ a owl:Class ; owl:intersectionOf (
                 [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
                   owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
@@ -739,7 +710,7 @@ poker:FullHouse a owl:Class ;
                 )]
             )]
 
-            # ── Siete: la mano tiene 0, 2 ó 3 cartas de Siete ───────────────
+            # Casos donde la mano tiene 0, 2 ó 3 cartas de Siete.
             [ a owl:Class ; owl:intersectionOf (
                 [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
                   owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
@@ -754,7 +725,7 @@ poker:FullHouse a owl:Class ;
                 )]
             )]
 
-            # ── Ocho: la mano tiene 0, 2 ó 3 cartas de Ocho ─────────────────
+            # Casos donde la mano tiene 0, 2 ó 3 cartas de Ocho.
             [ a owl:Class ; owl:intersectionOf (
                 [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
                   owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
@@ -769,7 +740,7 @@ poker:FullHouse a owl:Class ;
                 )]
             )]
 
-            # ── Nueve: la mano tiene 0, 2 ó 3 cartas de Nueve ───────────────
+            # Casos donde la mano tiene 0, 2 ó 3 cartas de Nueve.
             [ a owl:Class ; owl:intersectionOf (
                 [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
                   owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
@@ -784,7 +755,7 @@ poker:FullHouse a owl:Class ;
                 )]
             )]
 
-            # ── Diez: la mano tiene 0, 2 ó 3 cartas de Diez ─────────────────
+            # Casos donde la mano tiene 0, 2 ó 3 cartas de Diez.
             [ a owl:Class ; owl:intersectionOf (
                 [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
                   owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
@@ -799,7 +770,7 @@ poker:FullHouse a owl:Class ;
                 )]
             )]
 
-            # ── Jota: la mano tiene 0, 2 ó 3 cartas de Jota ─────────────────
+            # Casos donde la mano tiene 0, 2 ó 3 cartas de Jota.
             [ a owl:Class ; owl:intersectionOf (
                 [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
                   owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
@@ -814,7 +785,7 @@ poker:FullHouse a owl:Class ;
                 )]
             )]
 
-            # ── Reina: la mano tiene 0, 2 ó 3 cartas de Reina ───────────────
+            # Casos donde la mano tiene 0, 2 ó 3 cartas de Reina.
             [ a owl:Class ; owl:intersectionOf (
                 [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
                   owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
@@ -829,7 +800,7 @@ poker:FullHouse a owl:Class ;
                 )]
             )]
 
-            # ── Rey: la mano tiene 0, 2 ó 3 cartas de Rey ───────────────────
+            # Casos donde la mano tiene 0, 2 ó 3 cartas de Rey.
             [ a owl:Class ; owl:intersectionOf (
                 [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
                   owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
@@ -844,7 +815,7 @@ poker:FullHouse a owl:Class ;
                 )]
             )]
 
-            # ── As: la mano tiene 0, 2 ó 3 cartas de As ─────────────────────
+            # Casos donde la mano tiene 0, 2 ó 3 cartas de As.
             [ a owl:Class ; owl:intersectionOf (
                 [ a owl:Restriction ; owl:onProperty poker:contieneCarta ;
                   owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
@@ -865,7 +836,6 @@ poker:FullHouse a owl:Class ;
 
 # Definición de la clase Poker.
 poker:Poker a owl:Class ;
-    rdfs:subClassOf poker:Mano ;
     owl:equivalentClass [
         a owl:Class ;
         owl:intersectionOf (
@@ -910,7 +880,6 @@ poker:Poker a owl:Class ;
 # Observación: La Escalera de Color es la intersección de Escalera y Color, por lo que se define como equivalente a la intersección de ambas. 
 # La Escalera Real es un caso especial de Escalera de Color, por lo que se define como subclase de EscaleraColor más adelante.
 poker:EscaleraColor a owl:Class ;
-    rdfs:subClassOf poker:Mano ;
     owl:equivalentClass [
         a owl:Class ;
         owl:intersectionOf (
@@ -972,17 +941,10 @@ poker:tieneRango a owl:ObjectProperty , owl:FunctionalProperty ;
 
 # Definición de la propiedad contieneCarta.
 poker:contieneCarta a owl:ObjectProperty ;
-    rdfs:domain poker:GrupoDeCartas ;
+    rdfs:domain poker:Mano ; 
     rdfs:range poker:Carta ;
     rdfs:label "Contiene Carta" ;
     rdfs:comment "Relaciona una mano con cada una de las cartas que la componen." .
-
-# Definición de la propiedad tieneRangoSiguiente.
-poker:tieneRangoSiguiente a owl:ObjectProperty ;
-    rdfs:domain poker:Rango ;
-    rdfs:range poker:Rango ;
-    rdfs:label "Tiene Rango Siguiente" ;
-    rdfs:comment "Indica qué rango le sigue inmediatamente en la secuencia. Forma un ciclo cerrado (Rey → As → Dos) para representar la naturaleza circular de la baraja. No es una propiedad transitiva ya que colapsaría todos los rangos en uno solo." .
 
 # =============================================================================
 # Propiedades de datos
@@ -1012,26 +974,6 @@ poker:tieneValorRangoBajo a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:range xsd:nonNegativeInteger ;
     rdfs:label "Tiene Valor De Rango Bajo" ;
     rdfs:comment "Valor alternativo bajo del As (= 1) para la escalera baja A-2-3-4-5 (Wheel). Restringido exclusivamente al As." .
-
-
-# =============================================================================
-# Axiomas Estructurales y Restricciones de Disyunción
-# =============================================================================
-
-# Estos axiomas garantizan la consistencia global de la ontología.
-# Si se viola alguno, por ejemplo, clasificando algo como BotePrincipal y BoteSecundario
-# a la vez, un razonador como HermiT o Pellet detectará la inconsistencia.
-
-# =============================================================================
-# Descartado para más adelante
-# =============================================================================
-# Las 9 clases base de Mano son mutuamente disjuntas (descartado por ahora)
-# EscaleraReal queda excluido porque es subclase de EscaleraColor, no independiente.
-#[] a owl:AllDisjointClasses ;
-#    owl:members ( poker:CartaAlta poker:Par poker:DoblePar poker:Trio
-#                  poker:Escalera poker:Color poker:FullHouse poker:Poker
-#                  poker:EscaleraColor ) .
-
 
 # =============================================================================
 # Instancias (ABox)
@@ -1100,22 +1042,6 @@ poker:As a poker:Rango ;
     poker:tieneValorRango "14"^^xsd:nonNegativeInteger ;
     poker:tieneValorRangoBajo "1"^^xsd:nonNegativeInteger ;
     rdfs:label "As" .
-
-# Cadena estática de rangos para inferencia semántica en cuanto a orden de posición (el siguiente en valor)
-# Ej: Dos → Tres → ... → Rey → As → Dos. Esto es usado sobretodo en las manos de Escalera de Color y Escalera Real. 
-poker:As poker:tieneRangoSiguiente poker:Dos .
-poker:Dos poker:tieneRangoSiguiente poker:Tres .
-poker:Tres poker:tieneRangoSiguiente poker:Cuatro .
-poker:Cuatro poker:tieneRangoSiguiente poker:Cinco .
-poker:Cinco poker:tieneRangoSiguiente poker:Seis .
-poker:Seis poker:tieneRangoSiguiente poker:Siete .
-poker:Siete poker:tieneRangoSiguiente poker:Ocho .
-poker:Ocho poker:tieneRangoSiguiente poker:Nueve .
-poker:Nueve poker:tieneRangoSiguiente poker:Diez .
-poker:Diez poker:tieneRangoSiguiente poker:Jota .
-poker:Jota poker:tieneRangoSiguiente poker:Reina .
-poker:Reina poker:tieneRangoSiguiente poker:Rey .
-poker:Rey poker:tieneRangoSiguiente poker:As .
 
 # Cartas (52 individuos) -----------------------------------------------------
 # Convención de nombres: {Rango}De{Palo}  (ej. AsDePicas, ReyDeCorazones).
@@ -1320,7 +1246,3 @@ poker:AsDeTreboles a poker:Carta ;
         poker:DiezDeTreboles    poker:JotaDeTreboles     poker:ReinaDeTreboles   poker:ReyDeTreboles
         poker:AsDeTreboles
     ) .
-
-
-
-
