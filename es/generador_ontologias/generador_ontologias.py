@@ -35,8 +35,14 @@ def to_id(name: str) -> str:
     """
     Convierte un nombre libre en un identificador CamelCase válido para OWL.
     Ej: 'copas' -> 'Copas', 'Sota de Copas' -> 'SotaDeCopas'
+    Normaliza caracteres Unicode (tildes, diéresis, etc.) a su equivalente ASCII
+    para garantizar IRIs válidos en OWL/Turtle.
     """
-    # Elimina caracteres que no sean letras, dígitos ni espacios/guiones
+    import unicodedata
+    # Normaliza a NFD (descompone caracteres acentuados) y elimina marcas diacríticas
+    name = unicodedata.normalize("NFD", name)
+    name = "".join(c for c in name if unicodedata.category(c) != "Mn")
+    # Elimina caracteres que no sean letras ASCII, dígitos ni espacios/guiones
     name = re.sub(r"[^\w\s\-]", "", name, flags=re.UNICODE)
     parts = re.split(r"[\s\-_]+", name.strip())
     return "".join(p.capitalize() for p in parts if p)
@@ -180,7 +186,7 @@ def subclases_por_rango(rangos: list[str]) -> str:
             "",
             f"deck:CartaDe{rid} a owl:Class ;",
             "    rdfs:subClassOf deck:Carta ;",
-            "    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:{rid} ] ;",
+            f"    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:{rid} ] ;",
             f'    rdfs:label "Carta de {label(r)}" .',
         ]
     return "\n".join(lines)
