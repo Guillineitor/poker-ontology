@@ -15,8 +15,6 @@ El script pedirá interactivamente:
   - IRI base de la ontología
   - Lista de palos  (separados por coma)
   - Lista de rangos (separados por coma, en orden ascendente de valor)
-  - Si el último rango tiene un valor bajo alternativo (como el As en la
-    baraja inglesa, que vale 1 en la escalera baja)
 
 Salida
 ------
@@ -25,6 +23,7 @@ Salida
 
 import re
 import sys
+from itertools import combinations
 from pathlib import Path
 
 
@@ -267,7 +266,7 @@ def seccion_abox_palos(palos: list[str]) -> str:
     return "\n".join(lines)
 
 
-def seccion_abox_rangos(rangos: list[str], rango_bajo: str | None) -> str:
+def seccion_abox_rangos(rangos: list[str]) -> str:
     lines = [
         "",
         f"# Rangos ({len(rangos)} individuos) " + "-" * 43,
@@ -280,29 +279,8 @@ def seccion_abox_rangos(rangos: list[str], rango_bajo: str | None) -> str:
             f"deck:{rid} a deck:Rango ;",
             f'    deck:tieneValorRango "{i}"^^xsd:nonNegativeInteger ;',
         ]
-        # Si este es el último rango y tiene valor bajo alternativo
-        if rango_bajo and r == rangos[-1]:
-            lines += [
-                f'    deck:tieneValorRangoBajo "1"^^xsd:nonNegativeInteger ;',
-            ]
         lines.append(f'    rdfs:label "{label(r)}" .')
         lines.append("")
-
-    # Si hay valor bajo, declarar la propiedad
-    if rango_bajo:
-        ultimo_id = to_id(rangos[-1])
-        extra = [
-            "",
-            "deck:tieneValorRangoBajo a owl:DatatypeProperty , owl:FunctionalProperty ;",
-            "    rdfs:domain [",
-            "        a owl:Class ;",
-            f"        owl:oneOf ( deck:{ultimo_id} )",
-            "    ] ;",
-            "    rdfs:range xsd:nonNegativeInteger ;",
-            '    rdfs:label "Tiene Valor De Rango Bajo" ;',
-            f'    rdfs:comment "Valor alternativo bajo de {label(rangos[-1])} (= 1) para escalera baja. Restringido exclusivamente a {label(rangos[-1])}." .',
-        ]
-        lines += extra
 
     return "\n".join(lines)
 
@@ -512,21 +490,13 @@ def clasificador_trio(rangos: list[str]) -> str:
     return "\n".join(lineas)
 
 
-def clasificador_escalera(rangos: list[str], tiene_rango_bajo: bool) -> str:
+def clasificador_escalera(rangos: list[str]) -> str:
     """
     Escalera: 5 cartas de rangos consecutivos, cualquier palo.
     Genera las (n-4) secuencias posibles de 5 rangos consecutivos.
-    Si tiene_rango_bajo es True, añade también la escalera baja
-    donde el último rango actúa como el más bajo (como el As en A-2-3-4-5).
     """
     n = len(rangos)
     secuencias = []
-
-    # Escalera baja especial: último rango vale como el más bajo
-    if tiene_rango_bajo and n >= 5:
-        secuencias.append(
-            [rangos[-1]] + rangos[:4]  # p.ej. As + 2,3,4,5
-        )
 
     # Secuencias normales consecutivas
     for i in range(n - 4):
@@ -742,7 +712,6 @@ def generar_ontologia(
     base_iri: str,
     palos: list[str],
     rangos: list[str],
-    rango_bajo: bool,
 ) -> str:
     # Advertencia si hay menos de 5 rangos (no se pueden formar escaleras)
     tiene_escalera = len(rangos) >= 5
@@ -762,7 +731,7 @@ def generar_ontologia(
     ]
 
     if tiene_escalera:
-        partes.append(clasificador_escalera(rangos, rango_bajo))
+        partes.append(clasificador_escalera(rangos))
     else:
         partes.append(
             "\n# NOTA: Con menos de 5 rangos no es posible definir Escalera.\n"
@@ -782,7 +751,7 @@ def generar_ontologia(
     partes += [
         seccion_propiedades(),
         seccion_abox_palos(palos),
-        seccion_abox_rangos(rangos, rango_bajo=rangos[-1] if rango_bajo else None),
+        seccion_abox_rangos(rangos),
         seccion_abox_cartas(palos, rangos),
         seccion_all_different(palos, rangos),
     ]
@@ -838,20 +807,12 @@ def main():
         sys.exit(1)
 
     print()
-    resp = pedir(
-        f"¿El último rango ({rangos[-1].strip()}) tiene valor bajo alternativo (como el As en la baraja inglesa)? (s/n)",
-        "n"
-    ).lower()
-    rango_bajo = resp in ("s", "si", "sí", "y", "yes")
-
-    print()
     print(f"  Palos  : {len(palos)}  → {', '.join(palos)}")
     print(f"  Rangos : {len(rangos)}  → {', '.join(rangos)}")
     print(f"  Cartas : {len(palos) * len(rangos)}")
-    print(f"  Rango bajo alternativo: {'sí' if rango_bajo else 'no'}")
     print()
 
-    ttl = generar_ontologia(deck_name, base_iri, palos, rangos, rango_bajo)
+    ttl = generar_ontologia(deck_name, base_iri, palos, rangos)
 
     output_path = Path(f"{slug}.ttl")
     output_path.write_text(ttl, encoding="utf-8")
