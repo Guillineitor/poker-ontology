@@ -25,7 +25,6 @@ Salida
 
 import re
 import sys
-from itertools import combinations
 from pathlib import Path
 
 
@@ -378,6 +377,363 @@ def seccion_all_different(palos: list[str], rangos: list[str]) -> str:
 
 
 # =============================================================================
+# Clasificadores de Manos
+# =============================================================================
+
+def clasificador_par(rangos: list[str]) -> str:
+    """
+    Par: al menos 2 cartas del mismo rango (cualquier rango).
+    Patrón: owl:unionOf de minQualifiedCardinality 2 por cada rango.
+    """
+    lineas = [
+        "",
+        "# =============================================================================",
+        "# Clasificadores de Manos",
+        "# =============================================================================",
+        "#",
+        "# Jerarquía de tipos de mano, de menor a mayor fortaleza:",
+        "#   Mano",
+        "#   ├── CartaAlta      (1) Sin combinación; gana la carta más alta",
+        "#   ├── Par            (2) Dos cartas del mismo rango",
+        "#   ├── DoblePar       (3) Dos pares distintos",
+        "#   ├── Trio           (4) Tres cartas del mismo rango",
+        "#   ├── Escalera       (5) Cinco cartas consecutivas de distintos palos",
+        "#   ├── Color          (6) Cinco cartas del mismo palo",
+        "#   ├── FullHouse      (7) Un trío más un par",
+        "#   ├── Poker          (8) Cuatro cartas del mismo rango",
+        "#   └── EscaleraColor  (9) Cinco cartas consecutivas del mismo palo",
+        "#         └── EscaleraReal  Escalera Real: rangos más altos del mismo palo",
+        "#",
+        "",
+        "# Definición de la clase CartaAlta.",
+        "deck:CartaAlta a owl:Class ;",
+        "    rdfs:subClassOf deck:Mano ;",
+        '    rdfs:label "Carta Alta" ;',
+        '    rdfs:comment "Sin combinación; la carta más alta decide el ganador." .',
+        "",
+        "# Definición de la clase Par.",
+        "deck:Par a owl:Class ;",
+        "    owl:equivalentClass [",
+        "        a owl:Class ;",
+        "        owl:intersectionOf (",
+        "            deck:Mano",
+        "            [",
+        "                a owl:Class ;",
+        "                owl:unionOf (",
+    ]
+    for r in rangos:
+        rid = to_id(r)
+        lineas.append(
+            f'                    # Par de {label(r)} de cualquier palo.'
+        )
+        lineas.append(
+            f'                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDe{rid} ]'
+        )
+    lineas += [
+        "                )",
+        "            ]",
+        "        )",
+        "    ] ;",
+        '    rdfs:label "Par" ;',
+        '    rdfs:comment "Mano formada por dos cartas del mismo rango." .',
+    ]
+    return "\n".join(lineas)
+
+
+def clasificador_doble_par(rangos: list[str]) -> str:
+    """
+    Doble Par: dos pares de rangos distintos.
+    Patrón: owl:unionOf de C(n,2) intersecciones, cada una con dos
+    minQualifiedCardinality 2 sobre rangos distintos.
+    """
+    lineas = [
+        "",
+        "# Definición de la clase DoblePar.",
+        "# Nota: En OWL DL puro es necesario enumerar las C(n,2) combinaciones de pares.",
+        "deck:DoblePar a owl:Class ;",
+        "    owl:equivalentClass [",
+        "        a owl:Class ;",
+        "        owl:intersectionOf (",
+        "            deck:Mano",
+        "            [",
+        "                a owl:Class ;",
+        "                owl:unionOf (",
+    ]
+    for r1, r2 in combinations(rangos, 2):
+        r1id, r2id = to_id(r1), to_id(r2)
+        lineas.append(
+            f'                    # {label(r1)} + {label(r2)}, de cualquier palo.'
+        )
+        lineas.append(
+            f'                    [ a owl:Class ; owl:intersectionOf ('
+            f' [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDe{r1id} ]'
+            f' [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDe{r2id} ]'
+            f' ) ]'
+        )
+    lineas += [
+        "                )",
+        "            ]",
+        "        )",
+        "    ] ;",
+        '    rdfs:label "Doble Par" ;',
+        '    rdfs:comment "Dos pares de rangos distintos, independientemente del palo." .',
+    ]
+    return "\n".join(lineas)
+
+
+def clasificador_trio(rangos: list[str]) -> str:
+    """Trío: al menos 3 cartas del mismo rango."""
+    lineas = [
+        "",
+        "# Definición de la clase Trio.",
+        "deck:Trio a owl:Class ;",
+        "    owl:equivalentClass [",
+        "        a owl:Class ;",
+        "        owl:intersectionOf (",
+        "            deck:Mano",
+        "            [",
+        "                a owl:Class ;",
+        "                owl:unionOf (",
+    ]
+    for r in rangos:
+        rid = to_id(r)
+        lineas.append(f'                    # Trío de {label(r)} de cualquier palo.')
+        lineas.append(
+            f'                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDe{rid} ]'
+        )
+    lineas += [
+        "                )",
+        "            ]",
+        "        )",
+        "    ] ;",
+        '    rdfs:label "Trío" ;',
+        '    rdfs:comment "Mano formada por tres cartas del mismo rango." .',
+    ]
+    return "\n".join(lineas)
+
+
+def clasificador_escalera(rangos: list[str], tiene_rango_bajo: bool) -> str:
+    """
+    Escalera: 5 cartas de rangos consecutivos, cualquier palo.
+    Genera las (n-4) secuencias posibles de 5 rangos consecutivos.
+    Si tiene_rango_bajo es True, añade también la escalera baja
+    donde el último rango actúa como el más bajo (como el As en A-2-3-4-5).
+    """
+    n = len(rangos)
+    secuencias = []
+
+    # Escalera baja especial: último rango vale como el más bajo
+    if tiene_rango_bajo and n >= 5:
+        secuencias.append(
+            [rangos[-1]] + rangos[:4]  # p.ej. As + 2,3,4,5
+        )
+
+    # Secuencias normales consecutivas
+    for i in range(n - 4):
+        secuencias.append(rangos[i:i+5])
+
+    def bloque_secuencia(seq):
+        nombre = "-".join(label(r) for r in seq)
+        restricciones = "\n".join(
+            f'                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDe{to_id(r)} ]'
+            for r in seq
+        )
+        return (
+            f'                    # Escalera {nombre}.\n'
+            f'                    [ a owl:Class ; owl:intersectionOf (\n'
+            f'{restricciones}\n'
+            f'                    )]'
+        )
+
+    lineas = [
+        "",
+        "# Definición de la clase Escalera.",
+        "deck:Escalera a owl:Class ;",
+        "    owl:equivalentClass [",
+        "        a owl:Class ;",
+        "        owl:intersectionOf (",
+        "            deck:Mano",
+        "            [",
+        "                a owl:Class ;",
+        "                owl:unionOf (",
+    ]
+    for seq in secuencias:
+        lineas.append(bloque_secuencia(seq))
+    lineas += [
+        "                )",
+        "            ]",
+        "        )",
+        "    ] ;",
+        '    rdfs:label "Escalera" ;',
+        '    rdfs:comment "Mano formada por cinco cartas de rangos consecutivos, no necesariamente del mismo palo." .',
+    ]
+    return "\n".join(lineas)
+
+
+def clasificador_color(palos: list[str]) -> str:
+    """Color: las 5 cartas del mismo palo (allValuesFrom por palo)."""
+    lineas = [
+        "",
+        "# Definición de la clase Color.",
+        "deck:Color a owl:Class ;",
+        "    owl:equivalentClass [",
+        "        a owl:Class ;",
+        "        owl:intersectionOf (",
+        "            deck:Mano",
+        "            [",
+        "                a owl:Class ;",
+        "                owl:unionOf (",
+    ]
+    for p in palos:
+        pid = to_id(p)
+        lineas.append(f'                    # Color de {label(p)}.')
+        lineas.append(
+            f'                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDe{pid} ]'
+        )
+    lineas += [
+        "                )",
+        "            ]",
+        "        )",
+        "    ] ;",
+        '    rdfs:label "Color" ;',
+        '    rdfs:comment "Mano formada por cinco cartas del mismo palo, no necesariamente consecutivas." .',
+    ]
+    return "\n".join(lineas)
+
+
+def clasificador_full_house(rangos: list[str]) -> str:
+    """
+    Full House: trío + par.
+    Truco por exclusión aritmética: cada rango aporta 0, 2 ó 3 cartas
+    (nunca 1, nunca 4). La única partición de 5 en {0,2,3} es 3+2.
+    """
+    lineas = [
+        "",
+        "# Definición de la clase FullHouse.",
+        "# Truco por exclusión: cada rango tiene 0, 2 ó 3 cartas (nunca 1, nunca 4).",
+        "# La única partición de 5 en {0,2,3} es 3+2 → Full House.",
+        "deck:FullHouse a owl:Class ;",
+        "    owl:equivalentClass [",
+        "        a owl:Class ;",
+        "        owl:intersectionOf (",
+        "            deck:Mano",
+    ]
+    for r in rangos:
+        rid = to_id(r)
+        lineas += [
+            f"            # 0, 2 ó 3 cartas de {label(r)}.",
+            "            [ a owl:Class ; owl:intersectionOf (",
+            f'                [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDe{rid} ]',
+            "                [ a owl:Class ; owl:unionOf (",
+            f'                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDe{rid} ]',
+            f'                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDe{rid} ]',
+            "                )]",
+            "            )]",
+        ]
+    lineas += [
+        "        )",
+        "    ] ;",
+        '    rdfs:label "Full House" ;',
+        '    rdfs:comment "Un trío más un par. Clasificado por exclusión: cada rango aporta 0, 2 ó 3 cartas; la única partición de 5 en {0,2,3} es 3+2." .',
+    ]
+    return "\n".join(lineas)
+
+
+def clasificador_poker_mano(rangos: list[str]) -> str:
+    """Póker: al menos 4 cartas del mismo rango."""
+    lineas = [
+        "",
+        "# Definición de la clase Poker.",
+        "deck:Poker a owl:Class ;",
+        "    owl:equivalentClass [",
+        "        a owl:Class ;",
+        "        owl:intersectionOf (",
+        "            deck:Mano",
+        "            [",
+        "                a owl:Class ;",
+        "                owl:unionOf (",
+    ]
+    for r in rangos:
+        rid = to_id(r)
+        lineas.append(f'                    # Póker de {label(r)} de cualquier palo.')
+        lineas.append(
+            f'                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDe{rid} ]'
+        )
+    lineas += [
+        "                )",
+        "            ]",
+        "        )",
+        "    ] ;",
+        '    rdfs:label "Póker" ;',
+        '    rdfs:comment "Mano formada por cuatro cartas del mismo rango y una carta cualquiera." .',
+    ]
+    return "\n".join(lineas)
+
+
+def clasificador_escalera_color() -> str:
+    """
+    Escalera de Color: intersección de Escalera y Color.
+    El truco elegante: reutiliza las dos clases ya definidas,
+    sin enumerar las (n-4) × p combinaciones explícitamente.
+    """
+    return """
+# Definición de la clase EscaleraColor.
+# Truco: intersección de Escalera y Color → no hay que enumerar combinaciones de palo.
+deck:EscaleraColor a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Escalera
+            deck:Color
+        )
+    ] ;
+    rdfs:label "Escalera de Color" ;
+    rdfs:comment "Mano formada por cinco cartas consecutivas del mismo palo." ."""
+
+
+def clasificador_escalera_real(rangos: list[str]) -> str:
+    """
+    Escalera Real: EscaleraColor con los 5 rangos más altos.
+    Si hay rango bajo (As), los 5 más altos son los últimos 5 rangos
+    (que siempre incluirán el As como rango alto).
+    """
+    top5 = rangos[-5:]
+    restricciones = "\n".join(
+        f'            [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDe{to_id(r)} ]'
+        for r in top5
+    )
+    nombre_top5 = "-".join(label(r) for r in top5)
+    return f"""
+# Definición de la clase EscaleraReal.
+# Subclase de EscaleraColor con los 5 rangos más altos ({nombre_top5}).
+deck:EscaleraReal a owl:Class ;
+    rdfs:subClassOf deck:EscaleraColor ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:EscaleraColor
+{restricciones}
+        )
+    ] ;
+    rdfs:label "Escalera Real" ;
+    rdfs:comment "Mano formada por los cinco rangos más altos consecutivos ({nombre_top5}) del mismo palo." ."""
+
+
+def seccion_disjuncion_manos() -> str:
+    """Declara las 9 clases de mano base como mutuamente disjuntas bajo Mano."""
+    clases = [
+        "deck:CartaAlta", "deck:Par", "deck:DoblePar", "deck:Trio",
+        "deck:Escalera", "deck:Color", "deck:FullHouse", "deck:Poker",
+        "deck:EscaleraColor",
+    ]
+    lista = " ".join(clases)
+    return f"""
+# Las 9 clases base de mano son mutuamente disjuntas entre sí.
+[] a owl:AllDisjointClasses ;
+    owl:members ( {lista} ) ."""
+
+
+# =============================================================================
 # Ensamblaje final
 # =============================================================================
 
@@ -388,6 +744,9 @@ def generar_ontologia(
     rangos: list[str],
     rango_bajo: bool,
 ) -> str:
+    # Advertencia si hay menos de 5 rangos (no se pueden formar escaleras)
+    tiene_escalera = len(rangos) >= 5
+
     partes = [
         header(base_iri, deck_name, len(palos), len(rangos)),
         seccion_palo(palos),
@@ -396,6 +755,31 @@ def generar_ontologia(
         subclases_por_palo(palos),
         subclases_por_rango(rangos),
         seccion_grupos(),
+        # Clasificadores de manos
+        clasificador_par(rangos),
+        clasificador_doble_par(rangos),
+        clasificador_trio(rangos),
+    ]
+
+    if tiene_escalera:
+        partes.append(clasificador_escalera(rangos, rango_bajo))
+    else:
+        partes.append(
+            "\n# NOTA: Con menos de 5 rangos no es posible definir Escalera.\n"
+        )
+
+    partes += [
+        clasificador_color(palos),
+        clasificador_full_house(rangos),
+        clasificador_poker_mano(rangos),
+    ]
+
+    if tiene_escalera:
+        partes.append(clasificador_escalera_color())
+        partes.append(clasificador_escalera_real(rangos))
+        partes.append(seccion_disjuncion_manos())
+
+    partes += [
         seccion_propiedades(),
         seccion_abox_palos(palos),
         seccion_abox_rangos(rangos, rango_bajo=rangos[-1] if rango_bajo else None),
