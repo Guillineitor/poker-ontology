@@ -1,0 +1,171 @@
+# =============================================================================
+# Instancias de prueba — Manos de tipo Carta Alta
+# =============================================================================
+
+@prefix ex:    <http://www.poker-ontology.org/instancias/carta_alta#> .
+@prefix poker: <http://www.poker-ontology.org/poker#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/carta_alta>
+    a owl:Ontology ;
+    owl:imports <http://www.poker-ontology.org/poker> ;
+    rdfs:label "Instancias de prueba — Carta Alta" ;
+    rdfs:comment "ABox con 20 manos de tipo Carta Alta. Para verificar el clasificador poker:CartaAlta." .
+
+
+# =============================================================================
+# Manos de Carta Alta — Carta más alta: As (5 manos)
+# =============================================================================
+
+ex:AKJ83 a poker:Mano ;
+    rdfs:label "Carta Alta: As con Rey Jota Ocho Tres" ;
+    poker:contieneCarta poker:AsDeCorazones, poker:ReyDeDiamantes,
+                        poker:JotaDePicas, poker:OchoDeTreboles,
+                        poker:TresDePicas .
+
+ex:AQT72 a poker:Mano ;
+    rdfs:label "Carta Alta: As con Reina Diez Siete Dos" ;
+    poker:contieneCarta poker:AsDePicas, poker:ReinaDeCorazones,
+                        poker:DiezDeDiamantes, poker:SieteDeTreboles,
+                        poker:DosDeCorazones .
+
+ex:AJ964 a poker:Mano ;
+    rdfs:label "Carta Alta: As con Jota Nueve Seis Cuatro" ;
+    poker:contieneCarta poker:AsDeDiamantes, poker:JotaDeCorazones,
+                        poker:NueveDePicas, poker:SeisDeDiamantes,
+                        poker:CuatroDeTreboles .
+
+ex:AK853 a poker:Mano ;
+    rdfs:label "Carta Alta: As con Rey Ocho Cinco Tres" ;
+    poker:contieneCarta poker:AsDeTreboles, poker:ReyDeCorazones,
+                        poker:OchoDeDiamantes, poker:CincoDePicas,
+                        poker:TresDeCorazones .
+
+ex:AQ742 a poker:Mano ;
+    rdfs:label "Carta Alta: As con Reina Siete Cuatro Dos" ;
+    poker:contieneCarta poker:AsDeCorazones, poker:ReinaDePicas,
+                        poker:SieteDeCorazones, poker:CuatroDeDiamantes,
+                        poker:DosDeTreboles .
+
+
+# =============================================================================
+# Manos de Carta Alta — Carta más alta: Rey (5 manos)
+# =============================================================================
+
+ex:KQ853 a poker:Mano ;
+    rdfs:label "Carta Alta: Rey con Reina Ocho Cinco Tres" ;
+    poker:contieneCarta poker:ReyDePicas, poker:ReinaDeDiamantes,
+                        poker:OchoDeCorazones, poker:CincoDeTreboles,
+                        poker:TresDeDiamantes .
+
+ex:KJ742 a poker:Mano ;
+    rdfs:label "Carta Alta: Rey con Jota Siete Cuatro Dos" ;
+    poker:contieneCarta poker:ReyDeCorazones, poker:JotaDeDiamantes,
+                        poker:SieteDePicas, poker:CuatroDeCorazones,
+                        poker:DosDeDiamantes .
+
+ex:KT964 a poker:Mano ;
+    rdfs:label "Carta Alta: Rey con Diez Nueve Seis Cuatro" ;
+    poker:contieneCarta poker:ReyDeDiamantes, poker:DiezDeCorazones,
+                        poker:NueveDeTreboles, poker:SeisDePicas,
+                        poker:CuatroDeDiamantes .
+
+ex:KQ752 a poker:Mano ;
+    rdfs:label "Carta Alta: Rey con Reina Siete Cinco Dos" ;
+    poker:contieneCarta poker:ReyDeTreboles, poker:ReinaDeCorazones,
+                        poker:SieteDeDiamantes, poker:CincoDePicas,
+                        poker:DosDeCorazones .
+
+ex:KJ843 a poker:Mano ;
+    rdfs:label "Carta Alta: Rey con Jota Ocho Cuatro Tres" ;
+    poker:contieneCarta poker:ReyDeCorazones, poker:JotaDeTreboles,
+                        poker:OchoDePicas, poker:CuatroDeTreboles,
+                        poker:TresDeDiamantes .
+
+
+# =============================================================================
+# Manos de Carta Alta — Carta más alta: Reina (5 manos)
+# =============================================================================
+
+ex:QJ852 a poker:Mano ;
+    rdfs:label "Carta Alta: Reina con Jota Ocho Cinco Dos" ;
+    poker:contieneCarta poker:ReinaDeTreboles, poker:JotaDePicas,
+                        poker:OchoDeCorazones, poker:CincoDeDiamantes,
+                        poker:DosDeTreboles .
+
+ex:QT943 a poker:Mano ;
+    rdfs:label "Carta Alta: Reina con Diez Nueve Cuatro Tres" ;
+    poker:contieneCarta poker:ReinaDeCorazones, poker:DiezDePicas,
+                        poker:NueveDeDiamantes, poker:CuatroDeCorazones,
+                        poker:TresDePicas .
+
+ex:QJ752 a poker:Mano ;
+    rdfs:label "Carta Alta: Reina con Jota Siete Cinco Dos" ;
+    poker:contieneCarta poker:ReinaDePicas, poker:JotaDeCorazones,
+                        poker:SieteDeTreboles, poker:CincoDeDiamantes,
+                        poker:DosDeCorazones .
+
+ex:QT863 a poker:Mano ;
+    rdfs:label "Carta Alta: Reina con Diez Ocho Seis Tres" ;
+    poker:contieneCarta poker:ReinaDeDiamantes, poker:DiezDeTreboles,
+                        poker:OchoDePicas, poker:SeisDeCorazones,
+                        poker:TresDeDiamantes .
+
+ex:QJ642 a poker:Mano ;
+    rdfs:label "Carta Alta: Reina con Jota Seis Cuatro Dos" ;
+    poker:contieneCarta poker:ReinaDeCorazones, poker:JotaDeDiamantes,
+                        poker:SeisDePicas, poker:CuatroDeTreboles,
+                        poker:DosDeCorazones .
+
+
+# =============================================================================
+# Manos de Carta Alta — Carta más alta: Jota (5 manos)
+# =============================================================================
+
+ex:JT742 a poker:Mano ;
+    rdfs:label "Carta Alta: Jota con Diez Siete Cuatro Dos" ;
+    poker:contieneCarta poker:JotaDePicas, poker:DiezDeCorazones,
+                        poker:SieteDeDiamantes, poker:CuatroDePicas,
+                        poker:DosDeTreboles .
+
+ex:J9853 a poker:Mano ;
+    rdfs:label "Carta Alta: Jota con Nueve Ocho Cinco Tres" ;
+    poker:contieneCarta poker:JotaDeCorazones, poker:NueveDePicas,
+                        poker:OchoDeTreboles, poker:CincoDeCorazones,
+                        poker:TresDeDiamantes .
+
+ex:JT642 a poker:Mano ;
+    rdfs:label "Carta Alta: Jota con Diez Seis Cuatro Dos" ;
+    poker:contieneCarta poker:JotaDeDiamantes, poker:DiezDePicas,
+                        poker:SeisDeCorazones, poker:CuatroDeDiamantes,
+                        poker:DosDeCorazones .
+
+ex:J9753 a poker:Mano ;
+    rdfs:label "Carta Alta: Jota con Nueve Siete Cinco Tres" ;
+    poker:contieneCarta poker:JotaDeTreboles, poker:NueveDeDiamantes,
+                        poker:SieteDeCorazones, poker:CincoDePicas,
+                        poker:TresDeTreboles .
+
+ex:JT852 a poker:Mano ;
+    rdfs:label "Carta Alta: Jota con Diez Ocho Cinco Dos" ;
+    poker:contieneCarta poker:JotaDePicas, poker:DiezDeDiamantes,
+                        poker:OchoDeCorazones, poker:CincoDeTreboles,
+                        poker:DosDeCorazones .
+
+
+# =============================================================================
+# Unicidad de instancias
+# =============================================================================
+
+[] a owl:AllDifferent ;
+    owl:distinctMembers (
+        ex:AKJ83     ex:AQT72     ex:AJ964
+        ex:AK853     ex:AQ742
+        ex:KQ853     ex:KJ742     ex:KT964
+        ex:KQ752     ex:KJ843
+        ex:QJ852     ex:QT943     ex:QJ752
+        ex:QT863     ex:QJ642
+        ex:JT742     ex:J9853     ex:JT642
+        ex:J9753     ex:JT852
+    ) .
