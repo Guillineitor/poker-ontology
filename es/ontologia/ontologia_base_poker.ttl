@@ -295,7 +295,7 @@ poker:DoblePar a owl:Class ;
             poker:Mano
             [ a owl:Restriction ;
               owl:onProperty poker:manoTienePar ;
-              owl:cardinality "2"^^xsd:nonNegativeInteger ]
+              owl:minCardinality "2"^^xsd:nonNegativeInteger ]
         )
     ] ;
     rdfs:label "Doble Par" ;
