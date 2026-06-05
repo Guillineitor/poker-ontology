@@ -15,7 +15,7 @@
 
 
 # =============================================================================
-# Escalera A-2-3-4-5
+# Manos de Escalera
 # =============================================================================
 
 ex:A2345 a poker:Mano ;
@@ -24,65 +24,11 @@ ex:A2345 a poker:Mano ;
                         poker:TresDeDiamantes, poker:CuatroDeTreboles,
                         poker:CincoDePicas .
 
-
-# =============================================================================
-# Escalera 2-3-4-5-6 
-# =============================================================================
-
-ex:23456 a poker:Mano ;
-    rdfs:label "Escalera 2-3-4-5-6" ;
-    poker:contieneCarta poker:DosDeDiamantes, poker:TresDeTreboles,
-                        poker:CuatroDePicas, poker:CincoDeCorazones,
-                        poker:SeisDeDiamantes .
-
-
-# =============================================================================
-# Escalera 3-4-5-6-7 
-# =============================================================================
-
-ex:34567 a poker:Mano ;
-    rdfs:label "Escalera 3-4-5-6-7" ;
-    poker:contieneCarta poker:TresDePicas, poker:CuatroDeCorazones,
-                        poker:CincoDeDiamantes, poker:SeisDeTreboles,
-                        poker:SieteDePicas .
-
-
-# =============================================================================
-# Escalera 4-5-6-7-8 
-# =============================================================================
-
 ex:45678 a poker:Mano ;
     rdfs:label "Escalera 4-5-6-7-8" ;
     poker:contieneCarta poker:CuatroDeCorazones, poker:CincoDeTreboles,
                         poker:SeisDePicas, poker:SieteDeDiamantes,
                         poker:OchoDeCorazones .
-
-
-# =============================================================================
-# Escalera 5-6-7-8-9 
-# =============================================================================
-
-ex:56789 a poker:Mano ;
-    rdfs:label "Escalera 5-6-7-8-9" ;
-    poker:contieneCarta poker:CincoDeTreboles, poker:SeisDeDiamantes,
-                        poker:SieteDePicas, poker:OchoDeCorazones,
-                        poker:NueveDeTreboles .
-
-
-# =============================================================================
-# Escalera 6-7-8-9-10 
-# =============================================================================
-
-ex:678910 a poker:Mano ;
-    rdfs:label "Escalera 6-7-8-9-10" ;
-    poker:contieneCarta poker:SeisDePicas, poker:SieteDeCorazones,
-                        poker:OchoDeTreboles, poker:NueveDeDiamantes,
-                        poker:DiezDePicas .
-
-
-# =============================================================================
-# Escalera 7-8-9-10-J 
-# =============================================================================
 
 ex:789TJ a poker:Mano ;
     rdfs:label "Escalera 7-8-9-10-J" ;
@@ -90,39 +36,11 @@ ex:789TJ a poker:Mano ;
                         poker:NueveDeTreboles, poker:DiezDePicas,
                         poker:JotaDeCorazones .
 
-
-# =============================================================================
-# Escalera 8-9-10-J-Q 
-# =============================================================================
-
-ex:89TJQ a poker:Mano ;
-    rdfs:label "Escalera 8-9-10-J-Q" ;
-    poker:contieneCarta poker:OchoDeTreboles, poker:NueveDePicas,
-                        poker:DiezDeCorazones, poker:JotaDeDiamantes,
-                        poker:ReinaDeTreboles .
-
-
-# =============================================================================
-# Escalera 9-10-J-Q-K 
-# =============================================================================
-
-ex:9TJQK a poker:Mano ;
-    rdfs:label "Escalera 9-10-J-Q-K" ;
-    poker:contieneCarta poker:NueveDePicas, poker:DiezDeTreboles,
-                        poker:JotaDeCorazones, poker:ReinaDeDiamantes,
-                        poker:ReyDePicas .
-
-
-# =============================================================================
-# Escalera 10-J-Q-K-A 
-# =============================================================================
-
 ex:TJQKA a poker:Mano ;
     rdfs:label "Escalera 10-J-Q-K-A" ;
     poker:contieneCarta poker:DiezDeDiamantes, poker:JotaDeTreboles,
                         poker:ReinaDePicas, poker:ReyDeCorazones,
                         poker:AsDeDiamantes .
-
 
 # =============================================================================
 # Unicidad de instancias

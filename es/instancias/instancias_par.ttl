@@ -15,7 +15,7 @@
 
 
 # =============================================================================
-# Manos de Par — Par de Ases (5 manos)
+# Manos de Par 
 # =============================================================================
 
 ex:AAHKQ2 a poker:Mano ;
@@ -24,69 +24,11 @@ ex:AAHKQ2 a poker:Mano ;
                         poker:AsDePicas, poker:ReinaDeTreboles,
                         poker:DosDePicas .
 
-ex:AAHJT3 a poker:Mano ;
-    rdfs:label "Par de Ases con Jota Diez Tres" ;
-    poker:contieneCarta poker:JotaDePicas, poker:AsDeCorazones,
-                        poker:DiezDeTreboles, poker:AsDeDiamantes,
-                        poker:TresDePicas .
-
-ex:AAH854 a poker:Mano ;
-    rdfs:label "Par de Ases con Ocho Cinco Cuatro" ;
-    poker:contieneCarta poker:OchoDePicas, poker:CincoDeDiamantes,
-                        poker:AsDeCorazones, poker:CuatroDeCorazones,
-                        poker:AsDeTreboles .
-
-ex:AAKJ9 a poker:Mano ;
-    rdfs:label "Par de Ases con Rey Jota Nueve" ;
-    poker:contieneCarta poker:ReyDeCorazones, poker:AsDeDiamantes,
-                        poker:JotaDeTreboles, poker:NueveDePicas,
-                        poker:AsDePicas .
-
-ex:AAQ76 a poker:Mano ;
-    rdfs:label "Par de Ases con Reina Siete Seis" ;
-    poker:contieneCarta poker:ReinaDePicas, poker:AsDeDiamantes,
-                        poker:SieteDeCorazones, poker:AsDeTreboles,
-                        poker:SeisDeDiamantes .
-
-
-# =============================================================================
-# Manos de Par — Par de Reyes (5 manos)
-# =============================================================================
-
 ex:KKAQJ a poker:Mano ;
     rdfs:label "Par de Reyes con As Reina Jota" ;
     poker:contieneCarta poker:AsDeCorazones, poker:ReyDeCorazones,
                         poker:ReinaDeDiamantes, poker:ReyDePicas,
                         poker:JotaDeTreboles .
-
-ex:KKA95 a poker:Mano ;
-    rdfs:label "Par de Reyes con As Nueve Cinco" ;
-    poker:contieneCarta poker:ReyDeCorazones, poker:AsDePicas,
-                        poker:NueveDeTreboles, poker:ReyDeDiamantes,
-                        poker:CincoDePicas .
-
-ex:KKQ83 a poker:Mano ;
-    rdfs:label "Par de Reyes con Reina Ocho Tres" ;
-    poker:contieneCarta poker:ReinaDeCorazones, poker:ReyDeTreboles,
-                        poker:OchoDeDiamantes, poker:TresDeCorazones,
-                        poker:ReyDePicas .
-
-ex:KKJ72 a poker:Mano ;
-    rdfs:label "Par de Reyes con Jota Siete Dos" ;
-    poker:contieneCarta poker:JotaDeDiamantes, poker:ReyDeCorazones,
-                        poker:SieteDePicas, poker:ReyDeTreboles,
-                        poker:DosDeCorazones .
-
-ex:KK1064 a poker:Mano ;
-    rdfs:label "Par de Reyes con Diez Seis Cuatro" ;
-    poker:contieneCarta poker:DiezDeCorazones, poker:ReyDeDiamantes,
-                        poker:SeisDePicas, poker:CuatroDeDiamantes,
-                        poker:ReyDeTreboles .
-
-
-# =============================================================================
-# Manos de Par — Par de Jotas (5 manos)
-# =============================================================================
 
 ex:JJAKQ a poker:Mano ;
     rdfs:label "Par de Jotas con As Rey Reina" ;
@@ -94,65 +36,11 @@ ex:JJAKQ a poker:Mano ;
                         poker:ReyDeDiamantes, poker:ReinaDeTreboles,
                         poker:JotaDePicas .
 
-ex:JJA85 a poker:Mano ;
-    rdfs:label "Par de Jotas con As Ocho Cinco" ;
-    poker:contieneCarta poker:JotaDeCorazones, poker:AsDePicas,
-                        poker:OchoDeTreboles, poker:JotaDeDiamantes,
-                        poker:CincoDeCorazones .
-
-ex:JJK93 a poker:Mano ;
-    rdfs:label "Par de Jotas con Rey Nueve Tres" ;
-    poker:contieneCarta poker:ReyDeCorazones, poker:JotaDeTreboles,
-                        poker:NueveDeDiamantes, poker:JotaDePicas,
-                        poker:TresDePicas .
-
-ex:JJQ72 a poker:Mano ;
-    rdfs:label "Par de Jotas con Reina Siete Dos" ;
-    poker:contieneCarta poker:JotaDeCorazones, poker:ReinaDePicas,
-                        poker:JotaDeTreboles, poker:SieteDeDiamantes,
-                        poker:DosDeCorazones .
-
-ex:JJ1054 a poker:Mano ;
-    rdfs:label "Par de Jotas con Diez Cinco Cuatro" ;
-    poker:contieneCarta poker:DiezDeCorazones, poker:JotaDeDiamantes,
-                        poker:CincoDePicas, poker:JotaDeTreboles,
-                        poker:CuatroDeDiamantes .
-
-
-# =============================================================================
-# Manos de Par — Par de Doses (5 manos)
-# =============================================================================
-
 ex:22AKQ a poker:Mano ;
     rdfs:label "Par de Doses con As Rey Reina" ;
     poker:contieneCarta poker:AsDeCorazones, poker:DosDeCorazones,
                         poker:ReyDeDiamantes, poker:ReinaDeTreboles,
                         poker:DosDePicas .
-
-ex:22AJ9 a poker:Mano ;
-    rdfs:label "Par de Doses con As Jota Nueve" ;
-    poker:contieneCarta poker:DosDeDiamantes, poker:AsDePicas,
-                        poker:DosDeCorazones, poker:JotaDeTreboles,
-                        poker:NueveDePicas .
-
-ex:22K87 a poker:Mano ;
-    rdfs:label "Par de Doses con Rey Ocho Siete" ;
-    poker:contieneCarta poker:ReyDeCorazones, poker:DosDeTreboles,
-                        poker:OchoDeDiamantes, poker:DosDePicas,
-                        poker:SieteDeCorazones .
-
-ex:22Q63 a poker:Mano ;
-    rdfs:label "Par de Doses con Reina Seis Tres" ;
-    poker:contieneCarta poker:ReinaDePicas, poker:DosDeCorazones,
-                        poker:SeisDeDiamantes, poker:DosDeTreboles,
-                        poker:TresDeCorazones .
-
-ex:22J54 a poker:Mano ;
-    rdfs:label "Par de Doses con Jota Cinco Cuatro" ;
-    poker:contieneCarta poker:JotaDeCorazones, poker:DosDeDiamantes,
-                        poker:CincoDePicas, poker:CuatroDeDiamantes,
-                        poker:DosDeTreboles .
-
 
 # =============================================================================
 # Unicidad de instancias

@@ -15,7 +15,7 @@
 
 
 # =============================================================================
-# Manos de Trío — Trío de Ases (5 manos)
+# Manos de Trío 
 # =============================================================================
 
 ex:AAAHKQ a poker:Mano ;
@@ -24,69 +24,11 @@ ex:AAAHKQ a poker:Mano ;
                         poker:AsDePicas, poker:ReinaDePicas,
                         poker:AsDeDiamantes .
 
-ex:AAAHJT a poker:Mano ;
-    rdfs:label "Trío de Ases con Jota Diez" ;
-    poker:contieneCarta poker:JotaDeDiamantes, poker:AsDePicas,
-                        poker:DiezDeCorazones, poker:AsDeCorazones,
-                        poker:AsDeTreboles .
-
-ex:AAAH97 a poker:Mano ;
-    rdfs:label "Trío de Ases con Nueve Siete" ;
-    poker:contieneCarta poker:AsDeCorazones, poker:NueveDePicas,
-                        poker:AsDeTreboles, poker:SieteDeCorazones,
-                        poker:AsDeDiamantes .
-
-ex:AAAHK8 a poker:Mano ;
-    rdfs:label "Trío de Ases con Rey Ocho" ;
-    poker:contieneCarta poker:ReyDeCorazones, poker:AsDePicas,
-                        poker:AsDeDiamantes, poker:OchoDeDiamantes,
-                        poker:AsDeTreboles .
-
-ex:AAAHQ5 a poker:Mano ;
-    rdfs:label "Trío de Ases con Reina Cinco" ;
-    poker:contieneCarta poker:AsDeCorazones, poker:ReinaDeDiamantes,
-                        poker:AsDePicas, poker:AsDeTreboles,
-                        poker:CincoDePicas .
-
-
-# =============================================================================
-# Manos de Trío — Trío de Reyes (5 manos)
-# =============================================================================
-
 ex:KKKHAQ a poker:Mano ;
     rdfs:label "Trío de Reyes con As Reina" ;
     poker:contieneCarta poker:ReyDeCorazones, poker:AsDeTreboles,
                         poker:ReyDePicas, poker:ReinaDeCorazones,
                         poker:ReyDeDiamantes .
-
-ex:KKKHAJ a poker:Mano ;
-    rdfs:label "Trío de Reyes con As Jota" ;
-    poker:contieneCarta poker:AsDeDiamantes, poker:ReyDeTreboles,
-                        poker:ReyDeCorazones, poker:JotaDeCorazones,
-                        poker:ReyDePicas .
-
-ex:KKKHT6 a poker:Mano ;
-    rdfs:label "Trío de Reyes con Diez Seis" ;
-    poker:contieneCarta poker:ReyDeCorazones, poker:DiezDePicas,
-                        poker:ReyDeDiamantes, poker:SeisDeDiamantes,
-                        poker:ReyDeTreboles .
-
-ex:KKKHQ3 a poker:Mano ;
-    rdfs:label "Trío de Reyes con Reina Tres" ;
-    poker:contieneCarta poker:ReinaDeDiamantes, poker:ReyDePicas,
-                        poker:TresDeCorazones, poker:ReyDeTreboles,
-                        poker:ReyDeCorazones .
-
-ex:KKKH84 a poker:Mano ;
-    rdfs:label "Trío de Reyes con Ocho Cuatro" ;
-    poker:contieneCarta poker:ReyDeDiamantes, poker:OchoDeTreboles,
-                        poker:ReyDeCorazones, poker:CuatroDeDiamantes,
-                        poker:ReyDePicas .
-
-
-# =============================================================================
-# Manos de Trío — Trío de Jotas (5 manos)
-# =============================================================================
 
 ex:JJJHAK a poker:Mano ;
     rdfs:label "Trío de Jotas con As Rey" ;
@@ -94,65 +36,11 @@ ex:JJJHAK a poker:Mano ;
                         poker:JotaDePicas, poker:ReyDeCorazones,
                         poker:JotaDeDiamantes .
 
-ex:JJJHQ9 a poker:Mano ;
-    rdfs:label "Trío de Jotas con Reina Nueve" ;
-    poker:contieneCarta poker:ReinaDeDiamantes, poker:JotaDeTreboles,
-                        poker:JotaDeCorazones, poker:NueveDeCorazones,
-                        poker:JotaDePicas .
-
-ex:JJJHT2 a poker:Mano ;
-    rdfs:label "Trío de Jotas con Diez Dos" ;
-    poker:contieneCarta poker:JotaDeCorazones, poker:DiezDePicas,
-                        poker:JotaDeDiamantes, poker:DosDeCorazones,
-                        poker:JotaDeTreboles .
-
-ex:JJJHK7 a poker:Mano ;
-    rdfs:label "Trío de Jotas con Rey Siete" ;
-    poker:contieneCarta poker:ReyDeDiamantes, poker:JotaDePicas,
-                        poker:SieteDePicas, poker:JotaDeTreboles,
-                        poker:JotaDeCorazones .
-
-ex:JJJHA5 a poker:Mano ;
-    rdfs:label "Trío de Jotas con As Cinco" ;
-    poker:contieneCarta poker:JotaDeDiamantes, poker:AsDeCorazones,
-                        poker:JotaDeCorazones, poker:CincoDeTreboles,
-                        poker:JotaDePicas .
-
-
-# =============================================================================
-# Manos de Trío — Trío de Doses (5 manos)
-# =============================================================================
-
 ex:222HAK a poker:Mano ;
     rdfs:label "Trío de Doses con As Rey" ;
     poker:contieneCarta poker:DosDeCorazones, poker:AsDeTreboles,
                         poker:DosDePicas, poker:ReyDeCorazones,
                         poker:DosDeDiamantes .
-
-ex:222HQJ a poker:Mano ;
-    rdfs:label "Trío de Doses con Reina Jota" ;
-    poker:contieneCarta poker:ReinaDeDiamantes, poker:DosDeTreboles,
-                        poker:DosDeCorazones, poker:JotaDeCorazones,
-                        poker:DosDePicas .
-
-ex:222HK9 a poker:Mano ;
-    rdfs:label "Trío de Doses con Rey Nueve" ;
-    poker:contieneCarta poker:DosDeCorazones, poker:ReyDePicas,
-                        poker:DosDeDiamantes, poker:NueveDeDiamantes,
-                        poker:DosDeTreboles .
-
-ex:222HJ6 a poker:Mano ;
-    rdfs:label "Trío de Doses con Jota Seis" ;
-    poker:contieneCarta poker:JotaDeDiamantes, poker:DosDePicas,
-                        poker:DosDeCorazones, poker:SeisDeCorazones,
-                        poker:DosDeTreboles .
-
-ex:222HQ4 a poker:Mano ;
-    rdfs:label "Trío de Doses con Reina Cuatro" ;
-    poker:contieneCarta poker:DosDeDiamantes, poker:ReinaDeCorazones,
-                        poker:DosDeCorazones, poker:CuatroDeTreboles,
-                        poker:DosDePicas .
-
 
 # =============================================================================
 # Unicidad de instancias

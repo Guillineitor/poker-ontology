@@ -15,8 +15,7 @@
 
 
 # =============================================================================
-# Full House — Trío de Ases (5 manos)
-# Trío fijo: AsDePicas, AsDeCorazones, AsDeDiamantes
+# Manos de Full House 
 # =============================================================================
 
 ex:AAAFKKsh a poker:Mano ;
@@ -28,48 +27,6 @@ ex:AAAFKKsh a poker:Mano ;
                         poker:ReyDeCorazones ;
     poker:manoTienePar poker:As, poker:Rey .
 
-ex:AAAFQQdc a poker:Mano ;
-    rdfs:label "Full House — Trío de Ases con Par de Reinas" ;
-    poker:contieneCarta poker:AsDePicas,
-                        poker:AsDeCorazones,
-                        poker:AsDeDiamantes,
-                        poker:ReinaDeDiamantes,
-                        poker:ReinaDeTreboles ;
-    poker:manoTienePar poker:As, poker:Reina .
-
-ex:AAAFJJsc a poker:Mano ;
-    rdfs:label "Full House — Trío de Ases con Par de Jotas" ;
-    poker:contieneCarta poker:AsDePicas,
-                        poker:AsDeCorazones,
-                        poker:AsDeDiamantes,
-                        poker:JotaDePicas,
-                        poker:JotaDeTreboles ;
-    poker:manoTienePar poker:As, poker:Jota .
-
-ex:AAAFTThd a poker:Mano ;
-    rdfs:label "Full House — Trío de Ases con Par de Dieces" ;
-    poker:contieneCarta poker:AsDePicas,
-                        poker:AsDeCorazones,
-                        poker:AsDeDiamantes,
-                        poker:DiezDeCorazones,
-                        poker:DiezDeDiamantes ;
-    poker:manoTienePar poker:As, poker:Diez .
-
-ex:AAAF22cs a poker:Mano ;
-    rdfs:label "Full House — Trío de Ases con Par de Doses" ;
-    poker:contieneCarta poker:AsDePicas,
-                        poker:AsDeCorazones,
-                        poker:AsDeDiamantes,
-                        poker:DosDeTreboles,
-                        poker:DosDePicas ;
-    poker:manoTienePar poker:As, poker:Dos .
-
-
-# =============================================================================
-# Full House — Trío de Reyes (5 manos)
-# Trío fijo: ReyDePicas, ReyDeCorazones, ReyDeDiamantes
-# =============================================================================
-
 ex:KKKFAAch a poker:Mano ;
     rdfs:label "Full House — Trío de Reyes con Par de Ases" ;
     poker:contieneCarta poker:ReyDePicas,
@@ -78,48 +35,6 @@ ex:KKKFAAch a poker:Mano ;
                         poker:AsDeTreboles,
                         poker:AsDeCorazones ;
     poker:manoTienePar poker:Rey, poker:As .
-
-ex:KKKFQQsd a poker:Mano ;
-    rdfs:label "Full House — Trío de Reyes con Par de Reinas" ;
-    poker:contieneCarta poker:ReyDePicas,
-                        poker:ReyDeCorazones,
-                        poker:ReyDeDiamantes,
-                        poker:ReinaDePicas,
-                        poker:ReinaDeDiamantes ;
-    poker:manoTienePar poker:Rey, poker:Reina .
-
-ex:KKKFJJhc a poker:Mano ;
-    rdfs:label "Full House — Trío de Reyes con Par de Jotas" ;
-    poker:contieneCarta poker:ReyDePicas,
-                        poker:ReyDeCorazones,
-                        poker:ReyDeDiamantes,
-                        poker:JotaDeCorazones,
-                        poker:JotaDeTreboles ;
-    poker:manoTienePar poker:Rey, poker:Jota .
-
-ex:KKKF99sh a poker:Mano ;
-    rdfs:label "Full House — Trío de Reyes con Par de Nueves" ;
-    poker:contieneCarta poker:ReyDePicas,
-                        poker:ReyDeCorazones,
-                        poker:ReyDeDiamantes,
-                        poker:NueveDePicas,
-                        poker:NueveDeCorazones ;
-    poker:manoTienePar poker:Rey, poker:Nueve .
-
-ex:KKKF33dc a poker:Mano ;
-    rdfs:label "Full House — Trío de Reyes con Par de Treses" ;
-    poker:contieneCarta poker:ReyDePicas,
-                        poker:ReyDeCorazones,
-                        poker:ReyDeDiamantes,
-                        poker:TresDeDiamantes,
-                        poker:TresDeTreboles ;
-    poker:manoTienePar poker:Rey, poker:Tres .
-
-
-# =============================================================================
-# Full House — Trío de Jotas (5 manos)
-# Trío fijo: JotaDePicas, JotaDeCorazones, JotaDeDiamantes
-# =============================================================================
 
 ex:JJJFAAsc a poker:Mano ;
     rdfs:label "Full House — Trío de Jotas con Par de Ases" ;
@@ -130,48 +45,6 @@ ex:JJJFAAsc a poker:Mano ;
                         poker:AsDeTreboles ;
     poker:manoTienePar poker:Jota, poker:As .
 
-ex:JJJFKKhc a poker:Mano ;
-    rdfs:label "Full House — Trío de Jotas con Par de Reyes" ;
-    poker:contieneCarta poker:JotaDePicas,
-                        poker:JotaDeCorazones,
-                        poker:JotaDeDiamantes,
-                        poker:ReyDeCorazones,
-                        poker:ReyDeTreboles ;
-    poker:manoTienePar poker:Jota, poker:Rey .
-
-ex:JJJFQQdh a poker:Mano ;
-    rdfs:label "Full House — Trío de Jotas con Par de Reinas" ;
-    poker:contieneCarta poker:JotaDePicas,
-                        poker:JotaDeCorazones,
-                        poker:JotaDeDiamantes,
-                        poker:ReinaDeDiamantes,
-                        poker:ReinaDeCorazones ;
-    poker:manoTienePar poker:Jota, poker:Reina .
-
-ex:JJJF77sc a poker:Mano ;
-    rdfs:label "Full House — Trío de Jotas con Par de Sietes" ;
-    poker:contieneCarta poker:JotaDePicas,
-                        poker:JotaDeCorazones,
-                        poker:JotaDeDiamantes,
-                        poker:SieteDePicas,
-                        poker:SieteDeTreboles ;
-    poker:manoTienePar poker:Jota, poker:Siete .
-
-ex:JJJF55hd a poker:Mano ;
-    rdfs:label "Full House — Trío de Jotas con Par de Cincos" ;
-    poker:contieneCarta poker:JotaDePicas,
-                        poker:JotaDeCorazones,
-                        poker:JotaDeDiamantes,
-                        poker:CincoDeCorazones,
-                        poker:CincoDeDiamantes ;
-    poker:manoTienePar poker:Jota, poker:Cinco .
-
-
-# =============================================================================
-# Full House — Trío de Doses (5 manos)
-# Trío fijo: DosDePicas, DosDeCorazones, DosDeDiamantes
-# =============================================================================
-
 ex:222FAAcs a poker:Mano ;
     rdfs:label "Full House — Trío de Doses con Par de Ases" ;
     poker:contieneCarta poker:DosDePicas,
@@ -180,43 +53,6 @@ ex:222FAAcs a poker:Mano ;
                         poker:AsDeTreboles,
                         poker:AsDePicas ;
     poker:manoTienePar poker:Dos, poker:As .
-
-ex:222FKKhc a poker:Mano ;
-    rdfs:label "Full House — Trío de Doses con Par de Reyes" ;
-    poker:contieneCarta poker:DosDePicas,
-                        poker:DosDeCorazones,
-                        poker:DosDeDiamantes,
-                        poker:ReyDeCorazones,
-                        poker:ReyDeTreboles ;
-    poker:manoTienePar poker:Dos, poker:Rey .
-
-ex:222FQQsd a poker:Mano ;
-    rdfs:label "Full House — Trío de Doses con Par de Reinas" ;
-    poker:contieneCarta poker:DosDePicas,
-                        poker:DosDeCorazones,
-                        poker:DosDeDiamantes,
-                        poker:ReinaDePicas,
-                        poker:ReinaDeDiamantes ;
-    poker:manoTienePar poker:Dos, poker:Reina .
-
-ex:222F88ch a poker:Mano ;
-    rdfs:label "Full House — Trío de Doses con Par de Ochos" ;
-    poker:contieneCarta poker:DosDePicas,
-                        poker:DosDeCorazones,
-                        poker:DosDeDiamantes,
-                        poker:OchoDeTreboles,
-                        poker:OchoDeCorazones ;
-    poker:manoTienePar poker:Dos, poker:Ocho .
-
-ex:222F66sd a poker:Mano ;
-    rdfs:label "Full House — Trío de Doses con Par de Seises" ;
-    poker:contieneCarta poker:DosDePicas,
-                        poker:DosDeCorazones,
-                        poker:DosDeDiamantes,
-                        poker:SeisDePicas,
-                        poker:SeisDeDiamantes ;
-    poker:manoTienePar poker:Dos, poker:Seis .
-
 
 # =============================================================================
 # Unicidad de instancias

@@ -15,7 +15,7 @@
 
 
 # =============================================================================
-# Póker de Ases (5 manos)
+# Manos de Póker
 # =============================================================================
 
 ex:AAAAKh a poker:Mano ;
@@ -26,43 +26,6 @@ ex:AAAAKh a poker:Mano ;
                         poker:AsDeTreboles,
                         poker:ReyDeCorazones .
 
-ex:AAAAQd a poker:Mano ;
-    rdfs:label "Póker de Ases con Reina de Diamantes" ;
-    poker:contieneCarta poker:AsDePicas,
-                        poker:AsDeCorazones,
-                        poker:AsDeDiamantes,
-                        poker:AsDeTreboles,
-                        poker:ReinaDeDiamantes .
-
-ex:AAAAJs a poker:Mano ;
-    rdfs:label "Póker de Ases con Jota de Picas" ;
-    poker:contieneCarta poker:AsDePicas,
-                        poker:AsDeCorazones,
-                        poker:AsDeDiamantes,
-                        poker:AsDeTreboles,
-                        poker:JotaDePicas .
-
-ex:AAAA10c a poker:Mano ;
-    rdfs:label "Póker de Ases con Diez de Tréboles" ;
-    poker:contieneCarta poker:AsDePicas,
-                        poker:AsDeCorazones,
-                        poker:AsDeDiamantes,
-                        poker:AsDeTreboles,
-                        poker:DiezDeTreboles .
-
-ex:AAAA2h a poker:Mano ;
-    rdfs:label "Póker de Ases con Dos de Corazones" ;
-    poker:contieneCarta poker:AsDePicas,
-                        poker:AsDeCorazones,
-                        poker:AsDeDiamantes,
-                        poker:AsDeTreboles,
-                        poker:DosDeCorazones .
-
-
-# =============================================================================
-# Póker de Reyes (5 manos)
-# =============================================================================
-
 ex:KKKKAd a poker:Mano ;
     rdfs:label "Póker de Reyes con As de Diamantes" ;
     poker:contieneCarta poker:ReyDePicas,
@@ -70,43 +33,6 @@ ex:KKKKAd a poker:Mano ;
                         poker:ReyDeDiamantes,
                         poker:ReyDeTreboles,
                         poker:AsDeDiamantes .
-
-ex:KKKKQs a poker:Mano ;
-    rdfs:label "Póker de Reyes con Reina de Picas" ;
-    poker:contieneCarta poker:ReyDePicas,
-                        poker:ReyDeCorazones,
-                        poker:ReyDeDiamantes,
-                        poker:ReyDeTreboles,
-                        poker:ReinaDePicas .
-
-ex:KKKKJc a poker:Mano ;
-    rdfs:label "Póker de Reyes con Jota de Tréboles" ;
-    poker:contieneCarta poker:ReyDePicas,
-                        poker:ReyDeCorazones,
-                        poker:ReyDeDiamantes,
-                        poker:ReyDeTreboles,
-                        poker:JotaDeTreboles .
-
-ex:KKKK9h a poker:Mano ;
-    rdfs:label "Póker de Reyes con Nueve de Corazones" ;
-    poker:contieneCarta poker:ReyDePicas,
-                        poker:ReyDeCorazones,
-                        poker:ReyDeDiamantes,
-                        poker:ReyDeTreboles,
-                        poker:NueveDeCorazones .
-
-ex:KKKK3d a poker:Mano ;
-    rdfs:label "Póker de Reyes con Tres de Diamantes" ;
-    poker:contieneCarta poker:ReyDePicas,
-                        poker:ReyDeCorazones,
-                        poker:ReyDeDiamantes,
-                        poker:ReyDeTreboles,
-                        poker:TresDeDiamantes .
-
-
-# =============================================================================
-# Póker de Jotas (5 manos)
-# =============================================================================
 
 ex:JJJJAs a poker:Mano ;
     rdfs:label "Póker de Jotas con As de Picas" ;
@@ -116,42 +42,6 @@ ex:JJJJAs a poker:Mano ;
                         poker:JotaDeTreboles,
                         poker:AsDePicas .
 
-ex:JJJJKh a poker:Mano ;
-    rdfs:label "Póker de Jotas con Rey de Corazones" ;
-    poker:contieneCarta poker:JotaDePicas,
-                        poker:JotaDeCorazones,
-                        poker:JotaDeDiamantes,
-                        poker:JotaDeTreboles,
-                        poker:ReyDeCorazones .
-
-ex:JJJJQd a poker:Mano ;
-    rdfs:label "Póker de Jotas con Reina de Diamantes" ;
-    poker:contieneCarta poker:JotaDePicas,
-                        poker:JotaDeCorazones,
-                        poker:JotaDeDiamantes,
-                        poker:JotaDeTreboles,
-                        poker:ReinaDeDiamantes .
-
-ex:JJJJ8c a poker:Mano ;
-    rdfs:label "Póker de Jotas con Ocho de Tréboles" ;
-    poker:contieneCarta poker:JotaDePicas,
-                        poker:JotaDeCorazones,
-                        poker:JotaDeDiamantes,
-                        poker:JotaDeTreboles,
-                        poker:OchoDeTreboles .
-
-ex:JJJJ4s a poker:Mano ;
-    rdfs:label "Póker de Jotas con Cuatro de Picas" ;
-    poker:contieneCarta poker:JotaDePicas,
-                        poker:JotaDeCorazones,
-                        poker:JotaDeDiamantes,
-                        poker:JotaDeTreboles,
-                        poker:CuatroDePicas .
-
-
-# =============================================================================
-# Póker de Doses (5 manos)
-# =============================================================================
 
 ex:2222Ah a poker:Mano ;
     rdfs:label "Póker de Doses con As de Corazones" ;
@@ -160,39 +50,6 @@ ex:2222Ah a poker:Mano ;
                         poker:DosDeDiamantes,
                         poker:DosDeTreboles,
                         poker:AsDeCorazones .
-
-ex:2222Ks a poker:Mano ;
-    rdfs:label "Póker de Doses con Rey de Picas" ;
-    poker:contieneCarta poker:DosDePicas,
-                        poker:DosDeCorazones,
-                        poker:DosDeDiamantes,
-                        poker:DosDeTreboles,
-                        poker:ReyDePicas .
-
-ex:2222Qd a poker:Mano ;
-    rdfs:label "Póker de Doses con Reina de Diamantes" ;
-    poker:contieneCarta poker:DosDePicas,
-                        poker:DosDeCorazones,
-                        poker:DosDeDiamantes,
-                        poker:DosDeTreboles,
-                        poker:ReinaDeDiamantes .
-
-ex:22227c a poker:Mano ;
-    rdfs:label "Póker de Doses con Siete de Tréboles" ;
-    poker:contieneCarta poker:DosDePicas,
-                        poker:DosDeCorazones,
-                        poker:DosDeDiamantes,
-                        poker:DosDeTreboles,
-                        poker:SieteDeTreboles .
-
-ex:22225h a poker:Mano ;
-    rdfs:label "Póker de Doses con Cinco de Corazones" ;
-    poker:contieneCarta poker:DosDePicas,
-                        poker:DosDeCorazones,
-                        poker:DosDeDiamantes,
-                        poker:DosDeTreboles,
-                        poker:CincoDeCorazones .
-
 
 # =============================================================================
 # Unicidad de instancias

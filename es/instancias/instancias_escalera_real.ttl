@@ -15,7 +15,7 @@
 
 
 # =============================================================================
-# Escalera Real — Picas (10-J-Q-K-A)
+# Manos de Escalera Real 
 # =============================================================================
 
 ex:TJQKAs a poker:Mano ;
@@ -24,21 +24,11 @@ ex:TJQKAs a poker:Mano ;
                         poker:ReinaDePicas, poker:ReyDePicas,
                         poker:AsDePicas .
 
-
-# =============================================================================
-# Escalera Real — Corazones (10-J-Q-K-A)
-# =============================================================================
-
 ex:TJQKAh a poker:Mano ;
     rdfs:label "Escalera Real de Corazones" ;
     poker:contieneCarta poker:DiezDeCorazones, poker:JotaDeCorazones,
                         poker:ReinaDeCorazones, poker:ReyDeCorazones,
                         poker:AsDeCorazones .
-
-
-# =============================================================================
-# Escalera Real — Diamantes (10-J-Q-K-A)
-# =============================================================================
 
 ex:TJQKAd a poker:Mano ;
     rdfs:label "Escalera Real de Diamantes" ;
@@ -46,17 +36,11 @@ ex:TJQKAd a poker:Mano ;
                         poker:ReinaDeDiamantes, poker:ReyDeDiamantes,
                         poker:AsDeDiamantes .
 
-
-# =============================================================================
-# Escalera Real — Tréboles (10-J-Q-K-A)
-# =============================================================================
-
 ex:TJQKAc a poker:Mano ;
     rdfs:label "Escalera Real de Tréboles" ;
     poker:contieneCarta poker:DiezDeTreboles, poker:JotaDeTreboles,
                         poker:ReinaDeTreboles, poker:ReyDeTreboles,
                         poker:AsDeTreboles .
-
 
 # =============================================================================
 # Unicidad de instancias

@@ -15,7 +15,7 @@
 
 
 # =============================================================================
-# Manos de Escalera de Color — Picas (5 manos)
+# Manos de Escalera de Color 
 # =============================================================================
 
 ex:A2345s a poker:Mano ;
@@ -24,69 +24,11 @@ ex:A2345s a poker:Mano ;
                         poker:TresDePicas, poker:CuatroDePicas,
                         poker:CincoDePicas .
 
-ex:34567s a poker:Mano ;
-    rdfs:label "Escalera de Color 3-4-5-6-7 de Picas" ;
-    poker:contieneCarta poker:TresDePicas, poker:CuatroDePicas,
-                        poker:CincoDePicas, poker:SeisDePicas,
-                        poker:SieteDePicas .
-
-ex:56789s a poker:Mano ;
-    rdfs:label "Escalera de Color 5-6-7-8-9 de Picas" ;
-    poker:contieneCarta poker:CincoDePicas, poker:SeisDePicas,
-                        poker:SieteDePicas, poker:OchoDePicas,
-                        poker:NueveDePicas .
-
-ex:789TJs a poker:Mano ;
-    rdfs:label "Escalera de Color 7-8-9-10-J de Picas" ;
-    poker:contieneCarta poker:SieteDePicas, poker:OchoDePicas,
-                        poker:NueveDePicas, poker:DiezDePicas,
-                        poker:JotaDePicas .
-
-ex:9TJQKs a poker:Mano ;
-    rdfs:label "Escalera de Color 9-10-J-Q-K de Picas" ;
-    poker:contieneCarta poker:NueveDePicas, poker:DiezDePicas,
-                        poker:JotaDePicas, poker:ReinaDePicas,
-                        poker:ReyDePicas .
-
-
-# =============================================================================
-# Manos de Escalera de Color — Corazones (5 manos)
-# =============================================================================
-
 ex:23456h a poker:Mano ;
     rdfs:label "Escalera de Color 2-3-4-5-6 de Corazones" ;
     poker:contieneCarta poker:DosDeCorazones, poker:TresDeCorazones,
                         poker:CuatroDeCorazones, poker:CincoDeCorazones,
                         poker:SeisDeCorazones .
-
-ex:45678h a poker:Mano ;
-    rdfs:label "Escalera de Color 4-5-6-7-8 de Corazones" ;
-    poker:contieneCarta poker:CuatroDeCorazones, poker:CincoDeCorazones,
-                        poker:SeisDeCorazones, poker:SieteDeCorazones,
-                        poker:OchoDeCorazones .
-
-ex:678910h a poker:Mano ;
-    rdfs:label "Escalera de Color 6-7-8-9-10 de Corazones" ;
-    poker:contieneCarta poker:SeisDeCorazones, poker:SieteDeCorazones,
-                        poker:OchoDeCorazones, poker:NueveDeCorazones,
-                        poker:DiezDeCorazones .
-
-ex:89TJQh a poker:Mano ;
-    rdfs:label "Escalera de Color 8-9-10-J-Q de Corazones" ;
-    poker:contieneCarta poker:OchoDeCorazones, poker:NueveDeCorazones,
-                        poker:DiezDeCorazones, poker:JotaDeCorazones,
-                        poker:ReinaDeCorazones .
-
-ex:9TJQKh a poker:Mano ;
-    rdfs:label "Escalera de Color 9-10-J-Q-K de Corazones" ;
-    poker:contieneCarta poker:NueveDeCorazones, poker:DiezDeCorazones,
-                        poker:JotaDeCorazones, poker:ReinaDeCorazones,
-                        poker:ReyDeCorazones .
-
-
-# =============================================================================
-# Manos de Escalera de Color — Diamantes (5 manos)
-# =============================================================================
 
 ex:A2345d a poker:Mano ;
     rdfs:label "Escalera de Color A-2-3-4-5 de Diamantes" ;
@@ -94,65 +36,11 @@ ex:A2345d a poker:Mano ;
                         poker:TresDeDiamantes, poker:CuatroDeDiamantes,
                         poker:CincoDeDiamantes .
 
-ex:23456d a poker:Mano ;
-    rdfs:label "Escalera de Color 2-3-4-5-6 de Diamantes" ;
-    poker:contieneCarta poker:DosDeDiamantes, poker:TresDeDiamantes,
-                        poker:CuatroDeDiamantes, poker:CincoDeDiamantes,
-                        poker:SeisDeDiamantes .
-
-ex:56789d a poker:Mano ;
-    rdfs:label "Escalera de Color 5-6-7-8-9 de Diamantes" ;
-    poker:contieneCarta poker:CincoDeDiamantes, poker:SeisDeDiamantes,
-                        poker:SieteDeDiamantes, poker:OchoDeDiamantes,
-                        poker:NueveDeDiamantes .
-
-ex:789TJd a poker:Mano ;
-    rdfs:label "Escalera de Color 7-8-9-10-J de Diamantes" ;
-    poker:contieneCarta poker:SieteDeDiamantes, poker:OchoDeDiamantes,
-                        poker:NueveDeDiamantes, poker:DiezDeDiamantes,
-                        poker:JotaDeDiamantes .
-
-ex:89TJQd a poker:Mano ;
-    rdfs:label "Escalera de Color 8-9-10-J-Q de Diamantes" ;
-    poker:contieneCarta poker:OchoDeDiamantes, poker:NueveDeDiamantes,
-                        poker:DiezDeDiamantes, poker:JotaDeDiamantes,
-                        poker:ReinaDeDiamantes .
-
-
-# =============================================================================
-# Manos de Escalera de Color — Tréboles (5 manos)
-# =============================================================================
-
 ex:34567c a poker:Mano ;
     rdfs:label "Escalera de Color 3-4-5-6-7 de Tréboles" ;
     poker:contieneCarta poker:TresDeTreboles, poker:CuatroDeTreboles,
                         poker:CincoDeTreboles, poker:SeisDeTreboles,
                         poker:SieteDeTreboles .
-
-ex:45678c a poker:Mano ;
-    rdfs:label "Escalera de Color 4-5-6-7-8 de Tréboles" ;
-    poker:contieneCarta poker:CuatroDeTreboles, poker:CincoDeTreboles,
-                        poker:SeisDeTreboles, poker:SieteDeTreboles,
-                        poker:OchoDeTreboles .
-
-ex:678910c a poker:Mano ;
-    rdfs:label "Escalera de Color 6-7-8-9-10 de Tréboles" ;
-    poker:contieneCarta poker:SeisDeTreboles, poker:SieteDeTreboles,
-                        poker:OchoDeTreboles, poker:NueveDeTreboles,
-                        poker:DiezDeTreboles .
-
-ex:89TJQc a poker:Mano ;
-    rdfs:label "Escalera de Color 8-9-10-J-Q de Tréboles" ;
-    poker:contieneCarta poker:OchoDeTreboles, poker:NueveDeTreboles,
-                        poker:DiezDeTreboles, poker:JotaDeTreboles,
-                        poker:ReinaDeTreboles .
-
-ex:9TJQKc a poker:Mano ;
-    rdfs:label "Escalera de Color 9-10-J-Q-K de Tréboles" ;
-    poker:contieneCarta poker:NueveDeTreboles, poker:DiezDeTreboles,
-                        poker:JotaDeTreboles, poker:ReinaDeTreboles,
-                        poker:ReyDeTreboles .
-
 
 # =============================================================================
 # Unicidad de instancias
