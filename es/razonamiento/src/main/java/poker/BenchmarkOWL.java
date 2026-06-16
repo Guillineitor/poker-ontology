@@ -210,6 +210,7 @@ public class BenchmarkOWL {
             NodeSet<OWLNamedIndividual> todasManos =
                 reasoner.getInstances(manoClass, false);
 
+            System.out.println(CYAN + "  [Inferencias en tiempo real]" + RESET);
             for (OWLNamedIndividual ind : todasManos.getFlattened()) {
                 NodeSet<OWLClass> tipos = reasoner.getTypes(ind, true);
                 List<String> tiposNombre = new ArrayList<>();
@@ -218,10 +219,17 @@ public class BenchmarkOWL {
                         tiposNombre.add(c.getIRI().getShortForm());
                     }
                 }
+                System.out.printf("  " + YELLOW + "%-45s" + RESET + " → %s%n",
+                    ind.getIRI().getShortForm(),
+                    tiposNombre.isEmpty()
+                        ? RED + "(sin clase inferida)" + RESET
+                        : GREEN + String.join(", ", tiposNombre) + RESET
+                );
                 res.clasificacionIndividual.put(
                     ind.getIRI().getShortForm(), tiposNombre
                 );
             }
+            System.out.println();
 
             System.out.printf("  Init              : %d ms%n",  tInit);
             System.out.printf("  Precomputación    : %d ms%n",  tPrecomp);
