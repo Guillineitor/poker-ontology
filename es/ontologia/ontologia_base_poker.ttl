@@ -238,9 +238,20 @@ poker:Mano a owl:Class ;
 # Inferencialmente, alguna clasificación puede estar contenida dentro de otra 
 # (por ejemplo, un FullHouse es la combinación entre un trío y un par), pero no son subclases 
 # entre sí, sino clases disjuntas bajo Mano.
-#
+
 # Definición de la clase CartaAlta
 poker:CartaAlta a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:Mano
+            [
+                a owl:Restriction ;
+                owl:onProperty poker:contieneCarta ;
+                owl:someValuesFrom poker:Carta
+            ]
+        )
+    ] ;
     rdfs:subClassOf poker:Mano ;
     rdfs:label "Carta Alta" ;
     rdfs:comment "Sin combinación; la carta más alta decide el ganador." .
