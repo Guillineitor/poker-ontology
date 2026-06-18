@@ -39,16 +39,7 @@ public class BenchmarkOWL {
 
     // Los 10 archivos de instancias en ../instancias/
     private static final String[] INST_TTLS = {
-        "../instancias/instancias_carta_alta.ttl",
-        "../instancias/instancias_par.ttl",
-        "../instancias/instancias_doble_par.ttl",
-        "../instancias/instancias_trio.ttl",
-        "../instancias/instancias_escalera.ttl",
-        "../instancias/instancias_color.ttl",
-        "../instancias/instancias_fullhouse.ttl",
-        "../instancias/instancias_poker.ttl",
-        "../instancias/instancias_escalera_color.ttl",
-        "../instancias/instancias_escalera_real.ttl"
+        "../instancias/instancias.ttl"
     };
 
     private static final String BASE_IRI  = "http://www.poker-ontology.org/poker#";
@@ -165,7 +156,6 @@ public class BenchmarkOWL {
             long t1 = System.currentTimeMillis();
             reasoner.precomputeInferences(
                 InferenceType.CLASS_HIERARCHY,
-                InferenceType.CLASS_ASSERTIONS,
                 InferenceType.OBJECT_PROPERTY_ASSERTIONS
             );
             long tPrecomp = System.currentTimeMillis() - t1;

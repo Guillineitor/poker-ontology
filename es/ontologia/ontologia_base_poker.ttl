@@ -14,10 +14,8 @@
 # ---------
 # Ontología escrita en Ontology Web Language (OWL) para modelar la estructura y
 # las componentes que conforman las partidas de Póker, en particular la variante Texas Hold'em Poker.
-# Esta es la ontología base que define sus clases, propiedades e individuos
-# fundamentales. No contiene clasificadores para la inferencia de manos. Esos clasificadores se implementan
-# como componentes separados que se le pueden agregar a esta ontología base y añaden sus propias
-# restricciones owl:equivalentClass.
+# Esta es la ontología base que define sus clases, propiedades, individuos
+# fundamentales, y clasificadores de tipos de manos.
 #
 # Open World Assumption (OWA)
 # ----------------------------------
@@ -65,11 +63,11 @@ poker:Rango a owl:Class ;
         owl:oneOf ( poker:Dos poker:Tres poker:Cuatro poker:Cinco poker:Seis poker:Siete poker:Ocho poker:Nueve poker:Diez poker:Jota poker:Reina poker:Rey poker:As )
     ] ;
     rdfs:label "Rango" ;
-    rdfs:comment "Rango de una carta. Clase cerrada: exactamente Dos, Tres, Cuatro, Cinco, Seis, Siete, Ocho, Nueve, Diez, Jota, Reina, Rey y As ." .
+    rdfs:comment "Rango de una carta. Clase cerrada: exactamente Dos, Tres, Cuatro, Cinco, Seis, Siete, Ocho, Nueve, Diez, Jota, Reina, Rey y As." .
 
 # Carta es cualquier carta de la baraja inglesa estándar. Cada carta debe tener
 # un palo (tienePalo) y un rango (tieneRango). Las cardinalidades
-# exactas se garantizan marcando esas propiedades como FunctionalProperty
+# exactas se garantizan marcando esas propiedades como FunctionalProperty.
 
 # Definición de la clase Carta, con restricciones sobre sus propiedades.
 poker:Carta a owl:Class ;
@@ -202,7 +200,7 @@ poker:CartaDeAs a owl:Class ;
 # Grupos de Cartas
 # =============================================================================
 
-# Definición de la clase Mano
+# Definición de la clase Mano.
 poker:Mano a owl:Class ;
     rdfs:subClassOf [
         a owl:Restriction ;
@@ -217,7 +215,7 @@ poker:Mano a owl:Class ;
         owl:onClass poker:Carta
     ] ;
     rdfs:label "Mano" ;
-    rdfs:comment "La mejor combinación de 5 cartas de un jugador." .
+    rdfs:comment "Conjunto de 5 cartas de un jugador dentro del juego de Póker." .
 
 # Jerarquía de tipos de mano, de menor a mayor fortaleza:
 #
@@ -228,18 +226,20 @@ poker:Mano a owl:Class ;
 #   ├── Trío           (4) Trío: Tres cartas del mismo rango
 #   ├── Escalera       (5) Escalera: Cinco cartas consecutivas de distintos palos
 #   ├── Color          (6) Color: Cinco cartas del mismo palo
-#   ├── FullHouse      (7) FullHouse: Un trío más un par
+#   ├── Full           (7) Full: Un trío más un par
 #   ├── Poker          (8) Póker: Cuatro cartas del mismo rango
 #   └── EscaleraColor  (9) Escalera de Color: Cinco cartas consecutivas del mismo palo
-#         └── EscaleraReal    Escalera Real: 10-J-Q-K-A del mismo palo (subclase de EscaleraColor)
+#         └── EscaleraReal  (10)  Escalera Real: 10-J-Q-K-A del mismo palo (subclase de EscaleraColor)
 #
 # EscaleraReal es una subclase de EscaleraColor, no una clase independiente, pues es un 
-# caso particular de la Escalera de Color. Las 9 clases base son mutuamente disjuntas. 
+# caso particular de la Escalera de Color. Las tipos de mano se definen como clases disjuntas entre sí, 
+# pero en este caso no se definen como clases disjuntas explícitamente, como una primera instancia de probar
+# los razonadores OWL sin tener clasificadores de tipo de manos muy complejos y con muchas combinaciones.
 # Inferencialmente, alguna clasificación puede estar contenida dentro de otra 
-# (por ejemplo, un FullHouse es la combinación entre un trío y un par), pero no son subclases 
-# entre sí, sino clases disjuntas bajo Mano.
+# (por ejemplo, un Full es la combinación entre un trío y un par, Doble Par es la combinación de dos pares,
+# distintos y una Escalera de Color es la combinación entre un Color y una Escalera).
 
-# Definición de la clase CartaAlta
+# Definición de la clase CartaAlta.
 poker:CartaAlta a owl:Class ;
     owl:equivalentClass [
         a owl:Class ;
@@ -310,7 +310,7 @@ poker:DoblePar a owl:Class ;
         )
     ] ;
     rdfs:label "Doble Par" ;
-    rdfs:comment "Dos pares de rangos distintos, independientemente del palo. Requiere que los triples manoTienePar se agreguen manualmente en el ABox." .
+    rdfs:comment "Mano formada por dos pares de rangos distintos, independientemente del palo. " .
 
 # Definición de la clase Trio.
 poker:Trio a owl:Class ;
@@ -352,7 +352,7 @@ poker:Trio a owl:Class ;
         )
     ] ;
     rdfs:label "Trío" ;
-    rdfs:comment "Mano formada por tres cartas del mismo rango y otras dos cartas distintas al trío y distintas entre sí. " .
+    rdfs:comment "Mano formada por tres cartas del mismo rango y otras dos cartas distintas al trío y distintas entre sí." .
 
 # Definición de la clase Escalera.
 poker:Escalera a owl:Class ;
@@ -448,7 +448,7 @@ poker:Escalera a owl:Class ;
         )
     ] ;
     rdfs:label "Escalera" ;
-    rdfs:comment "Mano formada por cinco cartas de rangos consecutivos, no necesariamente del mismo palo. " .
+    rdfs:comment "Mano formada por cinco cartas de rangos consecutivos, no necesariamente del mismo palo." .
     
 # Definición de la clase Color.
 poker:Color a owl:Class ;
@@ -474,9 +474,9 @@ poker:Color a owl:Class ;
     rdfs:label "Color" ;
     rdfs:comment "Mano formada por cinco cartas del mismo palo, no necesariamente consecutivas entre sí." .
 
-# Definición de la clase FullHouse.
-# Observación: El FullHouse es la intersección de Trío y Doble Par, por lo que se define como equivalente a la intersección de ambas. 
-poker:FullHouse a owl:Class ;
+# Definición de la clase Full.
+# Observación: El Full es la intersección de Trío y Doble Par, por lo que se define como equivalente a la intersección de ambas. 
+poker:Full a owl:Class ;
     owl:equivalentClass [
         a owl:Class ;
         owl:intersectionOf (
@@ -484,7 +484,7 @@ poker:FullHouse a owl:Class ;
             poker:DoblePar
         )
     ] ;
-    rdfs:label "Full House" ;
+    rdfs:label "Full" ;
     rdfs:comment "Mano formada por tres cartas del mismo rango y dos cartas de otro mismo rango." .
 
 # Definición de la clase Poker.
@@ -527,7 +527,7 @@ poker:Poker a owl:Class ;
         )
     ] ;
     rdfs:label "Póker" ;
-    rdfs:comment "Mano formada por cuatro cartas del mismo rango y una carta cualquiera " .
+    rdfs:comment "Mano formada por cuatro cartas del mismo rango y una carta cualquiera." .
 
 # Definición de la clase EscaleraColor.
 # Observación: La Escalera de Color es la intersección de Escalera y Color, por lo que se define como equivalente a la intersección de ambas. 
@@ -607,7 +607,7 @@ poker:manoTienePar a owl:ObjectProperty ;
     rdfs:comment "Atajo que indica qué rangos están presentes con al menos 2 cartas en la mano. Se agrega manualmente en el ABox. Usado por el clasificador de DoblePar." .
 
 # =============================================================================
-# Propiedades de datos
+# Propiedades de Datos
 # =============================================================================
 
 # Las propiedades de datos registran valores escalares asociados a los
