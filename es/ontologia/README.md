@@ -64,7 +64,7 @@ La TBox define el esquema conceptual del dominio. Incluye:
 - Las clases `Palo` y `Rango` como enumeraciones cerradas.
 - La clase `Carta` y sus 17 subclases (4 por palo + 13 por rango).
 - La clase `Mano` y sus 9 subclases de tipo de mano, con sus `owl:equivalentClass`.
-- 4 propiedades de objeto y 2 propiedades de datos.
+- 4 propiedades de objeto y 1 propiedad de datos.
 
 ### ABox: individuos
 
@@ -124,7 +124,7 @@ Los tipos de mano se ordenan de menor a mayor fortaleza:
 | 7 | `Full` | Full | `Trio ⊓ DoblePar` |
 | 8 | `Poker` | Póker | `Mano ⊓ (≥4 CartaDeDos ⊔ ... ⊔ ≥4 CartaDeAs)` |
 | 9 | `EscaleraColor` | Escalera de Color | `Escalera ⊓ Color` |
-| 9.1 | `EscaleraReal` | Escalera Real | `EscaleraColor ⊓ ∃contieneCarta.CartaDeDiez ⊓ ∃contieneCarta.CartaDeJota ⊓ ∃contieneCarta.CartaDeReina ⊓ ∃contieneCarta.CartaDeRey ⊓ ∃contieneCarta.CartaDeAs` |
+| 10 | `EscaleraReal` | Escalera Real | `EscaleraColor ⊓ ∃contieneCarta.CartaDeDiez ⊓ ∃contieneCarta.CartaDeJota ⊓ ∃contieneCarta.CartaDeReina ⊓ ∃contieneCarta.CartaDeRey ⊓ ∃contieneCarta.CartaDeAs` |
 
 `EscaleraReal` es subclase de `EscaleraColor`, no un tipo independiente; es el único caso particular de Escalera de Color que está nombrado en las reglas del póker.
 
@@ -142,6 +142,13 @@ Los tipos de mano se ordenan de menor a mayor fortaleza:
 | `tieneRango` | `Carta` | `Rango` | `FunctionalProperty` | Asocia cada carta con su único rango. |
 | `contieneCarta` | `Mano` | `Carta` | — | Relaciona una mano con las 5 cartas que la componen. |
 | `manoTienePar` | `Mano` | `Rango` | — | Shortcut: indica qué rangos tienen al menos 2 cartas en la mano. Se agrega manualmente en el ABox. Usado por `DoblePar`. |
+
+
+### Propiedades de Datos
+
+| Propiedad | Dominio | Rango | Tipo | Descripción |
+|---|---|---|---|---|
+| `tieneValorRango` | `Rango` | `xsd:nonNegativeInteger` | `FunctionalProperty` | Valor numérico del rango (2 para Dos, 14 para As). |
 
 
 ---
@@ -163,9 +170,9 @@ Rango ≡ { Dos, Tres, ..., Rey, As }                  (13 rangos)
 
 **`owl:AllDifferent`** en los 69 individuos (3 bloques: palos, rangos y cartas): garantiza que el razonador los trate como entidades distintas, simulando la Unique Name Assumption (UNA) que OWL no asume por defecto.
 
-### Propiedad shortcut `manoTienePar`
+### Propiedad *shortcut* `manoTienePar`
 
-El clasificador `DoblePar` requiere detectar que una mano contiene dos pares de rangos **distintos**. En OWL 2 DL no es posible expresar directamente "dos rangos distintos, cada uno con al menos 2 cartas" usando solo `contieneCarta` y cardinalidades calificadas, porque la expresión requeriría una cadena de propiedades que viola las restricciones del perfil DL.
+El clasificador `DoblePar` requiere detectar que una mano contiene dos pares de rangos **distintos**. En OWL 2 DL no es posible expresar directamente "dos rangos distintos, cada uno con al menos 2 cartas" usando solo `contieneCarta` y cardinalidades calificadas, porque OWL 2 DL tiene una limitación de cardinalidades calificadas cuando el cuantificador se aplica sobre individuos de la misma clase. No puede identificar que hay cosas distintas del mismo tipo de cosa.
 
 La solución para construir un clasificador sin pasar por todas las combinaciones de manos `DoblePar`, es una **propiedad shortcut** `manoTienePar : Mano → Rango` que se agrega manualmente en el ABox para cada par presente en la mano. 
 
@@ -173,6 +180,6 @@ La solución para construir un clasificador sin pasar por todas las combinacione
 
 Los tipos de mano son **conceptualmente disjuntos** en las reglas del póker (una mano no puede ser Par y Trío, aunque uno este contenido en el otro). Sin embargo, la ontología **no declara axiomas `owl:disjointWith`** entre ellos de forma explícita.
 
-Esta decisión es deliberada: la definición con `owl:equivalentClass` ya expresa con precisión qué es cada mano, y añadir disjunción explícita introduce una complejidad que puede y debe ser realizada como trabajo futuro desde esta memoria, pero que dificulta la verificación del razonador en costos temporales y computacionales. Las intersecciones necesarias para `Full` y `EscaleraColor` son inferencialmente consistentes bajo esta configuración.
+Esta decisión es deliberada: la definición con `owl:equivalentClass` ya expresa con precisión qué es cada mano, y añadir disjunción explícita introduce una complejidad que puede y debe ser realizada como trabajo futuro a partir del trabajo logrado en esta memoria, pero que dificulta la verificación del razonador en costos temporales y computacionales. Las intersecciones necesarias para `Full` y `EscaleraColor` son inferencialmente consistentes bajo esta configuración.
 
 ---

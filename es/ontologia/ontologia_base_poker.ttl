@@ -606,6 +606,21 @@ poker:manoTienePar a owl:ObjectProperty ;
     rdfs:label  "Mano tiene Par" ;
     rdfs:comment "Atajo que indica qué rangos están presentes con al menos 2 cartas en la mano. Se agrega manualmente en el ABox. Usado por el clasificador de DoblePar." .
 
+# =============================================================================
+# Propiedades de Datos
+# =============================================================================
+
+# Las propiedades de datos registran valores escalares asociados a los
+# individuos del dominio. OWL no realiza cálculos: los valores se registran como hechos.
+# Las propiedades marcadas como FunctionalProperty garantizan que cada
+# individuo tiene como máximo un valor para esa propiedad.
+
+# Definición de la propiedad tieneValorRango.
+poker:tieneValorRango a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain poker:Rango ;
+    rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "Tiene Valor De Rango" ;
+    rdfs:comment "Valor numérico del rango (2 para Dos, 14 para As)." .
 
 # =============================================================================
 # Instancias (ABox)
@@ -669,7 +684,6 @@ poker:Rey a poker:Rango ;
     rdfs:label "Rey" .
 poker:As a poker:Rango ;
     poker:tieneValorRango "14"^^xsd:nonNegativeInteger ;
-    poker:tieneValorRangoBajo "1"^^xsd:nonNegativeInteger ;
     rdfs:label "As" .
 
 # Cartas (52 individuos) 
