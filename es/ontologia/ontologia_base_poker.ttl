@@ -232,7 +232,7 @@ poker:Mano a owl:Class ;
 #         └── EscaleraReal  (10)  Escalera Real: 10-J-Q-K-A del mismo palo (subclase de EscaleraColor)
 #
 # EscaleraReal es una subclase de EscaleraColor, no una clase independiente, pues es un 
-# caso particular de la Escalera de Color. Las tipos de mano se definen como clases disjuntas entre sí, 
+# caso particular de la Escalera de Color. Los tipos de mano se definen como clases disjuntas entre sí, 
 # pero en este caso no se definen como clases disjuntas explícitamente, como una primera instancia de probar
 # los razonadores OWL sin tener clasificadores de tipo de manos muy complejos y con muchas combinaciones.
 # Inferencialmente, alguna clasificación puede estar contenida dentro de otra 
@@ -606,31 +606,6 @@ poker:manoTienePar a owl:ObjectProperty ;
     rdfs:label  "Mano tiene Par" ;
     rdfs:comment "Atajo que indica qué rangos están presentes con al menos 2 cartas en la mano. Se agrega manualmente en el ABox. Usado por el clasificador de DoblePar." .
 
-# =============================================================================
-# Propiedades de Datos
-# =============================================================================
-
-# Las propiedades de datos registran valores escalares asociados a los
-# individuos del dominio. OWL no realiza cálculos: los valores se registran como hechos.
-# Las propiedades marcadas como FunctionalProperty garantizan que cada
-# individuo tiene como máximo un valor para esa propiedad.
-
-# Definición de la propiedad tieneValorRango.
-poker:tieneValorRango a owl:DatatypeProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Rango ;
-    rdfs:range xsd:nonNegativeInteger ;
-    rdfs:label "Tiene Valor De Rango" ;
-    rdfs:comment "Valor numérico del rango (2 para Dos, 14 para As). Usado por evaluadores externos." .
-
-# Definición de la propiedad tieneValorRangoBajo.
-poker:tieneValorRangoBajo a owl:DatatypeProperty , owl:FunctionalProperty ;
-    rdfs:domain [
-        a owl:Class ;
-        owl:oneOf ( poker:As )
-    ] ;
-    rdfs:range xsd:nonNegativeInteger ;
-    rdfs:label "Tiene Valor De Rango Bajo" ;
-    rdfs:comment "Valor alternativo bajo del As (= 1) para la escalera baja A-2-3-4-5 (Wheel). Restringido exclusivamente al As." .
 
 # =============================================================================
 # Instancias (ABox)
