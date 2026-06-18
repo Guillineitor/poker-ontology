@@ -116,7 +116,7 @@ Los tipos de mano se ordenan de menor a mayor fortaleza:
 | # | Clase OWL | Nombre | Definición OWL resumida |
 |---|---|---|---|
 | 1 | `CartaAlta` | Carta Alta | `Mano ⊓ ∃contieneCarta.Carta`  |
-| 2 | `Par` | Par | `Mano ⊓ (≥2 CartaDeDOS ⊔ ... ⊔ ≥2 CartaDeAs)` |
+| 2 | `Par` | Par | `Mano ⊓ (≥2 CartaDeDoS ⊔ ... ⊔ ≥2 CartaDeAs)` |
 | 3 | `DoblePar` | Doble Par | `Mano ⊓ (≥2 manoTienePar)` |
 | 4 | `Trio` | Trío | `Mano ⊓ (≥3 CartaDeDos ⊔ ... ⊔ ≥3 CartaDeAs)` |
 | 5 | `Escalera` | Escalera | `Mano ⊓ (secuencia A-2-3-4-5 ⊔ ... ⊔ 10-J-Q-K-A)` |
