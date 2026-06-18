@@ -215,7 +215,7 @@ poker:Mano a owl:Class ;
         owl:onClass poker:Carta
     ] ;
     rdfs:label "Mano" ;
-    rdfs:comment "Conjunto de 5 cartas de un jugador dentro del juego de Póker." .
+    rdfs:comment "La mejor combinación de 5 cartas seleccionada entre las cartas del jugador y las comunitarias." .
 
 # Jerarquía de tipos de mano, de menor a mayor fortaleza:
 #
@@ -254,7 +254,7 @@ poker:CartaAlta a owl:Class ;
     ] ;
     rdfs:subClassOf poker:Mano ;
     rdfs:label "Carta Alta" ;
-    rdfs:comment "Sin combinación; la carta más alta decide el ganador." .
+    rdfs:comment "Mano formada sin combinación; la carta más alta decide el ganador." .
 
 # Definición de la clase Par.
 poker:Par a owl:Class ;
@@ -296,7 +296,7 @@ poker:Par a owl:Class ;
         )
     ] ;
     rdfs:label "Par" ;
-    rdfs:comment "Mano formada por dos cartas del mismo rango más tres cartas adicionales de rango distinto de la pareja y distintas entre sí" .
+    rdfs:comment "Mano formada por dos cartas del mismo rango más tres cartas adicionales de rango distinto de la pareja y distintas entre sí." .
 
 # Definición de la clase DoblePar.
 poker:DoblePar a owl:Class ;
@@ -310,7 +310,7 @@ poker:DoblePar a owl:Class ;
         )
     ] ;
     rdfs:label "Doble Par" ;
-    rdfs:comment "Mano formada por dos pares de rangos distintos, independientemente del palo. " .
+    rdfs:comment "Mano formada por dos pares de rangos distintos, independientemente del palo." .
 
 # Definición de la clase Trio.
 poker:Trio a owl:Class ;
@@ -363,7 +363,7 @@ poker:Escalera a owl:Class ;
             [
                 a owl:Class ;
                 owl:unionOf (
-                    # Escalera A-2-3-4-5. 
+                    # Escalera A-2-3-4-5.
                     [ a owl:Class ; owl:intersectionOf (
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeAs ]
                         [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDos ]
@@ -564,7 +564,7 @@ poker:EscaleraReal a owl:Class ;
         )
     ] ;
     rdfs:label "Escalera Real" ;
-    rdfs:comment "Mano formada por las cinco cartas de mayor rango consecutivas (10-J-Q-K-A)" .
+    rdfs:comment "Mano formada por las cinco cartas de mayor rango consecutivas (10-J-Q-K-A)." .
 
 
 # =============================================================================

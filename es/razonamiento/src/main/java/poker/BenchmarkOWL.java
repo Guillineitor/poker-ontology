@@ -47,7 +47,7 @@ public class BenchmarkOWL {
     // Clases de mano que queremos consultar
     private static final String[] CLASES_MANO = {
         "CartaAlta", "Par", "DoblePar", "Trio",
-        "Escalera", "Color", "FullHouse", "Poker", "EscaleraColor", "EscaleraReal"
+        "Escalera", "Color", "Full", "Poker", "EscaleraColor", "EscaleraReal"
     };
 
     // ── Colores ANSI para la terminal ────────────────────────────────────────
