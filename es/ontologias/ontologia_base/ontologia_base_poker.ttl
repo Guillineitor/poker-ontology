@@ -229,7 +229,7 @@ poker:Mano a owl:Class ;
 #   ├── Full           (7) Full: Un trío más un par
 #   ├── Poker          (8) Póker: Cuatro cartas del mismo rango
 #   └── EscaleraColor  (9) Escalera de Color: Cinco cartas consecutivas del mismo palo
-#         └── EscaleraReal  (10)  Escalera Real: 10-J-Q-K-A del mismo palo (subclase de EscaleraColor)
+#         └── EscaleraReal  (10) Escalera Real: 10-J-Q-K-A del mismo palo (subclase de EscaleraColor)
 #
 # EscaleraReal es una subclase de EscaleraColor, no una clase independiente, pues es un 
 # caso particular de la Escalera de Color. Los tipos de mano se definen como clases disjuntas entre sí, 
