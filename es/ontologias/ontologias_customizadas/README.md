@@ -1,0 +1,1 @@
+readme sobre variantes customizadas de ontologias de poker (con mas manos y rangos)

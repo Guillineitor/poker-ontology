@@ -23,7 +23,6 @@ Salida
 
 import re
 import sys
-from itertools import combinations
 from pathlib import Path
 
 
@@ -242,6 +241,12 @@ deck:contieneCarta a owl:ObjectProperty ;
     rdfs:label "Contiene Carta" ;
     rdfs:comment "Relaciona una mano con cada una de las cartas que la componen." .
 
+deck:manoTienePar a owl:ObjectProperty ;
+    rdfs:domain deck:Mano ;
+    rdfs:range  deck:Rango ;
+    rdfs:label  "Mano tiene Par" ;
+    rdfs:comment "Atajo que indica qué rangos están presentes con al menos 2 cartas en la mano. Se agrega manualmente en el ABox. Usado por el clasificador de DoblePar." .
+
 # =============================================================================
 # Propiedades de Datos
 # =============================================================================
@@ -383,7 +388,7 @@ def clasificador_par(rangos: list[str]) -> str:
         "#   ├── Trio           (4) Tres cartas del mismo rango",
         "#   ├── Escalera       (5) Cinco cartas consecutivas de distintos palos",
         "#   ├── Color          (6) Cinco cartas del mismo palo",
-        "#   ├── FullHouse      (7) Un trío más un par",
+        "#   ├── Full           (7) Un trío más un par",
         "#   ├── Poker          (8) Cuatro cartas del mismo rango",
         "#   └── EscaleraColor  (9) Cinco cartas consecutivas del mismo palo",
         "#         └── EscaleraReal  Escalera Real: rangos más altos del mismo palo",
@@ -391,9 +396,20 @@ def clasificador_par(rangos: list[str]) -> str:
         "",
         "# Definición de la clase CartaAlta.",
         "deck:CartaAlta a owl:Class ;",
+        "    owl:equivalentClass [",
+        "        a owl:Class ;",
+        "        owl:intersectionOf (",
+        "            deck:Mano",
+        "            [",
+        "                a owl:Restriction ;",
+        "                owl:onProperty deck:contieneCarta ;",
+        "                owl:someValuesFrom deck:Carta",
+        "            ]",
+        "        )",
+        "    ] ;",
         "    rdfs:subClassOf deck:Mano ;",
         '    rdfs:label "Carta Alta" ;',
-        '    rdfs:comment "Sin combinación; la carta más alta decide el ganador." .',
+        '    rdfs:comment "Mano formada sin combinación; la carta más alta decide el ganador." .',
         "",
         "# Definición de la clase Par.",
         "deck:Par a owl:Class ;",
@@ -426,41 +442,26 @@ def clasificador_par(rangos: list[str]) -> str:
 
 def clasificador_doble_par(rangos: list[str]) -> str:
     """
-    Doble Par: dos pares de rangos distintos.
-    Patrón: owl:unionOf de C(n,2) intersecciones, cada una con dos
-    minQualifiedCardinality 2 sobre rangos distintos.
+    Doble Par: al menos 2 valores distintos de manoTienePar.
+    Patrón idéntico a la ontología base: owl:minCardinality "2" sobre
+    la propiedad auxiliar manoTienePar (debe poblarse manualmente en el ABox).
     """
     lineas = [
         "",
         "# Definición de la clase DoblePar.",
-        "# Nota: En OWL DL puro es necesario enumerar las C(n,2) combinaciones de pares.",
+        "# Usa el atajo manoTienePar: la mano tiene al menos 2 rangos con par.",
         "deck:DoblePar a owl:Class ;",
         "    owl:equivalentClass [",
         "        a owl:Class ;",
         "        owl:intersectionOf (",
         "            deck:Mano",
-        "            [",
-        "                a owl:Class ;",
-        "                owl:unionOf (",
-    ]
-    for r1, r2 in combinations(rangos, 2):
-        r1id, r2id = to_id(r1), to_id(r2)
-        lineas.append(
-            f'                    # {label(r1)} + {label(r2)}, de cualquier palo.'
-        )
-        lineas.append(
-            f'                    [ a owl:Class ; owl:intersectionOf ('
-            f' [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDe{r1id} ]'
-            f' [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDe{r2id} ]'
-            f' ) ]'
-        )
-    lineas += [
-        "                )",
-        "            ]",
+        "            [ a owl:Restriction ;",
+        "              owl:onProperty deck:manoTienePar ;",
+        '              owl:minCardinality "2"^^xsd:nonNegativeInteger ]',
         "        )",
         "    ] ;",
         '    rdfs:label "Doble Par" ;',
-        '    rdfs:comment "Dos pares de rangos distintos, independientemente del palo." .',
+        '    rdfs:comment "Mano formada por dos pares de rangos distintos, independientemente del palo." .',
     ]
     return "\n".join(lineas)
 
@@ -577,42 +578,24 @@ def clasificador_color(palos: list[str]) -> str:
     return "\n".join(lineas)
 
 
-def clasificador_full_house(rangos: list[str]) -> str:
+def clasificador_full() -> str:
     """
-    Full House: trío + par.
-    Truco por exclusión aritmética: cada rango aporta 0, 2 ó 3 cartas
-    (nunca 1, nunca 4). La única partición de 5 en {0,2,3} es 3+2.
+    Full: intersección de Trio y DoblePar.
+    Patrón idéntico a la ontología base: reutiliza las dos clases ya definidas.
     """
-    lineas = [
-        "",
-        "# Definición de la clase FullHouse.",
-        "# Truco por exclusión: cada rango tiene 0, 2 ó 3 cartas (nunca 1, nunca 4).",
-        "# La única partición de 5 en {0,2,3} es 3+2 → Full House.",
-        "deck:FullHouse a owl:Class ;",
-        "    owl:equivalentClass [",
-        "        a owl:Class ;",
-        "        owl:intersectionOf (",
-        "            deck:Mano",
-    ]
-    for r in rangos:
-        rid = to_id(r)
-        lineas += [
-            f"            # 0, 2 ó 3 cartas de {label(r)}.",
-            "            [ a owl:Class ; owl:intersectionOf (",
-            f'                [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:maxQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDe{rid} ]',
-            "                [ a owl:Class ; owl:unionOf (",
-            f'                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:maxQualifiedCardinality "0"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDe{rid} ]',
-            f'                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDe{rid} ]',
-            "                )]",
-            "            )]",
-        ]
-    lineas += [
-        "        )",
-        "    ] ;",
-        '    rdfs:label "Full House" ;',
-        '    rdfs:comment "Un trío más un par. Clasificado por exclusión: cada rango aporta 0, 2 ó 3 cartas; la única partición de 5 en {0,2,3} es 3+2." .',
-    ]
-    return "\n".join(lineas)
+    return """
+# Definición de la clase Full.
+# Observación: El Full es la intersección de Trio y DoblePar.
+deck:Full a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Trio
+            deck:DoblePar
+        )
+    ] ;
+    rdfs:label "Full" ;
+    rdfs:comment "Mano formada por tres cartas del mismo rango y dos cartas de otro mismo rango." ."""
 
 
 def clasificador_poker_mano(rangos: list[str]) -> str:
@@ -695,18 +678,6 @@ deck:EscaleraReal a owl:Class ;
     rdfs:comment "Mano formada por los cinco rangos más altos consecutivos ({nombre_top5}) del mismo palo." ."""
 
 
-def seccion_disjuncion_manos() -> str:
-    """Declara las 9 clases de mano base como mutuamente disjuntas bajo Mano."""
-    clases = [
-        "deck:CartaAlta", "deck:Par", "deck:DoblePar", "deck:Trio",
-        "deck:Escalera", "deck:Color", "deck:FullHouse", "deck:Poker",
-        "deck:EscaleraColor",
-    ]
-    lista = " ".join(clases)
-    return f"""
-# Las 9 clases base de mano son mutuamente disjuntas entre sí.
-[] a owl:AllDisjointClasses ;
-    owl:members ( {lista} ) ."""
 
 
 # =============================================================================
@@ -745,14 +716,13 @@ def generar_ontologia(
 
     partes += [
         clasificador_color(palos),
-        clasificador_full_house(rangos),
+        clasificador_full(),
         clasificador_poker_mano(rangos),
     ]
 
     if tiene_escalera:
         partes.append(clasificador_escalera_color())
         partes.append(clasificador_escalera_real(rangos))
-        partes.append(seccion_disjuncion_manos())
 
     partes += [
         seccion_propiedades(),
@@ -820,10 +790,11 @@ def main():
 
     ttl = generar_ontologia(deck_name, base_iri, palos, rangos)
 
-    output_path = Path(f"{slug}.ttl")
+    output_dir = Path(__file__).parent.parent / "ontologias" / "ontologias_customizadas"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    output_path = output_dir / f"{slug}.ttl"
     output_path.write_text(ttl, encoding="utf-8")
     print(f"✓ Ontología generada: {output_path.resolve()}")
-
 
 if __name__ == "__main__":
     main()
