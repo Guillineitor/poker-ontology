@@ -611,10 +611,7 @@ poker:manoTienePar a owl:ObjectProperty ;
 # =============================================================================
 
 # Las propiedades de datos registran valores escalares asociados a los
-# individuos del dominio. OWL no realiza cálculos: los valores se registran
-# como hechos y la lógica de evaluación (sumas, comparaciones) se implementa
-# externamente, por ejemplo con SPARQL o Python.
-#
+# individuos del dominio. OWL no realiza cálculos: los valores se registran como hechos.
 # Las propiedades marcadas como FunctionalProperty garantizan que cada
 # individuo tiene como máximo un valor para esa propiedad.
 
@@ -642,10 +639,10 @@ poker:tieneValorRangoBajo a owl:DatatypeProperty , owl:FunctionalProperty ;
 # La ABox define los individuos concretos del dominio.
 # Total: 69 individuos
 #    4  palos (Palo)                       cerrados por owl:oneOf en la TBox
-#   13  rangos (Rango)                     el As tiene valor dual: 14 (alto) y 1 (bajo)
+#   13  rangos (Rango)                     el As tiene valor más alto
 #   52  cartas (Carta)                     13 rangos × 4 palos
 
-# Palos (4 individuos) -------------------------------------------------------
+# Palos (4 individuos)
 
 poker:Picas a poker:Palo ;
     rdfs:label "Picas" .
@@ -656,11 +653,8 @@ poker:Diamantes a poker:Palo ;
 poker:Treboles a poker:Palo ;
     rdfs:label "Tréboles" .
 
-# Rangos (13 individuos) -----------------------------------------------------
-# Los valores de tieneValorRango van de 2 (Dos) a 14 (As).
-# El As tiene además tieneValorRangoBajo = 1 para la escalera baja A-2-3-4-5
-# (conocida como 'rueda'). OWL no realiza aritmética; estos valores los
-# consume la lógica externa (SPARQL, Python) para evaluar manos.
+# Rangos (13 individuos) 
+# Los valores de tieneValorRango van de 2 (Dos) a 14 (As). OWL no realiza aritmética.
 
 poker:Dos a poker:Rango ;
     poker:tieneValorRango "2"^^xsd:nonNegativeInteger ;
@@ -703,10 +697,9 @@ poker:As a poker:Rango ;
     poker:tieneValorRangoBajo "1"^^xsd:nonNegativeInteger ;
     rdfs:label "As" .
 
-# Cartas (52 individuos) -----------------------------------------------------
+# Cartas (52 individuos) 
 # Convención de nombres: {Rango}De{Palo}  (ej. AsDePicas, ReyDeCorazones).
-# Cada carta declara explícitamente tienePalo y tieneRango. Esto permite consultas
-# SPARQL precisas y habilita el axioma AllDifferent del final del módulo.
+# Cada carta declara explícitamente tienePalo y tieneRango.
 
 # Carta con el Palo de Picas.
 
