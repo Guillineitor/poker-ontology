@@ -36,9 +36,9 @@ El generador produce una ontología con los siguientes componentes:
 |---|---|
 | IRI base y metadatos | Configurables por el usuario |
 | Palos y rangos | Clases cerradas con `owl:oneOf` |
-| Cartas | Combinaciones de palo y rango |
+| Cartas | Clase cerrada con una carta por combinación de palo y rango |
 | Mano | Mano de cinco cartas |
-| Clasificadores de mano | CartaAlta, Par, DoblePar, Trio, Escalera, Color, Full, Poker, EscaleraColor y EscaleraReal |
+| Clasificadores de mano | Solo las clases de mano posibles según cantidad de palos, rangos y cartas |
 | Individuos ABox | Individuos concretos y axiomas `owl:AllDifferent` |
 
 ---
@@ -81,6 +81,25 @@ Los rangos deben ingresarse de menor a mayor valor. Esa posición se usa para as
 ### Mínimo de rangos para escaleras
 
 Si la baraja tiene menos de cinco rangos, el generador omite `Escalera`, `EscaleraColor` y `EscaleraReal` porque no puede formar ventanas de cinco cartas consecutivas.
+
+### Manos posibles según la baraja
+
+El generador evalúa la cantidad de palos y rangos antes de emitir clasificadores. Una mano que exige varias cartas del mismo rango solo se genera si existen suficientes palos:
+
+| Mano | Condición mínima |
+|---|---|
+| `Par` | al menos 2 palos |
+| `DoblePar` | al menos 2 palos y 2 rangos |
+| `Trio` | al menos 3 palos |
+| `Full` | al menos 3 palos y 2 rangos |
+| `Poker` | al menos 4 palos |
+| `Escalera`, `Color`, `EscaleraColor`, `EscaleraReal` | al menos 5 rangos |
+
+Si una clase no se genera, el `.ttl` incluye un comentario con el motivo.
+
+### Cierre de la clase Carta
+
+`Carta` también se cierra con `owl:oneOf`, enumerando todas las cartas de la baraja. Esto impide que un razonador cree cartas anónimas adicionales con el mismo palo y rango bajo la Open World Assumption.
 
 ### Propiedad *shortcut* `manoTienePar` en DoblePar
 

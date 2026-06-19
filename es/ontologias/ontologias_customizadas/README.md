@@ -23,8 +23,7 @@ Ontologías generadas automáticamente por `generador_ontologias.py`, escritas e
   - Propiedades de Datos
 - Decisiones de diseño
   - Nombres de palos y rangos
-  - Escalera con pocos rangos
-  - Rangos numéricos para barajas grandes
+  - Clasificadores no aplicables
 
 ---
 
@@ -39,7 +38,7 @@ Ontologías generadas automáticamente por `generador_ontologias.py`, escritas e
 | Serialización | Turtle (`.ttl`) |
 | Idioma | Español |
 
-Cada ontología modela una baraja con **P palos × R rangos = P·R cartas**, organizadas con la misma jerarquía de clases que la ontología base: palos y rangos cerrados por `owl:oneOf`, subclases de carta por palo y por rango, clase `Mano` con exactamente 5 cartas, y hasta 10 clasificadores de tipo de mano cuando el número de rangos lo permite.
+Cada ontología modela una baraja con **P palos × R rangos = P·R cartas**, organizada con la misma arquitectura conceptual que la ontología base: palos, rangos y cartas cerrados por `owl:oneOf`, subclases de carta por palo y por rango, clase `Mano` con exactamente 5 cartas, y clasificadores de tipo de mano generados solo cuando la cantidad de palos y rangos permite formar esa jugada.
 
 ---
 
@@ -159,8 +158,8 @@ Todas las ontologías del catálogo comparten la misma arquitectura. Solo varía
 
 La TBox define el esquema conceptual del dominio. Incluye:
 
-- Las clases `Palo` y `Rango` como enumeraciones cerradas con `owl:oneOf`.
-- La clase `Carta` y sus subclases (P subclases por palo + R subclases por rango).
+- Las clases `Palo`, `Rango` y `Carta` como enumeraciones cerradas con `owl:oneOf`.
+- Las subclases de `Carta` por palo y por rango (P subclases por palo + R subclases por rango).
 - La clase `Mano` con cardinalidades mínima y máxima de exactamente 5 cartas.
 - Los clasificadores de tipo de mano como `owl:equivalentClass`.
 - 4 propiedades de objeto y 1 propiedad de datos.
@@ -175,7 +174,7 @@ La ABox declara todos los individuos concretos de la baraja:
 | `Rango` | R | Un individuo por cada rango, con `tieneValorRango` ordinal |
 | `Carta` | P × R | Una carta por cada combinación palo-rango |
 
-Todos los individuos están declarados `owl:AllDifferent` en tres bloques separados (palos, rangos, cartas), simulando la Unique Name Assumption bajo OWA.
+Todos los individuos están declarados `owl:AllDifferent` en tres bloques separados (palos, rangos, cartas), simulando la Unique Name Assumption bajo OWA. Además, `Carta` se define como la enumeración exacta de las cartas declaradas para evitar cartas anónimas adicionales.
 
 ---
 
@@ -192,7 +191,7 @@ Rango ≡ { R₁, R₂, ..., Rₘ }   (m rangos, de menor a mayor valor)
 
 ### Carta y sus subclases
 
-`Carta` se restringe a tener exactamente un palo (`tienePalo`, funcional) y exactamente un rango (`tieneRango`, funcional). Las subclases se generan en dos grupos:
+`Carta` se cierra con `owl:oneOf` sobre las P × R cartas declaradas y se restringe a tener exactamente un palo (`tienePalo`, funcional) y exactamente un rango (`tieneRango`, funcional). Las subclases se generan en dos grupos:
 
 **Por palo** — usadas por los clasificadores `Color` y `EscaleraColor`:
 
@@ -216,20 +215,20 @@ Carta
 
 Una `Mano` contiene exactamente 5 cartas, expresado mediante cardinalidades mínima y máxima calificadas sobre `contieneCarta`.
 
-Los tipos de mano se definen con `owl:equivalentClass` en orden de menor a mayor fortaleza. Los clasificadores `Escalera`, `EscaleraColor` y `EscaleraReal` solo se generan cuando **R ≥ 5**:
+Los tipos de mano se definen con `owl:equivalentClass` en orden de menor a mayor fortaleza. El generador omite cualquier clasificador que no pueda formarse físicamente con la cantidad de palos, rangos y cartas de la baraja:
 
-| # | Clase OWL | Nombre | Definición OWL resumida |
-|---|---|---|---|
-| 1 | `CartaAlta` | Carta Alta | `Mano ⊓ ∃contieneCarta.Carta` |
-| 2 | `Par` | Par | `Mano ⊓ (≥2 CartaDe<R₁> ⊔ ... ⊔ ≥2 CartaDe<Rₘ>)` |
-| 3 | `DoblePar` | Doble Par | `Mano ⊓ (≥2 manoTienePar)` |
-| 4 | `Trio` | Trío | `Mano ⊓ (≥3 CartaDe<R₁> ⊔ ... ⊔ ≥3 CartaDe<Rₘ>)` |
-| 5 | `Escalera` | Escalera | `Mano ⊓ (ventana R₁-R₅ ⊔ ... ⊔ ventana Rₘ₋₄-Rₘ)` — solo si R ≥ 5 |
-| 6 | `Color` | Color | `Mano ⊓ (∀contieneCarta.CartaDe<P₁> ⊔ ... ⊔ ∀contieneCarta.CartaDe<Pₙ>)` |
-| 7 | `Full` | Full | `Trio ⊓ DoblePar` |
-| 8 | `Poker` | Póker | `Mano ⊓ (≥4 CartaDe<R₁> ⊔ ... ⊔ ≥4 CartaDe<Rₘ>)` |
-| 9 | `EscaleraColor` | Escalera de Color | `Escalera ⊓ Color` — solo si R ≥ 5 |
-| 10 | `EscaleraReal` | Escalera Real | `EscaleraColor ⊓ ∃contieneCarta.CartaDe<Rₘ₋₄> ⊓ ... ⊓ ∃contieneCarta.CartaDe<Rₘ>` — solo si R ≥ 5 |
+| # | Clase OWL | Nombre | Definición OWL resumida | Condición mínima |
+|---|---|---|---|---|
+| 1 | `CartaAlta` | Carta Alta | `Mano ⊓ ∃contieneCarta.Carta` | P × R ≥ 5 |
+| 2 | `Par` | Par | `Mano ⊓ (≥2 CartaDe<R₁> ⊔ ... ⊔ ≥2 CartaDe<Rₘ>)` | P ≥ 2 |
+| 3 | `DoblePar` | Doble Par | `Mano ⊓ (≥2 manoTienePar)` | P ≥ 2 y R ≥ 2 |
+| 4 | `Trio` | Trío | `Mano ⊓ (≥3 CartaDe<R₁> ⊔ ... ⊔ ≥3 CartaDe<Rₘ>)` | P ≥ 3 |
+| 5 | `Escalera` | Escalera | `Mano ⊓ (ventana R₁-R₅ ⊔ ... ⊔ ventana Rₘ₋₄-Rₘ)` | R ≥ 5 |
+| 6 | `Color` | Color | `Mano ⊓ (∀contieneCarta.CartaDe<P₁> ⊔ ... ⊔ ∀contieneCarta.CartaDe<Pₙ>)` | R ≥ 5 |
+| 7 | `Full` | Full | `Trio ⊓ DoblePar` | P ≥ 3 y R ≥ 2 |
+| 8 | `Poker` | Póker | `Mano ⊓ (≥4 CartaDe<R₁> ⊔ ... ⊔ ≥4 CartaDe<Rₘ>)` | P ≥ 4 |
+| 9 | `EscaleraColor` | Escalera de Color | `Escalera ⊓ Color` | R ≥ 5 |
+| 10 | `EscaleraReal` | Escalera Real | `EscaleraColor ⊓ ∃contieneCarta.CartaDe<Rₘ₋₄> ⊓ ... ⊓ ∃contieneCarta.CartaDe<Rₘ>` | R ≥ 5 |
 
 `Full` y `EscaleraColor` se definen como intersecciones de clases ya existentes: `Full ≡ Trio ⊓ DoblePar` y `EscaleraColor ≡ Escalera ⊓ Color`. `EscaleraReal` fija los 5 rangos más altos de la lista de rangos declarada.
 
@@ -262,10 +261,8 @@ Los nombres de palos y rangos son **etiquetas libres**: el generador los normali
 
 Por ejemplo, el palo `"Espadas"` produce el individuo `deck:Espadas` y la subclase `deck:CartaDeEspadas`.
 
-### Escalera con pocos rangos
+### Clasificadores no aplicables
 
-Cuando **R < 5**, no es posible definir ventanas de cinco rangos consecutivos. En ese caso el generador omite los clasificadores `Escalera`, `EscaleraColor` y `EscaleraReal`, e inserta un comentario explicativo en el archivo `.ttl`. Los demás clasificadores (`Par`, `DoblePar`, `Trio`, `Color`, `Full`, `Poker`) se generan siempre, independientemente del número de rangos.
-
-Todas las ontologías de este catálogo tienen R ≥ 7, por lo que **todas incluyen los 10 clasificadores**.
+Cuando una combinación no puede existir en la baraja finita, el generador omite su clase e inserta un comentario explicativo en el archivo `.ttl`. Por ejemplo, una baraja con 2 palos no puede formar `Trio`, `Full` ni `Poker`, porque cada rango tiene como máximo dos cartas.
 
 ---

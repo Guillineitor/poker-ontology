@@ -20,10 +20,9 @@
 # Open World Assumption (OWA)
 # ----------------------------------
 # OWL asume que lo que no está afirmado es desconocido, no falso necesariamente.
-# Para compensarlo, Palo y Rango se cierran con owl:oneOf (exactamente
-# 4 palos y 13 rangos), y los 52 individuos de cartas se declaran
-# AllDifferent para que el razonador los trate como entidades distintas (porque
-# claramente son cartas distintas entre sí).
+# Para compensarlo, Palo, Rango y Carta se cierran con owl:oneOf (exactamente
+# 4 palos, 13 rangos y 52 cartas), y los 52 individuos de cartas se declaran
+# AllDifferent para que el razonador los trate como entidades distintas.
 # =============================================================================
 
 <http://www.poker-ontology.org/poker>
@@ -65,12 +64,22 @@ poker:Rango a owl:Class ;
     rdfs:label "Rango" ;
     rdfs:comment "Rango de una carta. Clase cerrada: exactamente Dos, Tres, Cuatro, Cinco, Seis, Siete, Ocho, Nueve, Diez, Jota, Reina, Rey y As." .
 
-# Carta es cualquier carta de la baraja inglesa estándar. Cada carta debe tener
-# un palo (tienePalo) y un rango (tieneRango). Las cardinalidades
-# exactas se garantizan marcando esas propiedades como FunctionalProperty.
+# Carta es cualquier carta de la baraja inglesa estándar. La clase se cierra con
+# owl:oneOf para limitarla a las 52 cartas declaradas. Cada carta debe tener un
+# palo (tienePalo) y un rango (tieneRango). Las cardinalidades exactas se
+# garantizan marcando esas propiedades como FunctionalProperty.
 
 # Definición de la clase Carta, con restricciones sobre sus propiedades.
 poker:Carta a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:oneOf (
+            poker:DosDePicas poker:TresDePicas poker:CuatroDePicas poker:CincoDePicas poker:SeisDePicas poker:SieteDePicas poker:OchoDePicas poker:NueveDePicas poker:DiezDePicas poker:JotaDePicas poker:ReinaDePicas poker:ReyDePicas poker:AsDePicas
+            poker:DosDeCorazones poker:TresDeCorazones poker:CuatroDeCorazones poker:CincoDeCorazones poker:SeisDeCorazones poker:SieteDeCorazones poker:OchoDeCorazones poker:NueveDeCorazones poker:DiezDeCorazones poker:JotaDeCorazones poker:ReinaDeCorazones poker:ReyDeCorazones poker:AsDeCorazones
+            poker:DosDeDiamantes poker:TresDeDiamantes poker:CuatroDeDiamantes poker:CincoDeDiamantes poker:SeisDeDiamantes poker:SieteDeDiamantes poker:OchoDeDiamantes poker:NueveDeDiamantes poker:DiezDeDiamantes poker:JotaDeDiamantes poker:ReinaDeDiamantes poker:ReyDeDiamantes poker:AsDeDiamantes
+            poker:DosDeTreboles poker:TresDeTreboles poker:CuatroDeTreboles poker:CincoDeTreboles poker:SeisDeTreboles poker:SieteDeTreboles poker:OchoDeTreboles poker:NueveDeTreboles poker:DiezDeTreboles poker:JotaDeTreboles poker:ReinaDeTreboles poker:ReyDeTreboles poker:AsDeTreboles
+        )
+    ] ;
     rdfs:subClassOf [
         a owl:Restriction ;
         owl:onProperty poker:tienePalo ;

@@ -73,8 +73,8 @@ def header(base_iri: str, deck_name: str, n_palos: int, n_rangos: int) -> str:
 #
 # Open World Assumption (OWA)
 # ---------------------------
-# Palo y Rango se cierran con owl:oneOf para evitar que el razonador asuma
-# palos o rangos adicionales no declarados.
+# Palo, Rango y Carta se cierran con owl:oneOf para evitar que el razonador
+# asuma palos, rangos o cartas adicionales no declaradas.
 # Los {n_cartas} individuos de cartas se declaran AllDifferent.
 # =============================================================================
 
@@ -127,11 +127,24 @@ def seccion_rango(rangos: list[str]) -> str:
     return "\n".join(lines)
 
 
-def seccion_carta() -> str:
-    """Define `deck:Carta` con restricciones existenciales de palo y rango."""
-    return """
+def seccion_carta(palos: list[str], rangos: list[str]) -> str:
+    """Define `deck:Carta` como clase cerrada y con palo/rango obligatorios."""
+    carta_lines = []
+    for p in palos:
+        pid = to_id(p)
+        grupo = [f"deck:{to_id(r)}De{pid}" for r in rangos]
+        carta_lines.append("            " + " ".join(grupo))
+    cartas_block = "\n".join(carta_lines)
+
+    return f"""
 # Definición de la clase Carta.
 deck:Carta a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:oneOf (
+{cartas_block}
+        )
+    ] ;
     rdfs:subClassOf [
         a owl:Restriction ;
         owl:onProperty deck:tienePalo ;
@@ -360,32 +373,103 @@ def seccion_all_different(palos: list[str], rangos: list[str]) -> str:
 # Clasificadores de Manos
 # =============================================================================
 
-def clasificador_par(rangos: list[str]) -> str:
-    """
-    Define CartaAlta y Par.
+HAND_ORDER = [
+    ("carta_alta", "CartaAlta", "Sin combinación; gana la carta más alta"),
+    ("par", "Par", "Dos cartas del mismo rango"),
+    ("doble_par", "DoblePar", "Dos pares distintos"),
+    ("trio", "Trio", "Tres cartas del mismo rango"),
+    ("escalera", "Escalera", "Cinco cartas consecutivas"),
+    ("color", "Color", "Cinco cartas del mismo palo"),
+    ("full", "Full", "Un trío más un par"),
+    ("poker", "Poker", "Cuatro cartas del mismo rango"),
+    ("escalera_color", "EscaleraColor", "Cinco cartas consecutivas del mismo palo"),
+    ("escalera_real", "EscaleraReal", "Rangos más altos del mismo palo"),
+]
 
-    Par se modela como unión de restricciones `minQualifiedCardinality 2`,
-    una por cada rango posible.
+
+def capacidades_manos(palos: list[str], rangos: list[str]) -> tuple[dict[str, bool], dict[str, str]]:
     """
+    Calcula qué clasificadores tienen sentido para la baraja finita.
+
+    Las reglas parten de una carta por combinación palo-rango y manos de cinco
+    cartas. Por ejemplo, `Trio` requiere al menos tres palos porque no puede
+    haber tres cartas del mismo rango con solo dos palos.
+    """
+    n_palos = len(palos)
+    n_rangos = len(rangos)
+    n_cartas = n_palos * n_rangos
+    hay_mano = n_cartas >= 5
+
+    posibles = {
+        "carta_alta": hay_mano,
+        "par": hay_mano and n_palos >= 2,
+        "doble_par": hay_mano and n_palos >= 2 and n_rangos >= 2,
+        "trio": hay_mano and n_palos >= 3,
+        "escalera": hay_mano and n_rangos >= 5,
+        "color": hay_mano and n_rangos >= 5,
+        "full": hay_mano and n_palos >= 3 and n_rangos >= 2,
+        "poker": hay_mano and n_palos >= 4,
+        "escalera_color": hay_mano and n_rangos >= 5,
+        "escalera_real": hay_mano and n_rangos >= 5,
+    }
+
+    motivos = {}
+    if not hay_mano:
+        base = "la baraja tiene menos de 5 cartas"
+        return posibles, {key: base for key, enabled in posibles.items() if not enabled}
+
+    if n_palos < 2:
+        motivos["par"] = "requiere al menos 2 palos"
+        motivos["doble_par"] = "requiere al menos 2 palos"
+    if n_rangos < 2:
+        motivos["doble_par"] = "requiere al menos 2 rangos"
+        motivos["full"] = "requiere al menos 2 rangos"
+    if n_palos < 3:
+        motivos["trio"] = "requiere al menos 3 palos"
+        motivos["full"] = "requiere al menos 3 palos"
+    if n_palos < 4:
+        motivos["poker"] = "requiere al menos 4 palos"
+    if n_rangos < 5:
+        motivos["escalera"] = "requiere al menos 5 rangos"
+        motivos["color"] = "requiere al menos 5 rangos por palo"
+        motivos["escalera_color"] = "requiere al menos 5 rangos"
+        motivos["escalera_real"] = "requiere al menos 5 rangos"
+
+    return posibles, {key: motivos[key] for key, enabled in posibles.items() if not enabled}
+
+
+def seccion_clasificadores(posibles: dict[str, bool], motivos: dict[str, str]) -> str:
+    """Genera el encabezado dinámico de clasificadores incluidos y omitidos."""
     lineas = [
         "",
         "# =============================================================================",
         "# Clasificadores de Manos",
         "# =============================================================================",
         "#",
-        "# Jerarquía de tipos de mano, de menor a mayor fortaleza:",
+        "# Jerarquía de tipos de mano generados para esta baraja:",
         "#   Mano",
-        "#   ├── CartaAlta      (1) Sin combinación; gana la carta más alta",
-        "#   ├── Par            (2) Dos cartas del mismo rango",
-        "#   ├── DoblePar       (3) Dos pares distintos",
-        "#   ├── Trio           (4) Tres cartas del mismo rango",
-        "#   ├── Escalera       (5) Cinco cartas consecutivas de distintos palos",
-        "#   ├── Color          (6) Cinco cartas del mismo palo",
-        "#   ├── Full           (7) Un trío más un par",
-        "#   ├── Poker          (8) Cuatro cartas del mismo rango",
-        "#   └── EscaleraColor  (9) Cinco cartas consecutivas del mismo palo",
-        "#         └── EscaleraReal (10) Escalera Real: rangos más altos del mismo palo",
-        "#",
+    ]
+
+    for index, (key, nombre, descripcion) in enumerate(HAND_ORDER, start=1):
+        if posibles.get(key, False):
+            lineas.append(f"#   ├── {nombre:<14} ({index}) {descripcion}")
+
+    omitidas = [(nombre, motivos[key]) for key, nombre, _ in HAND_ORDER if key in motivos]
+    if omitidas:
+        lineas += [
+            "#",
+            "# Tipos de mano no generados para esta baraja:",
+        ]
+        for nombre, motivo in omitidas:
+            lineas.append(f"#   - {nombre}: {motivo}.")
+
+    lineas.append("#")
+    return "\n".join(lineas)
+
+
+def clasificador_carta_alta() -> str:
+    """Define CartaAlta como una mano con al menos una carta."""
+    lineas = [
         "",
         "# Definición de la clase CartaAlta.",
         "deck:CartaAlta a owl:Class ;",
@@ -403,6 +487,17 @@ def clasificador_par(rangos: list[str]) -> str:
         "    rdfs:subClassOf deck:Mano ;",
         '    rdfs:label "Carta Alta" ;',
         '    rdfs:comment "Mano formada sin combinación; la carta más alta decide el ganador." .',
+    ]
+    return "\n".join(lineas)
+
+
+def clasificador_par(rangos: list[str]) -> str:
+    """
+    Define Par como unión de restricciones `minQualifiedCardinality 2`.
+
+    Se debe llamar solo si la baraja tiene al menos dos palos.
+    """
+    lineas = [
         "",
         "# Definición de la clase Par.",
         "deck:Par a owl:Class ;",
@@ -692,41 +787,42 @@ def generar_ontologia(
     """
     Ensambla la ontología completa en Turtle.
 
-    `palos` y `rangos` deben venir validados por el llamador. Si hay menos de
-    cinco rangos, omite Escalera, EscaleraColor y EscaleraReal porque no son
-    definibles con ventanas de cinco cartas.
+    `palos` y `rangos` deben venir validados por el llamador. Los
+    clasificadores de manos se incluyen solo cuando la cantidad de palos,
+    rangos y cartas permite formar físicamente esa combinación.
     """
-    tiene_escalera = len(rangos) >= 5
+    posibles, motivos = capacidades_manos(palos, rangos)
 
     partes = [
         header(base_iri, deck_name, len(palos), len(rangos)),
         seccion_palo(palos),
         seccion_rango(rangos),
-        seccion_carta(),
+        seccion_carta(palos, rangos),
         subclases_por_palo(palos),
         subclases_por_rango(rangos),
         seccion_grupos(),
-        # Clasificadores de manos
-        clasificador_par(rangos),
-        clasificador_doble_par(rangos),
-        clasificador_trio(rangos),
+        seccion_clasificadores(posibles, motivos),
     ]
 
-    if tiene_escalera:
+    if posibles["carta_alta"]:
+        partes.append(clasificador_carta_alta())
+    if posibles["par"]:
+        partes.append(clasificador_par(rangos))
+    if posibles["doble_par"]:
+        partes.append(clasificador_doble_par(rangos))
+    if posibles["trio"]:
+        partes.append(clasificador_trio(rangos))
+    if posibles["escalera"]:
         partes.append(clasificador_escalera(rangos))
-    else:
-        partes.append(
-            "\n# NOTA: Con menos de 5 rangos no es posible definir Escalera.\n"
-        )
-
-    partes += [
-        clasificador_color(palos),
-        clasificador_full(),
-        clasificador_poker_mano(rangos),
-    ]
-
-    if tiene_escalera:
+    if posibles["color"]:
+        partes.append(clasificador_color(palos))
+    if posibles["full"]:
+        partes.append(clasificador_full())
+    if posibles["poker"]:
+        partes.append(clasificador_poker_mano(rangos))
+    if posibles["escalera_color"]:
         partes.append(clasificador_escalera_color())
+    if posibles["escalera_real"]:
         partes.append(clasificador_escalera_real(rangos))
 
     partes += [
