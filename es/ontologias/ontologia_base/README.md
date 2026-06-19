@@ -51,7 +51,7 @@ Razonadores compatibles con OWL 2 DL:
 | **Openllet** | 2.6.x | Fork activo de Pellet; compatible con OWL API 5 |
 | **JFact** | 5.x | Port Java puro de FaCT++ |
 
-Razonadores **no compatibles** por perfil: ELK y Snorocket (solo OWL 2 EL; no soportan cardinalidades calificadas).
+Razonadores **no compatibles** por perfil: ELK (solo OWL 2 EL; no soportan cardinalidades calificadas).
 
 ---
 

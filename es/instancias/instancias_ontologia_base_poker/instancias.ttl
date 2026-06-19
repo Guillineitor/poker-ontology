@@ -1,10 +1,5 @@
 # =============================================================================
 # Instancias de prueba — Todas las manos de Póker
-# Generado a partir de la mezcla de 10 archivos individuales:
-#   instancias_carta_alta.ttl, instancias_par.ttl, instancias_doble_par.ttl,
-#   instancias_trio.ttl, instancias_escalera.ttl, instancias_color.ttl,
-#   instancias_fullhouse.ttl, instancias_poker.ttl,
-#   instancias_escalera_color.ttl, instancias_escalera_real.ttl
 # =============================================================================
 
 @prefix carta_alta:    <http://www.poker-ontology.org/instancias/carta_alta#> .
@@ -25,11 +20,11 @@
     a owl:Ontology ;
     owl:imports <http://www.poker-ontology.org/poker> ;
     rdfs:label "Instancias de prueba — Todas las manos de Póker" ;
-    rdfs:comment "ABox unificado con 40 manos de prueba, 4 por cada uno de los 10 tipos: Carta Alta, Par, Doble Par, Trío, Escalera, Color, Full House, Póker, Escalera de Color y Escalera Real." .
+    rdfs:comment "ABox unificado con 40 manos de prueba, 4 por cada uno de los 10 tipos de manos: Carta Alta, Par, Doble Par, Trío, Escalera, Color, Full House, Póker, Escalera de Color y Escalera Real." .
 
 
 # =============================================================================
-# 1. CARTA ALTA (4 manos)
+# 1. Carta Alta (4 manos)
 # =============================================================================
 
 carta_alta:AKJ83 a poker:Mano ;
@@ -56,7 +51,7 @@ carta_alta:JT742 a poker:Mano ;
                         poker:SieteDeDiamantes, poker:CuatroDePicas,
                         poker:DosDeTreboles .
 
-# Unicidad — Carta Alta
+# Unicidad de Instancias
 [] a owl:AllDifferent ;
     owl:distinctMembers (
         carta_alta:AKJ83
@@ -67,7 +62,7 @@ carta_alta:JT742 a poker:Mano ;
 
 
 # =============================================================================
-# 2. PAR (4 manos)
+# 2. Par (4 manos)
 # =============================================================================
 
 par:AAHKQ2 a poker:Mano ;
@@ -94,7 +89,7 @@ par:22AKQ a poker:Mano ;
                         poker:ReyDeDiamantes, poker:ReinaDeTreboles,
                         poker:DosDePicas .
 
-# Unicidad — Par
+# Unicidad de Instancias
 [] a owl:AllDifferent ;
     owl:distinctMembers (
         par:AAHKQ2
@@ -105,7 +100,7 @@ par:22AKQ a poker:Mano ;
 
 
 # =============================================================================
-# 3. DOBLE PAR (20 manos)
+# 3. Doble Par (4 manos)
 # =============================================================================
 
 doblepar:AAKKHQ a poker:Mano ;
@@ -136,7 +131,7 @@ doblepar:8855HA a poker:Mano ;
                         poker:CincoDeCorazones ;
     poker:manoTienePar poker:Ocho, poker:Cinco .
 
-# Unicidad — Doble Par
+# Unicidad de Instancias
 [] a owl:AllDifferent ;
     owl:distinctMembers (
         doblepar:AAKKHQ
@@ -147,7 +142,7 @@ doblepar:8855HA a poker:Mano ;
 
 
 # =============================================================================
-# 4. TRÍO (20 manos)
+# 4. Trío(4 manos)
 # =============================================================================
 
 trio:AAAHKQ a poker:Mano ;
@@ -174,7 +169,7 @@ trio:222HAK a poker:Mano ;
                         poker:DosDePicas, poker:ReyDeCorazones,
                         poker:DosDeDiamantes .
 
-# Unicidad — Trío
+# Unicidad de Instancias
 [] a owl:AllDifferent ;
     owl:distinctMembers (
         trio:AAAHKQ
@@ -185,7 +180,7 @@ trio:222HAK a poker:Mano ;
 
 
 # =============================================================================
-# 5. ESCALERA (10 manos)
+# 5. Escalera (4 manos)
 # =============================================================================
 
 escalera:A2345 a poker:Mano ;
@@ -212,7 +207,7 @@ escalera:TJQKA a poker:Mano ;
                         poker:ReinaDePicas, poker:ReyDeCorazones,
                         poker:AsDeDiamantes .
 
-# Unicidad — Escalera
+# Unicidad de Instancias
 [] a owl:AllDifferent ;
     owl:distinctMembers (
         escalera:A2345
@@ -223,7 +218,7 @@ escalera:TJQKA a poker:Mano ;
 
 
 # =============================================================================
-# 6. COLOR (20 manos)
+# 6. Color (4 manos)
 # =============================================================================
 
 color:AHKH8H6H3H a poker:Mano ;
@@ -250,7 +245,7 @@ color:QC9C6C4C2C a poker:Mano ;
                         poker:SeisDeTreboles, poker:CuatroDeTreboles,
                         poker:DosDeTreboles .
 
-# Unicidad — Color
+# Unicidad de Instancias
 [] a owl:AllDifferent ;
     owl:distinctMembers (
         color:AHKH8H6H3H
@@ -261,7 +256,7 @@ color:QC9C6C4C2C a poker:Mano ;
 
 
 # =============================================================================
-# 7. FULL HOUSE (20 manos)
+# 7. Full (4 manos)
 # =============================================================================
 
 fullhouse:AAAFKKsh a poker:Mano ;
@@ -300,7 +295,7 @@ fullhouse:222FAAcs a poker:Mano ;
                         poker:AsDePicas ;
     poker:manoTienePar poker:Dos, poker:As .
 
-# Unicidad — Full House
+# Unicidad de Instancias
 [] a owl:AllDifferent ;
     owl:distinctMembers (
         fullhouse:AAAFKKsh
@@ -311,7 +306,7 @@ fullhouse:222FAAcs a poker:Mano ;
 
 
 # =============================================================================
-# 8. PÓKER (20 manos)
+# 8. Póker (4 manos)
 # =============================================================================
 
 pokerh:AAAAKh a poker:Mano ;
@@ -346,7 +341,7 @@ pokerh:2222Ah a poker:Mano ;
                         poker:DosDeTreboles,
                         poker:AsDeCorazones .
 
-# Unicidad — Póker
+# Unicidad de Instancias
 [] a owl:AllDifferent ;
     owl:distinctMembers (
         pokerh:AAAAKh
@@ -357,7 +352,7 @@ pokerh:2222Ah a poker:Mano ;
 
 
 # =============================================================================
-# 9. ESCALERA DE COLOR (20 manos)
+# 9. Escalera de Color (4 manos)
 # =============================================================================
 
 escalera_color:A2345s a poker:Mano ;
@@ -384,7 +379,7 @@ escalera_color:34567c a poker:Mano ;
                         poker:CincoDeTreboles, poker:SeisDeTreboles,
                         poker:SieteDeTreboles .
 
-# Unicidad — Escalera de Color
+# Unicidad de Instancias
 [] a owl:AllDifferent ;
     owl:distinctMembers (
         escalera_color:A2345s
@@ -395,7 +390,7 @@ escalera_color:34567c a poker:Mano ;
 
 
 # =============================================================================
-# 10. ESCALERA REAL (4 manos)
+# 10. Escalera Real (4 manos)
 # =============================================================================
 
 escalera_real:TJQKAs a poker:Mano ;
@@ -422,7 +417,7 @@ escalera_real:TJQKAc a poker:Mano ;
                         poker:ReinaDeTreboles, poker:ReyDeTreboles,
                         poker:AsDeTreboles .
 
-# Unicidad — Escalera Real
+# Unicidad de Instancias
 [] a owl:AllDifferent ;
     owl:distinctMembers (
         escalera_real:TJQKAs
