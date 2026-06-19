@@ -1,0 +1,2391 @@
+# =============================================================================
+# Ontología de baraja: baraja_25r_16p
+# Generada automáticamente por generar_ontologia_baraja.py
+# =============================================================================
+
+@prefix deck: <http://www.ontologia-baraja.org/baraja_25r_16p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# =============================================================================
+#
+# Propósito
+# ---------
+# Ontología OWL 2 DL que modela la estructura de una baraja de tipo 'baraja_25r_16p'.
+# Palos  : 16
+# Rangos : 25
+# Cartas : 400
+#
+# Open World Assumption (OWA)
+# ---------------------------
+# Palo, Rango y Carta se cierran con owl:oneOf para evitar que el razonador
+# asuma palos, rangos o cartas adicionales no declaradas.
+# Los 400 individuos de cartas se declaran AllDifferent.
+# =============================================================================
+
+<http://www.ontologia-baraja.org/baraja_25r_16p>
+    rdf:type owl:Ontology ;
+    rdfs:label "Ontología de baraja baraja_25r_16p" ;
+    rdfs:comment "Ontología OWL 2 DL que modela la baraja 'baraja_25r_16p' (16 palos × 25 rangos = 400 cartas)." ;
+    owl:versionInfo "1.0.0" .
+
+
+# =============================================================================
+# Palos y Rangos de las Cartas
+# =============================================================================
+#
+# Palo  ≡ { Fuego, Agua, Planta, Electrico, Normal, Volador, Bicho, Veneno, Tierra, Roca, Lucha, Psiquico, Fantasma, Hielo, Dragon, Siniestro }  (16 palos)
+#
+
+# Definición de la clase Palo.
+deck:Palo a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:oneOf ( deck:Fuego deck:Agua deck:Planta deck:Electrico deck:Normal deck:Volador deck:Bicho deck:Veneno deck:Tierra deck:Roca deck:Lucha deck:Psiquico deck:Fantasma deck:Hielo deck:Dragon deck:Siniestro )
+    ] ;
+    rdfs:label "Palo" ;
+    rdfs:comment "Palo de una carta. Clase cerrada: exactamente Fuego, Agua, Planta, Electrico, Normal, Volador, Bicho, Veneno, Tierra, Roca, Lucha, Psiquico, Fantasma, Hielo, Dragon, Siniestro." .
+
+# Definición de la clase Rango.
+deck:Rango a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:oneOf ( deck:Uno deck:Dos deck:Tres deck:Cuatro deck:Cinco deck:Seis deck:Siete deck:Ocho deck:Nueve deck:Diez deck:Once deck:Doce deck:Trece deck:Catorce deck:Quince deck:Dieciseis deck:Diecisiete deck:Dieciocho deck:Diecinueve deck:Veinte deck:Veintiuno deck:Veintidos deck:Veintitres deck:Veinticuatro deck:Veinticinco )
+    ] ;
+    rdfs:label "Rango" ;
+    rdfs:comment "Rango de una carta. Clase cerrada: exactamente Uno, Dos, Tres, Cuatro, Cinco, Seis, Siete, Ocho, Nueve, Diez, Once, Doce, Trece, Catorce, Quince, Dieciseis, Diecisiete, Dieciocho, Diecinueve, Veinte, Veintiuno, Veintidos, Veintitres, Veinticuatro, Veinticinco." .
+
+# Definición de la clase Carta.
+deck:Carta a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:oneOf (
+            deck:UnoDeFuego deck:DosDeFuego deck:TresDeFuego deck:CuatroDeFuego deck:CincoDeFuego deck:SeisDeFuego deck:SieteDeFuego deck:OchoDeFuego deck:NueveDeFuego deck:DiezDeFuego deck:OnceDeFuego deck:DoceDeFuego deck:TreceDeFuego deck:CatorceDeFuego deck:QuinceDeFuego deck:DieciseisDeFuego deck:DiecisieteDeFuego deck:DieciochoDeFuego deck:DiecinueveDeFuego deck:VeinteDeFuego deck:VeintiunoDeFuego deck:VeintidosDeFuego deck:VeintitresDeFuego deck:VeinticuatroDeFuego deck:VeinticincoDeFuego
+            deck:UnoDeAgua deck:DosDeAgua deck:TresDeAgua deck:CuatroDeAgua deck:CincoDeAgua deck:SeisDeAgua deck:SieteDeAgua deck:OchoDeAgua deck:NueveDeAgua deck:DiezDeAgua deck:OnceDeAgua deck:DoceDeAgua deck:TreceDeAgua deck:CatorceDeAgua deck:QuinceDeAgua deck:DieciseisDeAgua deck:DiecisieteDeAgua deck:DieciochoDeAgua deck:DiecinueveDeAgua deck:VeinteDeAgua deck:VeintiunoDeAgua deck:VeintidosDeAgua deck:VeintitresDeAgua deck:VeinticuatroDeAgua deck:VeinticincoDeAgua
+            deck:UnoDePlanta deck:DosDePlanta deck:TresDePlanta deck:CuatroDePlanta deck:CincoDePlanta deck:SeisDePlanta deck:SieteDePlanta deck:OchoDePlanta deck:NueveDePlanta deck:DiezDePlanta deck:OnceDePlanta deck:DoceDePlanta deck:TreceDePlanta deck:CatorceDePlanta deck:QuinceDePlanta deck:DieciseisDePlanta deck:DiecisieteDePlanta deck:DieciochoDePlanta deck:DiecinueveDePlanta deck:VeinteDePlanta deck:VeintiunoDePlanta deck:VeintidosDePlanta deck:VeintitresDePlanta deck:VeinticuatroDePlanta deck:VeinticincoDePlanta
+            deck:UnoDeElectrico deck:DosDeElectrico deck:TresDeElectrico deck:CuatroDeElectrico deck:CincoDeElectrico deck:SeisDeElectrico deck:SieteDeElectrico deck:OchoDeElectrico deck:NueveDeElectrico deck:DiezDeElectrico deck:OnceDeElectrico deck:DoceDeElectrico deck:TreceDeElectrico deck:CatorceDeElectrico deck:QuinceDeElectrico deck:DieciseisDeElectrico deck:DiecisieteDeElectrico deck:DieciochoDeElectrico deck:DiecinueveDeElectrico deck:VeinteDeElectrico deck:VeintiunoDeElectrico deck:VeintidosDeElectrico deck:VeintitresDeElectrico deck:VeinticuatroDeElectrico deck:VeinticincoDeElectrico
+            deck:UnoDeNormal deck:DosDeNormal deck:TresDeNormal deck:CuatroDeNormal deck:CincoDeNormal deck:SeisDeNormal deck:SieteDeNormal deck:OchoDeNormal deck:NueveDeNormal deck:DiezDeNormal deck:OnceDeNormal deck:DoceDeNormal deck:TreceDeNormal deck:CatorceDeNormal deck:QuinceDeNormal deck:DieciseisDeNormal deck:DiecisieteDeNormal deck:DieciochoDeNormal deck:DiecinueveDeNormal deck:VeinteDeNormal deck:VeintiunoDeNormal deck:VeintidosDeNormal deck:VeintitresDeNormal deck:VeinticuatroDeNormal deck:VeinticincoDeNormal
+            deck:UnoDeVolador deck:DosDeVolador deck:TresDeVolador deck:CuatroDeVolador deck:CincoDeVolador deck:SeisDeVolador deck:SieteDeVolador deck:OchoDeVolador deck:NueveDeVolador deck:DiezDeVolador deck:OnceDeVolador deck:DoceDeVolador deck:TreceDeVolador deck:CatorceDeVolador deck:QuinceDeVolador deck:DieciseisDeVolador deck:DiecisieteDeVolador deck:DieciochoDeVolador deck:DiecinueveDeVolador deck:VeinteDeVolador deck:VeintiunoDeVolador deck:VeintidosDeVolador deck:VeintitresDeVolador deck:VeinticuatroDeVolador deck:VeinticincoDeVolador
+            deck:UnoDeBicho deck:DosDeBicho deck:TresDeBicho deck:CuatroDeBicho deck:CincoDeBicho deck:SeisDeBicho deck:SieteDeBicho deck:OchoDeBicho deck:NueveDeBicho deck:DiezDeBicho deck:OnceDeBicho deck:DoceDeBicho deck:TreceDeBicho deck:CatorceDeBicho deck:QuinceDeBicho deck:DieciseisDeBicho deck:DiecisieteDeBicho deck:DieciochoDeBicho deck:DiecinueveDeBicho deck:VeinteDeBicho deck:VeintiunoDeBicho deck:VeintidosDeBicho deck:VeintitresDeBicho deck:VeinticuatroDeBicho deck:VeinticincoDeBicho
+            deck:UnoDeVeneno deck:DosDeVeneno deck:TresDeVeneno deck:CuatroDeVeneno deck:CincoDeVeneno deck:SeisDeVeneno deck:SieteDeVeneno deck:OchoDeVeneno deck:NueveDeVeneno deck:DiezDeVeneno deck:OnceDeVeneno deck:DoceDeVeneno deck:TreceDeVeneno deck:CatorceDeVeneno deck:QuinceDeVeneno deck:DieciseisDeVeneno deck:DiecisieteDeVeneno deck:DieciochoDeVeneno deck:DiecinueveDeVeneno deck:VeinteDeVeneno deck:VeintiunoDeVeneno deck:VeintidosDeVeneno deck:VeintitresDeVeneno deck:VeinticuatroDeVeneno deck:VeinticincoDeVeneno
+            deck:UnoDeTierra deck:DosDeTierra deck:TresDeTierra deck:CuatroDeTierra deck:CincoDeTierra deck:SeisDeTierra deck:SieteDeTierra deck:OchoDeTierra deck:NueveDeTierra deck:DiezDeTierra deck:OnceDeTierra deck:DoceDeTierra deck:TreceDeTierra deck:CatorceDeTierra deck:QuinceDeTierra deck:DieciseisDeTierra deck:DiecisieteDeTierra deck:DieciochoDeTierra deck:DiecinueveDeTierra deck:VeinteDeTierra deck:VeintiunoDeTierra deck:VeintidosDeTierra deck:VeintitresDeTierra deck:VeinticuatroDeTierra deck:VeinticincoDeTierra
+            deck:UnoDeRoca deck:DosDeRoca deck:TresDeRoca deck:CuatroDeRoca deck:CincoDeRoca deck:SeisDeRoca deck:SieteDeRoca deck:OchoDeRoca deck:NueveDeRoca deck:DiezDeRoca deck:OnceDeRoca deck:DoceDeRoca deck:TreceDeRoca deck:CatorceDeRoca deck:QuinceDeRoca deck:DieciseisDeRoca deck:DiecisieteDeRoca deck:DieciochoDeRoca deck:DiecinueveDeRoca deck:VeinteDeRoca deck:VeintiunoDeRoca deck:VeintidosDeRoca deck:VeintitresDeRoca deck:VeinticuatroDeRoca deck:VeinticincoDeRoca
+            deck:UnoDeLucha deck:DosDeLucha deck:TresDeLucha deck:CuatroDeLucha deck:CincoDeLucha deck:SeisDeLucha deck:SieteDeLucha deck:OchoDeLucha deck:NueveDeLucha deck:DiezDeLucha deck:OnceDeLucha deck:DoceDeLucha deck:TreceDeLucha deck:CatorceDeLucha deck:QuinceDeLucha deck:DieciseisDeLucha deck:DiecisieteDeLucha deck:DieciochoDeLucha deck:DiecinueveDeLucha deck:VeinteDeLucha deck:VeintiunoDeLucha deck:VeintidosDeLucha deck:VeintitresDeLucha deck:VeinticuatroDeLucha deck:VeinticincoDeLucha
+            deck:UnoDePsiquico deck:DosDePsiquico deck:TresDePsiquico deck:CuatroDePsiquico deck:CincoDePsiquico deck:SeisDePsiquico deck:SieteDePsiquico deck:OchoDePsiquico deck:NueveDePsiquico deck:DiezDePsiquico deck:OnceDePsiquico deck:DoceDePsiquico deck:TreceDePsiquico deck:CatorceDePsiquico deck:QuinceDePsiquico deck:DieciseisDePsiquico deck:DiecisieteDePsiquico deck:DieciochoDePsiquico deck:DiecinueveDePsiquico deck:VeinteDePsiquico deck:VeintiunoDePsiquico deck:VeintidosDePsiquico deck:VeintitresDePsiquico deck:VeinticuatroDePsiquico deck:VeinticincoDePsiquico
+            deck:UnoDeFantasma deck:DosDeFantasma deck:TresDeFantasma deck:CuatroDeFantasma deck:CincoDeFantasma deck:SeisDeFantasma deck:SieteDeFantasma deck:OchoDeFantasma deck:NueveDeFantasma deck:DiezDeFantasma deck:OnceDeFantasma deck:DoceDeFantasma deck:TreceDeFantasma deck:CatorceDeFantasma deck:QuinceDeFantasma deck:DieciseisDeFantasma deck:DiecisieteDeFantasma deck:DieciochoDeFantasma deck:DiecinueveDeFantasma deck:VeinteDeFantasma deck:VeintiunoDeFantasma deck:VeintidosDeFantasma deck:VeintitresDeFantasma deck:VeinticuatroDeFantasma deck:VeinticincoDeFantasma
+            deck:UnoDeHielo deck:DosDeHielo deck:TresDeHielo deck:CuatroDeHielo deck:CincoDeHielo deck:SeisDeHielo deck:SieteDeHielo deck:OchoDeHielo deck:NueveDeHielo deck:DiezDeHielo deck:OnceDeHielo deck:DoceDeHielo deck:TreceDeHielo deck:CatorceDeHielo deck:QuinceDeHielo deck:DieciseisDeHielo deck:DiecisieteDeHielo deck:DieciochoDeHielo deck:DiecinueveDeHielo deck:VeinteDeHielo deck:VeintiunoDeHielo deck:VeintidosDeHielo deck:VeintitresDeHielo deck:VeinticuatroDeHielo deck:VeinticincoDeHielo
+            deck:UnoDeDragon deck:DosDeDragon deck:TresDeDragon deck:CuatroDeDragon deck:CincoDeDragon deck:SeisDeDragon deck:SieteDeDragon deck:OchoDeDragon deck:NueveDeDragon deck:DiezDeDragon deck:OnceDeDragon deck:DoceDeDragon deck:TreceDeDragon deck:CatorceDeDragon deck:QuinceDeDragon deck:DieciseisDeDragon deck:DiecisieteDeDragon deck:DieciochoDeDragon deck:DiecinueveDeDragon deck:VeinteDeDragon deck:VeintiunoDeDragon deck:VeintidosDeDragon deck:VeintitresDeDragon deck:VeinticuatroDeDragon deck:VeinticincoDeDragon
+            deck:UnoDeSiniestro deck:DosDeSiniestro deck:TresDeSiniestro deck:CuatroDeSiniestro deck:CincoDeSiniestro deck:SeisDeSiniestro deck:SieteDeSiniestro deck:OchoDeSiniestro deck:NueveDeSiniestro deck:DiezDeSiniestro deck:OnceDeSiniestro deck:DoceDeSiniestro deck:TreceDeSiniestro deck:CatorceDeSiniestro deck:QuinceDeSiniestro deck:DieciseisDeSiniestro deck:DiecisieteDeSiniestro deck:DieciochoDeSiniestro deck:DiecinueveDeSiniestro deck:VeinteDeSiniestro deck:VeintiunoDeSiniestro deck:VeintidosDeSiniestro deck:VeintitresDeSiniestro deck:VeinticuatroDeSiniestro deck:VeinticincoDeSiniestro
+        )
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:someValuesFrom deck:Palo
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty deck:tieneRango ;
+        owl:someValuesFrom deck:Rango
+    ] ;
+    rdfs:label "Carta" ;
+    rdfs:comment "Una carta de la baraja." .
+
+# Subclases de Carta por Palo.
+
+deck:CartaDeFuego a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Fuego
+    ] ;
+    rdfs:label "Carta de Fuego" ;
+    rdfs:comment "Una carta del palo de Fuego." .
+
+deck:CartaDeAgua a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Agua
+    ] ;
+    rdfs:label "Carta de Agua" ;
+    rdfs:comment "Una carta del palo de Agua." .
+
+deck:CartaDePlanta a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Planta
+    ] ;
+    rdfs:label "Carta de Planta" ;
+    rdfs:comment "Una carta del palo de Planta." .
+
+deck:CartaDeElectrico a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Electrico
+    ] ;
+    rdfs:label "Carta de Eléctrico" ;
+    rdfs:comment "Una carta del palo de Eléctrico." .
+
+deck:CartaDeNormal a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Normal
+    ] ;
+    rdfs:label "Carta de Normal" ;
+    rdfs:comment "Una carta del palo de Normal." .
+
+deck:CartaDeVolador a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Volador
+    ] ;
+    rdfs:label "Carta de Volador" ;
+    rdfs:comment "Una carta del palo de Volador." .
+
+deck:CartaDeBicho a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Bicho
+    ] ;
+    rdfs:label "Carta de Bicho" ;
+    rdfs:comment "Una carta del palo de Bicho." .
+
+deck:CartaDeVeneno a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Veneno
+    ] ;
+    rdfs:label "Carta de Veneno" ;
+    rdfs:comment "Una carta del palo de Veneno." .
+
+deck:CartaDeTierra a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Tierra
+    ] ;
+    rdfs:label "Carta de Tierra" ;
+    rdfs:comment "Una carta del palo de Tierra." .
+
+deck:CartaDeRoca a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Roca
+    ] ;
+    rdfs:label "Carta de Roca" ;
+    rdfs:comment "Una carta del palo de Roca." .
+
+deck:CartaDeLucha a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Lucha
+    ] ;
+    rdfs:label "Carta de Lucha" ;
+    rdfs:comment "Una carta del palo de Lucha." .
+
+deck:CartaDePsiquico a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Psiquico
+    ] ;
+    rdfs:label "Carta de Psíquico" ;
+    rdfs:comment "Una carta del palo de Psíquico." .
+
+deck:CartaDeFantasma a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Fantasma
+    ] ;
+    rdfs:label "Carta de Fantasma" ;
+    rdfs:comment "Una carta del palo de Fantasma." .
+
+deck:CartaDeHielo a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Hielo
+    ] ;
+    rdfs:label "Carta de Hielo" ;
+    rdfs:comment "Una carta del palo de Hielo." .
+
+deck:CartaDeDragon a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Dragon
+    ] ;
+    rdfs:label "Carta de Dragón" ;
+    rdfs:comment "Una carta del palo de Dragón." .
+
+deck:CartaDeSiniestro a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Siniestro
+    ] ;
+    rdfs:label "Carta de Siniestro" ;
+    rdfs:comment "Una carta del palo de Siniestro." .
+
+# Subclases de Carta por Rango.
+
+deck:CartaDeUno a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Uno ] ;
+    rdfs:label "Carta de Uno" .
+
+deck:CartaDeDos a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Dos ] ;
+    rdfs:label "Carta de Dos" .
+
+deck:CartaDeTres a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Tres ] ;
+    rdfs:label "Carta de Tres" .
+
+deck:CartaDeCuatro a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Cuatro ] ;
+    rdfs:label "Carta de Cuatro" .
+
+deck:CartaDeCinco a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Cinco ] ;
+    rdfs:label "Carta de Cinco" .
+
+deck:CartaDeSeis a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Seis ] ;
+    rdfs:label "Carta de Seis" .
+
+deck:CartaDeSiete a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Siete ] ;
+    rdfs:label "Carta de Siete" .
+
+deck:CartaDeOcho a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Ocho ] ;
+    rdfs:label "Carta de Ocho" .
+
+deck:CartaDeNueve a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Nueve ] ;
+    rdfs:label "Carta de Nueve" .
+
+deck:CartaDeDiez a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Diez ] ;
+    rdfs:label "Carta de Diez" .
+
+deck:CartaDeOnce a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Once ] ;
+    rdfs:label "Carta de Once" .
+
+deck:CartaDeDoce a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Doce ] ;
+    rdfs:label "Carta de Doce" .
+
+deck:CartaDeTrece a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Trece ] ;
+    rdfs:label "Carta de Trece" .
+
+deck:CartaDeCatorce a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Catorce ] ;
+    rdfs:label "Carta de Catorce" .
+
+deck:CartaDeQuince a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Quince ] ;
+    rdfs:label "Carta de Quince" .
+
+deck:CartaDeDieciseis a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Dieciseis ] ;
+    rdfs:label "Carta de Dieciseis" .
+
+deck:CartaDeDiecisiete a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Diecisiete ] ;
+    rdfs:label "Carta de Diecisiete" .
+
+deck:CartaDeDieciocho a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Dieciocho ] ;
+    rdfs:label "Carta de Dieciocho" .
+
+deck:CartaDeDiecinueve a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Diecinueve ] ;
+    rdfs:label "Carta de Diecinueve" .
+
+deck:CartaDeVeinte a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Veinte ] ;
+    rdfs:label "Carta de Veinte" .
+
+deck:CartaDeVeintiuno a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Veintiuno ] ;
+    rdfs:label "Carta de Veintiuno" .
+
+deck:CartaDeVeintidos a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Veintidos ] ;
+    rdfs:label "Carta de Veintidos" .
+
+deck:CartaDeVeintitres a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Veintitres ] ;
+    rdfs:label "Carta de Veintitres" .
+
+deck:CartaDeVeinticuatro a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Veinticuatro ] ;
+    rdfs:label "Carta de Veinticuatro" .
+
+deck:CartaDeVeinticinco a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Veinticinco ] ;
+    rdfs:label "Carta de Veinticinco" .
+
+
+# =============================================================================
+# Grupos de Cartas
+# =============================================================================
+
+# Definición de la clase Mano.
+deck:Mano a owl:Class ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty deck:contieneCarta ;
+        owl:maxQualifiedCardinality "5"^^xsd:nonNegativeInteger ;
+        owl:onClass deck:Carta
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty deck:contieneCarta ;
+        owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ;
+        owl:onClass deck:Carta
+    ] ;
+    rdfs:label "Mano" ;
+    rdfs:comment "La mejor combinación de 5 cartas de un jugador." .
+
+# =============================================================================
+# Clasificadores de Manos
+# =============================================================================
+#
+# Jerarquía de tipos de mano generados para esta baraja:
+#   Mano
+#   ├── CartaAlta      (1) Sin combinación; gana la carta más alta
+#   ├── Par            (2) Dos cartas del mismo rango
+#   ├── DoblePar       (3) Dos pares distintos
+#   ├── Trio           (4) Tres cartas del mismo rango
+#   ├── Escalera       (5) Cinco cartas consecutivas
+#   ├── Color          (6) Cinco cartas del mismo palo
+#   ├── Full           (7) Un trío más un par
+#   ├── Poker          (8) Cuatro cartas del mismo rango
+#   ├── EscaleraColor  (9) Cinco cartas consecutivas del mismo palo
+#   ├── EscaleraReal   (10) Rangos más altos del mismo palo
+#
+
+# Definición de la clase CartaAlta.
+deck:CartaAlta a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [
+                a owl:Restriction ;
+                owl:onProperty deck:contieneCarta ;
+                owl:someValuesFrom deck:Carta
+            ]
+        )
+    ] ;
+    rdfs:subClassOf deck:Mano ;
+    rdfs:label "Carta Alta" ;
+    rdfs:comment "Mano formada sin combinación; la carta más alta decide el ganador." .
+
+# Definición de la clase Par.
+deck:Par a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    # Par de Uno de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeUno ]
+                    # Par de Dos de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDos ]
+                    # Par de Tres de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeTres ]
+                    # Par de Cuatro de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCuatro ]
+                    # Par de Cinco de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCinco ]
+                    # Par de Seis de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeSeis ]
+                    # Par de Siete de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeSiete ]
+                    # Par de Ocho de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeOcho ]
+                    # Par de Nueve de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeNueve ]
+                    # Par de Diez de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDiez ]
+                    # Par de Once de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeOnce ]
+                    # Par de Doce de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDoce ]
+                    # Par de Trece de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeTrece ]
+                    # Par de Catorce de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCatorce ]
+                    # Par de Quince de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeQuince ]
+                    # Par de Dieciseis de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDieciseis ]
+                    # Par de Diecisiete de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDiecisiete ]
+                    # Par de Dieciocho de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDieciocho ]
+                    # Par de Diecinueve de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDiecinueve ]
+                    # Par de Veinte de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeinte ]
+                    # Par de Veintiuno de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeintiuno ]
+                    # Par de Veintidos de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeintidos ]
+                    # Par de Veintitres de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeintitres ]
+                    # Par de Veinticuatro de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeinticuatro ]
+                    # Par de Veinticinco de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeinticinco ]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Par" ;
+    rdfs:comment "Mano formada por dos cartas del mismo rango." .
+
+# Definición de la clase DoblePar.
+# Usa el atajo manoTienePar: la mano tiene al menos 2 rangos con par.
+deck:DoblePar a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [ a owl:Restriction ;
+              owl:onProperty deck:manoTienePar ;
+              owl:minCardinality "2"^^xsd:nonNegativeInteger ]
+        )
+    ] ;
+    rdfs:label "Doble Par" ;
+    rdfs:comment "Mano formada por dos pares de rangos distintos, independientemente del palo." .
+
+# Definición de la clase Trio.
+deck:Trio a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    # Trío de Uno de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeUno ]
+                    # Trío de Dos de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDos ]
+                    # Trío de Tres de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeTres ]
+                    # Trío de Cuatro de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCuatro ]
+                    # Trío de Cinco de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCinco ]
+                    # Trío de Seis de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeSeis ]
+                    # Trío de Siete de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeSiete ]
+                    # Trío de Ocho de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeOcho ]
+                    # Trío de Nueve de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeNueve ]
+                    # Trío de Diez de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDiez ]
+                    # Trío de Once de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeOnce ]
+                    # Trío de Doce de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDoce ]
+                    # Trío de Trece de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeTrece ]
+                    # Trío de Catorce de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCatorce ]
+                    # Trío de Quince de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeQuince ]
+                    # Trío de Dieciseis de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDieciseis ]
+                    # Trío de Diecisiete de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDiecisiete ]
+                    # Trío de Dieciocho de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDieciocho ]
+                    # Trío de Diecinueve de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDiecinueve ]
+                    # Trío de Veinte de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeinte ]
+                    # Trío de Veintiuno de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeintiuno ]
+                    # Trío de Veintidos de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeintidos ]
+                    # Trío de Veintitres de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeintitres ]
+                    # Trío de Veinticuatro de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeinticuatro ]
+                    # Trío de Veinticinco de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeinticinco ]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Trío" ;
+    rdfs:comment "Mano formada por tres cartas del mismo rango." .
+
+# Definición de la clase Escalera.
+deck:Escalera a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    # Escalera Uno-Dos-Tres-Cuatro-Cinco.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeUno ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDos ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTres ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCuatro ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCinco ]
+                    )]
+                    # Escalera Dos-Tres-Cuatro-Cinco-Seis.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDos ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTres ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCuatro ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCinco ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSeis ]
+                    )]
+                    # Escalera Tres-Cuatro-Cinco-Seis-Siete.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTres ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCuatro ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCinco ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSeis ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSiete ]
+                    )]
+                    # Escalera Cuatro-Cinco-Seis-Siete-Ocho.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCuatro ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCinco ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSeis ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSiete ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOcho ]
+                    )]
+                    # Escalera Cinco-Seis-Siete-Ocho-Nueve.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCinco ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSeis ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSiete ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOcho ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeNueve ]
+                    )]
+                    # Escalera Seis-Siete-Ocho-Nueve-Diez.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSeis ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSiete ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOcho ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeNueve ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiez ]
+                    )]
+                    # Escalera Siete-Ocho-Nueve-Diez-Once.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSiete ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOcho ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeNueve ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiez ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOnce ]
+                    )]
+                    # Escalera Ocho-Nueve-Diez-Once-Doce.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOcho ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeNueve ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiez ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOnce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDoce ]
+                    )]
+                    # Escalera Nueve-Diez-Once-Doce-Trece.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeNueve ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiez ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOnce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDoce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTrece ]
+                    )]
+                    # Escalera Diez-Once-Doce-Trece-Catorce.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiez ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOnce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDoce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTrece ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCatorce ]
+                    )]
+                    # Escalera Once-Doce-Trece-Catorce-Quince.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOnce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDoce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTrece ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCatorce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeQuince ]
+                    )]
+                    # Escalera Doce-Trece-Catorce-Quince-Dieciseis.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDoce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTrece ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCatorce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeQuince ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciseis ]
+                    )]
+                    # Escalera Trece-Catorce-Quince-Dieciseis-Diecisiete.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTrece ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCatorce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeQuince ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciseis ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiecisiete ]
+                    )]
+                    # Escalera Catorce-Quince-Dieciseis-Diecisiete-Dieciocho.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCatorce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeQuince ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciseis ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiecisiete ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciocho ]
+                    )]
+                    # Escalera Quince-Dieciseis-Diecisiete-Dieciocho-Diecinueve.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeQuince ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciseis ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiecisiete ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciocho ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiecinueve ]
+                    )]
+                    # Escalera Dieciseis-Diecisiete-Dieciocho-Diecinueve-Veinte.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciseis ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiecisiete ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciocho ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiecinueve ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeinte ]
+                    )]
+                    # Escalera Diecisiete-Dieciocho-Diecinueve-Veinte-Veintiuno.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiecisiete ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciocho ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiecinueve ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeinte ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeintiuno ]
+                    )]
+                    # Escalera Dieciocho-Diecinueve-Veinte-Veintiuno-Veintidos.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciocho ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiecinueve ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeinte ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeintiuno ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeintidos ]
+                    )]
+                    # Escalera Diecinueve-Veinte-Veintiuno-Veintidos-Veintitres.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiecinueve ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeinte ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeintiuno ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeintidos ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeintitres ]
+                    )]
+                    # Escalera Veinte-Veintiuno-Veintidos-Veintitres-Veinticuatro.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeinte ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeintiuno ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeintidos ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeintitres ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeinticuatro ]
+                    )]
+                    # Escalera Veintiuno-Veintidos-Veintitres-Veinticuatro-Veinticinco.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeintiuno ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeintidos ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeintitres ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeinticuatro ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeinticinco ]
+                    )]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Escalera" ;
+    rdfs:comment "Mano formada por cinco cartas de rangos consecutivos, no necesariamente del mismo palo." .
+
+# Definición de la clase Color.
+deck:Color a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    # Color de Fuego.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeFuego ]
+                    # Color de Agua.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeAgua ]
+                    # Color de Planta.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDePlanta ]
+                    # Color de Eléctrico.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeElectrico ]
+                    # Color de Normal.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeNormal ]
+                    # Color de Volador.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeVolador ]
+                    # Color de Bicho.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeBicho ]
+                    # Color de Veneno.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeVeneno ]
+                    # Color de Tierra.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeTierra ]
+                    # Color de Roca.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeRoca ]
+                    # Color de Lucha.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeLucha ]
+                    # Color de Psíquico.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDePsiquico ]
+                    # Color de Fantasma.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeFantasma ]
+                    # Color de Hielo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeHielo ]
+                    # Color de Dragón.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeDragon ]
+                    # Color de Siniestro.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeSiniestro ]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Color" ;
+    rdfs:comment "Mano formada por cinco cartas del mismo palo, no necesariamente consecutivas." .
+
+# Definición de la clase Full.
+# Observación: El Full es la intersección de Trio y DoblePar.
+deck:Full a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Trio
+            deck:DoblePar
+        )
+    ] ;
+    rdfs:label "Full" ;
+    rdfs:comment "Mano formada por tres cartas del mismo rango y dos cartas de otro mismo rango." .
+
+# Definición de la clase Poker.
+deck:Poker a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    # Póker de Uno de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeUno ]
+                    # Póker de Dos de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDos ]
+                    # Póker de Tres de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeTres ]
+                    # Póker de Cuatro de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCuatro ]
+                    # Póker de Cinco de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCinco ]
+                    # Póker de Seis de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeSeis ]
+                    # Póker de Siete de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeSiete ]
+                    # Póker de Ocho de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeOcho ]
+                    # Póker de Nueve de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeNueve ]
+                    # Póker de Diez de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDiez ]
+                    # Póker de Once de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeOnce ]
+                    # Póker de Doce de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDoce ]
+                    # Póker de Trece de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeTrece ]
+                    # Póker de Catorce de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCatorce ]
+                    # Póker de Quince de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeQuince ]
+                    # Póker de Dieciseis de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDieciseis ]
+                    # Póker de Diecisiete de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDiecisiete ]
+                    # Póker de Dieciocho de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDieciocho ]
+                    # Póker de Diecinueve de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDiecinueve ]
+                    # Póker de Veinte de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeinte ]
+                    # Póker de Veintiuno de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeintiuno ]
+                    # Póker de Veintidos de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeintidos ]
+                    # Póker de Veintitres de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeintitres ]
+                    # Póker de Veinticuatro de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeinticuatro ]
+                    # Póker de Veinticinco de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeVeinticinco ]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Póker" ;
+    rdfs:comment "Mano formada por cuatro cartas del mismo rango y una carta cualquiera." .
+
+# Definición de la clase EscaleraColor.
+# Truco: intersección de Escalera y Color → no hay que enumerar combinaciones de palo.
+deck:EscaleraColor a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Escalera
+            deck:Color
+        )
+    ] ;
+    rdfs:label "Escalera de Color" ;
+    rdfs:comment "Mano formada por cinco cartas consecutivas del mismo palo." .
+
+# Definición de la clase EscaleraReal.
+# Subclase de EscaleraColor con los 5 rangos más altos (Veintiuno-Veintidos-Veintitres-Veinticuatro-Veinticinco).
+deck:EscaleraReal a owl:Class ;
+    rdfs:subClassOf deck:EscaleraColor ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:EscaleraColor
+            [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeintiuno ]
+            [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeintidos ]
+            [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeintitres ]
+            [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeinticuatro ]
+            [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeVeinticinco ]
+        )
+    ] ;
+    rdfs:label "Escalera Real" ;
+    rdfs:comment "Mano formada por los cinco rangos más altos consecutivos (Veintiuno-Veintidos-Veintitres-Veinticuatro-Veinticinco) del mismo palo." .
+
+
+# =============================================================================
+# Propiedades de Objeto
+# =============================================================================
+
+deck:tienePalo a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain deck:Carta ;
+    rdfs:range deck:Palo ;
+    rdfs:label "Tiene Palo" ;
+    rdfs:comment "Asocia una carta con su palo. Funcional: cada carta tiene exactamente un palo." .
+
+deck:tieneRango a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain deck:Carta ;
+    rdfs:range deck:Rango ;
+    rdfs:label "Tiene Rango" ;
+    rdfs:comment "Asocia una carta con su rango. Funcional: cada carta tiene exactamente un rango." .
+
+deck:contieneCarta a owl:ObjectProperty ;
+    rdfs:domain deck:Mano ;
+    rdfs:range deck:Carta ;
+    rdfs:label "Contiene Carta" ;
+    rdfs:comment "Relaciona una mano con cada una de las cartas que la componen." .
+
+deck:manoTienePar a owl:ObjectProperty ;
+    rdfs:domain deck:Mano ;
+    rdfs:range  deck:Rango ;
+    rdfs:label  "Mano tiene Par" ;
+    rdfs:comment "Atajo que indica qué rangos están presentes con al menos 2 cartas en la mano. Se agrega manualmente en el ABox. Usado por el clasificador de DoblePar." .
+
+# =============================================================================
+# Propiedades de Datos
+# =============================================================================
+
+deck:tieneValorRango a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain deck:Rango ;
+    rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "Tiene Valor De Rango" ;
+    rdfs:comment "Valor numérico del rango. Usado por evaluadores externos." .
+
+# =============================================================================
+# Instancias (ABox)
+# =============================================================================
+
+# Palos (16 individuos) -------------------------------------------
+
+deck:Fuego a deck:Palo ;
+    rdfs:label "Fuego" .
+deck:Agua a deck:Palo ;
+    rdfs:label "Agua" .
+deck:Planta a deck:Palo ;
+    rdfs:label "Planta" .
+deck:Electrico a deck:Palo ;
+    rdfs:label "Eléctrico" .
+deck:Normal a deck:Palo ;
+    rdfs:label "Normal" .
+deck:Volador a deck:Palo ;
+    rdfs:label "Volador" .
+deck:Bicho a deck:Palo ;
+    rdfs:label "Bicho" .
+deck:Veneno a deck:Palo ;
+    rdfs:label "Veneno" .
+deck:Tierra a deck:Palo ;
+    rdfs:label "Tierra" .
+deck:Roca a deck:Palo ;
+    rdfs:label "Roca" .
+deck:Lucha a deck:Palo ;
+    rdfs:label "Lucha" .
+deck:Psiquico a deck:Palo ;
+    rdfs:label "Psíquico" .
+deck:Fantasma a deck:Palo ;
+    rdfs:label "Fantasma" .
+deck:Hielo a deck:Palo ;
+    rdfs:label "Hielo" .
+deck:Dragon a deck:Palo ;
+    rdfs:label "Dragón" .
+deck:Siniestro a deck:Palo ;
+    rdfs:label "Siniestro" .
+
+# Rangos (25 individuos) -------------------------------------------
+# Los valores van de 1 (primer rango) a 25 (último rango).
+
+deck:Uno a deck:Rango ;
+    deck:tieneValorRango "1"^^xsd:nonNegativeInteger ;
+    rdfs:label "Uno" .
+
+deck:Dos a deck:Rango ;
+    deck:tieneValorRango "2"^^xsd:nonNegativeInteger ;
+    rdfs:label "Dos" .
+
+deck:Tres a deck:Rango ;
+    deck:tieneValorRango "3"^^xsd:nonNegativeInteger ;
+    rdfs:label "Tres" .
+
+deck:Cuatro a deck:Rango ;
+    deck:tieneValorRango "4"^^xsd:nonNegativeInteger ;
+    rdfs:label "Cuatro" .
+
+deck:Cinco a deck:Rango ;
+    deck:tieneValorRango "5"^^xsd:nonNegativeInteger ;
+    rdfs:label "Cinco" .
+
+deck:Seis a deck:Rango ;
+    deck:tieneValorRango "6"^^xsd:nonNegativeInteger ;
+    rdfs:label "Seis" .
+
+deck:Siete a deck:Rango ;
+    deck:tieneValorRango "7"^^xsd:nonNegativeInteger ;
+    rdfs:label "Siete" .
+
+deck:Ocho a deck:Rango ;
+    deck:tieneValorRango "8"^^xsd:nonNegativeInteger ;
+    rdfs:label "Ocho" .
+
+deck:Nueve a deck:Rango ;
+    deck:tieneValorRango "9"^^xsd:nonNegativeInteger ;
+    rdfs:label "Nueve" .
+
+deck:Diez a deck:Rango ;
+    deck:tieneValorRango "10"^^xsd:nonNegativeInteger ;
+    rdfs:label "Diez" .
+
+deck:Once a deck:Rango ;
+    deck:tieneValorRango "11"^^xsd:nonNegativeInteger ;
+    rdfs:label "Once" .
+
+deck:Doce a deck:Rango ;
+    deck:tieneValorRango "12"^^xsd:nonNegativeInteger ;
+    rdfs:label "Doce" .
+
+deck:Trece a deck:Rango ;
+    deck:tieneValorRango "13"^^xsd:nonNegativeInteger ;
+    rdfs:label "Trece" .
+
+deck:Catorce a deck:Rango ;
+    deck:tieneValorRango "14"^^xsd:nonNegativeInteger ;
+    rdfs:label "Catorce" .
+
+deck:Quince a deck:Rango ;
+    deck:tieneValorRango "15"^^xsd:nonNegativeInteger ;
+    rdfs:label "Quince" .
+
+deck:Dieciseis a deck:Rango ;
+    deck:tieneValorRango "16"^^xsd:nonNegativeInteger ;
+    rdfs:label "Dieciseis" .
+
+deck:Diecisiete a deck:Rango ;
+    deck:tieneValorRango "17"^^xsd:nonNegativeInteger ;
+    rdfs:label "Diecisiete" .
+
+deck:Dieciocho a deck:Rango ;
+    deck:tieneValorRango "18"^^xsd:nonNegativeInteger ;
+    rdfs:label "Dieciocho" .
+
+deck:Diecinueve a deck:Rango ;
+    deck:tieneValorRango "19"^^xsd:nonNegativeInteger ;
+    rdfs:label "Diecinueve" .
+
+deck:Veinte a deck:Rango ;
+    deck:tieneValorRango "20"^^xsd:nonNegativeInteger ;
+    rdfs:label "Veinte" .
+
+deck:Veintiuno a deck:Rango ;
+    deck:tieneValorRango "21"^^xsd:nonNegativeInteger ;
+    rdfs:label "Veintiuno" .
+
+deck:Veintidos a deck:Rango ;
+    deck:tieneValorRango "22"^^xsd:nonNegativeInteger ;
+    rdfs:label "Veintidos" .
+
+deck:Veintitres a deck:Rango ;
+    deck:tieneValorRango "23"^^xsd:nonNegativeInteger ;
+    rdfs:label "Veintitres" .
+
+deck:Veinticuatro a deck:Rango ;
+    deck:tieneValorRango "24"^^xsd:nonNegativeInteger ;
+    rdfs:label "Veinticuatro" .
+
+deck:Veinticinco a deck:Rango ;
+    deck:tieneValorRango "25"^^xsd:nonNegativeInteger ;
+    rdfs:label "Veinticinco" .
+
+
+# Cartas (400 individuos) -------------------------------------------
+
+# Cartas de Fuego.
+
+deck:UnoDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Fuego" .
+deck:DosDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Fuego" .
+deck:TresDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Fuego" .
+deck:CuatroDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Fuego" .
+deck:CincoDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Fuego" .
+deck:SeisDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Fuego" .
+deck:SieteDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Fuego" .
+deck:OchoDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Fuego" .
+deck:NueveDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Fuego" .
+deck:DiezDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Fuego" .
+deck:OnceDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Fuego" .
+deck:DoceDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Fuego" .
+deck:TreceDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Fuego" .
+deck:CatorceDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Fuego" .
+deck:QuinceDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Fuego" .
+deck:DieciseisDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Fuego" .
+deck:DiecisieteDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Fuego" .
+deck:DieciochoDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Fuego" .
+deck:DiecinueveDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Fuego" .
+deck:VeinteDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Veinte ;
+    rdfs:label "Veinte de Fuego" .
+deck:VeintiunoDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Veintiuno ;
+    rdfs:label "Veintiuno de Fuego" .
+deck:VeintidosDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Veintidos ;
+    rdfs:label "Veintidos de Fuego" .
+deck:VeintitresDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Veintitres ;
+    rdfs:label "Veintitres de Fuego" .
+deck:VeinticuatroDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Veinticuatro ;
+    rdfs:label "Veinticuatro de Fuego" .
+deck:VeinticincoDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Veinticinco ;
+    rdfs:label "Veinticinco de Fuego" .
+
+# Cartas de Agua.
+
+deck:UnoDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Agua" .
+deck:DosDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Agua" .
+deck:TresDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Agua" .
+deck:CuatroDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Agua" .
+deck:CincoDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Agua" .
+deck:SeisDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Agua" .
+deck:SieteDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Agua" .
+deck:OchoDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Agua" .
+deck:NueveDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Agua" .
+deck:DiezDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Agua" .
+deck:OnceDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Agua" .
+deck:DoceDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Agua" .
+deck:TreceDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Agua" .
+deck:CatorceDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Agua" .
+deck:QuinceDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Agua" .
+deck:DieciseisDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Agua" .
+deck:DiecisieteDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Agua" .
+deck:DieciochoDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Agua" .
+deck:DiecinueveDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Agua" .
+deck:VeinteDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Veinte ;
+    rdfs:label "Veinte de Agua" .
+deck:VeintiunoDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Veintiuno ;
+    rdfs:label "Veintiuno de Agua" .
+deck:VeintidosDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Veintidos ;
+    rdfs:label "Veintidos de Agua" .
+deck:VeintitresDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Veintitres ;
+    rdfs:label "Veintitres de Agua" .
+deck:VeinticuatroDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Veinticuatro ;
+    rdfs:label "Veinticuatro de Agua" .
+deck:VeinticincoDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Veinticinco ;
+    rdfs:label "Veinticinco de Agua" .
+
+# Cartas de Planta.
+
+deck:UnoDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Planta" .
+deck:DosDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Planta" .
+deck:TresDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Planta" .
+deck:CuatroDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Planta" .
+deck:CincoDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Planta" .
+deck:SeisDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Planta" .
+deck:SieteDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Planta" .
+deck:OchoDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Planta" .
+deck:NueveDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Planta" .
+deck:DiezDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Planta" .
+deck:OnceDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Planta" .
+deck:DoceDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Planta" .
+deck:TreceDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Planta" .
+deck:CatorceDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Planta" .
+deck:QuinceDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Planta" .
+deck:DieciseisDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Planta" .
+deck:DiecisieteDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Planta" .
+deck:DieciochoDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Planta" .
+deck:DiecinueveDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Planta" .
+deck:VeinteDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Veinte ;
+    rdfs:label "Veinte de Planta" .
+deck:VeintiunoDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Veintiuno ;
+    rdfs:label "Veintiuno de Planta" .
+deck:VeintidosDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Veintidos ;
+    rdfs:label "Veintidos de Planta" .
+deck:VeintitresDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Veintitres ;
+    rdfs:label "Veintitres de Planta" .
+deck:VeinticuatroDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Veinticuatro ;
+    rdfs:label "Veinticuatro de Planta" .
+deck:VeinticincoDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Veinticinco ;
+    rdfs:label "Veinticinco de Planta" .
+
+# Cartas de Eléctrico.
+
+deck:UnoDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Eléctrico" .
+deck:DosDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Eléctrico" .
+deck:TresDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Eléctrico" .
+deck:CuatroDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Eléctrico" .
+deck:CincoDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Eléctrico" .
+deck:SeisDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Eléctrico" .
+deck:SieteDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Eléctrico" .
+deck:OchoDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Eléctrico" .
+deck:NueveDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Eléctrico" .
+deck:DiezDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Eléctrico" .
+deck:OnceDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Eléctrico" .
+deck:DoceDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Eléctrico" .
+deck:TreceDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Eléctrico" .
+deck:CatorceDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Eléctrico" .
+deck:QuinceDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Eléctrico" .
+deck:DieciseisDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Eléctrico" .
+deck:DiecisieteDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Eléctrico" .
+deck:DieciochoDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Eléctrico" .
+deck:DiecinueveDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Eléctrico" .
+deck:VeinteDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Veinte ;
+    rdfs:label "Veinte de Eléctrico" .
+deck:VeintiunoDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Veintiuno ;
+    rdfs:label "Veintiuno de Eléctrico" .
+deck:VeintidosDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Veintidos ;
+    rdfs:label "Veintidos de Eléctrico" .
+deck:VeintitresDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Veintitres ;
+    rdfs:label "Veintitres de Eléctrico" .
+deck:VeinticuatroDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Veinticuatro ;
+    rdfs:label "Veinticuatro de Eléctrico" .
+deck:VeinticincoDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Veinticinco ;
+    rdfs:label "Veinticinco de Eléctrico" .
+
+# Cartas de Normal.
+
+deck:UnoDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Normal" .
+deck:DosDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Normal" .
+deck:TresDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Normal" .
+deck:CuatroDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Normal" .
+deck:CincoDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Normal" .
+deck:SeisDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Normal" .
+deck:SieteDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Normal" .
+deck:OchoDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Normal" .
+deck:NueveDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Normal" .
+deck:DiezDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Normal" .
+deck:OnceDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Normal" .
+deck:DoceDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Normal" .
+deck:TreceDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Normal" .
+deck:CatorceDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Normal" .
+deck:QuinceDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Normal" .
+deck:DieciseisDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Normal" .
+deck:DiecisieteDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Normal" .
+deck:DieciochoDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Normal" .
+deck:DiecinueveDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Normal" .
+deck:VeinteDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Veinte ;
+    rdfs:label "Veinte de Normal" .
+deck:VeintiunoDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Veintiuno ;
+    rdfs:label "Veintiuno de Normal" .
+deck:VeintidosDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Veintidos ;
+    rdfs:label "Veintidos de Normal" .
+deck:VeintitresDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Veintitres ;
+    rdfs:label "Veintitres de Normal" .
+deck:VeinticuatroDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Veinticuatro ;
+    rdfs:label "Veinticuatro de Normal" .
+deck:VeinticincoDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Veinticinco ;
+    rdfs:label "Veinticinco de Normal" .
+
+# Cartas de Volador.
+
+deck:UnoDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Volador" .
+deck:DosDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Volador" .
+deck:TresDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Volador" .
+deck:CuatroDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Volador" .
+deck:CincoDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Volador" .
+deck:SeisDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Volador" .
+deck:SieteDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Volador" .
+deck:OchoDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Volador" .
+deck:NueveDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Volador" .
+deck:DiezDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Volador" .
+deck:OnceDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Volador" .
+deck:DoceDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Volador" .
+deck:TreceDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Volador" .
+deck:CatorceDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Volador" .
+deck:QuinceDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Volador" .
+deck:DieciseisDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Volador" .
+deck:DiecisieteDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Volador" .
+deck:DieciochoDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Volador" .
+deck:DiecinueveDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Volador" .
+deck:VeinteDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Veinte ;
+    rdfs:label "Veinte de Volador" .
+deck:VeintiunoDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Veintiuno ;
+    rdfs:label "Veintiuno de Volador" .
+deck:VeintidosDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Veintidos ;
+    rdfs:label "Veintidos de Volador" .
+deck:VeintitresDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Veintitres ;
+    rdfs:label "Veintitres de Volador" .
+deck:VeinticuatroDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Veinticuatro ;
+    rdfs:label "Veinticuatro de Volador" .
+deck:VeinticincoDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Veinticinco ;
+    rdfs:label "Veinticinco de Volador" .
+
+# Cartas de Bicho.
+
+deck:UnoDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Bicho" .
+deck:DosDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Bicho" .
+deck:TresDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Bicho" .
+deck:CuatroDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Bicho" .
+deck:CincoDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Bicho" .
+deck:SeisDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Bicho" .
+deck:SieteDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Bicho" .
+deck:OchoDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Bicho" .
+deck:NueveDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Bicho" .
+deck:DiezDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Bicho" .
+deck:OnceDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Bicho" .
+deck:DoceDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Bicho" .
+deck:TreceDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Bicho" .
+deck:CatorceDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Bicho" .
+deck:QuinceDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Bicho" .
+deck:DieciseisDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Bicho" .
+deck:DiecisieteDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Bicho" .
+deck:DieciochoDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Bicho" .
+deck:DiecinueveDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Bicho" .
+deck:VeinteDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Veinte ;
+    rdfs:label "Veinte de Bicho" .
+deck:VeintiunoDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Veintiuno ;
+    rdfs:label "Veintiuno de Bicho" .
+deck:VeintidosDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Veintidos ;
+    rdfs:label "Veintidos de Bicho" .
+deck:VeintitresDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Veintitres ;
+    rdfs:label "Veintitres de Bicho" .
+deck:VeinticuatroDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Veinticuatro ;
+    rdfs:label "Veinticuatro de Bicho" .
+deck:VeinticincoDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Veinticinco ;
+    rdfs:label "Veinticinco de Bicho" .
+
+# Cartas de Veneno.
+
+deck:UnoDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Veneno" .
+deck:DosDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Veneno" .
+deck:TresDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Veneno" .
+deck:CuatroDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Veneno" .
+deck:CincoDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Veneno" .
+deck:SeisDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Veneno" .
+deck:SieteDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Veneno" .
+deck:OchoDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Veneno" .
+deck:NueveDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Veneno" .
+deck:DiezDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Veneno" .
+deck:OnceDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Veneno" .
+deck:DoceDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Veneno" .
+deck:TreceDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Veneno" .
+deck:CatorceDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Veneno" .
+deck:QuinceDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Veneno" .
+deck:DieciseisDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Veneno" .
+deck:DiecisieteDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Veneno" .
+deck:DieciochoDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Veneno" .
+deck:DiecinueveDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Veneno" .
+deck:VeinteDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Veinte ;
+    rdfs:label "Veinte de Veneno" .
+deck:VeintiunoDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Veintiuno ;
+    rdfs:label "Veintiuno de Veneno" .
+deck:VeintidosDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Veintidos ;
+    rdfs:label "Veintidos de Veneno" .
+deck:VeintitresDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Veintitres ;
+    rdfs:label "Veintitres de Veneno" .
+deck:VeinticuatroDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Veinticuatro ;
+    rdfs:label "Veinticuatro de Veneno" .
+deck:VeinticincoDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Veinticinco ;
+    rdfs:label "Veinticinco de Veneno" .
+
+# Cartas de Tierra.
+
+deck:UnoDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Tierra" .
+deck:DosDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Tierra" .
+deck:TresDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Tierra" .
+deck:CuatroDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Tierra" .
+deck:CincoDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Tierra" .
+deck:SeisDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Tierra" .
+deck:SieteDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Tierra" .
+deck:OchoDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Tierra" .
+deck:NueveDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Tierra" .
+deck:DiezDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Tierra" .
+deck:OnceDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Tierra" .
+deck:DoceDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Tierra" .
+deck:TreceDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Tierra" .
+deck:CatorceDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Tierra" .
+deck:QuinceDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Tierra" .
+deck:DieciseisDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Tierra" .
+deck:DiecisieteDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Tierra" .
+deck:DieciochoDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Tierra" .
+deck:DiecinueveDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Tierra" .
+deck:VeinteDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Veinte ;
+    rdfs:label "Veinte de Tierra" .
+deck:VeintiunoDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Veintiuno ;
+    rdfs:label "Veintiuno de Tierra" .
+deck:VeintidosDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Veintidos ;
+    rdfs:label "Veintidos de Tierra" .
+deck:VeintitresDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Veintitres ;
+    rdfs:label "Veintitres de Tierra" .
+deck:VeinticuatroDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Veinticuatro ;
+    rdfs:label "Veinticuatro de Tierra" .
+deck:VeinticincoDeTierra a deck:Carta ;
+    deck:tienePalo deck:Tierra ; deck:tieneRango deck:Veinticinco ;
+    rdfs:label "Veinticinco de Tierra" .
+
+# Cartas de Roca.
+
+deck:UnoDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Roca" .
+deck:DosDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Roca" .
+deck:TresDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Roca" .
+deck:CuatroDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Roca" .
+deck:CincoDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Roca" .
+deck:SeisDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Roca" .
+deck:SieteDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Roca" .
+deck:OchoDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Roca" .
+deck:NueveDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Roca" .
+deck:DiezDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Roca" .
+deck:OnceDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Roca" .
+deck:DoceDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Roca" .
+deck:TreceDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Roca" .
+deck:CatorceDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Roca" .
+deck:QuinceDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Roca" .
+deck:DieciseisDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Roca" .
+deck:DiecisieteDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Roca" .
+deck:DieciochoDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Roca" .
+deck:DiecinueveDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Roca" .
+deck:VeinteDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Veinte ;
+    rdfs:label "Veinte de Roca" .
+deck:VeintiunoDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Veintiuno ;
+    rdfs:label "Veintiuno de Roca" .
+deck:VeintidosDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Veintidos ;
+    rdfs:label "Veintidos de Roca" .
+deck:VeintitresDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Veintitres ;
+    rdfs:label "Veintitres de Roca" .
+deck:VeinticuatroDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Veinticuatro ;
+    rdfs:label "Veinticuatro de Roca" .
+deck:VeinticincoDeRoca a deck:Carta ;
+    deck:tienePalo deck:Roca ; deck:tieneRango deck:Veinticinco ;
+    rdfs:label "Veinticinco de Roca" .
+
+# Cartas de Lucha.
+
+deck:UnoDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Lucha" .
+deck:DosDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Lucha" .
+deck:TresDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Lucha" .
+deck:CuatroDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Lucha" .
+deck:CincoDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Lucha" .
+deck:SeisDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Lucha" .
+deck:SieteDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Lucha" .
+deck:OchoDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Lucha" .
+deck:NueveDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Lucha" .
+deck:DiezDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Lucha" .
+deck:OnceDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Lucha" .
+deck:DoceDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Lucha" .
+deck:TreceDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Lucha" .
+deck:CatorceDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Lucha" .
+deck:QuinceDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Lucha" .
+deck:DieciseisDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Lucha" .
+deck:DiecisieteDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Lucha" .
+deck:DieciochoDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Lucha" .
+deck:DiecinueveDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Lucha" .
+deck:VeinteDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Veinte ;
+    rdfs:label "Veinte de Lucha" .
+deck:VeintiunoDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Veintiuno ;
+    rdfs:label "Veintiuno de Lucha" .
+deck:VeintidosDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Veintidos ;
+    rdfs:label "Veintidos de Lucha" .
+deck:VeintitresDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Veintitres ;
+    rdfs:label "Veintitres de Lucha" .
+deck:VeinticuatroDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Veinticuatro ;
+    rdfs:label "Veinticuatro de Lucha" .
+deck:VeinticincoDeLucha a deck:Carta ;
+    deck:tienePalo deck:Lucha ; deck:tieneRango deck:Veinticinco ;
+    rdfs:label "Veinticinco de Lucha" .
+
+# Cartas de Psíquico.
+
+deck:UnoDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Psíquico" .
+deck:DosDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Psíquico" .
+deck:TresDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Psíquico" .
+deck:CuatroDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Psíquico" .
+deck:CincoDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Psíquico" .
+deck:SeisDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Psíquico" .
+deck:SieteDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Psíquico" .
+deck:OchoDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Psíquico" .
+deck:NueveDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Psíquico" .
+deck:DiezDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Psíquico" .
+deck:OnceDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Psíquico" .
+deck:DoceDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Psíquico" .
+deck:TreceDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Psíquico" .
+deck:CatorceDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Psíquico" .
+deck:QuinceDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Psíquico" .
+deck:DieciseisDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Psíquico" .
+deck:DiecisieteDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Psíquico" .
+deck:DieciochoDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Psíquico" .
+deck:DiecinueveDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Psíquico" .
+deck:VeinteDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Veinte ;
+    rdfs:label "Veinte de Psíquico" .
+deck:VeintiunoDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Veintiuno ;
+    rdfs:label "Veintiuno de Psíquico" .
+deck:VeintidosDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Veintidos ;
+    rdfs:label "Veintidos de Psíquico" .
+deck:VeintitresDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Veintitres ;
+    rdfs:label "Veintitres de Psíquico" .
+deck:VeinticuatroDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Veinticuatro ;
+    rdfs:label "Veinticuatro de Psíquico" .
+deck:VeinticincoDePsiquico a deck:Carta ;
+    deck:tienePalo deck:Psiquico ; deck:tieneRango deck:Veinticinco ;
+    rdfs:label "Veinticinco de Psíquico" .
+
+# Cartas de Fantasma.
+
+deck:UnoDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Fantasma" .
+deck:DosDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Fantasma" .
+deck:TresDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Fantasma" .
+deck:CuatroDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Fantasma" .
+deck:CincoDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Fantasma" .
+deck:SeisDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Fantasma" .
+deck:SieteDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Fantasma" .
+deck:OchoDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Fantasma" .
+deck:NueveDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Fantasma" .
+deck:DiezDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Fantasma" .
+deck:OnceDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Fantasma" .
+deck:DoceDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Fantasma" .
+deck:TreceDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Fantasma" .
+deck:CatorceDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Fantasma" .
+deck:QuinceDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Fantasma" .
+deck:DieciseisDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Fantasma" .
+deck:DiecisieteDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Fantasma" .
+deck:DieciochoDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Fantasma" .
+deck:DiecinueveDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Fantasma" .
+deck:VeinteDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Veinte ;
+    rdfs:label "Veinte de Fantasma" .
+deck:VeintiunoDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Veintiuno ;
+    rdfs:label "Veintiuno de Fantasma" .
+deck:VeintidosDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Veintidos ;
+    rdfs:label "Veintidos de Fantasma" .
+deck:VeintitresDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Veintitres ;
+    rdfs:label "Veintitres de Fantasma" .
+deck:VeinticuatroDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Veinticuatro ;
+    rdfs:label "Veinticuatro de Fantasma" .
+deck:VeinticincoDeFantasma a deck:Carta ;
+    deck:tienePalo deck:Fantasma ; deck:tieneRango deck:Veinticinco ;
+    rdfs:label "Veinticinco de Fantasma" .
+
+# Cartas de Hielo.
+
+deck:UnoDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Hielo" .
+deck:DosDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Hielo" .
+deck:TresDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Hielo" .
+deck:CuatroDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Hielo" .
+deck:CincoDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Hielo" .
+deck:SeisDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Hielo" .
+deck:SieteDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Hielo" .
+deck:OchoDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Hielo" .
+deck:NueveDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Hielo" .
+deck:DiezDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Hielo" .
+deck:OnceDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Hielo" .
+deck:DoceDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Hielo" .
+deck:TreceDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Hielo" .
+deck:CatorceDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Hielo" .
+deck:QuinceDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Hielo" .
+deck:DieciseisDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Hielo" .
+deck:DiecisieteDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Hielo" .
+deck:DieciochoDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Hielo" .
+deck:DiecinueveDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Hielo" .
+deck:VeinteDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Veinte ;
+    rdfs:label "Veinte de Hielo" .
+deck:VeintiunoDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Veintiuno ;
+    rdfs:label "Veintiuno de Hielo" .
+deck:VeintidosDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Veintidos ;
+    rdfs:label "Veintidos de Hielo" .
+deck:VeintitresDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Veintitres ;
+    rdfs:label "Veintitres de Hielo" .
+deck:VeinticuatroDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Veinticuatro ;
+    rdfs:label "Veinticuatro de Hielo" .
+deck:VeinticincoDeHielo a deck:Carta ;
+    deck:tienePalo deck:Hielo ; deck:tieneRango deck:Veinticinco ;
+    rdfs:label "Veinticinco de Hielo" .
+
+# Cartas de Dragón.
+
+deck:UnoDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Dragón" .
+deck:DosDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Dragón" .
+deck:TresDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Dragón" .
+deck:CuatroDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Dragón" .
+deck:CincoDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Dragón" .
+deck:SeisDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Dragón" .
+deck:SieteDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Dragón" .
+deck:OchoDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Dragón" .
+deck:NueveDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Dragón" .
+deck:DiezDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Dragón" .
+deck:OnceDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Dragón" .
+deck:DoceDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Dragón" .
+deck:TreceDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Dragón" .
+deck:CatorceDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Dragón" .
+deck:QuinceDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Dragón" .
+deck:DieciseisDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Dragón" .
+deck:DiecisieteDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Dragón" .
+deck:DieciochoDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Dragón" .
+deck:DiecinueveDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Dragón" .
+deck:VeinteDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Veinte ;
+    rdfs:label "Veinte de Dragón" .
+deck:VeintiunoDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Veintiuno ;
+    rdfs:label "Veintiuno de Dragón" .
+deck:VeintidosDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Veintidos ;
+    rdfs:label "Veintidos de Dragón" .
+deck:VeintitresDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Veintitres ;
+    rdfs:label "Veintitres de Dragón" .
+deck:VeinticuatroDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Veinticuatro ;
+    rdfs:label "Veinticuatro de Dragón" .
+deck:VeinticincoDeDragon a deck:Carta ;
+    deck:tienePalo deck:Dragon ; deck:tieneRango deck:Veinticinco ;
+    rdfs:label "Veinticinco de Dragón" .
+
+# Cartas de Siniestro.
+
+deck:UnoDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Siniestro" .
+deck:DosDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Siniestro" .
+deck:TresDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Siniestro" .
+deck:CuatroDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Siniestro" .
+deck:CincoDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Siniestro" .
+deck:SeisDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Siniestro" .
+deck:SieteDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Siniestro" .
+deck:OchoDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Siniestro" .
+deck:NueveDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Siniestro" .
+deck:DiezDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Siniestro" .
+deck:OnceDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Siniestro" .
+deck:DoceDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Siniestro" .
+deck:TreceDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Siniestro" .
+deck:CatorceDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Siniestro" .
+deck:QuinceDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Siniestro" .
+deck:DieciseisDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Siniestro" .
+deck:DiecisieteDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Siniestro" .
+deck:DieciochoDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Siniestro" .
+deck:DiecinueveDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Siniestro" .
+deck:VeinteDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Veinte ;
+    rdfs:label "Veinte de Siniestro" .
+deck:VeintiunoDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Veintiuno ;
+    rdfs:label "Veintiuno de Siniestro" .
+deck:VeintidosDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Veintidos ;
+    rdfs:label "Veintidos de Siniestro" .
+deck:VeintitresDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Veintitres ;
+    rdfs:label "Veintitres de Siniestro" .
+deck:VeinticuatroDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Veinticuatro ;
+    rdfs:label "Veinticuatro de Siniestro" .
+deck:VeinticincoDeSiniestro a deck:Carta ;
+    deck:tienePalo deck:Siniestro ; deck:tieneRango deck:Veinticinco ;
+    rdfs:label "Veinticinco de Siniestro" .
+
+
+# 16 palos distintos
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( deck:Fuego deck:Agua deck:Planta deck:Electrico deck:Normal deck:Volador deck:Bicho deck:Veneno deck:Tierra deck:Roca deck:Lucha deck:Psiquico deck:Fantasma deck:Hielo deck:Dragon deck:Siniestro ) .
+
+# 25 rangos distintos
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( deck:Uno deck:Dos deck:Tres deck:Cuatro deck:Cinco deck:Seis deck:Siete deck:Ocho deck:Nueve deck:Diez deck:Once deck:Doce deck:Trece deck:Catorce deck:Quince deck:Dieciseis deck:Diecisiete deck:Dieciocho deck:Diecinueve deck:Veinte deck:Veintiuno deck:Veintidos deck:Veintitres deck:Veinticuatro deck:Veinticinco ) .
+
+# 400 cartas distintas
+[] a owl:AllDifferent ;
+    owl:distinctMembers (
+        deck:UnoDeFuego deck:DosDeFuego deck:TresDeFuego deck:CuatroDeFuego deck:CincoDeFuego deck:SeisDeFuego deck:SieteDeFuego deck:OchoDeFuego deck:NueveDeFuego deck:DiezDeFuego deck:OnceDeFuego deck:DoceDeFuego deck:TreceDeFuego deck:CatorceDeFuego deck:QuinceDeFuego deck:DieciseisDeFuego deck:DiecisieteDeFuego deck:DieciochoDeFuego deck:DiecinueveDeFuego deck:VeinteDeFuego deck:VeintiunoDeFuego deck:VeintidosDeFuego deck:VeintitresDeFuego deck:VeinticuatroDeFuego deck:VeinticincoDeFuego
+        deck:UnoDeAgua deck:DosDeAgua deck:TresDeAgua deck:CuatroDeAgua deck:CincoDeAgua deck:SeisDeAgua deck:SieteDeAgua deck:OchoDeAgua deck:NueveDeAgua deck:DiezDeAgua deck:OnceDeAgua deck:DoceDeAgua deck:TreceDeAgua deck:CatorceDeAgua deck:QuinceDeAgua deck:DieciseisDeAgua deck:DiecisieteDeAgua deck:DieciochoDeAgua deck:DiecinueveDeAgua deck:VeinteDeAgua deck:VeintiunoDeAgua deck:VeintidosDeAgua deck:VeintitresDeAgua deck:VeinticuatroDeAgua deck:VeinticincoDeAgua
+        deck:UnoDePlanta deck:DosDePlanta deck:TresDePlanta deck:CuatroDePlanta deck:CincoDePlanta deck:SeisDePlanta deck:SieteDePlanta deck:OchoDePlanta deck:NueveDePlanta deck:DiezDePlanta deck:OnceDePlanta deck:DoceDePlanta deck:TreceDePlanta deck:CatorceDePlanta deck:QuinceDePlanta deck:DieciseisDePlanta deck:DiecisieteDePlanta deck:DieciochoDePlanta deck:DiecinueveDePlanta deck:VeinteDePlanta deck:VeintiunoDePlanta deck:VeintidosDePlanta deck:VeintitresDePlanta deck:VeinticuatroDePlanta deck:VeinticincoDePlanta
+        deck:UnoDeElectrico deck:DosDeElectrico deck:TresDeElectrico deck:CuatroDeElectrico deck:CincoDeElectrico deck:SeisDeElectrico deck:SieteDeElectrico deck:OchoDeElectrico deck:NueveDeElectrico deck:DiezDeElectrico deck:OnceDeElectrico deck:DoceDeElectrico deck:TreceDeElectrico deck:CatorceDeElectrico deck:QuinceDeElectrico deck:DieciseisDeElectrico deck:DiecisieteDeElectrico deck:DieciochoDeElectrico deck:DiecinueveDeElectrico deck:VeinteDeElectrico deck:VeintiunoDeElectrico deck:VeintidosDeElectrico deck:VeintitresDeElectrico deck:VeinticuatroDeElectrico deck:VeinticincoDeElectrico
+        deck:UnoDeNormal deck:DosDeNormal deck:TresDeNormal deck:CuatroDeNormal deck:CincoDeNormal deck:SeisDeNormal deck:SieteDeNormal deck:OchoDeNormal deck:NueveDeNormal deck:DiezDeNormal deck:OnceDeNormal deck:DoceDeNormal deck:TreceDeNormal deck:CatorceDeNormal deck:QuinceDeNormal deck:DieciseisDeNormal deck:DiecisieteDeNormal deck:DieciochoDeNormal deck:DiecinueveDeNormal deck:VeinteDeNormal deck:VeintiunoDeNormal deck:VeintidosDeNormal deck:VeintitresDeNormal deck:VeinticuatroDeNormal deck:VeinticincoDeNormal
+        deck:UnoDeVolador deck:DosDeVolador deck:TresDeVolador deck:CuatroDeVolador deck:CincoDeVolador deck:SeisDeVolador deck:SieteDeVolador deck:OchoDeVolador deck:NueveDeVolador deck:DiezDeVolador deck:OnceDeVolador deck:DoceDeVolador deck:TreceDeVolador deck:CatorceDeVolador deck:QuinceDeVolador deck:DieciseisDeVolador deck:DiecisieteDeVolador deck:DieciochoDeVolador deck:DiecinueveDeVolador deck:VeinteDeVolador deck:VeintiunoDeVolador deck:VeintidosDeVolador deck:VeintitresDeVolador deck:VeinticuatroDeVolador deck:VeinticincoDeVolador
+        deck:UnoDeBicho deck:DosDeBicho deck:TresDeBicho deck:CuatroDeBicho deck:CincoDeBicho deck:SeisDeBicho deck:SieteDeBicho deck:OchoDeBicho deck:NueveDeBicho deck:DiezDeBicho deck:OnceDeBicho deck:DoceDeBicho deck:TreceDeBicho deck:CatorceDeBicho deck:QuinceDeBicho deck:DieciseisDeBicho deck:DiecisieteDeBicho deck:DieciochoDeBicho deck:DiecinueveDeBicho deck:VeinteDeBicho deck:VeintiunoDeBicho deck:VeintidosDeBicho deck:VeintitresDeBicho deck:VeinticuatroDeBicho deck:VeinticincoDeBicho
+        deck:UnoDeVeneno deck:DosDeVeneno deck:TresDeVeneno deck:CuatroDeVeneno deck:CincoDeVeneno deck:SeisDeVeneno deck:SieteDeVeneno deck:OchoDeVeneno deck:NueveDeVeneno deck:DiezDeVeneno deck:OnceDeVeneno deck:DoceDeVeneno deck:TreceDeVeneno deck:CatorceDeVeneno deck:QuinceDeVeneno deck:DieciseisDeVeneno deck:DiecisieteDeVeneno deck:DieciochoDeVeneno deck:DiecinueveDeVeneno deck:VeinteDeVeneno deck:VeintiunoDeVeneno deck:VeintidosDeVeneno deck:VeintitresDeVeneno deck:VeinticuatroDeVeneno deck:VeinticincoDeVeneno
+        deck:UnoDeTierra deck:DosDeTierra deck:TresDeTierra deck:CuatroDeTierra deck:CincoDeTierra deck:SeisDeTierra deck:SieteDeTierra deck:OchoDeTierra deck:NueveDeTierra deck:DiezDeTierra deck:OnceDeTierra deck:DoceDeTierra deck:TreceDeTierra deck:CatorceDeTierra deck:QuinceDeTierra deck:DieciseisDeTierra deck:DiecisieteDeTierra deck:DieciochoDeTierra deck:DiecinueveDeTierra deck:VeinteDeTierra deck:VeintiunoDeTierra deck:VeintidosDeTierra deck:VeintitresDeTierra deck:VeinticuatroDeTierra deck:VeinticincoDeTierra
+        deck:UnoDeRoca deck:DosDeRoca deck:TresDeRoca deck:CuatroDeRoca deck:CincoDeRoca deck:SeisDeRoca deck:SieteDeRoca deck:OchoDeRoca deck:NueveDeRoca deck:DiezDeRoca deck:OnceDeRoca deck:DoceDeRoca deck:TreceDeRoca deck:CatorceDeRoca deck:QuinceDeRoca deck:DieciseisDeRoca deck:DiecisieteDeRoca deck:DieciochoDeRoca deck:DiecinueveDeRoca deck:VeinteDeRoca deck:VeintiunoDeRoca deck:VeintidosDeRoca deck:VeintitresDeRoca deck:VeinticuatroDeRoca deck:VeinticincoDeRoca
+        deck:UnoDeLucha deck:DosDeLucha deck:TresDeLucha deck:CuatroDeLucha deck:CincoDeLucha deck:SeisDeLucha deck:SieteDeLucha deck:OchoDeLucha deck:NueveDeLucha deck:DiezDeLucha deck:OnceDeLucha deck:DoceDeLucha deck:TreceDeLucha deck:CatorceDeLucha deck:QuinceDeLucha deck:DieciseisDeLucha deck:DiecisieteDeLucha deck:DieciochoDeLucha deck:DiecinueveDeLucha deck:VeinteDeLucha deck:VeintiunoDeLucha deck:VeintidosDeLucha deck:VeintitresDeLucha deck:VeinticuatroDeLucha deck:VeinticincoDeLucha
+        deck:UnoDePsiquico deck:DosDePsiquico deck:TresDePsiquico deck:CuatroDePsiquico deck:CincoDePsiquico deck:SeisDePsiquico deck:SieteDePsiquico deck:OchoDePsiquico deck:NueveDePsiquico deck:DiezDePsiquico deck:OnceDePsiquico deck:DoceDePsiquico deck:TreceDePsiquico deck:CatorceDePsiquico deck:QuinceDePsiquico deck:DieciseisDePsiquico deck:DiecisieteDePsiquico deck:DieciochoDePsiquico deck:DiecinueveDePsiquico deck:VeinteDePsiquico deck:VeintiunoDePsiquico deck:VeintidosDePsiquico deck:VeintitresDePsiquico deck:VeinticuatroDePsiquico deck:VeinticincoDePsiquico
+        deck:UnoDeFantasma deck:DosDeFantasma deck:TresDeFantasma deck:CuatroDeFantasma deck:CincoDeFantasma deck:SeisDeFantasma deck:SieteDeFantasma deck:OchoDeFantasma deck:NueveDeFantasma deck:DiezDeFantasma deck:OnceDeFantasma deck:DoceDeFantasma deck:TreceDeFantasma deck:CatorceDeFantasma deck:QuinceDeFantasma deck:DieciseisDeFantasma deck:DiecisieteDeFantasma deck:DieciochoDeFantasma deck:DiecinueveDeFantasma deck:VeinteDeFantasma deck:VeintiunoDeFantasma deck:VeintidosDeFantasma deck:VeintitresDeFantasma deck:VeinticuatroDeFantasma deck:VeinticincoDeFantasma
+        deck:UnoDeHielo deck:DosDeHielo deck:TresDeHielo deck:CuatroDeHielo deck:CincoDeHielo deck:SeisDeHielo deck:SieteDeHielo deck:OchoDeHielo deck:NueveDeHielo deck:DiezDeHielo deck:OnceDeHielo deck:DoceDeHielo deck:TreceDeHielo deck:CatorceDeHielo deck:QuinceDeHielo deck:DieciseisDeHielo deck:DiecisieteDeHielo deck:DieciochoDeHielo deck:DiecinueveDeHielo deck:VeinteDeHielo deck:VeintiunoDeHielo deck:VeintidosDeHielo deck:VeintitresDeHielo deck:VeinticuatroDeHielo deck:VeinticincoDeHielo
+        deck:UnoDeDragon deck:DosDeDragon deck:TresDeDragon deck:CuatroDeDragon deck:CincoDeDragon deck:SeisDeDragon deck:SieteDeDragon deck:OchoDeDragon deck:NueveDeDragon deck:DiezDeDragon deck:OnceDeDragon deck:DoceDeDragon deck:TreceDeDragon deck:CatorceDeDragon deck:QuinceDeDragon deck:DieciseisDeDragon deck:DiecisieteDeDragon deck:DieciochoDeDragon deck:DiecinueveDeDragon deck:VeinteDeDragon deck:VeintiunoDeDragon deck:VeintidosDeDragon deck:VeintitresDeDragon deck:VeinticuatroDeDragon deck:VeinticincoDeDragon
+        deck:UnoDeSiniestro deck:DosDeSiniestro deck:TresDeSiniestro deck:CuatroDeSiniestro deck:CincoDeSiniestro deck:SeisDeSiniestro deck:SieteDeSiniestro deck:OchoDeSiniestro deck:NueveDeSiniestro deck:DiezDeSiniestro deck:OnceDeSiniestro deck:DoceDeSiniestro deck:TreceDeSiniestro deck:CatorceDeSiniestro deck:QuinceDeSiniestro deck:DieciseisDeSiniestro deck:DiecisieteDeSiniestro deck:DieciochoDeSiniestro deck:DiecinueveDeSiniestro deck:VeinteDeSiniestro deck:VeintiunoDeSiniestro deck:VeintidosDeSiniestro deck:VeintitresDeSiniestro deck:VeinticuatroDeSiniestro deck:VeinticincoDeSiniestro
+    ) .

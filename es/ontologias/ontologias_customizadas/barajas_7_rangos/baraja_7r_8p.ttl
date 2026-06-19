@@ -1,0 +1,793 @@
+# =============================================================================
+# Ontología de baraja: baraja_7r_8p
+# Generada automáticamente por generar_ontologia_baraja.py
+# =============================================================================
+
+@prefix deck: <http://www.ontologia-baraja.org/baraja_7r_8p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# =============================================================================
+#
+# Propósito
+# ---------
+# Ontología OWL 2 DL que modela la estructura de una baraja de tipo 'baraja_7r_8p'.
+# Palos  : 8
+# Rangos : 7
+# Cartas : 56
+#
+# Open World Assumption (OWA)
+# ---------------------------
+# Palo, Rango y Carta se cierran con owl:oneOf para evitar que el razonador
+# asuma palos, rangos o cartas adicionales no declaradas.
+# Los 56 individuos de cartas se declaran AllDifferent.
+# =============================================================================
+
+<http://www.ontologia-baraja.org/baraja_7r_8p>
+    rdf:type owl:Ontology ;
+    rdfs:label "Ontología de baraja baraja_7r_8p" ;
+    rdfs:comment "Ontología OWL 2 DL que modela la baraja 'baraja_7r_8p' (8 palos × 7 rangos = 56 cartas)." ;
+    owl:versionInfo "1.0.0" .
+
+
+# =============================================================================
+# Palos y Rangos de las Cartas
+# =============================================================================
+#
+# Palo  ≡ { Fuego, Agua, Planta, Electrico, Normal, Volador, Bicho, Veneno }  (8 palos)
+#
+
+# Definición de la clase Palo.
+deck:Palo a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:oneOf ( deck:Fuego deck:Agua deck:Planta deck:Electrico deck:Normal deck:Volador deck:Bicho deck:Veneno )
+    ] ;
+    rdfs:label "Palo" ;
+    rdfs:comment "Palo de una carta. Clase cerrada: exactamente Fuego, Agua, Planta, Electrico, Normal, Volador, Bicho, Veneno." .
+
+# Definición de la clase Rango.
+deck:Rango a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:oneOf ( deck:Uno deck:Dos deck:Tres deck:Cuatro deck:Cinco deck:Seis deck:Siete )
+    ] ;
+    rdfs:label "Rango" ;
+    rdfs:comment "Rango de una carta. Clase cerrada: exactamente Uno, Dos, Tres, Cuatro, Cinco, Seis, Siete." .
+
+# Definición de la clase Carta.
+deck:Carta a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:oneOf (
+            deck:UnoDeFuego deck:DosDeFuego deck:TresDeFuego deck:CuatroDeFuego deck:CincoDeFuego deck:SeisDeFuego deck:SieteDeFuego
+            deck:UnoDeAgua deck:DosDeAgua deck:TresDeAgua deck:CuatroDeAgua deck:CincoDeAgua deck:SeisDeAgua deck:SieteDeAgua
+            deck:UnoDePlanta deck:DosDePlanta deck:TresDePlanta deck:CuatroDePlanta deck:CincoDePlanta deck:SeisDePlanta deck:SieteDePlanta
+            deck:UnoDeElectrico deck:DosDeElectrico deck:TresDeElectrico deck:CuatroDeElectrico deck:CincoDeElectrico deck:SeisDeElectrico deck:SieteDeElectrico
+            deck:UnoDeNormal deck:DosDeNormal deck:TresDeNormal deck:CuatroDeNormal deck:CincoDeNormal deck:SeisDeNormal deck:SieteDeNormal
+            deck:UnoDeVolador deck:DosDeVolador deck:TresDeVolador deck:CuatroDeVolador deck:CincoDeVolador deck:SeisDeVolador deck:SieteDeVolador
+            deck:UnoDeBicho deck:DosDeBicho deck:TresDeBicho deck:CuatroDeBicho deck:CincoDeBicho deck:SeisDeBicho deck:SieteDeBicho
+            deck:UnoDeVeneno deck:DosDeVeneno deck:TresDeVeneno deck:CuatroDeVeneno deck:CincoDeVeneno deck:SeisDeVeneno deck:SieteDeVeneno
+        )
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:someValuesFrom deck:Palo
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty deck:tieneRango ;
+        owl:someValuesFrom deck:Rango
+    ] ;
+    rdfs:label "Carta" ;
+    rdfs:comment "Una carta de la baraja." .
+
+# Subclases de Carta por Palo.
+
+deck:CartaDeFuego a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Fuego
+    ] ;
+    rdfs:label "Carta de Fuego" ;
+    rdfs:comment "Una carta del palo de Fuego." .
+
+deck:CartaDeAgua a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Agua
+    ] ;
+    rdfs:label "Carta de Agua" ;
+    rdfs:comment "Una carta del palo de Agua." .
+
+deck:CartaDePlanta a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Planta
+    ] ;
+    rdfs:label "Carta de Planta" ;
+    rdfs:comment "Una carta del palo de Planta." .
+
+deck:CartaDeElectrico a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Electrico
+    ] ;
+    rdfs:label "Carta de Eléctrico" ;
+    rdfs:comment "Una carta del palo de Eléctrico." .
+
+deck:CartaDeNormal a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Normal
+    ] ;
+    rdfs:label "Carta de Normal" ;
+    rdfs:comment "Una carta del palo de Normal." .
+
+deck:CartaDeVolador a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Volador
+    ] ;
+    rdfs:label "Carta de Volador" ;
+    rdfs:comment "Una carta del palo de Volador." .
+
+deck:CartaDeBicho a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Bicho
+    ] ;
+    rdfs:label "Carta de Bicho" ;
+    rdfs:comment "Una carta del palo de Bicho." .
+
+deck:CartaDeVeneno a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Veneno
+    ] ;
+    rdfs:label "Carta de Veneno" ;
+    rdfs:comment "Una carta del palo de Veneno." .
+
+# Subclases de Carta por Rango.
+
+deck:CartaDeUno a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Uno ] ;
+    rdfs:label "Carta de Uno" .
+
+deck:CartaDeDos a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Dos ] ;
+    rdfs:label "Carta de Dos" .
+
+deck:CartaDeTres a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Tres ] ;
+    rdfs:label "Carta de Tres" .
+
+deck:CartaDeCuatro a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Cuatro ] ;
+    rdfs:label "Carta de Cuatro" .
+
+deck:CartaDeCinco a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Cinco ] ;
+    rdfs:label "Carta de Cinco" .
+
+deck:CartaDeSeis a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Seis ] ;
+    rdfs:label "Carta de Seis" .
+
+deck:CartaDeSiete a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Siete ] ;
+    rdfs:label "Carta de Siete" .
+
+
+# =============================================================================
+# Grupos de Cartas
+# =============================================================================
+
+# Definición de la clase Mano.
+deck:Mano a owl:Class ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty deck:contieneCarta ;
+        owl:maxQualifiedCardinality "5"^^xsd:nonNegativeInteger ;
+        owl:onClass deck:Carta
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty deck:contieneCarta ;
+        owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ;
+        owl:onClass deck:Carta
+    ] ;
+    rdfs:label "Mano" ;
+    rdfs:comment "La mejor combinación de 5 cartas de un jugador." .
+
+# =============================================================================
+# Clasificadores de Manos
+# =============================================================================
+#
+# Jerarquía de tipos de mano generados para esta baraja:
+#   Mano
+#   ├── CartaAlta      (1) Sin combinación; gana la carta más alta
+#   ├── Par            (2) Dos cartas del mismo rango
+#   ├── DoblePar       (3) Dos pares distintos
+#   ├── Trio           (4) Tres cartas del mismo rango
+#   ├── Escalera       (5) Cinco cartas consecutivas
+#   ├── Color          (6) Cinco cartas del mismo palo
+#   ├── Full           (7) Un trío más un par
+#   ├── Poker          (8) Cuatro cartas del mismo rango
+#   ├── EscaleraColor  (9) Cinco cartas consecutivas del mismo palo
+#   ├── EscaleraReal   (10) Rangos más altos del mismo palo
+#
+
+# Definición de la clase CartaAlta.
+deck:CartaAlta a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [
+                a owl:Restriction ;
+                owl:onProperty deck:contieneCarta ;
+                owl:someValuesFrom deck:Carta
+            ]
+        )
+    ] ;
+    rdfs:subClassOf deck:Mano ;
+    rdfs:label "Carta Alta" ;
+    rdfs:comment "Mano formada sin combinación; la carta más alta decide el ganador." .
+
+# Definición de la clase Par.
+deck:Par a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    # Par de Uno de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeUno ]
+                    # Par de Dos de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDos ]
+                    # Par de Tres de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeTres ]
+                    # Par de Cuatro de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCuatro ]
+                    # Par de Cinco de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCinco ]
+                    # Par de Seis de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeSeis ]
+                    # Par de Siete de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeSiete ]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Par" ;
+    rdfs:comment "Mano formada por dos cartas del mismo rango." .
+
+# Definición de la clase DoblePar.
+# Usa el atajo manoTienePar: la mano tiene al menos 2 rangos con par.
+deck:DoblePar a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [ a owl:Restriction ;
+              owl:onProperty deck:manoTienePar ;
+              owl:minCardinality "2"^^xsd:nonNegativeInteger ]
+        )
+    ] ;
+    rdfs:label "Doble Par" ;
+    rdfs:comment "Mano formada por dos pares de rangos distintos, independientemente del palo." .
+
+# Definición de la clase Trio.
+deck:Trio a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    # Trío de Uno de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeUno ]
+                    # Trío de Dos de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDos ]
+                    # Trío de Tres de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeTres ]
+                    # Trío de Cuatro de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCuatro ]
+                    # Trío de Cinco de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCinco ]
+                    # Trío de Seis de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeSeis ]
+                    # Trío de Siete de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeSiete ]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Trío" ;
+    rdfs:comment "Mano formada por tres cartas del mismo rango." .
+
+# Definición de la clase Escalera.
+deck:Escalera a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    # Escalera Uno-Dos-Tres-Cuatro-Cinco.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeUno ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDos ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTres ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCuatro ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCinco ]
+                    )]
+                    # Escalera Dos-Tres-Cuatro-Cinco-Seis.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDos ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTres ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCuatro ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCinco ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSeis ]
+                    )]
+                    # Escalera Tres-Cuatro-Cinco-Seis-Siete.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTres ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCuatro ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCinco ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSeis ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSiete ]
+                    )]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Escalera" ;
+    rdfs:comment "Mano formada por cinco cartas de rangos consecutivos, no necesariamente del mismo palo." .
+
+# Definición de la clase Color.
+deck:Color a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    # Color de Fuego.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeFuego ]
+                    # Color de Agua.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeAgua ]
+                    # Color de Planta.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDePlanta ]
+                    # Color de Eléctrico.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeElectrico ]
+                    # Color de Normal.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeNormal ]
+                    # Color de Volador.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeVolador ]
+                    # Color de Bicho.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeBicho ]
+                    # Color de Veneno.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeVeneno ]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Color" ;
+    rdfs:comment "Mano formada por cinco cartas del mismo palo, no necesariamente consecutivas." .
+
+# Definición de la clase Full.
+# Observación: El Full es la intersección de Trio y DoblePar.
+deck:Full a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Trio
+            deck:DoblePar
+        )
+    ] ;
+    rdfs:label "Full" ;
+    rdfs:comment "Mano formada por tres cartas del mismo rango y dos cartas de otro mismo rango." .
+
+# Definición de la clase Poker.
+deck:Poker a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    # Póker de Uno de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeUno ]
+                    # Póker de Dos de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDos ]
+                    # Póker de Tres de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeTres ]
+                    # Póker de Cuatro de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCuatro ]
+                    # Póker de Cinco de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCinco ]
+                    # Póker de Seis de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeSeis ]
+                    # Póker de Siete de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeSiete ]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Póker" ;
+    rdfs:comment "Mano formada por cuatro cartas del mismo rango y una carta cualquiera." .
+
+# Definición de la clase EscaleraColor.
+# Truco: intersección de Escalera y Color → no hay que enumerar combinaciones de palo.
+deck:EscaleraColor a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Escalera
+            deck:Color
+        )
+    ] ;
+    rdfs:label "Escalera de Color" ;
+    rdfs:comment "Mano formada por cinco cartas consecutivas del mismo palo." .
+
+# Definición de la clase EscaleraReal.
+# Subclase de EscaleraColor con los 5 rangos más altos (Tres-Cuatro-Cinco-Seis-Siete).
+deck:EscaleraReal a owl:Class ;
+    rdfs:subClassOf deck:EscaleraColor ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:EscaleraColor
+            [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTres ]
+            [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCuatro ]
+            [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCinco ]
+            [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSeis ]
+            [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSiete ]
+        )
+    ] ;
+    rdfs:label "Escalera Real" ;
+    rdfs:comment "Mano formada por los cinco rangos más altos consecutivos (Tres-Cuatro-Cinco-Seis-Siete) del mismo palo." .
+
+
+# =============================================================================
+# Propiedades de Objeto
+# =============================================================================
+
+deck:tienePalo a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain deck:Carta ;
+    rdfs:range deck:Palo ;
+    rdfs:label "Tiene Palo" ;
+    rdfs:comment "Asocia una carta con su palo. Funcional: cada carta tiene exactamente un palo." .
+
+deck:tieneRango a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain deck:Carta ;
+    rdfs:range deck:Rango ;
+    rdfs:label "Tiene Rango" ;
+    rdfs:comment "Asocia una carta con su rango. Funcional: cada carta tiene exactamente un rango." .
+
+deck:contieneCarta a owl:ObjectProperty ;
+    rdfs:domain deck:Mano ;
+    rdfs:range deck:Carta ;
+    rdfs:label "Contiene Carta" ;
+    rdfs:comment "Relaciona una mano con cada una de las cartas que la componen." .
+
+deck:manoTienePar a owl:ObjectProperty ;
+    rdfs:domain deck:Mano ;
+    rdfs:range  deck:Rango ;
+    rdfs:label  "Mano tiene Par" ;
+    rdfs:comment "Atajo que indica qué rangos están presentes con al menos 2 cartas en la mano. Se agrega manualmente en el ABox. Usado por el clasificador de DoblePar." .
+
+# =============================================================================
+# Propiedades de Datos
+# =============================================================================
+
+deck:tieneValorRango a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain deck:Rango ;
+    rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "Tiene Valor De Rango" ;
+    rdfs:comment "Valor numérico del rango. Usado por evaluadores externos." .
+
+# =============================================================================
+# Instancias (ABox)
+# =============================================================================
+
+# Palos (8 individuos) -------------------------------------------
+
+deck:Fuego a deck:Palo ;
+    rdfs:label "Fuego" .
+deck:Agua a deck:Palo ;
+    rdfs:label "Agua" .
+deck:Planta a deck:Palo ;
+    rdfs:label "Planta" .
+deck:Electrico a deck:Palo ;
+    rdfs:label "Eléctrico" .
+deck:Normal a deck:Palo ;
+    rdfs:label "Normal" .
+deck:Volador a deck:Palo ;
+    rdfs:label "Volador" .
+deck:Bicho a deck:Palo ;
+    rdfs:label "Bicho" .
+deck:Veneno a deck:Palo ;
+    rdfs:label "Veneno" .
+
+# Rangos (7 individuos) -------------------------------------------
+# Los valores van de 1 (primer rango) a 7 (último rango).
+
+deck:Uno a deck:Rango ;
+    deck:tieneValorRango "1"^^xsd:nonNegativeInteger ;
+    rdfs:label "Uno" .
+
+deck:Dos a deck:Rango ;
+    deck:tieneValorRango "2"^^xsd:nonNegativeInteger ;
+    rdfs:label "Dos" .
+
+deck:Tres a deck:Rango ;
+    deck:tieneValorRango "3"^^xsd:nonNegativeInteger ;
+    rdfs:label "Tres" .
+
+deck:Cuatro a deck:Rango ;
+    deck:tieneValorRango "4"^^xsd:nonNegativeInteger ;
+    rdfs:label "Cuatro" .
+
+deck:Cinco a deck:Rango ;
+    deck:tieneValorRango "5"^^xsd:nonNegativeInteger ;
+    rdfs:label "Cinco" .
+
+deck:Seis a deck:Rango ;
+    deck:tieneValorRango "6"^^xsd:nonNegativeInteger ;
+    rdfs:label "Seis" .
+
+deck:Siete a deck:Rango ;
+    deck:tieneValorRango "7"^^xsd:nonNegativeInteger ;
+    rdfs:label "Siete" .
+
+
+# Cartas (56 individuos) -------------------------------------------
+
+# Cartas de Fuego.
+
+deck:UnoDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Fuego" .
+deck:DosDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Fuego" .
+deck:TresDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Fuego" .
+deck:CuatroDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Fuego" .
+deck:CincoDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Fuego" .
+deck:SeisDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Fuego" .
+deck:SieteDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Fuego" .
+
+# Cartas de Agua.
+
+deck:UnoDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Agua" .
+deck:DosDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Agua" .
+deck:TresDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Agua" .
+deck:CuatroDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Agua" .
+deck:CincoDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Agua" .
+deck:SeisDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Agua" .
+deck:SieteDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Agua" .
+
+# Cartas de Planta.
+
+deck:UnoDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Planta" .
+deck:DosDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Planta" .
+deck:TresDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Planta" .
+deck:CuatroDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Planta" .
+deck:CincoDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Planta" .
+deck:SeisDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Planta" .
+deck:SieteDePlanta a deck:Carta ;
+    deck:tienePalo deck:Planta ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Planta" .
+
+# Cartas de Eléctrico.
+
+deck:UnoDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Eléctrico" .
+deck:DosDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Eléctrico" .
+deck:TresDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Eléctrico" .
+deck:CuatroDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Eléctrico" .
+deck:CincoDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Eléctrico" .
+deck:SeisDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Eléctrico" .
+deck:SieteDeElectrico a deck:Carta ;
+    deck:tienePalo deck:Electrico ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Eléctrico" .
+
+# Cartas de Normal.
+
+deck:UnoDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Normal" .
+deck:DosDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Normal" .
+deck:TresDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Normal" .
+deck:CuatroDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Normal" .
+deck:CincoDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Normal" .
+deck:SeisDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Normal" .
+deck:SieteDeNormal a deck:Carta ;
+    deck:tienePalo deck:Normal ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Normal" .
+
+# Cartas de Volador.
+
+deck:UnoDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Volador" .
+deck:DosDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Volador" .
+deck:TresDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Volador" .
+deck:CuatroDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Volador" .
+deck:CincoDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Volador" .
+deck:SeisDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Volador" .
+deck:SieteDeVolador a deck:Carta ;
+    deck:tienePalo deck:Volador ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Volador" .
+
+# Cartas de Bicho.
+
+deck:UnoDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Bicho" .
+deck:DosDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Bicho" .
+deck:TresDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Bicho" .
+deck:CuatroDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Bicho" .
+deck:CincoDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Bicho" .
+deck:SeisDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Bicho" .
+deck:SieteDeBicho a deck:Carta ;
+    deck:tienePalo deck:Bicho ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Bicho" .
+
+# Cartas de Veneno.
+
+deck:UnoDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Veneno" .
+deck:DosDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Veneno" .
+deck:TresDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Veneno" .
+deck:CuatroDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Veneno" .
+deck:CincoDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Veneno" .
+deck:SeisDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Veneno" .
+deck:SieteDeVeneno a deck:Carta ;
+    deck:tienePalo deck:Veneno ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Veneno" .
+
+
+# 8 palos distintos
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( deck:Fuego deck:Agua deck:Planta deck:Electrico deck:Normal deck:Volador deck:Bicho deck:Veneno ) .
+
+# 7 rangos distintos
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( deck:Uno deck:Dos deck:Tres deck:Cuatro deck:Cinco deck:Seis deck:Siete ) .
+
+# 56 cartas distintas
+[] a owl:AllDifferent ;
+    owl:distinctMembers (
+        deck:UnoDeFuego deck:DosDeFuego deck:TresDeFuego deck:CuatroDeFuego deck:CincoDeFuego deck:SeisDeFuego deck:SieteDeFuego
+        deck:UnoDeAgua deck:DosDeAgua deck:TresDeAgua deck:CuatroDeAgua deck:CincoDeAgua deck:SeisDeAgua deck:SieteDeAgua
+        deck:UnoDePlanta deck:DosDePlanta deck:TresDePlanta deck:CuatroDePlanta deck:CincoDePlanta deck:SeisDePlanta deck:SieteDePlanta
+        deck:UnoDeElectrico deck:DosDeElectrico deck:TresDeElectrico deck:CuatroDeElectrico deck:CincoDeElectrico deck:SeisDeElectrico deck:SieteDeElectrico
+        deck:UnoDeNormal deck:DosDeNormal deck:TresDeNormal deck:CuatroDeNormal deck:CincoDeNormal deck:SeisDeNormal deck:SieteDeNormal
+        deck:UnoDeVolador deck:DosDeVolador deck:TresDeVolador deck:CuatroDeVolador deck:CincoDeVolador deck:SeisDeVolador deck:SieteDeVolador
+        deck:UnoDeBicho deck:DosDeBicho deck:TresDeBicho deck:CuatroDeBicho deck:CincoDeBicho deck:SeisDeBicho deck:SieteDeBicho
+        deck:UnoDeVeneno deck:DosDeVeneno deck:TresDeVeneno deck:CuatroDeVeneno deck:CincoDeVeneno deck:SeisDeVeneno deck:SieteDeVeneno
+    ) .

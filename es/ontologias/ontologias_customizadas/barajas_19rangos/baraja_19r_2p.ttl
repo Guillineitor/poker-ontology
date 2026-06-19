@@ -1,0 +1,782 @@
+# =============================================================================
+# Ontología de baraja: baraja_19r_2p
+# Generada automáticamente por generar_ontologia_baraja.py
+# =============================================================================
+
+@prefix deck: <http://www.ontologia-baraja.org/baraja_19r_2p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# =============================================================================
+#
+# Propósito
+# ---------
+# Ontología OWL 2 DL que modela la estructura de una baraja de tipo 'baraja_19r_2p'.
+# Palos  : 2
+# Rangos : 19
+# Cartas : 38
+#
+# Open World Assumption (OWA)
+# ---------------------------
+# Palo, Rango y Carta se cierran con owl:oneOf para evitar que el razonador
+# asuma palos, rangos o cartas adicionales no declaradas.
+# Los 38 individuos de cartas se declaran AllDifferent.
+# =============================================================================
+
+<http://www.ontologia-baraja.org/baraja_19r_2p>
+    rdf:type owl:Ontology ;
+    rdfs:label "Ontología de baraja baraja_19r_2p" ;
+    rdfs:comment "Ontología OWL 2 DL que modela la baraja 'baraja_19r_2p' (2 palos × 19 rangos = 38 cartas)." ;
+    owl:versionInfo "1.0.0" .
+
+
+# =============================================================================
+# Palos y Rangos de las Cartas
+# =============================================================================
+#
+# Palo  ≡ { Fuego, Agua }  (2 palos)
+#
+
+# Definición de la clase Palo.
+deck:Palo a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:oneOf ( deck:Fuego deck:Agua )
+    ] ;
+    rdfs:label "Palo" ;
+    rdfs:comment "Palo de una carta. Clase cerrada: exactamente Fuego, Agua." .
+
+# Definición de la clase Rango.
+deck:Rango a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:oneOf ( deck:Uno deck:Dos deck:Tres deck:Cuatro deck:Cinco deck:Seis deck:Siete deck:Ocho deck:Nueve deck:Diez deck:Once deck:Doce deck:Trece deck:Catorce deck:Quince deck:Dieciseis deck:Diecisiete deck:Dieciocho deck:Diecinueve )
+    ] ;
+    rdfs:label "Rango" ;
+    rdfs:comment "Rango de una carta. Clase cerrada: exactamente Uno, Dos, Tres, Cuatro, Cinco, Seis, Siete, Ocho, Nueve, Diez, Once, Doce, Trece, Catorce, Quince, Dieciseis, Diecisiete, Dieciocho, Diecinueve." .
+
+# Definición de la clase Carta.
+deck:Carta a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:oneOf (
+            deck:UnoDeFuego deck:DosDeFuego deck:TresDeFuego deck:CuatroDeFuego deck:CincoDeFuego deck:SeisDeFuego deck:SieteDeFuego deck:OchoDeFuego deck:NueveDeFuego deck:DiezDeFuego deck:OnceDeFuego deck:DoceDeFuego deck:TreceDeFuego deck:CatorceDeFuego deck:QuinceDeFuego deck:DieciseisDeFuego deck:DiecisieteDeFuego deck:DieciochoDeFuego deck:DiecinueveDeFuego
+            deck:UnoDeAgua deck:DosDeAgua deck:TresDeAgua deck:CuatroDeAgua deck:CincoDeAgua deck:SeisDeAgua deck:SieteDeAgua deck:OchoDeAgua deck:NueveDeAgua deck:DiezDeAgua deck:OnceDeAgua deck:DoceDeAgua deck:TreceDeAgua deck:CatorceDeAgua deck:QuinceDeAgua deck:DieciseisDeAgua deck:DiecisieteDeAgua deck:DieciochoDeAgua deck:DiecinueveDeAgua
+        )
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:someValuesFrom deck:Palo
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty deck:tieneRango ;
+        owl:someValuesFrom deck:Rango
+    ] ;
+    rdfs:label "Carta" ;
+    rdfs:comment "Una carta de la baraja." .
+
+# Subclases de Carta por Palo.
+
+deck:CartaDeFuego a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Fuego
+    ] ;
+    rdfs:label "Carta de Fuego" ;
+    rdfs:comment "Una carta del palo de Fuego." .
+
+deck:CartaDeAgua a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty deck:tienePalo ;
+        owl:hasValue deck:Agua
+    ] ;
+    rdfs:label "Carta de Agua" ;
+    rdfs:comment "Una carta del palo de Agua." .
+
+# Subclases de Carta por Rango.
+
+deck:CartaDeUno a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Uno ] ;
+    rdfs:label "Carta de Uno" .
+
+deck:CartaDeDos a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Dos ] ;
+    rdfs:label "Carta de Dos" .
+
+deck:CartaDeTres a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Tres ] ;
+    rdfs:label "Carta de Tres" .
+
+deck:CartaDeCuatro a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Cuatro ] ;
+    rdfs:label "Carta de Cuatro" .
+
+deck:CartaDeCinco a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Cinco ] ;
+    rdfs:label "Carta de Cinco" .
+
+deck:CartaDeSeis a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Seis ] ;
+    rdfs:label "Carta de Seis" .
+
+deck:CartaDeSiete a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Siete ] ;
+    rdfs:label "Carta de Siete" .
+
+deck:CartaDeOcho a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Ocho ] ;
+    rdfs:label "Carta de Ocho" .
+
+deck:CartaDeNueve a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Nueve ] ;
+    rdfs:label "Carta de Nueve" .
+
+deck:CartaDeDiez a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Diez ] ;
+    rdfs:label "Carta de Diez" .
+
+deck:CartaDeOnce a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Once ] ;
+    rdfs:label "Carta de Once" .
+
+deck:CartaDeDoce a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Doce ] ;
+    rdfs:label "Carta de Doce" .
+
+deck:CartaDeTrece a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Trece ] ;
+    rdfs:label "Carta de Trece" .
+
+deck:CartaDeCatorce a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Catorce ] ;
+    rdfs:label "Carta de Catorce" .
+
+deck:CartaDeQuince a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Quince ] ;
+    rdfs:label "Carta de Quince" .
+
+deck:CartaDeDieciseis a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Dieciseis ] ;
+    rdfs:label "Carta de Dieciseis" .
+
+deck:CartaDeDiecisiete a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Diecisiete ] ;
+    rdfs:label "Carta de Diecisiete" .
+
+deck:CartaDeDieciocho a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Dieciocho ] ;
+    rdfs:label "Carta de Dieciocho" .
+
+deck:CartaDeDiecinueve a owl:Class ;
+    rdfs:subClassOf deck:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:Diecinueve ] ;
+    rdfs:label "Carta de Diecinueve" .
+
+
+# =============================================================================
+# Grupos de Cartas
+# =============================================================================
+
+# Definición de la clase Mano.
+deck:Mano a owl:Class ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty deck:contieneCarta ;
+        owl:maxQualifiedCardinality "5"^^xsd:nonNegativeInteger ;
+        owl:onClass deck:Carta
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty deck:contieneCarta ;
+        owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ;
+        owl:onClass deck:Carta
+    ] ;
+    rdfs:label "Mano" ;
+    rdfs:comment "La mejor combinación de 5 cartas de un jugador." .
+
+# =============================================================================
+# Clasificadores de Manos
+# =============================================================================
+#
+# Jerarquía de tipos de mano generados para esta baraja:
+#   Mano
+#   ├── CartaAlta      (1) Sin combinación; gana la carta más alta
+#   ├── Par            (2) Dos cartas del mismo rango
+#   ├── DoblePar       (3) Dos pares distintos
+#   ├── Escalera       (5) Cinco cartas consecutivas
+#   ├── Color          (6) Cinco cartas del mismo palo
+#   ├── EscaleraColor  (9) Cinco cartas consecutivas del mismo palo
+#   ├── EscaleraReal   (10) Rangos más altos del mismo palo
+#
+# Tipos de mano no generados para esta baraja:
+#   - Trio: requiere al menos 3 palos.
+#   - Full: requiere al menos 3 palos.
+#   - Poker: requiere al menos 4 palos.
+#
+
+# Definición de la clase CartaAlta.
+deck:CartaAlta a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [
+                a owl:Restriction ;
+                owl:onProperty deck:contieneCarta ;
+                owl:someValuesFrom deck:Carta
+            ]
+        )
+    ] ;
+    rdfs:subClassOf deck:Mano ;
+    rdfs:label "Carta Alta" ;
+    rdfs:comment "Mano formada sin combinación; la carta más alta decide el ganador." .
+
+# Definición de la clase Par.
+deck:Par a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    # Par de Uno de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeUno ]
+                    # Par de Dos de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDos ]
+                    # Par de Tres de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeTres ]
+                    # Par de Cuatro de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCuatro ]
+                    # Par de Cinco de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCinco ]
+                    # Par de Seis de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeSeis ]
+                    # Par de Siete de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeSiete ]
+                    # Par de Ocho de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeOcho ]
+                    # Par de Nueve de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeNueve ]
+                    # Par de Diez de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDiez ]
+                    # Par de Once de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeOnce ]
+                    # Par de Doce de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDoce ]
+                    # Par de Trece de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeTrece ]
+                    # Par de Catorce de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeCatorce ]
+                    # Par de Quince de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeQuince ]
+                    # Par de Dieciseis de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDieciseis ]
+                    # Par de Diecisiete de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDiecisiete ]
+                    # Par de Dieciocho de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDieciocho ]
+                    # Par de Diecinueve de cualquier palo.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDeDiecinueve ]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Par" ;
+    rdfs:comment "Mano formada por dos cartas del mismo rango." .
+
+# Definición de la clase DoblePar.
+# Usa el atajo manoTienePar: la mano tiene al menos 2 rangos con par.
+deck:DoblePar a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [ a owl:Restriction ;
+              owl:onProperty deck:manoTienePar ;
+              owl:minCardinality "2"^^xsd:nonNegativeInteger ]
+        )
+    ] ;
+    rdfs:label "Doble Par" ;
+    rdfs:comment "Mano formada por dos pares de rangos distintos, independientemente del palo." .
+
+# Definición de la clase Escalera.
+deck:Escalera a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    # Escalera Uno-Dos-Tres-Cuatro-Cinco.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeUno ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDos ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTres ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCuatro ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCinco ]
+                    )]
+                    # Escalera Dos-Tres-Cuatro-Cinco-Seis.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDos ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTres ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCuatro ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCinco ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSeis ]
+                    )]
+                    # Escalera Tres-Cuatro-Cinco-Seis-Siete.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTres ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCuatro ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCinco ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSeis ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSiete ]
+                    )]
+                    # Escalera Cuatro-Cinco-Seis-Siete-Ocho.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCuatro ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCinco ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSeis ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSiete ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOcho ]
+                    )]
+                    # Escalera Cinco-Seis-Siete-Ocho-Nueve.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCinco ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSeis ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSiete ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOcho ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeNueve ]
+                    )]
+                    # Escalera Seis-Siete-Ocho-Nueve-Diez.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSeis ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSiete ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOcho ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeNueve ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiez ]
+                    )]
+                    # Escalera Siete-Ocho-Nueve-Diez-Once.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeSiete ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOcho ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeNueve ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiez ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOnce ]
+                    )]
+                    # Escalera Ocho-Nueve-Diez-Once-Doce.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOcho ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeNueve ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiez ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOnce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDoce ]
+                    )]
+                    # Escalera Nueve-Diez-Once-Doce-Trece.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeNueve ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiez ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOnce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDoce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTrece ]
+                    )]
+                    # Escalera Diez-Once-Doce-Trece-Catorce.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiez ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOnce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDoce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTrece ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCatorce ]
+                    )]
+                    # Escalera Once-Doce-Trece-Catorce-Quince.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeOnce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDoce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTrece ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCatorce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeQuince ]
+                    )]
+                    # Escalera Doce-Trece-Catorce-Quince-Dieciseis.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDoce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTrece ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCatorce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeQuince ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciseis ]
+                    )]
+                    # Escalera Trece-Catorce-Quince-Dieciseis-Diecisiete.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeTrece ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCatorce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeQuince ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciseis ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiecisiete ]
+                    )]
+                    # Escalera Catorce-Quince-Dieciseis-Diecisiete-Dieciocho.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeCatorce ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeQuince ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciseis ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiecisiete ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciocho ]
+                    )]
+                    # Escalera Quince-Dieciseis-Diecisiete-Dieciocho-Diecinueve.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeQuince ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciseis ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiecisiete ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciocho ]
+                        [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiecinueve ]
+                    )]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Escalera" ;
+    rdfs:comment "Mano formada por cinco cartas de rangos consecutivos, no necesariamente del mismo palo." .
+
+# Definición de la clase Color.
+deck:Color a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    # Color de Fuego.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeFuego ]
+                    # Color de Agua.
+                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDeAgua ]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Color" ;
+    rdfs:comment "Mano formada por cinco cartas del mismo palo, no necesariamente consecutivas." .
+
+# Definición de la clase EscaleraColor.
+# Truco: intersección de Escalera y Color → no hay que enumerar combinaciones de palo.
+deck:EscaleraColor a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:Escalera
+            deck:Color
+        )
+    ] ;
+    rdfs:label "Escalera de Color" ;
+    rdfs:comment "Mano formada por cinco cartas consecutivas del mismo palo." .
+
+# Definición de la clase EscaleraReal.
+# Subclase de EscaleraColor con los 5 rangos más altos (Quince-Dieciseis-Diecisiete-Dieciocho-Diecinueve).
+deck:EscaleraReal a owl:Class ;
+    rdfs:subClassOf deck:EscaleraColor ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            deck:EscaleraColor
+            [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeQuince ]
+            [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciseis ]
+            [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiecisiete ]
+            [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDieciocho ]
+            [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:someValuesFrom deck:CartaDeDiecinueve ]
+        )
+    ] ;
+    rdfs:label "Escalera Real" ;
+    rdfs:comment "Mano formada por los cinco rangos más altos consecutivos (Quince-Dieciseis-Diecisiete-Dieciocho-Diecinueve) del mismo palo." .
+
+
+# =============================================================================
+# Propiedades de Objeto
+# =============================================================================
+
+deck:tienePalo a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain deck:Carta ;
+    rdfs:range deck:Palo ;
+    rdfs:label "Tiene Palo" ;
+    rdfs:comment "Asocia una carta con su palo. Funcional: cada carta tiene exactamente un palo." .
+
+deck:tieneRango a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain deck:Carta ;
+    rdfs:range deck:Rango ;
+    rdfs:label "Tiene Rango" ;
+    rdfs:comment "Asocia una carta con su rango. Funcional: cada carta tiene exactamente un rango." .
+
+deck:contieneCarta a owl:ObjectProperty ;
+    rdfs:domain deck:Mano ;
+    rdfs:range deck:Carta ;
+    rdfs:label "Contiene Carta" ;
+    rdfs:comment "Relaciona una mano con cada una de las cartas que la componen." .
+
+deck:manoTienePar a owl:ObjectProperty ;
+    rdfs:domain deck:Mano ;
+    rdfs:range  deck:Rango ;
+    rdfs:label  "Mano tiene Par" ;
+    rdfs:comment "Atajo que indica qué rangos están presentes con al menos 2 cartas en la mano. Se agrega manualmente en el ABox. Usado por el clasificador de DoblePar." .
+
+# =============================================================================
+# Propiedades de Datos
+# =============================================================================
+
+deck:tieneValorRango a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain deck:Rango ;
+    rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "Tiene Valor De Rango" ;
+    rdfs:comment "Valor numérico del rango. Usado por evaluadores externos." .
+
+# =============================================================================
+# Instancias (ABox)
+# =============================================================================
+
+# Palos (2 individuos) -------------------------------------------
+
+deck:Fuego a deck:Palo ;
+    rdfs:label "Fuego" .
+deck:Agua a deck:Palo ;
+    rdfs:label "Agua" .
+
+# Rangos (19 individuos) -------------------------------------------
+# Los valores van de 1 (primer rango) a 19 (último rango).
+
+deck:Uno a deck:Rango ;
+    deck:tieneValorRango "1"^^xsd:nonNegativeInteger ;
+    rdfs:label "Uno" .
+
+deck:Dos a deck:Rango ;
+    deck:tieneValorRango "2"^^xsd:nonNegativeInteger ;
+    rdfs:label "Dos" .
+
+deck:Tres a deck:Rango ;
+    deck:tieneValorRango "3"^^xsd:nonNegativeInteger ;
+    rdfs:label "Tres" .
+
+deck:Cuatro a deck:Rango ;
+    deck:tieneValorRango "4"^^xsd:nonNegativeInteger ;
+    rdfs:label "Cuatro" .
+
+deck:Cinco a deck:Rango ;
+    deck:tieneValorRango "5"^^xsd:nonNegativeInteger ;
+    rdfs:label "Cinco" .
+
+deck:Seis a deck:Rango ;
+    deck:tieneValorRango "6"^^xsd:nonNegativeInteger ;
+    rdfs:label "Seis" .
+
+deck:Siete a deck:Rango ;
+    deck:tieneValorRango "7"^^xsd:nonNegativeInteger ;
+    rdfs:label "Siete" .
+
+deck:Ocho a deck:Rango ;
+    deck:tieneValorRango "8"^^xsd:nonNegativeInteger ;
+    rdfs:label "Ocho" .
+
+deck:Nueve a deck:Rango ;
+    deck:tieneValorRango "9"^^xsd:nonNegativeInteger ;
+    rdfs:label "Nueve" .
+
+deck:Diez a deck:Rango ;
+    deck:tieneValorRango "10"^^xsd:nonNegativeInteger ;
+    rdfs:label "Diez" .
+
+deck:Once a deck:Rango ;
+    deck:tieneValorRango "11"^^xsd:nonNegativeInteger ;
+    rdfs:label "Once" .
+
+deck:Doce a deck:Rango ;
+    deck:tieneValorRango "12"^^xsd:nonNegativeInteger ;
+    rdfs:label "Doce" .
+
+deck:Trece a deck:Rango ;
+    deck:tieneValorRango "13"^^xsd:nonNegativeInteger ;
+    rdfs:label "Trece" .
+
+deck:Catorce a deck:Rango ;
+    deck:tieneValorRango "14"^^xsd:nonNegativeInteger ;
+    rdfs:label "Catorce" .
+
+deck:Quince a deck:Rango ;
+    deck:tieneValorRango "15"^^xsd:nonNegativeInteger ;
+    rdfs:label "Quince" .
+
+deck:Dieciseis a deck:Rango ;
+    deck:tieneValorRango "16"^^xsd:nonNegativeInteger ;
+    rdfs:label "Dieciseis" .
+
+deck:Diecisiete a deck:Rango ;
+    deck:tieneValorRango "17"^^xsd:nonNegativeInteger ;
+    rdfs:label "Diecisiete" .
+
+deck:Dieciocho a deck:Rango ;
+    deck:tieneValorRango "18"^^xsd:nonNegativeInteger ;
+    rdfs:label "Dieciocho" .
+
+deck:Diecinueve a deck:Rango ;
+    deck:tieneValorRango "19"^^xsd:nonNegativeInteger ;
+    rdfs:label "Diecinueve" .
+
+
+# Cartas (38 individuos) -------------------------------------------
+
+# Cartas de Fuego.
+
+deck:UnoDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Fuego" .
+deck:DosDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Fuego" .
+deck:TresDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Fuego" .
+deck:CuatroDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Fuego" .
+deck:CincoDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Fuego" .
+deck:SeisDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Fuego" .
+deck:SieteDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Fuego" .
+deck:OchoDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Fuego" .
+deck:NueveDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Fuego" .
+deck:DiezDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Fuego" .
+deck:OnceDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Fuego" .
+deck:DoceDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Fuego" .
+deck:TreceDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Fuego" .
+deck:CatorceDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Fuego" .
+deck:QuinceDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Fuego" .
+deck:DieciseisDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Fuego" .
+deck:DiecisieteDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Fuego" .
+deck:DieciochoDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Fuego" .
+deck:DiecinueveDeFuego a deck:Carta ;
+    deck:tienePalo deck:Fuego ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Fuego" .
+
+# Cartas de Agua.
+
+deck:UnoDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Uno ;
+    rdfs:label "Uno de Agua" .
+deck:DosDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Dos ;
+    rdfs:label "Dos de Agua" .
+deck:TresDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Tres ;
+    rdfs:label "Tres de Agua" .
+deck:CuatroDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Cuatro ;
+    rdfs:label "Cuatro de Agua" .
+deck:CincoDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Cinco ;
+    rdfs:label "Cinco de Agua" .
+deck:SeisDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Seis ;
+    rdfs:label "Seis de Agua" .
+deck:SieteDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Siete ;
+    rdfs:label "Siete de Agua" .
+deck:OchoDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Ocho ;
+    rdfs:label "Ocho de Agua" .
+deck:NueveDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Nueve ;
+    rdfs:label "Nueve de Agua" .
+deck:DiezDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Diez ;
+    rdfs:label "Diez de Agua" .
+deck:OnceDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Once ;
+    rdfs:label "Once de Agua" .
+deck:DoceDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Doce ;
+    rdfs:label "Doce de Agua" .
+deck:TreceDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Trece ;
+    rdfs:label "Trece de Agua" .
+deck:CatorceDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Catorce ;
+    rdfs:label "Catorce de Agua" .
+deck:QuinceDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Quince ;
+    rdfs:label "Quince de Agua" .
+deck:DieciseisDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Dieciseis ;
+    rdfs:label "Dieciseis de Agua" .
+deck:DiecisieteDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Diecisiete ;
+    rdfs:label "Diecisiete de Agua" .
+deck:DieciochoDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Dieciocho ;
+    rdfs:label "Dieciocho de Agua" .
+deck:DiecinueveDeAgua a deck:Carta ;
+    deck:tienePalo deck:Agua ; deck:tieneRango deck:Diecinueve ;
+    rdfs:label "Diecinueve de Agua" .
+
+
+# 2 palos distintos
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( deck:Fuego deck:Agua ) .
+
+# 19 rangos distintos
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( deck:Uno deck:Dos deck:Tres deck:Cuatro deck:Cinco deck:Seis deck:Siete deck:Ocho deck:Nueve deck:Diez deck:Once deck:Doce deck:Trece deck:Catorce deck:Quince deck:Dieciseis deck:Diecisiete deck:Dieciocho deck:Diecinueve ) .
+
+# 38 cartas distintas
+[] a owl:AllDifferent ;
+    owl:distinctMembers (
+        deck:UnoDeFuego deck:DosDeFuego deck:TresDeFuego deck:CuatroDeFuego deck:CincoDeFuego deck:SeisDeFuego deck:SieteDeFuego deck:OchoDeFuego deck:NueveDeFuego deck:DiezDeFuego deck:OnceDeFuego deck:DoceDeFuego deck:TreceDeFuego deck:CatorceDeFuego deck:QuinceDeFuego deck:DieciseisDeFuego deck:DiecisieteDeFuego deck:DieciochoDeFuego deck:DiecinueveDeFuego
+        deck:UnoDeAgua deck:DosDeAgua deck:TresDeAgua deck:CuatroDeAgua deck:CincoDeAgua deck:SeisDeAgua deck:SieteDeAgua deck:OchoDeAgua deck:NueveDeAgua deck:DiezDeAgua deck:OnceDeAgua deck:DoceDeAgua deck:TreceDeAgua deck:CatorceDeAgua deck:QuinceDeAgua deck:DieciseisDeAgua deck:DiecisieteDeAgua deck:DieciochoDeAgua deck:DiecinueveDeAgua
+    ) .
