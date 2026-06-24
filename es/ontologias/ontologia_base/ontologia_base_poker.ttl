@@ -1,5 +1,5 @@
 # =============================================================================
-# Ontología de Póker Texas Hold'em 
+# Ontología Base de Póker Texas Hold'em 
 # =============================================================================
 #
 # Esta ontología modela la estructura del juego Póker Texas Hold'em en OWL 2 DL.

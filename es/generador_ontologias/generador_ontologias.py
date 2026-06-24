@@ -1,17 +1,19 @@
 """
-Generador interactivo de ontologías OWL 2 DL para barajas.
+Generador de ontologías escritas en OWL 2 DL de Póker Texas Hold'em pero con barajas de cartas parametrizadas.
 
-El script produce un archivo Turtle (.ttl) con la misma estructura conceptual
-que la ontología base de póker: clases para palos, rangos, cartas y manos;
-propiedades de objeto/datos; individuos ABox para cada palo, rango y carta.
-La variación queda limitada a la baraja indicada por el usuario: palos, rangos,
-IRI base, etiquetas e individuos generados.
+Este script produce una ontología en formato Turtle (.ttl) que sigue la misma estructura
+conceptual que la ontología base de póker: clases cerradas para palos, rangos
+y cartas; propiedades de objeto y datos; e individuos ABox para cada elemento
+de la baraja. La variación queda determinada por los parámetros que el usuario
+introduce en la consola: nombre de la baraja, palos y rangos.
 
 Flujo principal:
-    1. Leer nombre, IRI, palos y rangos desde consola.
-    2. Normalizar nombres libres a identificadores OWL/Turtle seguros.
-    3. Ensamblar secciones TBox, clasificadores de manos y ABox.
-    4. Guardar la ontología en ontologias/ontologias_customizadas/.
+    1. Solicitar nombre, palos y rangos desde la consola.
+    2. Derivar la IRI base y el nombre del archivo de salida a partir del nombre.
+    3. Normalizar los nombres libres a identificadores OWL/Turtle seguros.
+    4. Calcular qué clasificadores de manos son válidos para la baraja indicada (dependiendo de la cantidad de palos y rangos).
+    5. Ensamblar las secciones TBox, clasificadores de manos y ABox.
+    6. Guardar la ontología en la carpeta ontologias/ontologias_customizadas/.
 """
 
 import re
@@ -20,14 +22,14 @@ from pathlib import Path
 
 
 # =============================================================================
-# Helpers de nombre
+# Funciones auxiliares
 # =============================================================================
 
 def to_id(name: str) -> str:
     """
-    Convierte texto de usuario en un identificador CamelCase seguro para Turtle.
+    Convierte texto en un identificador CamelCase seguro para Turtle.
 
-    Elimina tildes y signos no alfanuméricos para evitar IRIs inválidos.
+    Elimina caracteres no alfanuméricos para producir IRIs válidos y ordenados.
     """
     import unicodedata
 
@@ -38,8 +40,27 @@ def to_id(name: str) -> str:
     return "".join(p.capitalize() for p in parts if p)
 
 
+def to_slug(name: str) -> str:
+    """
+    Convierte el nombre de la baraja en un nombre apto para IRIs y nombres de archivo.
+
+    Los espacios se reemplazan por guiones bajos y se eliminan los caracteres
+    que no son alfanuméricos ni guiones bajos.
+    """
+    import unicodedata
+
+    name = unicodedata.normalize("NFD", name)
+    name = "".join(c for c in name if unicodedata.category(c) != "Mn")
+    name = name.lower().strip()
+    name = re.sub(r"\s+", "_", name)
+    name = re.sub(r"[^\w]", "", name)
+    return name
+
+
 def label(name: str) -> str:
-    """Devuelve una etiqueta legible para `rdfs:label` sin alterar el contenido."""
+    """
+    Devuelve una etiqueta legible para rdfs:label, sin alterar el contenido.
+    """
     return name.strip().capitalize()
 
 
@@ -48,35 +69,41 @@ def label(name: str) -> str:
 # =============================================================================
 
 def header(base_iri: str, deck_name: str, n_palos: int, n_rangos: int) -> str:
-    """Construye prefijos, metadatos OWL y resumen de cardinalidades."""
+    """
+    Construye los prefijos Turtle, los metadatos OWL y el resumen de cardinalidades.
+
+    Incluye además una breve explicación de por qué se usan owl:oneOf y owl:AllDifferent
+    para cerrar las clases y garantizar la unicidad de los individuos bajo OWA.
+    """
     n_cartas = n_palos * n_rangos
     return f"""\
 # =============================================================================
 # Ontología de baraja: {deck_name}
-# Generada automáticamente por generar_ontologia_baraja.py
+# Generada automáticamente por generador_ontologias.py
+# =============================================================================
+#
+# Esta ontología modela la estructura de una baraja de cartas de tipo '{deck_name}'
+# en OWL 2 DL. El dominio cubre palos, rangos, cartas y la clasificación de
+# manos de cinco cartas. Otros aspectos del juego quedan fuera del alcance.
+#
 # =============================================================================
 
 @prefix deck: <{base_iri}#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 
-# =============================================================================
+# -----------------------------------------------------------------------------
+# OWL trabaja bajo Open World Assumption (OWA): lo que no está afirmado es
+# desconocido, no necesariamente falso. Sin intervención explícita, el razonador
+# podría asumir la existencia de palos o rangos adicionales no declarados.
 #
-# Propósito
-# ---------
-# Ontología OWL 2 DL que modela la estructura de una baraja de tipo '{deck_name}'.
-# Palos  : {n_palos}
-# Rangos : {n_rangos}
-# Cartas : {n_cartas}
-#
-# Open World Assumption (OWA)
-# ---------------------------
-# Palo, Rango y Carta se cierran con owl:oneOf para evitar que el razonador
-# asuma palos, rangos o cartas adicionales no declaradas.
-# Los {n_cartas} individuos de cartas se declaran AllDifferent.
-# =============================================================================
+# Para evitarlo, Palo, Rango y Carta se cierran con owl:oneOf, fijando
+# exactamente los individuos posibles. Los {n_cartas} individuos de cartas se
+# declaran además AllDifferent para que el razonador los trate como entidades
+# distintas y no intente unificarlas.
+# -----------------------------------------------------------------------------
 
 <{base_iri}>
     rdf:type owl:Ontology ;
@@ -87,18 +114,24 @@ def header(base_iri: str, deck_name: str, n_palos: int, n_rangos: int) -> str:
 
 
 def seccion_palo(palos: list[str]) -> str:
-    """Declara `deck:Palo` como clase cerrada mediante `owl:oneOf`."""
+    """
+    Declara deck:Palo como clase cerrada mediante owl:oneOf.
+
+    La clase se cierra con exactamente los palos recibidos; el razonador no
+    podrá inferir palos adicionales.
+    """
     ids = " ".join(f"deck:{to_id(p)}" for p in palos)
     lines = [
         "",
         "# =============================================================================",
-        "# Palos y Rangos de las Cartas",
+        "# Palos y Rangos",
         "# =============================================================================",
         "#",
         f"# Palo  ≡ {{ {', '.join(to_id(p) for p in palos)} }}  ({len(palos)} palos)",
         "#",
         "",
         "# Definición de la clase Palo.",
+        "# Palo se cierra con owl:oneOf para que el razonador no asuma palos adicionales.",
         "deck:Palo a owl:Class ;",
         "    owl:equivalentClass [",
         "        a owl:Class ;",
@@ -111,11 +144,17 @@ def seccion_palo(palos: list[str]) -> str:
 
 
 def seccion_rango(rangos: list[str]) -> str:
-    """Declara `deck:Rango` como clase cerrada en el orden recibido."""
+    """
+    Declara deck:Rango como clase cerrada en el orden recibido, de menor a mayor valor.
+
+    El orden de la lista determina la fuerza relativa de los rangos en los
+    clasificadores de escalera y escalera real.
+    """
     ids = " ".join(f"deck:{to_id(r)}" for r in rangos)
     lines = [
         "",
         "# Definición de la clase Rango.",
+        "# Rango se cierra con owl:oneOf para que el razonador no asuma rangos adicionales.",
         "deck:Rango a owl:Class ;",
         "    owl:equivalentClass [",
         "        a owl:Class ;",
@@ -128,7 +167,13 @@ def seccion_rango(rangos: list[str]) -> str:
 
 
 def seccion_carta(palos: list[str], rangos: list[str]) -> str:
-    """Define `deck:Carta` como clase cerrada y con palo/rango obligatorios."""
+    """
+    Define deck:Carta como clase cerrada con palo y rango obligatorios.
+
+    Cada carta debe tener exactamente un palo (garantizado por tienePalo como
+    FunctionalProperty) y exactamente un rango (garantizado por tieneRango).
+    La enumeración cubre las (n_palos x n_rangos) combinaciones posibles.
+    """
     carta_lines = []
     for p in palos:
         pid = to_id(p)
@@ -138,6 +183,8 @@ def seccion_carta(palos: list[str], rangos: list[str]) -> str:
 
     return f"""
 # Definición de la clase Carta.
+# Carta también se cierra con owl:oneOf. Cada carta tiene exactamente un palo y un rango,
+# garantizado por las FunctionalProperty definidas más adelante.
 deck:Carta a owl:Class ;
     owl:equivalentClass [
         a owl:Class ;
@@ -156,14 +203,20 @@ deck:Carta a owl:Class ;
         owl:someValuesFrom deck:Rango
     ] ;
     rdfs:label "Carta" ;
-    rdfs:comment "Una carta de la baraja." ."""
+    rdfs:comment "Una carta de la baraja, caracterizada por un palo y un rango únicos." ."""
 
 
 def subclases_por_palo(palos: list[str]) -> str:
-    """Genera clases `CartaDe<Palo>` equivalentes a `tienePalo value <Palo>`."""
+    """
+    Genera las clases CartaDe<Palo>, equivalentes a la restricción tienePalo value <Palo>.
+
+    Estas subclases son necesarias para el clasificador de Color y Escalera de Color,
+    donde la condición exige que todas las cartas de la mano sean del mismo palo.
+    """
     lines = [
         "",
-        "# Subclases de Carta por Palo.",
+        "# Subclases de Carta por palo.",
+        "# Se usan en los clasificadores de Color y Escalera de Color.",
     ]
     for p in palos:
         pid = to_id(p)
@@ -177,16 +230,22 @@ def subclases_por_palo(palos: list[str]) -> str:
             f"        owl:hasValue deck:{pid}",
             "    ] ;",
             f'    rdfs:label "Carta de {label(p)}" ;',
-            f'    rdfs:comment "Una carta del palo de {label(p)}." .',
+            f'    rdfs:comment "Una carta de la baraja del palo de {label(p)}." .',
         ]
     return "\n".join(lines)
 
 
 def subclases_por_rango(rangos: list[str]) -> str:
-    """Genera clases `CartaDe<Rango>` equivalentes a `tieneRango value <Rango>`."""
+    """
+    Genera las clases CartaDe<Rango>, equivalentes a la restricción tieneRango value <Rango>.
+
+    Estas subclases se usan en los clasificadores de Par, Trío y Póker, donde la
+    condición es tener N cartas del mismo rango.
+    """
     lines = [
         "",
-        "# Subclases de Carta por Rango.",
+        "# Subclases de Carta por rango.",
+        "# Se usan en los clasificadores de Par, Trío y Póker.",
     ]
     for r in rangos:
         rid = to_id(r)
@@ -201,11 +260,23 @@ def subclases_por_rango(rangos: list[str]) -> str:
 
 
 def seccion_grupos() -> str:
-    """Define `deck:Mano` como grupo de exactamente cinco cartas."""
+    """
+    Define deck:Mano como un grupo de exactamente cinco cartas.
+    """
     return """
 
 # =============================================================================
-# Grupos de Cartas
+# Tipos de Mano
+# =============================================================================
+#
+# Jerarquía de menor a mayor valor de las manos posibles con esta baraja:
+#
+#   Mano: La mejor combinación de 5 cartas que puede formar un jugador.
+#
+# Decisión de diseño: los tipos de mano no se declaran disjuntos entre sí.
+# Si bien en el juego real esto es así, la ontología busca evaluar la capacidad
+# de los razonadores OWL frente a ontologías suficientemente complejas. Una
+# versión con clases disjuntas queda para trabajo futuro.
 # =============================================================================
 
 # Definición de la clase Mano.
@@ -223,50 +294,59 @@ deck:Mano a owl:Class ;
         owl:onClass deck:Carta
     ] ;
     rdfs:label "Mano" ;
-    rdfs:comment "La mejor combinación de 5 cartas de un jugador." ."""
+    rdfs:comment "La mejor combinación de 5 cartas que puede formar un jugador con la baraja." ."""
 
 
 def seccion_propiedades() -> str:
-    """Declara propiedades de objeto y datos usadas por cartas, manos y rangos."""
+    """
+    Declara las propiedades de objeto y de datos usadas por cartas, manos y rangos.
+
+    tienePalo y tieneRango son FunctionalProperty porque una carta no puede tener
+    dos palos ni dos rangos simultáneamente. Junto con owl:oneOf en Palo y Rango,
+    esto garantiza que cada carta sea única en la ontología.
+
+    manoTienePar es una propiedad auxiliar para el clasificador de DoblePar.
+    """
     return """
 
 # =============================================================================
 # Propiedades de Objeto
 # =============================================================================
 
+# Definición de la propiedad tienePalo.
+# Propiedad que indica que cada carta tiene exactamente un palo.
 deck:tienePalo a owl:ObjectProperty , owl:FunctionalProperty ;
     rdfs:domain deck:Carta ;
-    rdfs:range deck:Palo ;
-    rdfs:label "Tiene Palo" ;
-    rdfs:comment "Asocia una carta con su palo. Funcional: cada carta tiene exactamente un palo." .
+    rdfs:range  deck:Palo ;
+    rdfs:label  "Tiene Palo" ;
+    rdfs:comment "Propiedad que asocia una carta con su palo. Funcional: cada carta tiene exactamente un palo." .
 
+# Definición de la propiedad tieneRango.
+# Propiedad que indica que cada carta tiene exactamente un rango.
 deck:tieneRango a owl:ObjectProperty , owl:FunctionalProperty ;
     rdfs:domain deck:Carta ;
-    rdfs:range deck:Rango ;
-    rdfs:label "Tiene Rango" ;
-    rdfs:comment "Asocia una carta con su rango. Funcional: cada carta tiene exactamente un rango." .
+    rdfs:range  deck:Rango ;
+    rdfs:label  "Tiene Rango" ;
+    rdfs:comment "Propiedad que asocia una carta con su rango. Funcional: cada carta tiene exactamente un rango." .
 
+# Definición de la propiedad contieneCarta.
+# Propiedad que indica que una mano contiene cierta carta.
 deck:contieneCarta a owl:ObjectProperty ;
     rdfs:domain deck:Mano ;
-    rdfs:range deck:Carta ;
-    rdfs:label "Contiene Carta" ;
-    rdfs:comment "Relaciona una mano con cada una de las cartas que la componen." .
+    rdfs:range  deck:Carta ;
+    rdfs:label  "Contiene Carta" ;
+    rdfs:comment "Propiedad que relaciona una mano con cada una de las cartas que la componen." .
 
+# Definición de la propiedad manoTienePar.
+# manoTienePar es una propiedad auxiliar para el clasificador de DoblePar.
+# OWL DL 2 no puede contar cuántos rangos distintos tienen cardinalidad mayor o igual a 2,
+# así que esta propiedad se agrega manualmente en la ABox al instanciar cada mano.
+# La explicación está detallada en la definición de la clase DoblePar.
 deck:manoTienePar a owl:ObjectProperty ;
     rdfs:domain deck:Mano ;
     rdfs:range  deck:Rango ;
     rdfs:label  "Mano tiene Par" ;
-    rdfs:comment "Atajo que indica qué rangos están presentes con al menos 2 cartas en la mano. Se agrega manualmente en el ABox. Usado por el clasificador de DoblePar." .
-
-# =============================================================================
-# Propiedades de Datos
-# =============================================================================
-
-deck:tieneValorRango a owl:DatatypeProperty , owl:FunctionalProperty ;
-    rdfs:domain deck:Rango ;
-    rdfs:range xsd:nonNegativeInteger ;
-    rdfs:label "Tiene Valor De Rango" ;
-    rdfs:comment "Valor numérico del rango. Usado por evaluadores externos." ."""
+    rdfs:comment "Indica qué rangos están presentes con al menos 2 cartas en la mano. Se agrega manualmente en la ABox; usado por el clasificador de DoblePar." ."""
 
 
 def seccion_abox_palos(palos: list[str]) -> str:
@@ -274,10 +354,15 @@ def seccion_abox_palos(palos: list[str]) -> str:
     lines = [
         "",
         "# =============================================================================",
-        "# Instancias (ABox)",
+        "# ABox — Individuos",
+        "# =============================================================================",
+        "#",
+        f"# {len(palos) + len(palos)} individuos de palos y rangos, más las cartas.",
+        "#",
+        "# Convención de nombres para cartas: {{Rango}}De{{Palo}}.",
         "# =============================================================================",
         "",
-        f"# Palos ({len(palos)} individuos) " + "-" * 43,
+        f"# --- Palos ({len(palos)} individuos) ---",
         "",
     ]
     for p in palos:
@@ -290,31 +375,30 @@ def seccion_abox_palos(palos: list[str]) -> str:
 
 
 def seccion_abox_rangos(rangos: list[str]) -> str:
-    """Crea rangos con valor ordinal, usando la posición de la lista como fuerza."""
+    """
+    Crea los individuos ABox para cada rango de la baraja.
+    """
     lines = [
         "",
-        f"# Rangos ({len(rangos)} individuos) " + "-" * 43,
-        f"# Los valores van de 1 (primer rango) a {len(rangos)} (último rango).",
+        f"# --- Rangos ({len(rangos)} individuos, de menor a mayor valor) ---",
         "",
     ]
     for i, r in enumerate(rangos, start=1):
         rid = to_id(r)
         lines += [
             f"deck:{rid} a deck:Rango ;",
-            f'    deck:tieneValorRango "{i}"^^xsd:nonNegativeInteger ;',
+            f'    rdfs:label "{label(r)}" .',
+            "",
         ]
-        lines.append(f'    rdfs:label "{label(r)}" .')
-        lines.append("")
-
     return "\n".join(lines)
 
 
 def seccion_abox_cartas(palos: list[str], rangos: list[str]) -> str:
-    """Crea una carta por cada combinación palo-rango."""
+    """Crea un individuo ABox por cada combinación palo-rango de la baraja."""
     n = len(palos) * len(rangos)
     lines = [
         "",
-        f"# Cartas ({n} individuos) " + "-" * 43,
+        f"# --- Cartas ({n} individuos) ---",
         "",
     ]
     for p in palos:
@@ -330,12 +414,18 @@ def seccion_abox_cartas(palos: list[str], rangos: list[str]) -> str:
                 f'    rdfs:label "{label(r)} de {label(p)}" .',
             ]
         lines.append("")
-
     return "\n".join(lines)
 
 
 def seccion_all_different(palos: list[str], rangos: list[str]) -> str:
-    """Declara palos, rangos y cartas como individuos mutuamente distintos."""
+    """
+    Declara palos, rangos y cartas como individuos mutuamente distintos.
+
+    AllDifferent es necesario porque OWL DL 2 no asume distinción entre individuos
+    por defecto (la Unique Name Assumption no aplica en OWL). Sin estas declaraciones,
+    el razonador podría unificar, por ejemplo, dos cartas distintas si no hay
+    nada que las contradiga explícitamente.
+    """
     ids_palos = " ".join(f"deck:{to_id(p)}" for p in palos)
     ids_rangos = " ".join(f"deck:{to_id(r)}" for r in rangos)
 
@@ -347,12 +437,15 @@ def seccion_all_different(palos: list[str], rangos: list[str]) -> str:
         carta_lines.append("        " + " ".join(grupo))
 
     cartas_block = "\n".join(carta_lines)
-
-    n_palos  = len(palos)
+    n_palos = len(palos)
     n_rangos = len(rangos)
     n_cartas = n_palos * n_rangos
 
     return f"""
+# --- Unicidad de individuos ---
+# AllDifferent es necesario porque OWL DL 2 no asume distinción entre individuos
+# por defecto (Unique Name Assumption no aplica en OWL). Aplica para palos, rangos y cartas.
+
 # {n_palos} palos distintos
 [] a owl:AllDifferent ;
     owl:distinctMembers ( {ids_palos} ) .
@@ -376,24 +469,29 @@ def seccion_all_different(palos: list[str], rangos: list[str]) -> str:
 HAND_ORDER = [
     ("carta_alta", "CartaAlta", "Sin combinación; gana la carta más alta"),
     ("par", "Par", "Dos cartas del mismo rango"),
-    ("doble_par", "DoblePar", "Dos pares distintos"),
+    ("doble_par", "DoblePar", "Dos pares de rangos distintos"),
     ("trio", "Trio", "Tres cartas del mismo rango"),
-    ("escalera", "Escalera", "Cinco cartas consecutivas"),
+    ("escalera", "Escalera", "Cinco cartas de rangos consecutivos"),
     ("color", "Color", "Cinco cartas del mismo palo"),
-    ("full", "Full", "Un trío más un par"),
+    ("full", "Full", "Un trío más un par de rangos distintos"),
     ("poker", "Poker", "Cuatro cartas del mismo rango"),
     ("escalera_color", "EscaleraColor", "Cinco cartas consecutivas del mismo palo"),
-    ("escalera_real", "EscaleraReal", "Rangos más altos del mismo palo"),
+    ("escalera_real", "EscaleraReal", "Los cinco rangos más altos del mismo palo"),
 ]
 
 
 def capacidades_manos(palos: list[str], rangos: list[str]) -> tuple[dict[str, bool], dict[str, str]]:
     """
-    Calcula qué clasificadores tienen sentido para la baraja finita.
+    Calcula qué clasificadores de manos tienen sentido para la baraja indicada.
 
-    Las reglas parten de una carta por combinación palo-rango y manos de cinco
-    cartas. Por ejemplo, `Trio` requiere al menos tres palos porque no puede
-    haber tres cartas del mismo rango con solo dos palos.
+    Las reglas se derivan de la estructura física de la baraja: una carta por
+    combinación palo-rango y manos de exactamente cinco cartas. Por ejemplo,
+    Trío requiere al menos tres palos porque no puede haber tres cartas del
+    mismo rango en una baraja con solo dos palos.
+
+    Devuelve dos diccionarios:
+        posibles: clave → bool, indica si el clasificador es genereable.
+        motivos:  clave → str,  describe por qué un clasificador se omite.
     """
     n_palos = len(palos)
     n_rangos = len(rangos)
@@ -410,13 +508,13 @@ def capacidades_manos(palos: list[str], rangos: list[str]) -> tuple[dict[str, bo
         "full": hay_mano and n_palos >= 3 and n_rangos >= 2,
         "poker": hay_mano and n_palos >= 4,
         "escalera_color": hay_mano and n_rangos >= 5,
-        "escalera_real": hay_mano and n_rangos >= 5,
+        "escalera_real": hay_mano and n_rangos >= 6,
     }
 
     motivos = {}
     if not hay_mano:
         base = "la baraja tiene menos de 5 cartas"
-        return posibles, {key: base for key, enabled in posibles.items() if not enabled}
+        return posibles, {key: base for key in posibles if not posibles[key]}
 
     if n_palos < 2:
         motivos["par"] = "requiere al menos 2 palos"
@@ -426,20 +524,20 @@ def capacidades_manos(palos: list[str], rangos: list[str]) -> tuple[dict[str, bo
         motivos["full"] = "requiere al menos 2 rangos"
     if n_palos < 3:
         motivos["trio"] = "requiere al menos 3 palos"
-        motivos["full"] = "requiere al menos 3 palos"
+        motivos["full"] = motivos.get("full", "requiere al menos 3 palos")
     if n_palos < 4:
         motivos["poker"] = "requiere al menos 4 palos"
     if n_rangos < 5:
         motivos["escalera"] = "requiere al menos 5 rangos"
         motivos["color"] = "requiere al menos 5 rangos por palo"
         motivos["escalera_color"] = "requiere al menos 5 rangos"
-        motivos["escalera_real"] = "requiere al menos 5 rangos"
+        motivos["escalera_real"] = "requiere al menos 6 rangos"
 
-    return posibles, {key: motivos[key] for key, enabled in posibles.items() if not enabled}
+    return posibles, {key: motivos[key] for key in posibles if not posibles[key]}
 
 
 def seccion_clasificadores(posibles: dict[str, bool], motivos: dict[str, str]) -> str:
-    """Genera el encabezado dinámico de clasificadores incluidos y omitidos."""
+    """Genera el encabezado dinámico con los clasificadores incluidos y los omitidos."""
     lineas = [
         "",
         "# =============================================================================",
@@ -468,10 +566,19 @@ def seccion_clasificadores(posibles: dict[str, bool], motivos: dict[str, str]) -
 
 
 def clasificador_carta_alta() -> str:
-    """Define CartaAlta como una mano con al menos una carta."""
+    """
+    Define CartaAlta como una mano que contiene al menos una carta.
+
+    La definición es intencionalmente amplia: al no declarar las clases de mano
+    como disjuntas, cualquier mano puede clasificarse también como CartaAlta,
+    lo que es suficiente para los propósitos de esta ontología.
+    """
     lineas = [
         "",
         "# Definición de la clase CartaAlta.",
+        "# Mano sin una combinación específica; gana la carta más alta. La definición es simple",
+        "# a propósito: al no declarar las manos como clases disjuntas, técnicamente cualquier",
+        "# tipo de mano podría clasificarse también como CartaAlta.",
         "deck:CartaAlta a owl:Class ;",
         "    owl:equivalentClass [",
         "        a owl:Class ;",
@@ -493,13 +600,17 @@ def clasificador_carta_alta() -> str:
 
 def clasificador_par(rangos: list[str]) -> str:
     """
-    Define Par como unión de restricciones `minQualifiedCardinality 2`.
+    Define Par como una mano con al menos dos cartas de algún rango compartido.
 
-    Se debe llamar solo si la baraja tiene al menos dos palos.
+    Se recurre a owl:unionOf sobre las subclases de rango porque OWL DL 2 no puede
+    expresar la condición de "mismo rango" de forma genérica. Solo debe llamarse
+    si la baraja tiene al menos dos palos.
     """
     lineas = [
         "",
         "# Definición de la clase Par.",
+        "# Mano que contiene dos cartas del mismo rango. Se usa unionOf sobre las subclases",
+        "# de rango porque OWL DL 2 no puede expresar "mismo rango" de forma genérica.",
         "deck:Par a owl:Class ;",
         "    owl:equivalentClass [",
         "        a owl:Class ;",
@@ -512,9 +623,6 @@ def clasificador_par(rangos: list[str]) -> str:
     for r in rangos:
         rid = to_id(r)
         lineas.append(
-            f'                    # Par de {label(r)} de cualquier palo.'
-        )
-        lineas.append(
             f'                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDe{rid} ]'
         )
     lineas += [
@@ -523,22 +631,27 @@ def clasificador_par(rangos: list[str]) -> str:
         "        )",
         "    ] ;",
         '    rdfs:label "Par" ;',
-        '    rdfs:comment "Mano formada por dos cartas del mismo rango." .',
+        '    rdfs:comment "Mano formada por dos cartas del mismo rango más tres cartas de rangos distintos." .',
     ]
     return "\n".join(lineas)
 
 
 def clasificador_doble_par(rangos: list[str]) -> str:
     """
-    Define DoblePar a partir de la propiedad auxiliar `manoTienePar`.
+    Define DoblePar a partir de la propiedad auxiliar manoTienePar.
 
-    El ABox debe indicar qué rangos forman par en cada mano; el clasificador
-    exige al menos dos valores distintos para esa propiedad.
+    OWL DL 2 no puede contar cuántos rangos distintos tienen cardinalidad mayor
+    o igual a 2, así que esta propiedad se agrega manualmente en la ABox al
+    instanciar cada mano. El clasificador exige al menos dos valores distintos
+    para esa propiedad.
     """
     lineas = [
         "",
         "# Definición de la clase DoblePar.",
-        "# Usa el atajo manoTienePar: la mano tiene al menos 2 rangos con par.",
+        "# Mano que contiene dos pares de cartas de distintos rangos. Usa la propiedad auxiliar",
+        "# manoTienePar, que se agrega manualmente en la ABox. OWL DL 2 no puede contar pares",
+        "# "distintos" de forma nativa, así que se delega parte del trabajo al momento de",
+        "# instanciar la mano.",
         "deck:DoblePar a owl:Class ;",
         "    owl:equivalentClass [",
         "        a owl:Class ;",
@@ -556,10 +669,17 @@ def clasificador_doble_par(rangos: list[str]) -> str:
 
 
 def clasificador_trio(rangos: list[str]) -> str:
-    """Define Trío como unión de restricciones de 3 cartas para cada rango."""
+    """
+    Define Trío como una mano con al menos tres cartas de algún rango compartido.
+
+    Se recurre a owl:unionOf sobre las subclases de rango por el mismo motivo que Par.
+    Solo debe llamarse si la baraja tiene al menos tres palos.
+    """
     lineas = [
         "",
         "# Definición de la clase Trio.",
+        "# Mano que contiene tres cartas del mismo rango. Se usa unionOf sobre las subclases",
+        "# de rango porque OWL DL 2 no puede expresar "mismo rango" de forma genérica.",
         "deck:Trio a owl:Class ;",
         "    owl:equivalentClass [",
         "        a owl:Class ;",
@@ -571,7 +691,6 @@ def clasificador_trio(rangos: list[str]) -> str:
     ]
     for r in rangos:
         rid = to_id(r)
-        lineas.append(f'                    # Trío de {label(r)} de cualquier palo.')
         lineas.append(
             f'                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDe{rid} ]'
         )
@@ -581,23 +700,23 @@ def clasificador_trio(rangos: list[str]) -> str:
         "        )",
         "    ] ;",
         '    rdfs:label "Trío" ;',
-        '    rdfs:comment "Mano formada por tres cartas del mismo rango." .',
+        '    rdfs:comment "Mano formada por tres cartas del mismo rango y otras dos cartas distintas." .',
     ]
     return "\n".join(lineas)
 
 
 def clasificador_escalera(rangos: list[str]) -> str:
     """
-    Define Escalera como unión de ventanas consecutivas de cinco rangos.
+    Define Escalera como la unión de todas las ventanas consecutivas de cinco rangos.
 
-    Requiere que `rangos` venga ordenado de menor a mayor valor, porque cada
-    ventana se toma directamente desde esa lista.
+    Requiere que rangos esté ordenado de menor a mayor valor, porque cada ventana
+    se toma directamente desde esa lista. El número de ventanas es n_rangos - 4.
+
+    No hay forma de expresar "consecutivos" en OWL DL 2 sin enumerar las combinaciones,
+    a menos que se especifiquen directamente qué cartas componen la mano.
     """
     n = len(rangos)
-    secuencias = []
-
-    for i in range(n - 4):
-        secuencias.append(rangos[i:i+5])
+    secuencias = [rangos[i:i+5] for i in range(n - 4)]
 
     def bloque_secuencia(seq: list[str]) -> str:
         """Serializa una ventana de cinco rangos como intersección OWL."""
@@ -616,6 +735,9 @@ def clasificador_escalera(rangos: list[str]) -> str:
     lineas = [
         "",
         "# Definición de la clase Escalera.",
+        "# Mano que contiene cinco cartas con rangos consecutivos, puede ser de palos distintos.",
+        "# Se enumeran todas las ventanas posibles de cinco rangos consecutivos.",
+        "# No hay forma de expresar "consecutivos" en OWL DL 2 sin esta enumeración.",
         "deck:Escalera a owl:Class ;",
         "    owl:equivalentClass [",
         "        a owl:Class ;",
@@ -639,10 +761,17 @@ def clasificador_escalera(rangos: list[str]) -> str:
 
 
 def clasificador_color(palos: list[str]) -> str:
-    """Define Color como unión de restricciones `allValuesFrom` por palo."""
+    """
+    Define Color como una mano en la que todas las cartas son del mismo palo.
+
+    Se usa owl:allValuesFrom por palo porque la condición es que todas las cartas
+    de la mano pertenezcan a un único palo, no solo algunas.
+    """
     lineas = [
         "",
         "# Definición de la clase Color.",
+        "# Mano que contiene cinco cartas del mismo palo, con rangos distintos.",
+        "# Se usa allValuesFrom porque la condición exige que todas las cartas sean del mismo palo.",
         "deck:Color a owl:Class ;",
         "    owl:equivalentClass [",
         "        a owl:Class ;",
@@ -654,7 +783,6 @@ def clasificador_color(palos: list[str]) -> str:
     ]
     for p in palos:
         pid = to_id(p)
-        lineas.append(f'                    # Color de {label(p)}.')
         lineas.append(
             f'                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:allValuesFrom deck:CartaDe{pid} ]'
         )
@@ -664,21 +792,24 @@ def clasificador_color(palos: list[str]) -> str:
         "        )",
         "    ] ;",
         '    rdfs:label "Color" ;',
-        '    rdfs:comment "Mano formada por cinco cartas del mismo palo, no necesariamente consecutivas." .',
+        '    rdfs:comment "Mano formada por cinco cartas del mismo palo, no necesariamente consecutivas entre sí." .',
     ]
     return "\n".join(lineas)
 
 
 def clasificador_full() -> str:
     """
-    Define Full como intersección de Trío y DoblePar.
+    Define Full como la intersección de Trío y DoblePar.
 
-    Reutilizar clases evita duplicar restricciones y mantiene el patrón de la
-    ontología base.
+    Al no declarar las manos como clases disjuntas, este patrón es conceptualmente
+    correcto: asegura un trío y un par de rangos distintos en la misma mano, en
+    analogía con EscaleraColor ≡ Escalera ⊓ Color.
     """
     return """
 # Definición de la clase Full.
-# Observación: El Full es la intersección de Trio y DoblePar.
+# Mano que contiene un trío más un par de rangos distintos. Al no declarar las manos
+# como clases disjuntas, Full puede definirse como la intersección de Trio y DoblePar,
+# lo que es conceptualmente correcto y evita duplicar restricciones.
 deck:Full a owl:Class ;
     owl:equivalentClass [
         a owl:Class ;
@@ -692,10 +823,16 @@ deck:Full a owl:Class ;
 
 
 def clasificador_poker_mano(rangos: list[str]) -> str:
-    """Define Póker como unión de restricciones de 4 cartas para cada rango."""
+    """
+    Define Póker como una mano con al menos cuatro cartas de algún rango compartido.
+
+    Solo debe llamarse si la baraja tiene al menos cuatro palos.
+    """
     lineas = [
         "",
         "# Definición de la clase Poker.",
+        "# Mano que contiene cuatro cartas del mismo rango. Se usa unionOf sobre las subclases",
+        "# de rango porque OWL DL 2 no puede expresar "mismo rango" de forma genérica.",
         "deck:Poker a owl:Class ;",
         "    owl:equivalentClass [",
         "        a owl:Class ;",
@@ -707,7 +844,6 @@ def clasificador_poker_mano(rangos: list[str]) -> str:
     ]
     for r in rangos:
         rid = to_id(r)
-        lineas.append(f'                    # Póker de {label(r)} de cualquier palo.')
         lineas.append(
             f'                    [ a owl:Restriction ; owl:onProperty deck:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass deck:CartaDe{rid} ]'
         )
@@ -724,13 +860,16 @@ def clasificador_poker_mano(rangos: list[str]) -> str:
 
 def clasificador_escalera_color() -> str:
     """
-    Define Escalera de Color como intersección de Escalera y Color.
+    Define Escalera de Color como la intersección de Escalera y Color.
 
-    Este patrón evita enumerar todas las combinaciones de secuencia y palo.
+    Este patrón evita enumerar todas las combinaciones de secuencia y palo,
+    en analogía directa con Full ≡ Trío ⊓ DoblePar.
     """
     return """
 # Definición de la clase EscaleraColor.
-# Truco: intersección de Escalera y Color → no hay que enumerar combinaciones de palo.
+# Mano que contiene cinco cartas consecutivas del mismo palo. Se define como la
+# intersección de Escalera y Color, lo que es conceptualmente correcto y evita
+# enumerar todas las combinaciones posibles de secuencia y palo.
 deck:EscaleraColor a owl:Class ;
     owl:equivalentClass [
         a owl:Class ;
@@ -745,10 +884,10 @@ deck:EscaleraColor a owl:Class ;
 
 def clasificador_escalera_real(rangos: list[str]) -> str:
     """
-    Define Escalera Real como EscaleraColor con los cinco rangos más altos.
+    Define Escalera Real como EscaleraColor restringida a los cinco rangos más altos.
 
-    Asume que `rangos` está ordenado de menor a mayor valor; por eso toma los
-    últimos cinco elementos de la lista.
+    Asume que rangos está ordenado de menor a mayor valor; por eso toma los últimos
+    cinco elementos de la lista. Es un caso particular de EscaleraColor.
     """
     top5 = rangos[-5:]
     restricciones = "\n".join(
@@ -758,7 +897,9 @@ def clasificador_escalera_real(rangos: list[str]) -> str:
     nombre_top5 = "-".join(label(r) for r in top5)
     return f"""
 # Definición de la clase EscaleraReal.
-# Subclase de EscaleraColor con los 5 rangos más altos ({nombre_top5}).
+# Caso especial de EscaleraColor con los cinco rangos más altos ({nombre_top5}).
+# Se define como la intersección de EscaleraColor con la presencia obligatoria
+# de cada uno de esos cinco rangos.
 deck:EscaleraReal a owl:Class ;
     rdfs:subClassOf deck:EscaleraColor ;
     owl:equivalentClass [
@@ -772,8 +913,6 @@ deck:EscaleraReal a owl:Class ;
     rdfs:comment "Mano formada por los cinco rangos más altos consecutivos ({nombre_top5}) del mismo palo." ."""
 
 
-
-
 # =============================================================================
 # Ensamblaje final
 # =============================================================================
@@ -785,11 +924,11 @@ def generar_ontologia(
     rangos: list[str],
 ) -> str:
     """
-    Ensambla la ontología completa en Turtle.
+    Ensambla la ontología completa en formato Turtle.
 
-    `palos` y `rangos` deben venir validados por el llamador. Los
-    clasificadores de manos se incluyen solo cuando la cantidad de palos,
-    rangos y cartas permite formar físicamente esa combinación.
+    palos y rangos deben venir validados por el llamador. Los clasificadores de
+    manos se incluyen solo cuando la cantidad de palos, rangos y cartas permite
+    formar físicamente esa combinación con la baraja indicada.
     """
     posibles, motivos = capacidades_manos(palos, rangos)
 
@@ -840,7 +979,7 @@ def generar_ontologia(
 # =============================================================================
 
 def pedir(prompt: str, default: str = "") -> str:
-    """Lee una cadena desde consola y devuelve `default` si la entrada está vacía."""
+    """Lee una cadena desde la consola y devuelve default si la entrada está vacía."""
     sufijo = f" [{default}]" if default else ""
     valor = input(f"{prompt}{sufijo}: ").strip()
     return valor if valor else default
@@ -850,31 +989,36 @@ def pedir_lista(prompt: str, ejemplo: str) -> list[str]:
     """Lee una lista separada por comas, limpiando espacios y elementos vacíos."""
     print(f"  (ejemplo: {ejemplo})")
     raw = input(f"{prompt}: ").strip()
-    items = [x.strip() for x in raw.split(",") if x.strip()]
-    return items
+    return [x.strip() for x in raw.split(",") if x.strip()]
 
 
 def main() -> None:
-    """Ejecuta la interfaz interactiva y escribe el archivo Turtle resultante."""
+    """
+    Ejecuta la interfaz interactiva y escribe el archivo Turtle resultante.
+
+    La IRI base se genera automáticamente a partir del nombre de la baraja,
+    por lo que el usuario solo necesita indicar nombre, palos y rangos.
+    El archivo de salida se guarda en ontologias/ontologias_customizadas/
+    con un nombre derivado también del nombre de la baraja.
+    """
     print("=" * 60)
     print("  Generador de Ontología de Baraja (OWL 2 DL / Turtle)")
     print("=" * 60)
     print()
 
     deck_name = pedir("Nombre de la baraja", "MiBaraja")
-    slug = re.sub(r"\s+", "_", deck_name.lower())
-    base_iri = pedir(
-        "IRI base de la ontología",
-        f"http://www.ontologia-baraja.org/{slug}"
-    )
+    slug      = to_slug(deck_name)
+    base_iri  = f"http://www.ontologia-baraja.org/{slug}"
 
+    print(f"  IRI base generada: {base_iri}")
     print()
+
     palos = pedir_lista(
         "Palos (separados por coma, en el orden que prefieras)",
         "Copas, Oros, Espadas, Bastos"
     )
     if len(palos) < 1:
-        print("Error: debes definir al menos 1 palo.")
+        print("Error: se debe definir al menos 1 palo.")
         sys.exit(1)
 
     print()
@@ -883,7 +1027,7 @@ def main() -> None:
         "As, Dos, Tres, Cuatro, Cinco, Seis, Siete, Sota, Caballo, Rey"
     )
     if len(rangos) < 1:
-        print("Error: debes definir al menos 1 rango.")
+        print("Error: se debe definir al menos 1 rango.")
         sys.exit(1)
 
     print()
@@ -899,6 +1043,7 @@ def main() -> None:
     output_path = output_dir / f"{slug}.ttl"
     output_path.write_text(ttl, encoding="utf-8")
     print(f"✓ Ontología generada: {output_path.resolve()}")
+
 
 if __name__ == "__main__":
     main()
