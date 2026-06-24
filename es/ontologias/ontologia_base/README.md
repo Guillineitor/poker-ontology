@@ -144,13 +144,6 @@ Los tipos de mano se ordenan de menor a mayor fortaleza:
 | `manoTienePar` | `Mano` | `Rango` | — | Shortcut: indica qué rangos tienen al menos 2 cartas en la mano. Se agrega manualmente en el ABox. Usado por `DoblePar`. |
 
 
-### Propiedades de Datos
-
-| Propiedad | Dominio | Rango | Tipo | Descripción |
-|---|---|---|---|---|
-| `tieneValorRango` | `Rango` | `xsd:nonNegativeInteger` | `FunctionalProperty` | Valor numérico del rango (2 para Dos, 14 para As). |
-
-
 ---
 
 ## Decisiones de diseño

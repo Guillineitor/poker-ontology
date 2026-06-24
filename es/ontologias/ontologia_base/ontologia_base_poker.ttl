@@ -3,9 +3,9 @@
 # =============================================================================
 #
 # Esta ontología modela la estructura del juego Póker Texas Hold'em en OWL 2 DL.
-# El dominio de está ontología es la baraja de cartas que se usa en este popular juego, y 
-# la clasificación de manos que se forman en las jugadas. Otros aspectos como las
-# apuestas, rondas y posiciones no es el objetivo de esta ontología. 
+# El dominio de la ontología es la baraja de cartas que se usa en este popular juego, y 
+# la clasificación de manos que se forman en las jugadas. Otros aspectos del juego, como las
+# apuestas, rondas y posiciones no son el objetivo de esta ontología. 
 #
 # =============================================================================
 
@@ -216,9 +216,9 @@ poker:CartaDeAs a owl:Class ;
 #
 # Decisión de Diseño: los tipos de mano no se declaran disjuntos entre sí
 # en esta versión. Si bien en el juego real esto es así, la idea de la ontología es comprobar
-# que tan efectivo son los razonadores OWL frente a ontologías lo suficientemente complejas como 
+# qué tan efectivos son los razonadores OWL frente a ontologías lo suficientemente complejas como 
 # para obtener resultados en un plazo razonable. Una versión más compleja de esta ontología en donde 
-# se declara las manos como clases disjuntas queda para un trabajo futuro.
+# se declaren las manos como clases disjuntas queda para un trabajo futuro.
 # =============================================================================
 
 # Definición de la clase Mano.
@@ -260,7 +260,7 @@ poker:CartaAlta a owl:Class ;
 
 # Definición de la clase Par. 
 # Mano que contiene dos cartas del mismo rango. Se usa unionOf sobre las 13
-# subclases de rango porque no puede expresar "mismo rango" de forma genérica en OWL DL 2. 
+# subclases de rango porque OWL DL 2 no puede expresar "mismo rango" de forma genérica. 
 poker:Par a owl:Class ;
     owl:equivalentClass [
         a owl:Class ;
@@ -291,7 +291,7 @@ poker:Par a owl:Class ;
 
 # Definición de la clase DoblePar. 
 # Mano que contiene dos pares de cartas de distintos rangos. Usa la propiedad auxiliar manoTienePar, 
-# (definido más adelante) que se agrega manualmente en la ABox. Esto es debido a que en OWL DL 2 no puede 
+# (definido más adelante) que se agrega manualmente en la ABox. Esto se debe a que OWL DL 2 no puede 
 # contar pares "distintos" de forma nativa, así que se delega parte del trabajo al momento de
 # instanciar la mano. De lo contrario, se tendría que definir un unionOf de todas las combinaciones posibles de pares distintos, 
 # lo que vuelve más complejo la ontología de lo que se necesita para este trabajo.
@@ -310,7 +310,7 @@ poker:DoblePar a owl:Class ;
 
 # Definición de la clase Trio. 
 # Mano que contiene tres cartas del mismo rango. Se usa unionOf sobre las 13
-# subclases de rango porque no puede expresar "mismo rango" de forma genérica en OWL DL 2. 
+# subclases de rango porque OWL DL 2 no puede expresar "mismo rango" de forma genérica. 
 poker:Trio a owl:Class ;
     owl:equivalentClass [
         a owl:Class ;
@@ -342,7 +342,7 @@ poker:Trio a owl:Class ;
 # Definición de la clase Escalera.
 # Mano que contiene cinco cartas con rangos consecutivos, puede ser con palos distintos.
 # En este caso, se enumeraron las 10 combinaciones posibles de rangos consecutivos.
-# No hay forma de expresar "consecutivos" sin enumerar en OWL DL 2 sin tener que usar directamente que cartas específicas están en la mano.
+# No hay forma de expresar "consecutivos" sin enumerar en OWL DL 2 sin especificar directamente qué cartas específicas están en la mano.
 poker:Escalera a owl:Class ;
     owl:equivalentClass [
         a owl:Class ;
@@ -476,7 +476,7 @@ poker:Full a owl:Class ;
 
 # Definición de la clase Poker.
 # Mano que contiene cuatro cartas del mismo rango. Se usa unionOf sobre las 13
-# subclases de rango porque no puede expresar "mismo rango" de forma genérica en OWL DL 2. 
+# subclases de rango porque OWL DL 2 no puede expresar "mismo rango" de forma genérica.
 poker:Poker a owl:Class ;
     owl:equivalentClass [
         a owl:Class ;
@@ -554,7 +554,7 @@ poker:tienePalo a owl:ObjectProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Carta ;
     rdfs:range poker:Palo ;
     rdfs:label "Tiene Palo" ;
-    rdfs:comment "Asocia una carta con su palo." .
+    rdfs:comment "Propiedad que asocia una carta con su palo." .
 
 # Definición de la propiedad tieneRango.
 # Propiedad que indica que cada carta tiene exactamente un rango.
@@ -562,7 +562,7 @@ poker:tieneRango a owl:ObjectProperty , owl:FunctionalProperty ;
     rdfs:domain poker:Carta ;
     rdfs:range poker:Rango ;
     rdfs:label "Tiene Rango" ;
-    rdfs:comment "Asocia una carta con su rango. Propiedad que indica que cada carta tiene exactamente un rango." .
+    rdfs:comment "Propiedad que asocia una carta con su rango." .
 
 # Definición de la propiedad tieneCarta.
 # Propiedad que indica que una mano contiene cierta carta.
@@ -570,7 +570,7 @@ poker:contieneCarta a owl:ObjectProperty ;
     rdfs:domain poker:Mano ;
     rdfs:range poker:Carta ;
     rdfs:label "Contiene Carta" ;
-    rdfs:comment "Relaciona una mano con cada una de las cartas que la componen." .
+    rdfs:comment "Propiedad que relaciona una mano con cada una de las cartas que la componen." .
 
 # Definición de la propiedad manoTienePar.
 # manoTienePar es una propiedad auxiliar para el clasificador de DoblePar.
@@ -582,22 +582,6 @@ poker:manoTienePar a owl:ObjectProperty ;
     rdfs:range  poker:Rango ;
     rdfs:label  "Mano tiene Par" ;
     rdfs:comment "Indica qué rangos están presentes con al menos 2 cartas en la mano. Se agrega manualmente en la ABox; usado por el clasificador de DoblePar." .
-
-
-# =============================================================================
-# Propiedades de Datos
-# =============================================================================
-
-# Definición de la propiedad tieneValorRango.
-# tieneValorRango almacena el valor numérico del rango de la carta.
-# OWL DL 2 no realiza aritmética, pero tener el valor como dato permite ordenar
-# rangos en consultas externas con otros lenguajes de la Web Semántica. Es una opción extra para
-# trabajo futuro si se llegara a necesitar (y para tener una mejor orientación visual de los rangos de cartas).
-poker:tieneValorRango a owl:DatatypeProperty , owl:FunctionalProperty ;
-    rdfs:domain poker:Rango ;
-    rdfs:range xsd:nonNegativeInteger ;
-    rdfs:label "Tiene Valor De Rango" ;
-    rdfs:comment "Valor numérico del rango (2 para Dos, 14 para As)." .
 
 
 # =============================================================================
@@ -619,19 +603,19 @@ poker:Treboles  a poker:Palo ; rdfs:label "Tréboles" .
 
 # --- Rangos ---
 # Valores de 2 (Dos) a 14 (As).
-poker:Dos    a poker:Rango ; poker:tieneValorRango  "2"^^xsd:nonNegativeInteger ; rdfs:label "Dos" .
-poker:Tres   a poker:Rango ; poker:tieneValorRango  "3"^^xsd:nonNegativeInteger ; rdfs:label "Tres" .
-poker:Cuatro a poker:Rango ; poker:tieneValorRango  "4"^^xsd:nonNegativeInteger ; rdfs:label "Cuatro" .
-poker:Cinco  a poker:Rango ; poker:tieneValorRango  "5"^^xsd:nonNegativeInteger ; rdfs:label "Cinco" .
-poker:Seis   a poker:Rango ; poker:tieneValorRango  "6"^^xsd:nonNegativeInteger ; rdfs:label "Seis" .
-poker:Siete  a poker:Rango ; poker:tieneValorRango  "7"^^xsd:nonNegativeInteger ; rdfs:label "Siete" .
-poker:Ocho   a poker:Rango ; poker:tieneValorRango  "8"^^xsd:nonNegativeInteger ; rdfs:label "Ocho" .
-poker:Nueve  a poker:Rango ; poker:tieneValorRango  "9"^^xsd:nonNegativeInteger ; rdfs:label "Nueve" .
-poker:Diez   a poker:Rango ; poker:tieneValorRango "10"^^xsd:nonNegativeInteger ; rdfs:label "Diez" .
-poker:Jota   a poker:Rango ; poker:tieneValorRango "11"^^xsd:nonNegativeInteger ; rdfs:label "Jota" .
-poker:Reina  a poker:Rango ; poker:tieneValorRango "12"^^xsd:nonNegativeInteger ; rdfs:label "Reina" .
-poker:Rey    a poker:Rango ; poker:tieneValorRango "13"^^xsd:nonNegativeInteger ; rdfs:label "Rey" .
-poker:As     a poker:Rango ; poker:tieneValorRango "14"^^xsd:nonNegativeInteger ; rdfs:label "As" .
+poker:Dos    a poker:Rango ; rdfs:label "Dos" .
+poker:Tres   a poker:Rango ; rdfs:label "Tres" .
+poker:Cuatro a poker:Rango ; rdfs:label "Cuatro" .
+poker:Cinco  a poker:Rango ; rdfs:label "Cinco" .
+poker:Seis   a poker:Rango ; rdfs:label "Seis" .
+poker:Siete  a poker:Rango ; rdfs:label "Siete" .
+poker:Ocho   a poker:Rango ; rdfs:label "Ocho" .
+poker:Nueve  a poker:Rango ; rdfs:label "Nueve" .
+poker:Diez   a poker:Rango ; rdfs:label "Diez" .
+poker:Jota   a poker:Rango ; rdfs:label "Jota" .
+poker:Reina  a poker:Rango ; rdfs:label "Reina" .
+poker:Rey    a poker:Rango ; rdfs:label "Rey" .
+poker:As     a poker:Rango ; rdfs:label "As" .
 
 # --- Cartas de Picas ---
 poker:DosDePicas    a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Dos    ; rdfs:label "Dos de Picas" .
