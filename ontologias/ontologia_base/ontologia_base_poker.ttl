@@ -585,7 +585,7 @@ poker:manoTienePar a owl:ObjectProperty ;
 
 
 # =============================================================================
-# ABox — Individuos
+# ABox - Individuos
 # =============================================================================
 #
 # 69 individuos en total: 4 palos, 13 rangos, y 52 cartas.
@@ -596,86 +596,85 @@ poker:manoTienePar a owl:ObjectProperty ;
 # =============================================================================
 
 # --- Palos ---
-poker:Picas     a poker:Palo ; rdfs:label "Picas" .
+poker:Picas a poker:Palo ; rdfs:label "Picas" .
 poker:Corazones a poker:Palo ; rdfs:label "Corazones" .
 poker:Diamantes a poker:Palo ; rdfs:label "Diamantes" .
-poker:Treboles  a poker:Palo ; rdfs:label "Tréboles" .
+poker:Treboles a poker:Palo ; rdfs:label "Tréboles" .
 
 # --- Rangos ---
-# Valores de 2 (Dos) a 14 (As).
-poker:Dos    a poker:Rango ; rdfs:label "Dos" .
-poker:Tres   a poker:Rango ; rdfs:label "Tres" .
+poker:Dos a poker:Rango ; rdfs:label "Dos" .
+poker:Tres a poker:Rango ; rdfs:label "Tres" .
 poker:Cuatro a poker:Rango ; rdfs:label "Cuatro" .
-poker:Cinco  a poker:Rango ; rdfs:label "Cinco" .
-poker:Seis   a poker:Rango ; rdfs:label "Seis" .
-poker:Siete  a poker:Rango ; rdfs:label "Siete" .
-poker:Ocho   a poker:Rango ; rdfs:label "Ocho" .
-poker:Nueve  a poker:Rango ; rdfs:label "Nueve" .
-poker:Diez   a poker:Rango ; rdfs:label "Diez" .
-poker:Jota   a poker:Rango ; rdfs:label "Jota" .
-poker:Reina  a poker:Rango ; rdfs:label "Reina" .
-poker:Rey    a poker:Rango ; rdfs:label "Rey" .
-poker:As     a poker:Rango ; rdfs:label "As" .
+poker:Cinco a poker:Rango ; rdfs:label "Cinco" .
+poker:Seis a poker:Rango ; rdfs:label "Seis" .
+poker:Siete a poker:Rango ; rdfs:label "Siete" .
+poker:Ocho a poker:Rango ; rdfs:label "Ocho" .
+poker:Nueve a poker:Rango ; rdfs:label "Nueve" .
+poker:Diez a poker:Rango ; rdfs:label "Diez" .
+poker:Jota a poker:Rango ; rdfs:label "Jota" .
+poker:Reina a poker:Rango ; rdfs:label "Reina" .
+poker:Rey a poker:Rango ; rdfs:label "Rey" .
+poker:As a poker:Rango ; rdfs:label "As" .
 
 # --- Cartas de Picas ---
-poker:DosDePicas    a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Dos    ; rdfs:label "Dos de Picas" .
-poker:TresDePicas   a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Tres   ; rdfs:label "Tres de Picas" .
+poker:DosDePicas a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Dos ; rdfs:label "Dos de Picas" .
+poker:TresDePicas a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Tres ; rdfs:label "Tres de Picas" .
 poker:CuatroDePicas a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Cuatro ; rdfs:label "Cuatro de Picas" .
-poker:CincoDePicas  a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Cinco  ; rdfs:label "Cinco de Picas" .
-poker:SeisDePicas   a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Seis   ; rdfs:label "Seis de Picas" .
-poker:SieteDePicas  a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Siete  ; rdfs:label "Siete de Picas" .
-poker:OchoDePicas   a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Ocho   ; rdfs:label "Ocho de Picas" .
-poker:NueveDePicas  a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Nueve  ; rdfs:label "Nueve de Picas" .
-poker:DiezDePicas   a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Diez   ; rdfs:label "Diez de Picas" .
-poker:JotaDePicas   a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Jota   ; rdfs:label "Jota de Picas" .
-poker:ReinaDePicas  a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Reina  ; rdfs:label "Reina de Picas" .
-poker:ReyDePicas    a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Rey    ; rdfs:label "Rey de Picas" .
-poker:AsDePicas     a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:As     ; rdfs:label "As de Picas" .
+poker:CincoDePicas a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Cinco ; rdfs:label "Cinco de Picas" .
+poker:SeisDePicas a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Seis ; rdfs:label "Seis de Picas" .
+poker:SieteDePicas a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Siete ; rdfs:label "Siete de Picas" .
+poker:OchoDePicas a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Ocho ; rdfs:label "Ocho de Picas" .
+poker:NueveDePicas a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Nueve ; rdfs:label "Nueve de Picas" .
+poker:DiezDePicas a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Diez ; rdfs:label "Diez de Picas" .
+poker:JotaDePicas a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Jota ; rdfs:label "Jota de Picas" .
+poker:ReinaDePicas a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Reina ; rdfs:label "Reina de Picas" .
+poker:ReyDePicas a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:Rey ; rdfs:label "Rey de Picas" .
+poker:AsDePicas a poker:Carta ; poker:tienePalo poker:Picas ; poker:tieneRango poker:As ; rdfs:label "As de Picas" .
 
 # --- Cartas de Corazones ---
-poker:DosDeCorazones    a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Dos    ; rdfs:label "Dos de Corazones" .
-poker:TresDeCorazones   a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Tres   ; rdfs:label "Tres de Corazones" .
+poker:DosDeCorazones a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Dos ; rdfs:label "Dos de Corazones" .
+poker:TresDeCorazones a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Tres ; rdfs:label "Tres de Corazones" .
 poker:CuatroDeCorazones a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Cuatro ; rdfs:label "Cuatro de Corazones" .
-poker:CincoDeCorazones  a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Cinco  ; rdfs:label "Cinco de Corazones" .
-poker:SeisDeCorazones   a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Seis   ; rdfs:label "Seis de Corazones" .
-poker:SieteDeCorazones  a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Siete  ; rdfs:label "Siete de Corazones" .
-poker:OchoDeCorazones   a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Ocho   ; rdfs:label "Ocho de Corazones" .
-poker:NueveDeCorazones  a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Nueve  ; rdfs:label "Nueve de Corazones" .
-poker:DiezDeCorazones   a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Diez   ; rdfs:label "Diez de Corazones" .
-poker:JotaDeCorazones   a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Jota   ; rdfs:label "Jota de Corazones" .
-poker:ReinaDeCorazones  a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Reina  ; rdfs:label "Reina de Corazones" .
-poker:ReyDeCorazones    a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Rey    ; rdfs:label "Rey de Corazones" .
-poker:AsDeCorazones     a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:As     ; rdfs:label "As de Corazones" .
+poker:CincoDeCorazones a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Cinco ; rdfs:label "Cinco de Corazones" .
+poker:SeisDeCorazones a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Seis ; rdfs:label "Seis de Corazones" .
+poker:SieteDeCorazones a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Siete ; rdfs:label "Siete de Corazones" .
+poker:OchoDeCorazones a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Ocho ; rdfs:label "Ocho de Corazones" .
+poker:NueveDeCorazones a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Nueve ; rdfs:label "Nueve de Corazones" .
+poker:DiezDeCorazones a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Diez ; rdfs:label "Diez de Corazones" .
+poker:JotaDeCorazones a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Jota ; rdfs:label "Jota de Corazones" .
+poker:ReinaDeCorazones a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Reina ; rdfs:label "Reina de Corazones" .
+poker:ReyDeCorazones a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:Rey ; rdfs:label "Rey de Corazones" .
+poker:AsDeCorazones a poker:Carta ; poker:tienePalo poker:Corazones ; poker:tieneRango poker:As ; rdfs:label "As de Corazones" .
 
 # --- Cartas de Diamantes ---
-poker:DosDeDiamantes    a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Dos    ; rdfs:label "Dos de Diamantes" .
-poker:TresDeDiamantes   a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Tres   ; rdfs:label "Tres de Diamantes" .
+poker:DosDeDiamantes a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Dos ; rdfs:label "Dos de Diamantes" .
+poker:TresDeDiamantes a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Tres ; rdfs:label "Tres de Diamantes" .
 poker:CuatroDeDiamantes a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Cuatro ; rdfs:label "Cuatro de Diamantes" .
-poker:CincoDeDiamantes  a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Cinco  ; rdfs:label "Cinco de Diamantes" .
-poker:SeisDeDiamantes   a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Seis   ; rdfs:label "Seis de Diamantes" .
-poker:SieteDeDiamantes  a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Siete  ; rdfs:label "Siete de Diamantes" .
-poker:OchoDeDiamantes   a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Ocho   ; rdfs:label "Ocho de Diamantes" .
-poker:NueveDeDiamantes  a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Nueve  ; rdfs:label "Nueve de Diamantes" .
-poker:DiezDeDiamantes   a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Diez   ; rdfs:label "Diez de Diamantes" .
-poker:JotaDeDiamantes   a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Jota   ; rdfs:label "Jota de Diamantes" .
-poker:ReinaDeDiamantes  a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Reina  ; rdfs:label "Reina de Diamantes" .
-poker:ReyDeDiamantes    a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Rey    ; rdfs:label "Rey de Diamantes" .
-poker:AsDeDiamantes     a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:As     ; rdfs:label "As de Diamantes" .
+poker:CincoDeDiamantes a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Cinco ; rdfs:label "Cinco de Diamantes" .
+poker:SeisDeDiamantes a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Seis ; rdfs:label "Seis de Diamantes" .
+poker:SieteDeDiamantes a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Siete ; rdfs:label "Siete de Diamantes" .
+poker:OchoDeDiamantes a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Ocho ; rdfs:label "Ocho de Diamantes" .
+poker:NueveDeDiamantes a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Nueve ; rdfs:label "Nueve de Diamantes" .
+poker:DiezDeDiamantes a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Diez ; rdfs:label "Diez de Diamantes" .
+poker:JotaDeDiamantes a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Jota ; rdfs:label "Jota de Diamantes" .
+poker:ReinaDeDiamantes a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Reina ; rdfs:label "Reina de Diamantes" .
+poker:ReyDeDiamantes a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:Rey ; rdfs:label "Rey de Diamantes" .
+poker:AsDeDiamantes a poker:Carta ; poker:tienePalo poker:Diamantes ; poker:tieneRango poker:As ; rdfs:label "As de Diamantes" .
 
 # --- Cartas de Tréboles ---
-poker:DosDeTreboles    a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Dos    ; rdfs:label "Dos de Tréboles" .
-poker:TresDeTreboles   a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Tres   ; rdfs:label "Tres de Tréboles" .
+poker:DosDeTreboles a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Dos ; rdfs:label "Dos de Tréboles" .
+poker:TresDeTreboles a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Tres ; rdfs:label "Tres de Tréboles" .
 poker:CuatroDeTreboles a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Cuatro ; rdfs:label "Cuatro de Tréboles" .
-poker:CincoDeTreboles  a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Cinco  ; rdfs:label "Cinco de Tréboles" .
-poker:SeisDeTreboles   a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Seis   ; rdfs:label "Seis de Tréboles" .
-poker:SieteDeTreboles  a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Siete  ; rdfs:label "Siete de Tréboles" .
-poker:OchoDeTreboles   a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Ocho   ; rdfs:label "Ocho de Tréboles" .
-poker:NueveDeTreboles  a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Nueve  ; rdfs:label "Nueve de Tréboles" .
-poker:DiezDeTreboles   a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Diez   ; rdfs:label "Diez de Tréboles" .
-poker:JotaDeTreboles   a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Jota   ; rdfs:label "Jota de Tréboles" .
-poker:ReinaDeTreboles  a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Reina  ; rdfs:label "Reina de Tréboles" .
-poker:ReyDeTreboles    a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Rey    ; rdfs:label "Rey de Tréboles" .
-poker:AsDeTreboles     a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:As     ; rdfs:label "As de Tréboles" .
+poker:CincoDeTreboles a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Cinco ; rdfs:label "Cinco de Tréboles" .
+poker:SeisDeTreboles a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Seis ; rdfs:label "Seis de Tréboles" .
+poker:SieteDeTreboles a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Siete ; rdfs:label "Siete de Tréboles" .
+poker:OchoDeTreboles a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Ocho ; rdfs:label "Ocho de Tréboles" .
+poker:NueveDeTreboles a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Nueve ; rdfs:label "Nueve de Tréboles" .
+poker:DiezDeTreboles a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Diez ; rdfs:label "Diez de Tréboles" .
+poker:JotaDeTreboles a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Jota ; rdfs:label "Jota de Tréboles" .
+poker:ReinaDeTreboles a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Reina ; rdfs:label "Reina de Tréboles" .
+poker:ReyDeTreboles a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:Rey ; rdfs:label "Rey de Tréboles" .
+poker:AsDeTreboles a poker:Carta ; poker:tienePalo poker:Treboles ; poker:tieneRango poker:As ; rdfs:label "As de Tréboles" .
 
 
 # --- Unicidad de individuos ---
@@ -685,30 +684,29 @@ poker:AsDeTreboles     a poker:Carta ; poker:tienePalo poker:Treboles ; poker:ti
 # con TresDeCorazones si no hay nada que los contradiga explícitamente como cartas distintas.
 # Aplica para palos, rangos y cartas.
 
+# 4 palos distintos.
 [] a owl:AllDifferent ;
     owl:distinctMembers ( poker:Picas poker:Corazones poker:Diamantes poker:Treboles ) .
 
+# 13 rangos distintos.
 [] a owl:AllDifferent ;
     owl:distinctMembers ( poker:Dos poker:Tres poker:Cuatro poker:Cinco poker:Seis
                           poker:Siete poker:Ocho poker:Nueve poker:Diez poker:Jota
                           poker:Reina poker:Rey poker:As ) .
 
+# 52 cartas distintas.
 [] a owl:AllDifferent ;
     owl:distinctMembers (
-        poker:DosDePicas    poker:TresDePicas    poker:CuatroDePicas  poker:CincoDePicas
-        poker:SeisDePicas   poker:SieteDePicas   poker:OchoDePicas    poker:NueveDePicas
-        poker:DiezDePicas   poker:JotaDePicas    poker:ReinaDePicas   poker:ReyDePicas
-        poker:AsDePicas
-        poker:DosDeCorazones    poker:TresDeCorazones    poker:CuatroDeCorazones  poker:CincoDeCorazones
-        poker:SeisDeCorazones   poker:SieteDeCorazones   poker:OchoDeCorazones    poker:NueveDeCorazones
-        poker:DiezDeCorazones   poker:JotaDeCorazones    poker:ReinaDeCorazones   poker:ReyDeCorazones
-        poker:AsDeCorazones
-        poker:DosDeDiamantes    poker:TresDeDiamantes    poker:CuatroDeDiamantes  poker:CincoDeDiamantes
-        poker:SeisDeDiamantes   poker:SieteDeDiamantes   poker:OchoDeDiamantes    poker:NueveDeDiamantes
-        poker:DiezDeDiamantes   poker:JotaDeDiamantes    poker:ReinaDeDiamantes   poker:ReyDeDiamantes
-        poker:AsDeDiamantes
-        poker:DosDeTreboles    poker:TresDeTreboles    poker:CuatroDeTreboles  poker:CincoDeTreboles
-        poker:SeisDeTreboles   poker:SieteDeTreboles   poker:OchoDeTreboles    poker:NueveDeTreboles
-        poker:DiezDeTreboles   poker:JotaDeTreboles    poker:ReinaDeTreboles   poker:ReyDeTreboles
-        poker:AsDeTreboles
+        poker:DosDePicas poker:TresDePicas poker:CuatroDePicas poker:CincoDePicas
+        poker:SeisDePicas poker:SieteDePicas poker:OchoDePicas poker:NueveDePicas
+        poker:DiezDePicas poker:JotaDePicas poker:ReinaDePicas poker:ReyDePicas poker:AsDePicas
+        poker:DosDeCorazones poker:TresDeCorazones poker:CuatroDeCorazones poker:CincoDeCorazones
+        poker:SeisDeCorazones poker:SieteDeCorazones poker:OchoDeCorazones poker:NueveDeCorazones
+        poker:DiezDeCorazones poker:JotaDeCorazones poker:ReinaDeCorazones poker:ReyDeCorazones poker:AsDeCorazones
+        poker:DosDeDiamantes poker:TresDeDiamantes poker:CuatroDeDiamantes poker:CincoDeDiamantes
+        poker:SeisDeDiamantes poker:SieteDeDiamantes poker:OchoDeDiamantes poker:NueveDeDiamantes
+        poker:DiezDeDiamantes poker:JotaDeDiamantes poker:ReinaDeDiamantes poker:ReyDeDiamantes poker:AsDeDiamantes
+        poker:DosDeTreboles poker:TresDeTreboles poker:CuatroDeTreboles poker:CincoDeTreboles
+        poker:SeisDeTreboles poker:SieteDeTreboles poker:OchoDeTreboles poker:NueveDeTreboles
+        poker:DiezDeTreboles poker:JotaDeTreboles poker:ReinaDeTreboles poker:ReyDeTreboles poker:AsDeTreboles
     ) .
