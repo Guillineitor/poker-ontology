@@ -38,7 +38,6 @@ El proyecto evalúa la capacidad de razonadores OWL 2 DL para clasificar manos d
 
 ```
 POKER-ONTOLOGY/
-└── es/
     ├── generador_ontologias/          # Generador automático de variantes de ontología
     ├── instancias/                    # ABox con instancias de manos de póker
     ├── ontologias/                    # TBox y variantes de la ontología
