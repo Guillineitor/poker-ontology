@@ -14,7 +14,7 @@
 # Ejemplo:
 #     python generador_instancias.py ontologia_base_poker.ttl
 #
-# El archivo de salida se genera en el misma carpeta de este script, 
+# El archivo de salida se genera en la misma carpeta de este script,
 # con el nombre derivado de la ontología de entrada.
 #
 # =============================================================================
@@ -74,11 +74,11 @@ def leer_ontologia(ruta_ontologia):
         contenido
     )
     # Se unifican: si hay label se usa, si no, el nombre del individuo como fallback.
-    labels_rango = dict(rangos_con_label)
-    rangos_encontrados = [(n, labels_rango.get(n, n)) for n in rangos_sin_label]
+    etiquetas_rango = dict(rangos_con_label)
+    rangos_encontrados = [(n, etiquetas_rango.get(n, n)) for n in rangos_sin_label]
 
     rangos = [nombre for nombre, _ in rangos_encontrados]
-    valor  = {rango: i for i, rango in enumerate(rangos)}
+    valor = {rango: i for i, rango in enumerate(rangos)}
 
     # Etiqueta corta de cada rango para la notación de escaleras.
     # Se usa el rdfs:label del individuo si está definido en la ontología,
@@ -107,10 +107,10 @@ def leer_ontologia(ruta_ontologia):
         r'poker:(\w+)\s+a\s+poker:Palo\b',
         contenido
     )
-    labels_palo = dict(palos_con_label)
-    palos_encontrados = [(n, labels_palo.get(n, n)) for n in palos_sin_label]
+    etiquetas_palo = dict(palos_con_label)
+    palos_encontrados = [(n, etiquetas_palo.get(n, n)) for n in palos_sin_label]
 
-    palos       = [nombre for nombre, _ in palos_encontrados]
+    palos = [nombre for nombre, _ in palos_encontrados]
     nombre_palo = {nombre: label for nombre, label in palos_encontrados}
 
     # --- Baraja: individuos de poker:Carta con tienePalo y tieneRango ---
@@ -122,7 +122,7 @@ def leer_ontologia(ruta_ontologia):
     )
     baraja = []
     for m in patron_carta.finditer(contenido):
-        palo  = m.group(2)
+        palo = m.group(2)
         rango = m.group(3)
         if palo in set(palos) and rango in valor:
             baraja.append((rango, palo))
@@ -136,14 +136,14 @@ def leer_ontologia(ruta_ontologia):
     print(f"  → {len(rangos)} rangos, {len(palos)} palos, {len(baraja)} cartas.")
 
     return {
-        "uri_poker":     uri_poker,
-        "rangos":        rangos,
-        "valor":         valor,
-        "palos":         palos,
+        "uri_poker": uri_poker,
+        "rangos": rangos,
+        "valor": valor,
+        "palos": palos,
         "etiqueta_rango": etiqueta_rango,
-        "nombre_palo":   nombre_palo,
-        "plural_rango":  plural_rango,
-        "baraja":        baraja,
+        "nombre_palo": nombre_palo,
+        "plural_rango": plural_rango,
+        "baraja": baraja,
     }
 
 
@@ -152,29 +152,30 @@ def leer_ontologia(ruta_ontologia):
 # =============================================================================
 
 def nombre_individuo(rango, palo):
-    """Devuelve el nombre del individuo TTL correspondiente a una carta."""
+    """
+    Devuelve el nombre del individuo TTL correspondiente a una carta.
+    """
     return f"{rango}De{palo}"
 
 
 def es_escalera(mano, valor, rangos):
-    """Indica si las cinco cartas forman una escalera, incluida la rueda (As bajo)."""
+    """
+    Indica si las cartas de la mano forman una escalera."""
     vals = sorted(valor[r] for r, _ in mano)
     secuencial = all(vals[i+1] - vals[i] == 1 for i in range(4))
-    rueda = vals == [0, 1, 2, 3, len(rangos) - 1]
-    return secuencial or rueda
-
+    return secuencial
 
 def generar_carta_alta(baraja, ont):
     """
     Genera una mano de Carta Alta: cinco cartas sin ninguna combinación,
     sin escalera y sin color.
     """
-    valor  = ont["valor"]
+    valor = ont["valor"]
     rangos = ont["rangos"]
     for _ in range(10000):
         mano = random.sample(baraja, 5)
-        conteo    = Counter(r for r, _ in mano)
-        hay_par   = any(v >= 2 for v in conteo.values())
+        conteo = Counter(r for r, _ in mano)
+        hay_par = any(v >= 2 for v in conteo.values())
         hay_color = len(set(p for _, p in mano)) == 1
         if not hay_par and not es_escalera(mano, valor, rangos) and not hay_color:
             return mano, None
@@ -194,13 +195,13 @@ def generar_par(baraja, ont):
     random.shuffle(rangos_con_par)
 
     for rango_par in rangos_con_par:
-        par   = random.sample(por_rango[rango_par], 2)
+        par = random.sample(por_rango[rango_par], 2)
         usadas = set(par)
-        pool  = [c for c in baraja if c not in usadas and c[0] != rango_par]
+        candidatas = [c for c in baraja if c not in usadas and c[0] != rango_par]
         for _ in range(1000):
-            kickers = random.sample(pool, 3)
-            if len({c[0] for c in kickers}) == 3:
-                return par + kickers, None
+            descartes = random.sample(candidatas, 3)
+            if len({c[0] for c in descartes}) == 3:
+                return par + descartes, None
     raise RuntimeError("No se pudo generar una mano de Par.")
 
 
@@ -217,13 +218,13 @@ def generar_doble_par(baraja, ont):
 
     for _ in range(10000):
         r1, r2 = random.sample(rangos_con_par, 2)
-        par1   = random.sample(por_rango[r1], 2)
-        par2   = random.sample(por_rango[r2], 2)
+        par1 = random.sample(por_rango[r1], 2)
+        par2 = random.sample(por_rango[r2], 2)
         usadas = set(par1 + par2)
-        pool   = [c for c in baraja if c not in usadas and c[0] not in {r1, r2}]
-        if pool:
-            kicker = random.choice(pool)
-            return par1 + par2 + [kicker], [r1, r2]
+        candidatas = [c for c in baraja if c not in usadas and c[0] not in {r1, r2}]
+        if candidatas:
+            descarte = random.choice(candidatas)
+            return par1 + par2 + [descarte], [r1, r2]
     raise RuntimeError("No se pudo generar una mano de Doble Par.")
 
 
@@ -240,13 +241,13 @@ def generar_trio(baraja, ont):
     random.shuffle(rangos_con_trio)
 
     for rango_trio in rangos_con_trio:
-        trio  = random.sample(por_rango[rango_trio], 3)
+        trio = random.sample(por_rango[rango_trio], 3)
         usadas = set(trio)
-        pool  = [c for c in baraja if c not in usadas and c[0] != rango_trio]
+        candidatas = [c for c in baraja if c not in usadas and c[0] != rango_trio]
         for _ in range(1000):
-            kickers = random.sample(pool, 2)
-            if kickers[0][0] != kickers[1][0]:
-                return trio + kickers, None
+            descartes = random.sample(candidatas, 2)
+            if descartes[0][0] != descartes[1][0]:
+                return trio + descartes, None
     raise RuntimeError("No se pudo generar una mano de Trío.")
 
 
@@ -255,8 +256,8 @@ def generar_escalera(baraja, ont):
     Genera una mano de Escalera: cinco rangos consecutivos con palos
     mezclados (no todos iguales, para evitar que sea escalera de color).
     """
-    valor   = ont["valor"]
-    rangos  = ont["rangos"]
+    valor = ont["valor"]
+    rangos = ont["rangos"]
     conjunto = set(baraja)
 
     # Todas las secuencias posibles de 5 rangos consecutivos, incluida la rueda.
@@ -266,10 +267,10 @@ def generar_escalera(baraja, ont):
     random.shuffle(secuencias)
 
     palos = ont["palos"]
-    for seq in secuencias:
+    for secuencia in secuencias:
         for _ in range(500):
             mano = []
-            for rango in seq:
+            for rango in secuencia:
                 palos_disp = [p for p in palos if (rango, p) in conjunto]
                 if not palos_disp:
                     break
@@ -285,7 +286,7 @@ def generar_color(baraja, ont):
     Genera una mano de Color: cinco cartas del mismo palo
     que no formen una escalera.
     """
-    valor  = ont["valor"]
+    valor = ont["valor"]
     rangos = ont["rangos"]
     por_palo = {}
     for carta in baraja:
@@ -304,7 +305,7 @@ def generar_color(baraja, ont):
 
 def generar_full(baraja, ont):
     """
-    Genera una mano de Full House: tres cartas de un rango y dos de otro.
+    Genera una mano de Full: tres cartas de un rango y dos de otro.
     Devuelve también los dos rangos para la propiedad manoTienePar.
     """
     por_rango = {}
@@ -312,13 +313,13 @@ def generar_full(baraja, ont):
         por_rango.setdefault(carta[0], []).append(carta)
 
     rangos_con_trio = [r for r, cs in por_rango.items() if len(cs) >= 3]
-    rangos_con_par  = [r for r, cs in por_rango.items() if len(cs) >= 2]
+    rangos_con_par = [r for r, cs in por_rango.items() if len(cs) >= 2]
 
     for _ in range(10000):
         r_trio = random.choice(rangos_con_trio)
-        r_par  = random.choice([r for r in rangos_con_par if r != r_trio])
-        trio   = random.sample(por_rango[r_trio], 3)
-        par    = random.sample(por_rango[r_par], 2)
+        r_par = random.choice([r for r in rangos_con_par if r != r_trio])
+        trio = random.sample(por_rango[r_trio], 3)
+        par = random.sample(por_rango[r_par], 2)
         return trio + par, [r_trio, r_par]
     raise RuntimeError("No se pudo generar una mano de Full House.")
 
@@ -337,10 +338,10 @@ def generar_poker(baraja, ont):
     for rango in rangos_con_poker:
         cuatro = por_rango[rango][:4]
         usadas = set(cuatro)
-        pool   = [c for c in baraja if c not in usadas]
-        if pool:
-            kicker = random.choice(pool)
-            return list(cuatro) + [kicker], None
+        candidatas = [c for c in baraja if c not in usadas]
+        if candidatas:
+            descarte = random.choice(candidatas)
+            return list(cuatro) + [descarte], None
     raise RuntimeError("No se pudo generar una mano de Póker.")
 
 
@@ -349,22 +350,22 @@ def generar_escalera_color(baraja, ont):
     Genera una mano de Escalera de Color: cinco cartas consecutivas del mismo
     palo, excluyendo la Escalera Real (los cinco rangos más altos).
     """
-    valor   = ont["valor"]
-    rangos  = ont["rangos"]
-    palos   = ont["palos"]
+    valor = ont["valor"]
+    rangos = ont["rangos"]
+    palos = ont["palos"]
     conjunto = set(baraja)
 
-    seq_real = rangos[-5:]   # Los 5 rangos más altos son la Escalera Real.
+    secuencia_real = rangos[-5:]   # Los 5 rangos más altos son la Escalera Real.
     secuencias = [rangos[i:i+5] for i in range(len(rangos) - 5)]
     rueda = [rangos[-1]] + rangos[:4]
     secuencias.append(rueda)
     random.shuffle(secuencias)
 
     palos_mezclados = palos[:]
-    for seq in secuencias:
+    for secuencia in secuencias:
         random.shuffle(palos_mezclados)
         for palo in palos_mezclados:
-            mano = [(r, palo) for r in seq]
+            mano = [(r, palo) for r in secuencia]
             if all(c in conjunto for c in mano):
                 return mano, None
     raise RuntimeError("No se pudo generar una mano de Escalera de Color.")
@@ -375,16 +376,16 @@ def generar_escalera_real(baraja, ont, palos_usados):
     Genera una mano de Escalera Real: los cinco rangos más altos del mismo palo.
     Evita repetir un palo ya utilizado en la misma generación, dentro de lo posible.
     """
-    rangos  = ont["rangos"]
-    palos   = ont["palos"]
+    rangos = ont["rangos"]
+    palos = ont["palos"]
     conjunto = set(baraja)
 
-    seq       = rangos[-5:]   # Los 5 rangos más altos de la ontología.
+    secuencia = rangos[-5:]   # Los 5 rangos más altos de la ontología.
     palos_ord = [p for p in palos if p not in palos_usados] + \
                 [p for p in palos if p in palos_usados]
 
     for palo in palos_ord:
-        mano = [(r, palo) for r in seq]
+        mano = [(r, palo) for r in secuencia]
         if all(c in conjunto for c in mano):
             palos_usados.add(palo)
             return mano, None
@@ -408,34 +409,34 @@ def label_descriptivo(tipo, mano, pares_extra, ont):
     Construye el rdfs:label en lenguaje natural para cada tipo de mano,
     siguiendo el estilo del archivo de instancias de referencia.
     """
-    valor         = ont["valor"]
-    rangos        = ont["rangos"]
+    valor = ont["valor"]
+    rangos = ont["rangos"]
     etiqueta_rango = ont["etiqueta_rango"]
-    nombre_palo   = ont["nombre_palo"]
-    plural_rango  = ont["plural_rango"]
+    nombre_palo = ont["nombre_palo"]
+    plural_rango = ont["plural_rango"]
 
     mano_ord = sorted(mano, key=lambda c: valor[c[0]], reverse=True)
-    rgs      = [r for r, _ in mano_ord]
+    rgs = [r for r, _ in mano_ord]
 
     if tipo == "carta_alta":
         return f"Carta Alta de {rgs[0]} con {' '.join(rgs[1:])}"
 
     if tipo == "par":
-        conteo    = Counter(r for r, _ in mano)
+        conteo = Counter(r for r, _ in mano)
         rango_par = next(r for r, c in conteo.items() if c == 2)
-        kickers   = sorted([r for r in rgs if r != rango_par],
+        kickers = sorted([r for r in rgs if r != rango_par],
                            key=lambda r: valor[r], reverse=True)
         return f"Par de {plural_rango[rango_par]} con {' '.join(kickers)}"
 
     if tipo == "doblepar":
-        r1, r2  = sorted(pares_extra, key=lambda r: valor[r], reverse=True)
-        kicker  = next(r for r, _ in mano if r not in pares_extra)
+        r1, r2 = sorted(pares_extra, key=lambda r: valor[r], reverse=True)
+        kicker = next(r for r, _ in mano if r not in pares_extra)
         return f"Doble Par de {plural_rango[r1]} y {plural_rango[r2]} con {kicker}"
 
     if tipo == "trio":
-        conteo     = Counter(r for r, _ in mano)
+        conteo = Counter(r for r, _ in mano)
         rango_trio = next(r for r, c in conteo.items() if c == 3)
-        kickers    = sorted([r for r in rgs if r != rango_trio],
+        kickers = sorted([r for r in rgs if r != rango_trio],
                             key=lambda r: valor[r], reverse=True)
         return f"Trío de {plural_rango[rango_trio]} con {' '.join(kickers)}"
 
@@ -443,10 +444,10 @@ def label_descriptivo(tipo, mano, pares_extra, ont):
         vals = sorted(valor[r] for r, _ in mano)
         # Rueda: As bajo.
         if vals == [0, 1, 2, 3, len(rangos) - 1]:
-            seq = [rangos[-1]] + rangos[:4]
+            secuencia = [rangos[-1]] + rangos[:4]
         else:
-            seq = [rangos[v] for v in vals]
-        return f"Escalera de {notacion_corta(seq, etiqueta_rango)}"
+            secuencia = [rangos[v] for v in vals]
+        return f"Escalera de {notacion_corta(secuencia, etiqueta_rango)}"
 
     if tipo == "color":
         palo = mano[0][1]
@@ -457,19 +458,19 @@ def label_descriptivo(tipo, mano, pares_extra, ont):
         return f"Full de Trío de {plural_rango[r_trio]} con Par de {plural_rango[r_par]}"
 
     if tipo == "poker":
-        conteo       = Counter(r for r, _ in mano)
+        conteo = Counter(r for r, _ in mano)
         rango_cuatro = next(r for r, c in conteo.items() if c == 4)
-        kicker_r, kicker_p = next((r, p) for r, p in mano if r != rango_cuatro)
-        return f"Póker de {plural_rango[rango_cuatro]} con {kicker_r} de {nombre_palo[kicker_p]}"
+        descarte_rango, descarte_palo = next((r, p) for r, p in mano if r != rango_cuatro)
+        return f"Póker de {plural_rango[rango_cuatro]} con {descarte_rango} de {nombre_palo[descarte_palo]}"
 
     if tipo == "escalera_color":
         palo = mano[0][1]
         vals = sorted(valor[r] for r, _ in mano)
         if vals == [0, 1, 2, 3, len(rangos) - 1]:
-            seq = [rangos[-1]] + rangos[:4]
+            secuencia = [rangos[-1]] + rangos[:4]
         else:
-            seq = [rangos[v] for v in vals]
-        return f"Escalera de Color {notacion_corta(seq, etiqueta_rango)} de {nombre_palo[palo]}"
+            secuencia = [rangos[v] for v in vals]
+        return f"Escalera de Color {notacion_corta(secuencia, etiqueta_rango)} de {nombre_palo[palo]}"
 
     if tipo == "escalera_real":
         palo = mano[0][1]
@@ -483,7 +484,7 @@ def bloque_cabecera(ont):
     Genera el encabezado completo del archivo TTL: prefijos y declaración
     de la ontología.
     """
-    uri_poker  = ont["uri_poker"]
+    uri_poker = ont["uri_poker"]
     uri_import = uri_poker.rstrip("#")
     lineas = [
         "# =============================================================================",
@@ -519,9 +520,9 @@ def bloque_mano(tipo, prefijo, numero, mano, pares_extra, ont):
     Genera el bloque TTL de una mano individual.
     Si se indica pares_extra, añade la propiedad manoTienePar.
     """
-    nombre    = f"{prefijo}:Mano{numero}"
+    nombre = f"{prefijo}:Mano{numero}"
     cartas_tt = ", ".join(f"poker:{nombre_individuo(r, p)}" for r, p in mano)
-    etiqueta  = label_descriptivo(tipo, mano, pares_extra, ont)
+    etiqueta = label_descriptivo(tipo, mano, pares_extra, ont)
 
     lineas = [
         f"{nombre} a poker:Mano ;",
@@ -539,7 +540,9 @@ def bloque_mano(tipo, prefijo, numero, mano, pares_extra, ont):
 
 
 def bloque_all_different(prefijo, numeros):
-    """Genera la declaración owl:AllDifferent para un grupo de manos."""
+    """
+    Genera la declaración owl:AllDifferent para un grupo de manos.
+    """
     miembros = " ".join(f"{prefijo}:Mano{n}" for n in numeros)
     return (
         "# Unicidad de Instancias\n"
@@ -553,33 +556,33 @@ def bloque_all_different(prefijo, numeros):
 # =============================================================================
 
 GENERADORES = {
-    "carta_alta":     generar_carta_alta,
-    "par":            generar_par,
-    "doblepar":       generar_doble_par,
-    "trio":           generar_trio,
-    "escalera":       generar_escalera,
-    "color":          generar_color,
-    "full":           generar_full,
-    "poker":          generar_poker,
+    "carta_alta": generar_carta_alta,
+    "par": generar_par,
+    "doblepar": generar_doble_par,
+    "trio": generar_trio,
+    "escalera": generar_escalera,
+    "color": generar_color,
+    "full": generar_full,
+    "poker": generar_poker,
     "escalera_color": generar_escalera_color,
 }
 
 
 def generar_archivo(ruta_ontologia):
-    # El nombre del archivo de salida se deriva del nombre de la ontología de entrada.
-    import os
-    nombre_base = os.path.splitext(os.path.basename(ruta_ontologia))[0]
-    ruta_salida = f"instancias_{nombre_base}.ttl"
     """
     Función principal. Lee la ontología indicada, extrae rangos y palos,
     genera las 40 manos aleatorias y escribe el archivo TTL de salida.
     """
+    # El nombre del archivo de salida se deriva del nombre de la ontología de entrada.
+    import os
+    nombre_base = os.path.splitext(os.path.basename(ruta_ontologia))[0]
+    ruta_salida = f"instancias_{nombre_base}.ttl"
     print(f"Leyendo ontología: {ruta_ontologia}")
-    ont    = leer_ontologia(ruta_ontologia)
+    ont = leer_ontologia(ruta_ontologia)
     baraja = ont["baraja"]
 
-    secciones           = [bloque_cabecera(ont)]
-    numero_mano         = 1
+    secciones = [bloque_cabecera(ont)]
+    numero_mano = 1
     palos_escalera_real = set()
 
     for tipo, prefijo, titulo in TIPOS_MANO:
