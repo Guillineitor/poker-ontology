@@ -19,6 +19,7 @@
 #
 # =============================================================================
 
+import os
 import re
 import random
 import sys
@@ -198,6 +199,7 @@ def generar_par(baraja, ont):
         par = random.sample(por_rango[rango_par], 2)
         usadas = set(par)
         candidatas = [c for c in baraja if c not in usadas and c[0] != rango_par]
+        # Se reintenta hasta encontrar 3 descartes de rangos distintos entre sí.
         for _ in range(1000):
             descartes = random.sample(candidatas, 3)
             if len({c[0] for c in descartes}) == 3:
@@ -244,6 +246,7 @@ def generar_trio(baraja, ont):
         trio = random.sample(por_rango[rango_trio], 3)
         usadas = set(trio)
         candidatas = [c for c in baraja if c not in usadas and c[0] != rango_trio]
+        # Se reintenta hasta encontrar 2 descartes de rangos distintos entre sí.
         for _ in range(1000):
             descartes = random.sample(candidatas, 2)
             if descartes[0][0] != descartes[1][0]:
@@ -274,6 +277,8 @@ def generar_escalera(baraja, ont):
                     break
                 mano.append((rango, random.choice(palos_disp)))
             else:
+                # El bloque else del for se ejecuta solo si no hubo break,
+                # es decir, si se construyó la mano completa sin cartas faltantes.
                 if len(set(p for _, p in mano)) > 1:
                     return mano, None
     raise RuntimeError("No se pudo generar una mano de Escalera.")
@@ -313,6 +318,8 @@ def generar_full(baraja, ont):
     rangos_con_trio = [r for r, cs in por_rango.items() if len(cs) >= 3]
     rangos_con_par = [r for r, cs in por_rango.items() if len(cs) >= 2]
 
+    # El loop existe para guardar consistencia con los demás generadores,
+    # pero en la práctica siempre retorna en la primera iteración.
     for _ in range(10000):
         r_trio = random.choice(rangos_con_trio)
         r_par = random.choice([r for r in rangos_con_par if r != r_trio])
@@ -353,7 +360,7 @@ def generar_escalera_color(baraja, ont):
     palos = ont["palos"]
     conjunto = set(baraja)
 
-    secuencia_real = rangos[-5:]   # Los 5 rangos más altos son la Escalera Real.
+    # Se excluyen los 5 rangos más altos porque forman la Escalera Real.
     secuencias = [rangos[i:i+5] for i in range(len(rangos) - 5)]
     random.shuffle(secuencias)
 
@@ -411,6 +418,7 @@ def label_descriptivo(tipo, mano, pares_extra, ont):
     nombre_palo = ont["nombre_palo"]
     plural_rango = ont["plural_rango"]
 
+    # Rangos de la mano ordenados de mayor a menor, para armar los labels.
     mano_ord = sorted(mano, key=lambda c: valor[c[0]], reverse=True)
     rgs = [r for r, _ in mano_ord]
 
@@ -563,7 +571,6 @@ def generar_archivo(ruta_ontologia):
     genera las 40 manos aleatorias y escribe el archivo TTL de salida.
     """
     # El nombre del archivo de salida se deriva del nombre de la ontología de entrada.
-    import os
     nombre_base = os.path.splitext(os.path.basename(ruta_ontologia))[0]
     ruta_salida = f"instancias_{nombre_base}.ttl"
     print(f"Leyendo ontología: {ruta_ontologia}")
