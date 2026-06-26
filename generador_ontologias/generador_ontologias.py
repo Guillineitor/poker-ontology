@@ -1,4 +1,4 @@
-# =============================================================================
+﻿# =============================================================================
 # generador_ontologias.py
 # =============================================================================
 # Generador de ontologías escritas en OWL 2 DL de Póker Texas Hold'em pero con barajas de cartas parametrizadas.
@@ -210,7 +210,6 @@ def subclases_por_palo(palos: list[str]) -> str:
     for p in palos:
         id_palo = identificador(p)
         lineas += [
-            "",
             f"deck:CartaDe{id_palo} a owl:Class ;",
             "    rdfs:subClassOf deck:Carta ;",
             "    owl:equivalentClass [",
@@ -220,6 +219,7 @@ def subclases_por_palo(palos: list[str]) -> str:
             "    ] ;",
             f'    rdfs:label "Carta de {etiqueta(p)}" ;',
             f'    rdfs:comment "Una carta de la baraja del palo de {etiqueta(p)}." .',
+            "",
         ]
     return "\n".join(lineas)
  
@@ -238,34 +238,51 @@ def subclases_por_rango(rangos: list[str]) -> str:
     for r in rangos:
         id_rango = identificador(r)
         lineas += [
-            "",
             f"deck:CartaDe{id_rango} a owl:Class ;",
             "    rdfs:subClassOf deck:Carta ;",
             f"    owl:equivalentClass [ a owl:Restriction ; owl:onProperty deck:tieneRango ; owl:hasValue deck:{id_rango} ] ;",
             f'    rdfs:label "Carta de {etiqueta(r)}" .',
+            "",
         ]
     return "\n".join(lineas)
   
-def seccion_grupos() -> str:
+def seccion_grupos(posibles: dict[str, bool], motivos: dict[str, str]) -> str:
     """
     Define deck:Mano como un grupo de exactamente cinco cartas.
+
+    Incluye el árbol dinámico de tipos de mano válidos para la baraja indicada,
+    junto con los tipos omitidos y el motivo de cada omisión.
     """
-    return """
- 
+    lineas_arbol = ["#   Mano"]
+    for indice, (clave, nombre, descripcion) in enumerate(ORDEN_MANOS, start=1):
+        if posibles.get(clave, False):
+            lineas_arbol.append(f"#   ├── {nombre:<14} ({indice}) {descripcion}")
+
+    omitidas = [(nombre, motivos[clave]) for clave, nombre, _ in ORDEN_MANOS if clave in motivos]
+    if omitidas:
+        lineas_arbol.append("#")
+        lineas_arbol.append("# Tipos de mano no generados para esta baraja:")
+        for nombre, motivo in omitidas:
+            lineas_arbol.append(f"#   - {nombre}: {motivo}.")
+
+    arbol = "\n".join(lineas_arbol)
+
+    return f"""
+
 # =============================================================================
 # Tipos de Mano
 # =============================================================================
 #
 # Jerarquía de menor a mayor valor de las manos posibles con esta baraja:
 #
-#   Mano: La mejor combinación de 5 cartas que puede formar un jugador.
+{arbol}
 #
 # Decisión de diseño: los tipos de mano no se declaran disjuntos entre sí.
 # Si bien en el juego real esto es así, la ontología busca evaluar la capacidad
 # de los razonadores OWL frente a ontologías suficientemente complejas. Una
 # versión con clases disjuntas queda para trabajo futuro.
 # =============================================================================
- 
+
 # Definición de la clase Mano.
 deck:Mano a owl:Class ;
     rdfs:subClassOf [
@@ -342,13 +359,10 @@ def seccion_abox_palos(palos: list[str]) -> str:
         "# ABox - Individuos",
         "# =============================================================================",
         "#",
-        f"# {len(palos)} individuos de palos.",
-        "#",
         "# Convención de nombres para cartas: {Rango}De{Palo}.",
         "# =============================================================================",
         "",
         f"# --- Palos ---",
-        "",
     ]
     for p in palos:
         id_palo = identificador(p)
@@ -363,7 +377,6 @@ def seccion_abox_rangos(rangos: list[str]) -> str:
     lineas = [
         "",
         f"# --- Rangos ---",
-        "",
     ]
     for r in rangos:
         id_rango = identificador(r)
@@ -378,14 +391,11 @@ def seccion_abox_cartas(palos: list[str], rangos: list[str]) -> str:
     """Crea un individuo ABox por cada combinación palo-rango de la baraja."""
     n_cartas = len(palos) * len(rangos)
     lineas = [
-        "",
         f"# --- Cartas ---",
-        "",
     ]
     for p in palos:
         id_palo = identificador(p)
         lineas.append(f"# Cartas de {etiqueta(p)}.")
-        lineas.append("")
         for r in rangos:
             id_rango = identificador(r)
             id_carta = f"{id_rango}De{id_palo}"
@@ -512,35 +522,7 @@ def capacidades_manos(palos: list[str], rangos: list[str]) -> tuple[dict[str, bo
         motivos["escalera_real"] = "requiere al menos 6 rangos"
  
     return posibles, {clave: motivos[clave] for clave in posibles if not posibles[clave]}
- 
-def seccion_clasificadores(posibles: dict[str, bool], motivos: dict[str, str]) -> str:
-    """Genera el encabezado dinámico con los clasificadores incluidos y los omitidos."""
-    lineas = [
-        "",
-        "# =============================================================================",
-        "# Clasificadores de Manos",
-        "# =============================================================================",
-        "#",
-        "# Jerarquía de tipos de mano generados para esta baraja:",
-        "#   Mano",
-    ]
- 
-    for indice, (clave, nombre, descripcion) in enumerate(ORDEN_MANOS, start=1):
-        if posibles.get(clave, False):
-            lineas.append(f"#   ├── {nombre:<14} ({indice}) {descripcion}")
- 
-    omitidas = [(nombre, motivos[clave]) for clave, nombre, _ in ORDEN_MANOS if clave in motivos]
-    if omitidas:
-        lineas += [
-            "#",
-            "# Tipos de mano no generados para esta baraja:",
-        ]
-        for nombre, motivo in omitidas:
-            lineas.append(f"#   - {nombre}: {motivo}.")
- 
-    lineas.append("#")
-    return "\n".join(lineas)
- 
+  
 def clasificador_carta_alta() -> str:
     """
     Define CartaAlta como una mano que contiene al menos una carta.
@@ -906,8 +888,7 @@ def generar_ontologia(
         seccion_carta(palos, rangos),
         subclases_por_palo(palos),
         subclases_por_rango(rangos),
-        seccion_grupos(),
-        seccion_clasificadores(posibles, motivos),
+        seccion_grupos(posibles, motivos),
     ]
  
     if posibles["carta_alta"]:
