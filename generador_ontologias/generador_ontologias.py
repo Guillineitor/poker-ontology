@@ -231,7 +231,6 @@ def subclases_por_rango(rangos: list[str]) -> str:
     condición es tener N cartas del mismo rango.
     """
     lineas = [
-        "",
         "# Subclases de Carta por rango.",
         "# Se usan en los clasificadores de Par, Trío y Póker.",
     ]
@@ -268,7 +267,6 @@ def seccion_grupos(posibles: dict[str, bool], motivos: dict[str, str]) -> str:
     arbol = "\n".join(lineas_arbol)
 
     return f"""
-
 # =============================================================================
 # Tipos de Mano
 # =============================================================================
@@ -419,7 +417,6 @@ def seccion_todos_distintos(palos: list[str], rangos: list[str]) -> str:
     ids_palos = " ".join(f"poker:{identificador(p)}" for p in palos)
     ids_rangos = " ".join(f"poker:{identificador(r)}" for r in rangos)
  
-    # Una línea por palo mantiene legible el bloque cuando hay muchas cartas.
     lineas_cartas = []
     for p in palos:
         id_palo = identificador(p)
@@ -960,7 +957,7 @@ def main() -> None:
  
     palos = pedir_lista(
         "Palos (separados por coma, en el orden que prefieras)",
-        "Copas, Oros, Espadas, Bastos"
+        "Tréboles, Picas, Espadas, Corazones"
     )
     if len(palos) < 1:
         print("Error: se debe definir al menos 1 palo.")
@@ -969,7 +966,7 @@ def main() -> None:
     print()
     rangos = pedir_lista(
         "Rangos (separados por coma, de menor a mayor valor)",
-        "As, Dos, Tres, Cuatro, Cinco, Seis, Siete, Sota, Caballo, Rey"
+        "As, Dos, Tres, Cuatro, Cinco, Seis, Siete, Jota, Reina, Rey"
     )
     if len(rangos) < 1:
         print("Error: se debe definir al menos 1 rango.")
@@ -988,6 +985,10 @@ def main() -> None:
     ruta_salida = directorio_salida / f"{slug_baraja}.ttl"
     ruta_salida.write_text(ttl, encoding="utf-8")
     print(f"Ontología generada: {ruta_salida.resolve()}")
+
+# =============================================================================
+# Punto de entrada
+# =============================================================================
  
 if __name__ == "__main__":
     main()
