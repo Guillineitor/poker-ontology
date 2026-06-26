@@ -8,7 +8,10 @@
 # y cartas; propiedades de objeto y datos; e individuos ABox para cada elemento
 # de la baraja. La variación queda determinada por los parámetros que el usuario
 # introduce en la consola: nombre de la baraja, palos y rangos.
-
+#
+# Uso:
+#     python generador_ontologias.py
+#
 # Flujo principal:
 #     1. Solicitar nombre, palos y rangos desde la consola.
 #     2. Derivar la IRI base y el nombre del archivo de salida a partir del nombre.
@@ -20,6 +23,7 @@
 
 import re
 import sys
+import unicodedata
 from pathlib import Path
  
 # =============================================================================
@@ -30,9 +34,7 @@ def identificador(nombre: str) -> str:
     """
     Convierte texto en un identificador CamelCase seguro para Turtle.
     Elimina caracteres no alfanuméricos para producir IRIs válidos y ordenados.
-    """
-    import unicodedata
- 
+    """ 
     nombre = unicodedata.normalize("NFD", nombre)
     nombre = "".join(c for c in nombre if unicodedata.category(c) != "Mn")
     nombre = re.sub(r"[^\w\s\-]", "", nombre, flags=re.UNICODE)
@@ -45,8 +47,6 @@ def slug(nombre: str) -> str:
     Los espacios se reemplazan por guiones bajos y se eliminan los caracteres
     que no son alfanuméricos ni guiones bajos.
     """
-    import unicodedata
- 
     nombre = unicodedata.normalize("NFD", nombre)
     nombre = "".join(c for c in nombre if unicodedata.category(c) != "Mn")
     nombre = nombre.lower().strip()
@@ -350,7 +350,9 @@ poker:manoTienePar a owl:ObjectProperty ;
     rdfs:comment "Indica qué rangos están presentes con al menos 2 cartas en la mano. Se agrega manualmente en la ABox; usado por el clasificador de DoblePar." ."""
  
 def seccion_abox_palos(palos: list[str]) -> str:
-    """Crea los individuos ABox para cada palo de la baraja."""
+    """
+    Crea los individuos ABox para cada palo de la baraja.
+    """
     lineas = [
         "",
         "# =============================================================================",
@@ -371,7 +373,9 @@ def seccion_abox_palos(palos: list[str]) -> str:
     return "\n".join(lineas)
  
 def seccion_abox_rangos(rangos: list[str]) -> str:
-    """Crea los individuos ABox para cada rango de la baraja."""
+    """
+    Crea los individuos ABox para cada rango de la baraja.
+    """
     lineas = [
         "",
         "# --- Rangos ---",
@@ -386,7 +390,9 @@ def seccion_abox_rangos(rangos: list[str]) -> str:
     return "\n".join(lineas)
  
 def seccion_abox_cartas(palos: list[str], rangos: list[str]) -> str:
-    """Crea un individuo ABox por cada combinación palo-rango de la baraja."""
+    """
+    Crea un individuo ABox por cada combinación palo-rango de la baraja.
+    """
     n_cartas = len(palos) * len(rangos)
     lineas = [
         "# --- Cartas ---",
@@ -924,13 +930,17 @@ def generar_ontologia(
 # =============================================================================
  
 def pedir(prompt: str, valor_por_defecto: str = "") -> str:
-    """Lee una cadena desde la consola y devuelve valor_por_defecto si la entrada está vacía."""
+    """
+    Lee una cadena desde la consola y devuelve valor_por_defecto si la entrada está vacía.
+    """
     sufijo = f" [{valor_por_defecto}]" if valor_por_defecto else ""
     entrada = input(f"{prompt}{sufijo}: ").strip()
     return entrada if entrada else valor_por_defecto
  
 def pedir_lista(prompt: str, ejemplo: str) -> list[str]:
-    """Lee una lista separada por comas, limpiando espacios y elementos vacíos."""
+    """
+    Lee una lista separada por comas, limpiando espacios y elementos vacíos.
+    """
     entrada = input(f"{prompt} [ej: {ejemplo}]: ").strip()
     return [elemento.strip() for elemento in entrada.split(",") if elemento.strip()]
  

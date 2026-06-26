@@ -9,10 +9,18 @@
 # por lo que el script se adapta a cualquier baraja customizada.
 #
 # Uso:
-#     python generador_instancias.py <ontologia.ttl>
+#     python generador_instancias.py <..(carpeta donde se ubica la ontología)\ontologia.ttl>
 #
 # Ejemplo:
-#     python generador_instancias.py ontologia_base_poker.ttl
+#     python generador_instancias.py ..\ontologias\ontologias_customizadas\baraja_6r_4p.ttl
+#
+# Flujo principal:
+#     1. Leer la ontología TTL indicada como argumento.
+#     2. Extraer dinámicamente rangos, palos y cartas de la ontología.
+#     3. Verificar qué tipos de mano son generables con la baraja de cartas dada.
+#     4. Generar aleatoriamente 4 manos válidas de cada uno de los 10 tipos.
+#     5. Construir los bloques de la ontología de cada mano con su label descriptivo.
+#     6. Escribir el archivo ABox de salida con todas las instancias de manos generadas.
 #
 # El archivo de salida se genera en la misma carpeta de este script,
 # con el nombre derivado de la ontología de entrada.
@@ -60,12 +68,9 @@ def leer_ontologia(ruta_ontologia):
     with open(ruta_ontologia, encoding="utf-8") as archivo:
         contenido = archivo.read()
 
-    # --- URI base del prefijo poker: ---
     m = re.search(r'@prefix\s+poker:\s*<([^>]+)>', contenido)
     uri_poker = m.group(1) if m else "http://www.poker-ontology.org/poker#"
 
-    # --- Rangos: se leen en el orden en que aparecen declarados en la ontología ---
-    # Se buscan primero los que tienen rdfs:label inline; si no, se usa el nombre del individuo.
     rangos_con_label = re.findall(
         r'poker:(\w+)\s+a\s+poker:Rango\s*;\s*rdfs:label\s+"([^"]+)"',
         contenido
@@ -74,21 +79,18 @@ def leer_ontologia(ruta_ontologia):
         r'poker:(\w+)\s+a\s+poker:Rango\b',
         contenido
     )
-    # Se unifican: si hay label se usa, si no, el nombre del individuo como fallback.
+
     etiquetas_rango = dict(rangos_con_label)
     rangos_encontrados = [(n, etiquetas_rango.get(n, n)) for n in rangos_sin_label]
 
     rangos = [nombre for nombre, _ in rangos_encontrados]
     valor = {rango: i for i, rango in enumerate(rangos)}
-
-    # Etiqueta corta de cada rango para la notación de escaleras.
-    # Se usa el rdfs:label del individuo si está definido en la ontología,
-    # y el nombre del individuo como fallback si no lo está.
     etiqueta_rango = {nombre: label for nombre, label in rangos_encontrados}
 
-    # Plural de cada rango: se usa el nombre del individuo como base.
-    # Regla: terminado en vocal → +s; en z → cambia z por c y añade +es; en consonante → +es.
     def pluralizar(palabra):
+        """
+        Devuelve el plural de una palabra en español.
+        """
         vocales = "aeiouáéíóúAEIOUÁÉÍÓÚ"
         if palabra[-1] in vocales:
             return palabra + "s"
@@ -98,8 +100,6 @@ def leer_ontologia(ruta_ontologia):
 
     plural_rango = {rango: pluralizar(rango) for rango in rangos}
 
-    # --- Palos: se leen en orden de aparición ---
-    # Se buscan primero los que tienen rdfs:label inline; si no, se usa el nombre del individuo.
     palos_con_label = re.findall(
         r'poker:(\w+)\s+a\s+poker:Palo\s*;\s*rdfs:label\s+"([^"]+)"',
         contenido
@@ -114,7 +114,6 @@ def leer_ontologia(ruta_ontologia):
     palos = [nombre for nombre, _ in palos_encontrados]
     nombre_palo = {nombre: label for nombre, label in palos_encontrados}
 
-    # --- Baraja: individuos de poker:Carta con tienePalo y tieneRango ---
     patron_carta = re.compile(
         r'poker:(\w+)\s+a\s+poker:Carta\s*;'
         r'.*?poker:tienePalo\s+poker:(\w+)\s*;'
@@ -161,7 +160,8 @@ def nombre_individuo(rango, palo):
 
 def es_escalera(mano, valor, rangos):
     """
-    Indica si las cartas de la mano forman una escalera."""
+    Indica si las cartas de la mano forman una escalera.
+    """
     vals = sorted(valor[r] for r, _ in mano)
     secuencial = all(vals[i+1] - vals[i] == 1 for i in range(4))
     return secuencial
@@ -263,7 +263,6 @@ def generar_escalera(baraja, ont):
     rangos = ont["rangos"]
     conjunto = set(baraja)
 
-    # Todas las secuencias posibles de 5 rangos consecutivos.
     secuencias = [rangos[i:i+5] for i in range(len(rangos) - 4)]
     random.shuffle(secuencias)
 
@@ -277,8 +276,6 @@ def generar_escalera(baraja, ont):
                     break
                 mano.append((rango, random.choice(palos_disp)))
             else:
-                # El bloque else del for se ejecuta solo si no hubo break,
-                # es decir, si se construyó la mano completa sin cartas faltantes.
                 if len(set(p for _, p in mano)) > 1:
                     return mano, None
     raise RuntimeError("No se pudo generar una mano de Escalera.")
@@ -318,8 +315,6 @@ def generar_full(baraja, ont):
     rangos_con_trio = [r for r, cs in por_rango.items() if len(cs) >= 3]
     rangos_con_par = [r for r, cs in por_rango.items() if len(cs) >= 2]
 
-    # El loop existe para guardar consistencia con los demás generadores,
-    # pero en la práctica siempre retorna en la primera iteración.
     for _ in range(10000):
         r_trio = random.choice(rangos_con_trio)
         r_par = random.choice([r for r in rangos_con_par if r != r_trio])
@@ -360,7 +355,6 @@ def generar_escalera_color(baraja, ont):
     palos = ont["palos"]
     conjunto = set(baraja)
 
-    # Se excluyen los 5 rangos más altos porque forman la Escalera Real.
     secuencias = [rangos[i:i+5] for i in range(len(rangos) - 5)]
     random.shuffle(secuencias)
 
@@ -418,7 +412,6 @@ def label_descriptivo(tipo, mano, pares_extra, ont):
     nombre_palo = ont["nombre_palo"]
     plural_rango = ont["plural_rango"]
 
-    # Rangos de la mano ordenados de mayor a menor, para armar los labels.
     mano_ord = sorted(mano, key=lambda c: valor[c[0]], reverse=True)
     rgs = [r for r, _ in mano_ord]
 
@@ -570,7 +563,6 @@ def generar_archivo(ruta_ontologia):
     Función principal. Lee la ontología indicada, extrae rangos y palos,
     genera las 40 manos aleatorias y escribe el archivo TTL de salida.
     """
-    # El nombre del archivo de salida se deriva del nombre de la ontología de entrada.
     nombre_base = os.path.splitext(os.path.basename(ruta_ontologia))[0]
     ruta_salida = f"instancias_{nombre_base}.ttl"
     print(f"Leyendo ontología: {ruta_ontologia}")
