@@ -46,7 +46,7 @@ Cada ontología modela una baraja con **P palos × R rangos = P·R cartas**, org
 
 Las ontologías se producen ejecutando el generador desde la carpeta /generador_ontologias :
 
-```bash
+```powershell
 python generador_ontologias.py
 ```
 

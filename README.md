@@ -133,7 +133,7 @@ El flujo completo tiene tres etapas: generar las ontologías customizadas, gener
 
 Este paso solo es necesario si se quieren experimentos con barajas distintas a la estándar (variedad en cantidad de palos o rangos).
 
-```bash
+```powershell
 cd generador_ontologias/
 python generador_ontologias.py
 ```
@@ -146,7 +146,7 @@ El script solicita de forma interactiva el nombre de la baraja, los palos y los 
 
 Una vez disponible la ontología, se pueden generar las instancias ABox correspondientes. El script debe ejecutarse desde la carpeta `instancias/` y recibe como argumento la ruta a la ontología `.ttl`.
 
-```bash
+```powershell
 cd instancias/
 python generador_instancias.py ../(carpeta donde se ubica la ontología)/<nombre_baraja>.ttl
 ```
@@ -157,7 +157,7 @@ El archivo de salida se genera en la misma carpeta `instancias/`, con un nombre 
 
 ### Etapa 3 — Ejecutar el benchmark Java
 
-```bash
+```powershell
 cd razonamiento/
 mvn clean package
 java -jar target/poker-reasoner-1.0-SNAPSHOT-jar-with-dependencies.jar
