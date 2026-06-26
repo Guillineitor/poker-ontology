@@ -56,7 +56,7 @@ def slug(nombre: str) -> str:
  
 def etiqueta(nombre: str) -> str:
     """
-    Devuelve una etiqueta legible para rdfs:label, sin alterar el contenido.
+    Devuelve una etiqueta legible para rdfs:label.
     """
     return nombre.strip().capitalize()
  
@@ -362,7 +362,7 @@ def seccion_abox_palos(palos: list[str]) -> str:
         "# Convención de nombres para cartas: {Rango}De{Palo}.",
         "# =============================================================================",
         "",
-        f"# --- Palos ---",
+        "# --- Palos ---",
     ]
     for p in palos:
         id_palo = identificador(p)
@@ -376,7 +376,7 @@ def seccion_abox_rangos(rangos: list[str]) -> str:
     """Crea los individuos ABox para cada rango de la baraja."""
     lineas = [
         "",
-        f"# --- Rangos ---",
+        "# --- Rangos ---",
     ]
     for r in rangos:
         id_rango = identificador(r)
@@ -391,7 +391,7 @@ def seccion_abox_cartas(palos: list[str], rangos: list[str]) -> str:
     """Crea un individuo ABox por cada combinación palo-rango de la baraja."""
     n_cartas = len(palos) * len(rangos)
     lineas = [
-        f"# --- Cartas ---",
+        "# --- Cartas ---",
     ]
     for p in palos:
         id_palo = identificador(p)
@@ -475,7 +475,8 @@ def capacidades_manos(palos: list[str], rangos: list[str]) -> tuple[dict[str, bo
     Las reglas se derivan de la estructura física de la baraja: una carta por
     combinación palo-rango y manos de exactamente cinco cartas. Por ejemplo,
     Trío requiere al menos tres palos porque no puede haber tres cartas del
-    mismo rango en una baraja con solo dos palos.
+    mismo rango en una baraja con solo dos palos. Color requiere al menos cinco
+    rangos para poder completar una mano de cinco cartas de un único palo.
  
     Devuelve dos diccionarios:
         posibles: clave → bool, indica si el clasificador es generable.
@@ -512,7 +513,7 @@ def capacidades_manos(palos: list[str], rangos: list[str]) -> tuple[dict[str, bo
         motivos["full"] = "requiere al menos 2 rangos"
     if n_palos < 3:
         motivos["trio"] = "requiere al menos 3 palos"
-        motivos["full"] = motivos.get("full", "requiere al menos 3 palos")
+        motivos.setdefault("full", "requiere al menos 3 palos")
     if n_palos < 4:
         motivos["poker"] = "requiere al menos 4 palos"
     if n_rangos < 5:
@@ -951,8 +952,8 @@ def main() -> None:
     print()
  
     nombre_baraja = pedir("Nombre de la baraja", "MiBaraja")
-    identificador = slug(nombre_baraja)
-    iri_base = f"http://www.ontologia-baraja.org/{identificador}"
+    slug_baraja = slug(nombre_baraja)
+    iri_base = f"http://www.ontologia-baraja.org/{slug_baraja}"
  
     print(f"  IRI base generada: {iri_base}")
     print()
@@ -984,7 +985,7 @@ def main() -> None:
  
     directorio_salida = Path(__file__).parent.parent / "ontologias" / "ontologias_customizadas"
     directorio_salida.mkdir(parents=True, exist_ok=True)
-    ruta_salida = directorio_salida / f"{identificador}.ttl"
+    ruta_salida = directorio_salida / f"{slug_baraja}.ttl"
     ruta_salida.write_text(ttl, encoding="utf-8")
     print(f"Ontología generada: {ruta_salida.resolve()}")
  

@@ -113,7 +113,7 @@ public class BenchmarkOWL {
             manager.addAxioms(merged, inst.getAxioms());
         }
 
-        System.out.printf("%n  ✓ Axiomas totales en la ontología fusionada: %d%n%n",
+        System.out.printf("%n  Axiomas totales en la ontología fusionada: %d%n%n",
             merged.getAxiomCount());
         return merged;
     }
@@ -124,7 +124,7 @@ public class BenchmarkOWL {
                 + f.getAbsolutePath() + RESET);
             System.exit(1);
         }
-        System.out.printf("  ✓ %-20s → %s%n", nombre, f.getAbsolutePath());
+        System.out.printf("  %-20s → %s%n", nombre, f.getAbsolutePath());
     }
 
     // ────────────────────────────────────────────────────────────────────────
@@ -171,7 +171,7 @@ public class BenchmarkOWL {
             // ── Consistencia ─────────────────────────────────────────────────
             res.consistente = reasoner.isConsistent();
             System.out.printf("  Consistencia      : %s%n",
-                res.consistente ? GREEN + "✓ CONSISTENTE" + RESET : RED + "✗ INCONSISTENTE" + RESET);
+                res.consistente ? GREEN + "CONSISTENTE" + RESET : RED + "✗ INCONSISTENTE" + RESET);
 
             if (!res.consistente) {
                 reasoner.dispose();
