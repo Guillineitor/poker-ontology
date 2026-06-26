@@ -260,10 +260,8 @@ def generar_escalera(baraja, ont):
     rangos = ont["rangos"]
     conjunto = set(baraja)
 
-    # Todas las secuencias posibles de 5 rangos consecutivos, incluida la rueda.
+    # Todas las secuencias posibles de 5 rangos consecutivos.
     secuencias = [rangos[i:i+5] for i in range(len(rangos) - 4)]
-    rueda = [rangos[-1]] + rangos[:4]   # As bajo: As-2-3-4-5
-    secuencias.append(rueda)
     random.shuffle(secuencias)
 
     palos = ont["palos"]
@@ -357,8 +355,6 @@ def generar_escalera_color(baraja, ont):
 
     secuencia_real = rangos[-5:]   # Los 5 rangos más altos son la Escalera Real.
     secuencias = [rangos[i:i+5] for i in range(len(rangos) - 5)]
-    rueda = [rangos[-1]] + rangos[:4]
-    secuencias.append(rueda)
     random.shuffle(secuencias)
 
     palos_mezclados = palos[:]
@@ -442,11 +438,7 @@ def label_descriptivo(tipo, mano, pares_extra, ont):
 
     if tipo == "escalera":
         vals = sorted(valor[r] for r, _ in mano)
-        # Rueda: As bajo.
-        if vals == [0, 1, 2, 3, len(rangos) - 1]:
-            secuencia = [rangos[-1]] + rangos[:4]
-        else:
-            secuencia = [rangos[v] for v in vals]
+        secuencia = [rangos[v] for v in vals]
         return f"Escalera de {notacion_corta(secuencia, etiqueta_rango)}"
 
     if tipo == "color":
@@ -466,10 +458,7 @@ def label_descriptivo(tipo, mano, pares_extra, ont):
     if tipo == "escalera_color":
         palo = mano[0][1]
         vals = sorted(valor[r] for r, _ in mano)
-        if vals == [0, 1, 2, 3, len(rangos) - 1]:
-            secuencia = [rangos[-1]] + rangos[:4]
-        else:
-            secuencia = [rangos[v] for v in vals]
+        secuencia = [rangos[v] for v in vals]
         return f"Escalera de Color {notacion_corta(secuencia, etiqueta_rango)} de {nombre_palo[palo]}"
 
     if tipo == "escalera_real":
