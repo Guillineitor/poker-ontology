@@ -148,7 +148,7 @@ Una vez disponible la ontología, se pueden generar las instancias ABox correspo
 
 ```powershell
 cd instancias/
-python generador_instancias.py ../(carpeta donde se ubica la ontología)/<nombre_baraja>.ttl
+python generador_instancias.py ../(carpeta donde se ubica la ontología)/<nombre_ontología>.ttl
 ```
 
 El archivo de salida se genera en la misma carpeta `instancias/`, con un nombre derivado de la ontología de entrada.

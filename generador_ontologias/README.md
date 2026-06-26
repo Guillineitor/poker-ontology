@@ -7,10 +7,10 @@ Generador de ontologías con barajas de cartas customizadas en OWL 2 DL, seriali
 ## Contenido
 
 - Descripción general
-- Generación
-- Cómo se organiza el código
+- Generación de ontologías
+- Organización del código
 - Uso
-- Supuestos importantes
+- Observaciones importantes
 
 ---
 
@@ -28,7 +28,7 @@ El generador construye una ontología completa para una baraja definida por el u
 
 ---
 
-## Generación
+## Generación de ontologías
 
 El generador produce una ontología con los siguientes componentes:
 
@@ -43,7 +43,7 @@ El generador produce una ontología con los siguientes componentes:
 
 ---
 
-## Cómo se organiza el código
+## Organización del código
 
 El archivo está dividido en cuatro bloques:
 
@@ -69,10 +69,10 @@ El script solicita de forma interactiva el nombre de la baraja, sus palos y sus 
 El archivo generado se guarda en:
 
 ```text
-ontologias/ontologias_customizadas/<nombre_baraja>.ttl
+ontologias/ontologias_customizadas/<nombre_ontología>.ttl
 ```
 
-Posteriormente el usuario puede organizar las ontologías creadas de la manera que prefiera.
+Posteriormente el usuario puede organizar las ontologías creadas de la manera que prefiera. En el caso de las ontologías para el benchmark, se reorganizó en distintas subcarpetas dentro de la carpeta ontologias/ontologias_customizadas/, una por cada cantidad de rangos.
 
 ---
 
