@@ -29,6 +29,7 @@ Este proyecto está estructurado de acuerdo a las fases del Trabajo de Título, 
 | API de razonamiento | OWL API 5.x |
 | Idioma de la ontología | Español |
 | Lenguaje del benchmark | Java 11, Maven |
+| Lenguaje de los scripts | Python 3.14.3 (junto con librerías estándar) |
 
 El proyecto evalúa la capacidad de razonadores OWL 2 DL para clasificar manos de póker (Par, Trío, Escalera, etc.) a partir de una ontología con restricciones de cardinalidad calificada y clases equivalentes. Se miden tiempos de inicialización, precomputación y memoria heap consumida.
 
@@ -60,14 +61,19 @@ Consultar `generador_ontologias/README.md` para detalles de configuración y par
 
 ### `instancias/`
 
-Archivos Turtle (`.ttl`) con la ABox de cada experimento. Cada subcarpeta corresponde a una configuración distinta de instancias generadas sobre la ontología base.
+Archivos Turtle (`.ttl`) con la ABox de cada experimento. Cada subcarpeta corresponde a una configuración distinta de instancias generadas sobre su respectiva ontología de
+póker personalizada. Las instancias se producen con el script `generador_instancias.py`, que vive en esta misma carpeta y acepta como argumento la ruta a una ontología `.ttl`.
+
+Para la ontología base de póker, las instancias están conformadas por:
 
 | Tipo | Cantidad base | Descripción |
 |---|---|---|
 | `Palo` | 4 | Picas, Corazones, Diamantes, Tréboles |
-| `Rango` | 13 | Dos (2) a As (14) |
+| `Rango` | 13 | Dos a As |
 | `Carta` | 52 | 13 rangos × 4 palos |
-| `Mano` | 10 | Instancias de 5 cartas clasificadas por tipo |
+| `Mano` | 10 | 4 instancias de 5 cartas clasificadas por tipo |
+
+En caso de ontologías de póker personalizadas usadas en este trabajo, la cantidad de palos, rangos y cartas cambia, pero la cantidad de instancias por cada mano sigue siendo 4.
 
 ### `ontologias/`
 
@@ -78,7 +84,7 @@ Contiene la TBox del dominio, dividida en:
 
 ### `razonamiento/`
 
-Proyecto Maven con el benchmark Java. Compara razonadores sobre la ontología fusionada (TBox + ABox) y reporta métricas por razonador.
+Proyecto Maven con el benchmark en Java. Compara razonadores sobre la ontología fusionada (TBox + ABox) y reporta métricas por razonador.
 
 Métricas capturadas:
 
@@ -87,7 +93,7 @@ Métricas capturadas:
 | Tiempo de inicialización | Tiempo en crear la instancia del razonador (ms) |
 | Tiempo de precomputación | Tiempo en computar la jerarquía de clases (ms) |
 | Tiempo total | Suma de los anteriores (ms) |
-| Δ Memoria heap | Incremento de memoria durante el razonamiento (MB) |
+| Memoria heap | Incremento de memoria durante el razonamiento (MB) |
 | Consistencia | Si la ontología es lógicamente consistente |
 | Clases inferidas | Número de clases en la jerarquía inferida |
 | Instancias por clase | Manos clasificadas en cada tipo (Par, Trío, etc.) |
@@ -112,22 +118,49 @@ Razonadores **excluidos** del benchmark:
 | Razonador | Motivo de exclusión |
 |---|---|
 | ELK | Solo OWL 2 EL; no soporta cardinalidades calificadas ni `owl:hasValue` |
-| Konclude | OWL 2 DL completo, pero requiere servidor HTTP externo (OWLlink); sin artefacto Maven |
-| FaCT++ nativo | Biblioteca C++ con JNI; sin soporte para OWL API 5 |
-| Pellet original | Discontinuado; reemplazado por Openllet |
 
 ---
 
 ## Cómo ejecutar el benchmark
 
-**Prerrequisitos:** Java 11+, Maven 3.6+.
+El flujo completo tiene tres etapas: generar las ontologías customizadas, generar las instancias correspondientes y finalmente correr el benchmark. Las dos primeras etapas son opcionales si se trabaja únicamente con la ontología base.
+
+**Prerrequisitos:** Python 3.14.3+, Java 11+, Maven 3.6+. Los scripts de Python no requieren instalar dependencias externas, solo se usa librerías estándar.
+
+---
+
+### Etapa 1 — Generar ontologías customizadas
+
+Este paso solo es necesario si se quieren experimentos con barajas distintas a la estándar (variedad en cantidad de palos o rangos).
 
 ```bash
-# 1. Desde la carpeta razonamiento/, compilar y empaquetar
-mvn clean package
+cd generador_ontologias/
+python generador_ontologias.py
+```
 
-# 2. Ejecutar el JAR con todas las dependencias
+El script solicita de forma interactiva el nombre de la baraja, los palos y los rangos. La ontología resultante se escribe automáticamente en `ontologias/ontologias_customizadas/`. En este repositorio se creó y se organizó a mano las ontologías de acuerdo a la cantidad de rangos en distintas carpetas dentro de `ontologias/ontologias_customizadas/`. En `generador_ontologias/README.md` para más detalles sobre los parámetros disponibles para crear ontologías de póker personalizadas.
+
+---
+
+### Etapa 2 — Generar instancias
+
+Una vez disponible la ontología, se pueden generar las instancias ABox correspondientes. El script debe ejecutarse desde la carpeta `instancias/` y recibe como argumento la ruta a la ontología `.ttl`.
+
+```bash
+cd instancias/
+python generador_instancias.py ../(carpeta donde se ubica la ontología)/<nombre_baraja>.ttl
+```
+
+El archivo de salida se genera en la misma carpeta `instancias/`, con un nombre derivado de la ontología de entrada.
+
+---
+
+### Etapa 3 — Ejecutar el benchmark Java
+
+```bash
+cd razonamiento/
+mvn clean package
 java -jar target/poker-reasoner-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 
-El programa carga automáticamente `../ontologias/ontologia_base/` y `../instancias/instancias.ttl`, fusiona los axiomas en una sola ontología y ejecuta el benchmark para los tres razonadores en secuencia. Los resultados se imprimen en consola con tablas comparativas y se guardan en `resultados/`.
+El programa carga automáticamente `../ontologias/ontologia_base/` y `../instancias/instancias.ttl`, fusiona los axiomas en una sola ontología y ejecuta el benchmark para los tres razonadores en secuencia. Los resultados se imprimen en consola y se guardan en `resultados/`.
