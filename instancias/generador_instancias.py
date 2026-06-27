@@ -377,8 +377,11 @@ def generar_escalera_real(baraja, ont, palos_usados):
     conjunto = set(baraja)
 
     secuencia = rangos[-5:]   # Los 5 rangos más altos de la ontología.
-    palos_ord = [p for p in palos if p not in palos_usados] + \
-                [p for p in palos if p in palos_usados]
+    palos_libres = [p for p in palos if p not in palos_usados]
+    palos_repetidos = [p for p in palos if p in palos_usados]
+    random.shuffle(palos_libres)
+    random.shuffle(palos_repetidos)
+    palos_ord = palos_libres + palos_repetidos
 
     for palo in palos_ord:
         mano = [(r, palo) for r in secuencia]
