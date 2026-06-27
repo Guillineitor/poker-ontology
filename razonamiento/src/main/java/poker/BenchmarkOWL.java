@@ -13,36 +13,51 @@ import openllet.owlapi.OpenlletReasonerFactory;
 // JFact (FaCT++)
 import uk.ac.manchester.cs.jfact.JFactFactory;
 
-import java.io.File;
+import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
  * BenchmarkOWL — compara HermiT, Openllet (Pellet) y JFact (FaCT++)
- * sobre la ontología de póker.
+ * sobre una ontología de póker.
  *
- * Métricas por razonador:
- *   • Tiempo de carga + inicialización   (ms)
- *   • Tiempo de precomputación           (ms)
- *   • Tiempo total de clasificación      (ms)
- *   • Memoria heap usada antes/después   (MB)
- *   • Consistencia de la ontología
- *   • Número de clases en la jerarquía inferida
- *   • Número de instancias clasificadas  (por clase de mano)
- *   • Número total de inferencias        (aserciones de clase inferidas)
+ * Uso:
+ *   java -jar poker-reasoner.jar <ontologia.ttl> <instancias.ttl>
+ *
+ * El IRI base se extrae automáticamente de la ontología cargada,
+ * por lo que el benchmark funciona con cualquier variante de baraja.
+ *
+ * Métricas por razonador (todas las temporales en milisegundos):
+ *   • carga_ms    — lectura de TTL desde disco y construcción del OWLOntology fusionado
+ *   • init_ms     — creación del razonador (createReasoner)
+ *   • precomp_ms  — precomputación de jerarquía, aserciones de clase y propiedades de objeto
+ *   • total_ms    — suma de los tres anteriores (costo real de razonar desde cero)
+ *   • mem_delta_mb — diferencia de heap usada antes/después de la precomputación (MB)
+ *   • consistente  — si la ontología es consistente según el razonador
+ *   • clases_jerarquia — número de clases en la jerarquía inferida
+ *   • inst_<Clase> — número de individuos clasificados bajo cada clase de mano
+ *   • total_inferencias — suma de inst_<Clase> sobre todas las clases de mano
  */
 public class BenchmarkOWL {
 
-    // ── Rutas relativas desde razonamiento/ ─────────────────────────────────
-    private static final String BASE_TTL  = "../ontologia/ontologia_base_poker.ttl";
+    // ── Rutas resueltas en main() desde los argumentos de línea de comandos ─
+    private static String BASE_TTL;
+    private static String INST_TTL;
 
-    // Los 10 archivos de instancias en ../instancias/
-    private static final String[] INST_TTLS = {
-        "../instancias/instancias.ttl"
-    };
+    // IRI base extraído de la ontología cargada (p.ej. "…/poker#" o "…/baraja_6r_4p#")
+    private static String BASE_IRI;
 
-    private static final String BASE_IRI  = "http://www.poker-ontology.org/poker#";
+    // Carpeta de salida para los CSV (relativa a la raíz del repositorio)
+    private static final String RESULTADOS_DIR = "../../resultados";
+
+    // Timestamp compartido por todos los archivos de esta ejecucion
+    private static final String TIMESTAMP =
+        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
 
     // Clases de mano que queremos consultar
     private static final String[] CLASES_MANO = {
@@ -60,60 +75,81 @@ public class BenchmarkOWL {
 
     public static void main(String[] args) throws Exception {
 
+        // ── Argumentos de línea de comandos ──────────────────────────────────
+        if (args.length != 2) {
+            System.err.println(RED
+                + "Uso: java -jar poker-reasoner.jar <ontologia.ttl> <instancias.ttl>"
+                + RESET);
+            System.exit(1);
+        }
+        BASE_TTL = args[0];
+        INST_TTL = args[1];
+
+        // Carga inicial: extrae BASE_IRI e imprime información de la ontología.
+        // A partir de aquí BASE_IRI queda fijo para el resto de la ejecución.
+        cargarOntologias();
+
         banner();
 
-        // 1. Cargar y combinar ontologías (una sola vez, compartida)
-        OWLOntology merged = cargarOntologias();
-
-        // 2. Definir razonadores a comparar
+        // 1. Definir razonadores a comparar
         List<EntradaRazonador> razonadores = Arrays.asList(
-            new EntradaRazonador("HermiT",          new ReasonerFactory()),
+            new EntradaRazonador("HermiT",           new ReasonerFactory()),
             new EntradaRazonador("Openllet (Pellet)", OpenlletReasonerFactory.getInstance()),
-            new EntradaRazonador("JFact (FaCT++)",   new JFactFactory())
+            new EntradaRazonador("JFact (FaCT++)",    new JFactFactory())
         );
 
-        // 3. Ejecutar benchmark para cada razonador
+        // 2. Ejecutar benchmark para cada razonador.
+        // Cada iteracion recarga la ontologia desde disco con un manager limpio,
+        // garantizando que ningun razonador herede estado de cache del anterior.
         List<ResultadoBenchmark> resultados = new ArrayList<>();
         for (EntradaRazonador entrada : razonadores) {
-            ResultadoBenchmark r = ejecutarBenchmark(entrada, merged);
+            ResultadoBenchmark r = ejecutarBenchmark(entrada);
             resultados.add(r);
         }
 
-        // 4. Imprimir tabla comparativa
+        // 3. Imprimir tabla comparativa
         imprimirTabla(resultados);
         imprimirClasificaciones(resultados);
         imprimirResumen(resultados);
+
+        // 4. Guardar resultados en CSV
+        guardarCSV(resultados);
     }
 
     // ────────────────────────────────────────────────────────────────────────
     // Carga y fusión de ontologías
     // ────────────────────────────────────────────────────────────────────────
     private static OWLOntology cargarOntologias() throws Exception {
-        System.out.println(CYAN + "Cargando ontologías..." + RESET);
-
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 
-        // Ontología base (incluye clasificadores)
+        // Ontología base (incluye clasificadores TBox)
         File baseFile = new File(BASE_TTL);
         verificarArchivo(baseFile, "Ontología base");
         OWLOntology base = manager.loadOntologyFromOntologyDocument(baseFile);
 
-        // Fusionar en una sola ontología para razonar
-        OWLOntology merged = manager.createOntology(
-            IRI.create("http://www.poker-ontology.org/benchmark")
-        );
-        manager.addAxioms(merged, base.getAxioms());
-
-        // Cargar los 10 archivos de instancias
-        System.out.println("  Cargando instancias...");
-        for (String path : INST_TTLS) {
-            File f = new File(path);
-            verificarArchivo(f, f.getName());
-            OWLOntology inst = manager.loadOntologyFromOntologyDocument(f);
-            manager.addAxioms(merged, inst.getAxioms());
+        // Extraer el IRI base la primera vez que se carga la ontología.
+        // Las llamadas sucesivas (una por razonador) lo reutilizan sin recalcular.
+        if (BASE_IRI == null) {
+            String ontIRI = base.getOntologyID()
+                .getOntologyIRI()
+                .map(IRI::toString)
+                .orElseThrow(() -> new IllegalStateException(
+                    "La ontología base no declara un IRI (falta <iri> a owl:Ontology)."));
+            BASE_IRI = ontIRI + "#";
+            System.out.printf("  IRI base detectado : %s%n", BASE_IRI);
         }
 
-        System.out.printf("%n  Axiomas totales en la ontología fusionada: %d%n%n",
+        // Fusionar en una sola ontología anónima para razonar
+        OWLOntology merged = manager.createOntology();
+        manager.addAxioms(merged, base.getAxioms());
+
+        // Cargar el archivo de instancias (ABox)
+        File instFile = new File(INST_TTL);
+        verificarArchivo(instFile, instFile.getName());
+        OWLOntology inst = manager.loadOntologyFromOntologyDocument(instFile);
+        manager.addAxioms(merged, inst.getAxioms());
+
+        System.out.printf("  Axiomas totales en la ontología fusionada: %d%n",
             merged.getAxiomCount());
         return merged;
     }
@@ -130,21 +166,28 @@ public class BenchmarkOWL {
     // ────────────────────────────────────────────────────────────────────────
     // Benchmark de un razonador
     // ────────────────────────────────────────────────────────────────────────
-    private static ResultadoBenchmark ejecutarBenchmark(
-            EntradaRazonador entrada, OWLOntology ontologia) {
+    private static ResultadoBenchmark ejecutarBenchmark(EntradaRazonador entrada) {
 
         System.out.println(BOLD + "━━━ " + entrada.nombre + " ━━━" + RESET);
         ResultadoBenchmark res = new ResultadoBenchmark(entrada.nombre);
 
-        OWLDataFactory factory = ontologia.getOWLOntologyManager().getOWLDataFactory();
-        MemoryMXBean memBean   = ManagementFactory.getMemoryMXBean();
+        MemoryMXBean memBean = ManagementFactory.getMemoryMXBean();
 
         try {
             // ── Memoria antes ────────────────────────────────────────────────
             System.gc();
             long memAntesMB = memBean.getHeapMemoryUsage().getUsed() / (1024 * 1024);
 
-            // ── Inicialización ───────────────────────────────────────────────
+            // ── Carga desde disco (manager limpio) ───────────────────────────
+            long tCarga0 = System.currentTimeMillis();
+            System.out.println(CYAN + "  Cargando ontologías..." + RESET);
+            OWLOntology ontologia = cargarOntologias();
+            long tCarga = System.currentTimeMillis() - tCarga0;
+            res.tiempoCargaMs = tCarga;
+
+            OWLDataFactory factory = ontologia.getOWLOntologyManager().getOWLDataFactory();
+
+            // ── Inicialización del razonador ─────────────────────────────────
             long t0 = System.currentTimeMillis();
             OWLReasoner reasoner = entrada.factory.createReasoner(
                 ontologia, new SimpleConfiguration()
@@ -156,11 +199,12 @@ public class BenchmarkOWL {
             long t1 = System.currentTimeMillis();
             reasoner.precomputeInferences(
                 InferenceType.CLASS_HIERARCHY,
+                InferenceType.CLASS_ASSERTIONS,
                 InferenceType.OBJECT_PROPERTY_ASSERTIONS
             );
             long tPrecomp = System.currentTimeMillis() - t1;
             res.tiempoPrecompMs = tPrecomp;
-            res.tiempoTotalMs   = tInit + tPrecomp;
+            res.tiempoTotalMs   = tCarga + tInit + tPrecomp;
 
             // ── Memoria después ──────────────────────────────────────────────
             long memDespuesMB = memBean.getHeapMemoryUsage().getUsed() / (1024 * 1024);
@@ -221,6 +265,7 @@ public class BenchmarkOWL {
             }
             System.out.println();
 
+            System.out.printf("  Carga             : %d ms%n",  tCarga);
             System.out.printf("  Init              : %d ms%n",  tInit);
             System.out.printf("  Precomputación    : %d ms%n",  tPrecomp);
             System.out.printf("  Total             : %d ms%n",  res.tiempoTotalMs);
@@ -244,15 +289,15 @@ public class BenchmarkOWL {
     private static void imprimirTabla(List<ResultadoBenchmark> resultados) {
         System.out.println(BOLD + CYAN);
         System.out.println("╔══════════════════════════════════════════════════════════════════════╗");
-        System.out.println("║              TABLA COMPARATIVA DE RAZONADORES                       ║");
+        System.out.println("║              TABLA COMPARATIVA DE RAZONADORES                        ║");
         System.out.println("╚══════════════════════════════════════════════════════════════════════╝");
         System.out.println(RESET);
 
-        String fmt = "%-22s │ %10s │ %12s │ %10s │ %10s │ %8s │ %12s%n";
+        String fmt = "%-22s │ %10s │ %10s │ %12s │ %10s │ %10s │ %8s │ %12s%n";
         System.out.printf(BOLD + fmt + RESET,
-            "Razonador", "Init (ms)", "Precomp (ms)", "Total (ms)",
+            "Razonador", "Carga (ms)", "Init (ms)", "Precomp (ms)", "Total (ms)",
             "ΔMem (MB)", "Consist.", "Inferencias");
-        System.out.println("─".repeat(95));
+        System.out.println("─".repeat(110));
 
         for (ResultadoBenchmark r : resultados) {
             if (r.error != null) {
@@ -261,6 +306,7 @@ public class BenchmarkOWL {
             }
             System.out.printf(fmt,
                 r.nombre,
+                r.tiempoCargaMs,
                 r.tiempoInicMs,
                 r.tiempoPrecompMs,
                 r.tiempoTotalMs,
@@ -275,7 +321,7 @@ public class BenchmarkOWL {
     private static void imprimirClasificaciones(List<ResultadoBenchmark> resultados) {
         System.out.println(BOLD + CYAN);
         System.out.println("╔══════════════════════════════════════════════════════════════════════╗");
-        System.out.println("║           INSTANCIAS CLASIFICADAS POR CLASE DE MANO                 ║");
+        System.out.println("║           INSTANCIAS CLASIFICADAS POR CLASE DE MANO                  ║");
         System.out.println("╚══════════════════════════════════════════════════════════════════════╝");
         System.out.println(RESET);
 
@@ -302,7 +348,7 @@ public class BenchmarkOWL {
     private static void imprimirResumen(List<ResultadoBenchmark> resultados) {
         System.out.println(BOLD + CYAN);
         System.out.println("╔══════════════════════════════════════════════════════════════════════╗");
-        System.out.println("║                     CLASIFICACIÓN INDIVIDUAL                        ║");
+        System.out.println("║                     CLASIFICACIÓN INDIVIDUAL                         ║");
         System.out.println("╚══════════════════════════════════════════════════════════════════════╝");
         System.out.println(RESET);
 
@@ -353,11 +399,140 @@ public class BenchmarkOWL {
         System.out.println();
     }
 
+    // ────────────────────────────────────────────────────────────────────────
+    // Exportación CSV
+    // ────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Guarda dos archivos CSV en RESULTADOS_DIR:
+     *
+     *   resumen_<timestamp>.csv
+     *     Una fila por razonador con todas las métricas numéricas e instancias
+     *     por clase de mano. Pensado para comparativas entre razonadores o entre
+     *     variantes de baraja.
+     *
+     *   clasificacion_<timestamp>.csv
+     *     Una fila por (razonador, individuo, clase_inferida). Pensado para
+     *     análisis de correctitud y comparar qué clasificó cada razonador.
+     */
+    private static void guardarCSV(List<ResultadoBenchmark> resultados) {
+        // Derivar el nombre de la variante desde el archivo de ontología
+        // (p.ej. "ontologia_base_poker" o "baraja_6r_4p")
+        String variante = Paths.get(BASE_TTL).getFileName().toString()
+            .replaceAll("\\.ttl$", "");
+
+        Path dirPath = Paths.get(RESULTADOS_DIR);
+        try {
+            Files.createDirectories(dirPath);
+        } catch (IOException e) {
+            System.err.println(RED + "[CSV] No se pudo crear " + dirPath.toAbsolutePath()
+                + ": " + e.getMessage() + RESET);
+            return;
+        }
+
+        guardarResumenCSV(resultados, variante, dirPath);
+        guardarClasificacionCSV(resultados, variante, dirPath);
+    }
+
+    private static void guardarResumenCSV(
+            List<ResultadoBenchmark> resultados, String variante, Path dir) {
+
+        String nombre = "resumen_" + TIMESTAMP + ".csv";
+        Path archivo  = dir.resolve(nombre);
+
+        // Cabecera fija + una columna por clase de mano
+        StringBuilder cabecera = new StringBuilder(
+            "variante,razonador,carga_ms,init_ms,precomp_ms,total_ms," +
+            "mem_antes_mb,mem_despues_mb,mem_delta_mb," +
+            "consistente,clases_jerarquia,total_inferencias");
+        for (String c : CLASES_MANO) cabecera.append(",inst_").append(c);
+
+        try (PrintWriter pw = new PrintWriter(
+                new OutputStreamWriter(
+                    new FileOutputStream(archivo.toFile()), StandardCharsets.UTF_8))) {
+
+            pw.println(cabecera);
+
+            for (ResultadoBenchmark r : resultados) {
+                if (r.error != null) continue;          // fila omitida si el razonador falló
+                StringBuilder fila = new StringBuilder();
+                fila.append(csvEscape(variante)).append(',');
+                fila.append(csvEscape(r.nombre)).append(',');
+                fila.append(r.tiempoCargaMs).append(',');
+                fila.append(r.tiempoInicMs).append(',');
+                fila.append(r.tiempoPrecompMs).append(',');
+                fila.append(r.tiempoTotalMs).append(',');
+                fila.append(r.memAntesMB).append(',');
+                fila.append(r.memDespuesMB).append(',');
+                fila.append(r.memDeltaMB).append(',');
+                fila.append(r.consistente ? "true" : "false").append(',');
+                fila.append(r.numClasesJerarquia).append(',');
+                fila.append(r.totalInferencias);
+                for (String c : CLASES_MANO)
+                    fila.append(',').append(r.instanciasPorClase.getOrDefault(c, 0));
+                pw.println(fila);
+            }
+
+            System.out.println(GREEN + "  [CSV] " + archivo.toAbsolutePath() + RESET);
+
+        } catch (IOException e) {
+            System.err.println(RED + "[CSV] Error escribiendo resumen: " + e.getMessage() + RESET);
+        }
+    }
+
+    private static void guardarClasificacionCSV(
+            List<ResultadoBenchmark> resultados, String variante, Path dir) {
+
+        String nombre = "clasificacion_" + TIMESTAMP + ".csv";
+        Path archivo  = dir.resolve(nombre);
+
+        try (PrintWriter pw = new PrintWriter(
+                new OutputStreamWriter(
+                    new FileOutputStream(archivo.toFile()), StandardCharsets.UTF_8))) {
+
+            pw.println("variante,razonador,individuo,clase_inferida");
+
+            for (ResultadoBenchmark r : resultados) {
+                if (r.error != null) continue;
+                for (Map.Entry<String, List<String>> e : r.clasificacionIndividual.entrySet()) {
+                    String individuo = e.getKey();
+                    List<String> clases = e.getValue();
+                    if (clases.isEmpty()) {
+                        // Individuo sin clase inferida: fila con campo vacío
+                        pw.printf("%s,%s,%s,%s%n",
+                            csvEscape(variante), csvEscape(r.nombre),
+                            csvEscape(individuo), "");
+                    } else {
+                        for (String clase : clases) {
+                            pw.printf("%s,%s,%s,%s%n",
+                                csvEscape(variante), csvEscape(r.nombre),
+                                csvEscape(individuo), csvEscape(clase));
+                        }
+                    }
+                }
+            }
+
+            System.out.println(GREEN + "  [CSV] " + archivo.toAbsolutePath() + RESET);
+
+        } catch (IOException e) {
+            System.err.println(RED + "[CSV] Error escribiendo clasificacion: " + e.getMessage() + RESET);
+        }
+    }
+
+    /** Envuelve el valor en comillas dobles si contiene coma, comilla o salto de línea. */
+    private static String csvEscape(String v) {
+        if (v == null) return "";
+        if (v.contains(",") || v.contains("\"") || v.contains("\n")) {
+            return "\"" + v.replace("\"", "\"\"") + "\"";
+        }
+        return v;
+    }
+
     private static void banner() {
         System.out.println(BOLD + CYAN);
         System.out.println("╔══════════════════════════════════════════════════════════════════════╗");
-        System.out.println("║         BENCHMARK DE RAZONADORES OWL — ONTOLOGÍA DE PÓKER           ║");
-        System.out.println("║              HermiT  ·  Openllet (Pellet)  ·  JFact (FaCT++)        ║");
+        System.out.println("║         BENCHMARK DE RAZONADORES OWL — ONTOLOGÍA DE PÓKER            ║");
+        System.out.println("║              HermiT  ·  Openllet (Pellet)  ·  JFact (FaCT++)         ║");
         System.out.println("╚══════════════════════════════════════════════════════════════════════╝");
         System.out.println(RESET);
     }
@@ -376,6 +551,7 @@ public class BenchmarkOWL {
 
     static class ResultadoBenchmark {
         String nombre;
+        long   tiempoCargaMs  = 0;
         long   tiempoInicMs    = 0;
         long   tiempoPrecompMs = 0;
         long   tiempoTotalMs   = 0;
