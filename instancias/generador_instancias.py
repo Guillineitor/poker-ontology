@@ -336,9 +336,8 @@ def generar_poker(baraja, ont):
     random.shuffle(rangos_con_poker)
 
     for rango in rangos_con_poker:
-        cuatro = por_rango[rango][:4]
-        usadas = set(cuatro)
-        candidatas = [c for c in baraja if c not in usadas]
+        cuatro = random.sample(por_rango[rango], 4)
+        candidatas = [c for c in baraja if c[0] != rango]
         if candidatas:
             descarte = random.choice(candidatas)
             return list(cuatro) + [descarte], None
