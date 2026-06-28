@@ -22,6 +22,7 @@ import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * BenchmarkOWL compara los razonadores OWL HermiT, Openllet (Pellet) y JFact (FaCT++)
@@ -48,7 +49,7 @@ import java.util.*;
  *   • inst_<Clase>: número de individuos clasificados bajo cada clase de mano.
  *   • total_inferencias: suma de inst_<Clase> sobre todas las clases de mano.
  */
-public class BenchmarkOWL {
+public class BenchmarkOWLTimeout {
 
     /** Ruta al archivo TTL de la ontología base (TBox + ABox de baraja). */
     private static String BASE_TTL;
@@ -61,6 +62,10 @@ public class BenchmarkOWL {
 
     /** Carpeta de destino para los archivos .csv de resultados. */
     private static final String RESULTADOS_DIR = "../../resultados";
+
+    /** Tiempo máximo permitido por razonador. HermiT no tiene límite; Openllet y JFact
+     *  se cancelan si superan este umbral y su resultado se registra como TIMEOUT. */
+    private static final long TIMEOUT_MINUTOS = 60;
 
     /** Timestamp compartido por todos los archivos generados en esta ejecución. */
     private static final String TIMESTAMP =
@@ -93,17 +98,47 @@ public class BenchmarkOWL {
 
         banner();
 
-        List<EntradaRazonador> razonadores = Arrays.asList(
-            new EntradaRazonador("HermiT", new ReasonerFactory()),
+        // HermiT se ejecuta sin límite de tiempo.
+        // Openllet y JFact se ejecutan con timeout de TIMEOUT_MINUTOS minutos.
+        List<EntradaRazonador> sinTimeout = Arrays.asList(
+            new EntradaRazonador("HermiT", new ReasonerFactory())
+        );
+        List<EntradaRazonador> conTimeout = Arrays.asList(
             new EntradaRazonador("Openllet (Pellet)", OpenlletReasonerFactory.getInstance()),
-            new EntradaRazonador("JFact (FaCT++)", new JFactFactory())
+            new EntradaRazonador("JFact (FaCT++)",    new JFactFactory())
         );
 
         List<ResultadoBenchmark> resultados = new ArrayList<>();
-        for (EntradaRazonador entrada : razonadores) {
-            ResultadoBenchmark r = ejecutarBenchmark(entrada);
-            resultados.add(r);
+
+        for (EntradaRazonador entrada : sinTimeout) {
+            resultados.add(ejecutarBenchmark(entrada));
         }
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        for (EntradaRazonador entrada : conTimeout) {
+            Future<ResultadoBenchmark> future = executor.submit(
+                () -> ejecutarBenchmark(entrada)
+            );
+            try {
+                ResultadoBenchmark r = future.get(TIMEOUT_MINUTOS, TimeUnit.MINUTES);
+                resultados.add(r);
+            } catch (TimeoutException e) {
+                future.cancel(true);
+                System.out.println(RED + BOLD
+                    + "\n[ " + entrada.nombre + " ] TIMEOUT ("
+                    + TIMEOUT_MINUTOS + " min) — el razonador no logro clasificar en el tiempo limite."
+                    + RESET + "\n");
+                ResultadoBenchmark timeout = new ResultadoBenchmark(entrada.nombre);
+                timeout.error = "TIMEOUT (" + TIMEOUT_MINUTOS + " min)";
+                resultados.add(timeout);
+            } catch (InterruptedException | ExecutionException e) {
+                future.cancel(true);
+                ResultadoBenchmark err = new ResultadoBenchmark(entrada.nombre);
+                err.error = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+                resultados.add(err);
+            }
+        }
+        executor.shutdownNow();
 
         imprimirTabla(resultados);
         imprimirClasificaciones(resultados);
@@ -451,7 +486,7 @@ public class BenchmarkOWL {
     private static void guardarResumenCSV(
             List<ResultadoBenchmark> resultados, String variante, Path dir) {
 
-        String nombre = "resumen_" + TIMESTAMP + ".csv";
+        String nombre = "resumen_timeout_" + TIMESTAMP + ".csv";
         Path archivo = dir.resolve(nombre);
 
         StringBuilder cabecera = new StringBuilder(
@@ -506,7 +541,7 @@ public class BenchmarkOWL {
     private static void guardarClasificacionCSV(
             List<ResultadoBenchmark> resultados, String variante, Path dir) {
 
-        String nombre = "clasificacion_" + TIMESTAMP + ".csv";
+        String nombre = "clasificacion_timeout_" + TIMESTAMP + ".csv";
         Path archivo = dir.resolve(nombre);
 
         try (PrintWriter pw = new PrintWriter(
