@@ -25,15 +25,16 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /**
- * BenchmarkOWL compara los razonadores OWL HermiT, Openllet (Pellet) y JFact (FaCT++)
- * sobre ontologías bajo el dominio del juego Póker Texas Hold'em.
+ * BenchmarkOWLDefinitivo compara los razonadores OWL HermiT, Openllet (Pellet) y JFact (FaCT++)
+ * sobre ontologías bajo el dominio del juego Poker Texas Hold'em.
+ * HermiT se ejecuta sin límite de tiempo. Openllet y JFact tienen un timeout de 5 minutos (explicación en el README de la carpeta razonamiento)
  *
  * Uso:
- *   java -jar poker-reasoner.jar <ontologia.ttl> <instancias.ttl>
- * 
+ *   java -cp target/poker-reasoner-1.0-SNAPSHOT-jar-with-dependencies.jar poker.BenchmarkOWLDefinitivo <ontologia.ttl> <instancias.ttl>
+ *
  * Se puede designar a la ejecución del experimento una cantidad inicial y máxima de memoria RAM, como por ejemplo:
- * 
- *   java -Xms2g -Xmx4g -jar poker-reasoner.jar <ontologia.ttl> <instancias.ttl>
+ *
+ *   java -Xms28g -Xmx30g -cp target/poker-reasoner-1.0-SNAPSHOT-jar-with-dependencies.jar poker.BenchmarkOWLDefinitivo <ontologia.ttl> <instancias.ttl>
  *
  * El IRI base se extrae automáticamente de la ontología cargada,
  * por lo que el benchmark funciona con cualquier variante de póker con barajas customizadas.
@@ -43,13 +44,15 @@ import java.util.concurrent.*;
  *   • init_ms: Tiempo (milisegundos) de creación del razonador.
  *   • precomp_ms: Tiempo (milisegundos) de precomputación de jerarquía, aserciones de clase y propiedades de objeto.
  *   • total_ms: Tiempo (milisegundos) de la suma de los tres anteriores (costo real de razonar desde cero).
- *   • mem_delta_mb: Diferencia de heap usada antes/después de la precomputación (MB).
+ *   • mem_antes_mb: Heap usada antes de la precomputación (MB).
+ *   • mem_despues_mb: Heap usada después de la precomputación (MB).
+ *   • mem_delta_mb: Diferencia de heap antes/después de la precomputación (MB).
  *   • consistente: si la ontología es consistente según el razonador.
  *   • clases_jerarquia: número de clases en la jerarquía inferida.
  *   • inst_<Clase>: número de individuos clasificados bajo cada clase de mano.
  *   • total_inferencias: suma de inst_<Clase> sobre todas las clases de mano.
  */
-public class BenchmarkOWLTimeout {
+public class BenchmarkOWLDefinitivo {
 
     /** Ruta al archivo TTL de la ontología base (TBox + ABox de baraja). */
     private static String BASE_TTL;
@@ -65,7 +68,7 @@ public class BenchmarkOWLTimeout {
 
     /** Tiempo máximo permitido por razonador. HermiT no tiene límite; Openllet y JFact
      *  se cancelan si superan este umbral y su resultado se registra como TIMEOUT. */
-    private static final long TIMEOUT_MINUTOS = 10;
+    private static final long TIMEOUT_MINUTOS = 5;
 
     /** Timestamp compartido por todos los archivos generados en esta ejecución. */
     private static final String TIMESTAMP =
@@ -87,7 +90,7 @@ public class BenchmarkOWLTimeout {
 
         if (args.length != 2) {
             System.err.println(RED
-                + "Uso: java -jar poker-reasoner.jar <ontologia.ttl> <instancias.ttl>"
+                + "Uso: java -cp target/poker-reasoner-1.0-SNAPSHOT-jar-with-dependencies.jar poker.BenchmarkOWLDefinitivo <ontologia.ttl> <instancias.ttl>"
                 + RESET);
             System.exit(1);
         }
