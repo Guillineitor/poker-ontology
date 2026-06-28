@@ -161,7 +161,7 @@ public class BenchmarkOWL {
                 + f.getAbsolutePath() + RESET);
             System.exit(1);
         }
-        System.out.printf("  %-20s → %s%n", nombre, f.getAbsolutePath());
+        System.out.printf("  %-20s : %s%n", nombre, f.getAbsolutePath());
     }
 
     /**
@@ -179,7 +179,7 @@ public class BenchmarkOWL {
      */
     private static ResultadoBenchmark ejecutarBenchmark(EntradaRazonador entrada) {
 
-        System.out.println(BOLD + "━━━ " + entrada.nombre + " ━━━" + RESET);
+        System.out.println(BOLD + "\n[ " + entrada.nombre + " ]" + RESET);
         ResultadoBenchmark res = new ResultadoBenchmark(entrada.nombre);
 
         MemoryMXBean memBean = ManagementFactory.getMemoryMXBean();
@@ -189,7 +189,7 @@ public class BenchmarkOWL {
             long memAntesMB = memBean.getHeapMemoryUsage().getUsed() / (1024 * 1024);
 
             long tCarga0 = System.currentTimeMillis();
-            System.out.println(CYAN + "  Cargando ontologías..." + RESET);
+            System.out.println("  Cargando ontologias...");
             OWLOntology ontologia = cargarOntologias();
             long tCarga = System.currentTimeMillis() - tCarga0;
             res.tiempoCargaMs = tCarga;
@@ -220,7 +220,7 @@ public class BenchmarkOWL {
 
             res.consistente = reasoner.isConsistent();
             System.out.printf("  Consistencia      : %s%n",
-                res.consistente ? GREEN + "CONSISTENTE" + RESET : RED + "✗ INCONSISTENTE" + RESET);
+                res.consistente ? GREEN + "CONSISTENTE" + RESET : RED + "INCONSISTENTE" + RESET);
 
             if (!res.consistente) {
                 reasoner.dispose();
@@ -246,7 +246,7 @@ public class BenchmarkOWL {
             NodeSet<OWLNamedIndividual> todasManos =
                 reasoner.getInstances(manoClass, false);
 
-            System.out.println(CYAN + "  [Inferencias en tiempo real]" + RESET);
+            System.out.println("  Inferencias en tiempo real:");
             for (OWLNamedIndividual ind : todasManos.getFlattened()) {
                 NodeSet<OWLClass> tipos = reasoner.getTypes(ind, true);
                 List<String> tiposNombre = new ArrayList<>();
@@ -255,7 +255,7 @@ public class BenchmarkOWL {
                         tiposNombre.add(c.getIRI().getShortForm());
                     }
                 }
-                System.out.printf("  " + YELLOW + "%-45s" + RESET + " → %s%n",
+                System.out.printf("  " + YELLOW + "%-45s" + RESET + " : %s%n",
                     ind.getIRI().getShortForm(),
                     tiposNombre.isEmpty()
                         ? RED + "(sin clase inferida)" + RESET
@@ -267,13 +267,13 @@ public class BenchmarkOWL {
             }
             System.out.println();
 
-            System.out.printf("  Carga: %d ms%n",  tCarga);
-            System.out.printf("  Init: %d ms%n",  tInit);
-            System.out.printf("  Precomputación: %d ms%n",  tPrecomp);
-            System.out.printf("  Total: %d ms%n",  res.tiempoTotalMs);
-            System.out.printf("  Memoria delta: %+d MB%n", res.memDeltaMB);
-            System.out.printf("  Clases inferidas: %d%n",     res.numClasesJerarquia);
-            System.out.printf("  Inferencias totales: %d%n%n",  res.totalInferencias);
+            System.out.printf("  %-22s : %d ms%n",  "Carga",               tCarga);
+            System.out.printf("  %-22s : %d ms%n",  "Init",                tInit);
+            System.out.printf("  %-22s : %d ms%n",  "Precomputacion",      tPrecomp);
+            System.out.printf("  %-22s : %d ms%n",  "Total",               res.tiempoTotalMs);
+            System.out.printf("  %-22s : %+d MB%n", "Memoria delta",       res.memDeltaMB);
+            System.out.printf("  %-22s : %d%n",     "Clases inferidas",    res.numClasesJerarquia);
+            System.out.printf("  %-22s : %d%n%n",   "Inferencias totales", res.totalInferencias);
 
             reasoner.dispose();
 
@@ -300,12 +300,12 @@ public class BenchmarkOWL {
         String fmt = "%-22s │ %10s │ %10s │ %12s │ %10s │ %10s │ %8s │ %12s%n";
         System.out.printf(BOLD + fmt + RESET,
             "Razonador", "Carga (ms)", "Init (ms)", "Precomp (ms)", "Total (ms)",
-            "ΔMem (MB)", "Consist.", "Inferencias");
+            "Mem (MB)", "Consistencia", "Inferencias");
         System.out.println("─".repeat(110));
 
         for (ResultadoBenchmark r : resultados) {
             if (r.error != null) {
-                System.out.printf("%-22s │ %s%n", r.nombre, RED + "ERROR: " + r.error + RESET);
+                System.out.printf("%-22s | %s%n", r.nombre, RED + "ERROR: " + r.error + RESET);
                 continue;
             }
             System.out.printf(fmt,
@@ -393,7 +393,7 @@ public class BenchmarkOWL {
             .orElse(null);
         if (masFast != null) {
             System.out.println(GREEN + BOLD
-                + "  ⚡ Razonador más rápido: " + masFast.nombre
+                + "  Razonador mas rapido   : " + masFast.nombre
                 + " (" + masFast.tiempoTotalMs + " ms)" + RESET);
         }
 
@@ -403,7 +403,7 @@ public class BenchmarkOWL {
             .orElse(null);
         if (menosMem != null) {
             System.out.println(GREEN + BOLD
-                + "  💾 Menor consumo de memoria: " + menosMem.nombre
+                + "  Menor consumo de memoria: " + menosMem.nombre
                 + " (+" + menosMem.memDeltaMB + " MB)" + RESET);
         }
         System.out.println();
@@ -554,7 +554,7 @@ public class BenchmarkOWL {
     private static void banner() {
         System.out.println(BOLD + CYAN);
         System.out.println("╔══════════════════════════════════════════════════════════════════════╗");
-        System.out.println("║           BENCHMARK DE RAZONADORES OWL — ONTOLOGÍA DE PÓKER          ║");
+        System.out.println("║           BENCHMARK DE RAZONADORES OWL - ONTOLOGÍA DE PÓKER          ║");
         System.out.println("║            HermiT  ·  Openllet (Pellet)  ·  JFact (FaCT++)           ║");
         System.out.println("╚══════════════════════════════════════════════════════════════════════╝");
         System.out.println(RESET);
@@ -590,3 +590,4 @@ public class BenchmarkOWL {
         ResultadoBenchmark(String nombre) { this.nombre = nombre; }
     }
 }
+fi
