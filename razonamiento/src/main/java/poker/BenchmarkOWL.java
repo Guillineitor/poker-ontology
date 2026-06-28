@@ -45,27 +45,21 @@ import java.util.*;
  */
 public class BenchmarkOWL {
 
-    // ── Rutas resueltas en main() desde los argumentos de línea de comandos ─
     private static String BASE_TTL;
     private static String INST_TTL;
 
-    // IRI base extraído de la ontología cargada (p.ej. "…/poker#" o "…/baraja_6r_4p#")
     private static String BASE_IRI;
 
-    // Carpeta de salida para los CSV (relativa a la raíz del repositorio)
     private static final String RESULTADOS_DIR = "../../resultados";
 
-    // Timestamp compartido por todos los archivos de esta ejecucion
     private static final String TIMESTAMP =
         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
 
-    // Clases de mano que queremos consultar
     private static final String[] CLASES_MANO = {
         "CartaAlta", "Par", "DoblePar", "Trio",
         "Escalera", "Color", "Full", "Poker", "EscaleraColor", "EscaleraReal"
     };
 
-    // ── Colores ANSI para la terminal ────────────────────────────────────────
     private static final String RESET  = "\u001B[0m";
     private static final String BOLD   = "\u001B[1m";
     private static final String CYAN   = "\u001B[36m";
@@ -75,7 +69,6 @@ public class BenchmarkOWL {
 
     public static void main(String[] args) throws Exception {
 
-        // ── Argumentos de línea de comandos ──────────────────────────────────
         if (args.length != 2) {
             System.err.println(RED
                 + "Uso: java -jar poker-reasoner.jar <ontologia.ttl> <instancias.ttl>"
@@ -85,50 +78,36 @@ public class BenchmarkOWL {
         BASE_TTL = args[0];
         INST_TTL = args[1];
 
-        // Carga inicial: extrae BASE_IRI e imprime información de la ontología.
-        // A partir de aquí BASE_IRI queda fijo para el resto de la ejecución.
         cargarOntologias();
 
         banner();
 
-        // 1. Definir razonadores a comparar
         List<EntradaRazonador> razonadores = Arrays.asList(
             new EntradaRazonador("HermiT",           new ReasonerFactory()),
             new EntradaRazonador("Openllet (Pellet)", OpenlletReasonerFactory.getInstance()),
             new EntradaRazonador("JFact (FaCT++)",    new JFactFactory())
         );
 
-        // 2. Ejecutar benchmark para cada razonador.
-        // Cada iteracion recarga la ontologia desde disco con un manager limpio,
-        // garantizando que ningun razonador herede estado de cache del anterior.
         List<ResultadoBenchmark> resultados = new ArrayList<>();
         for (EntradaRazonador entrada : razonadores) {
             ResultadoBenchmark r = ejecutarBenchmark(entrada);
             resultados.add(r);
         }
 
-        // 3. Imprimir tabla comparativa
         imprimirTabla(resultados);
         imprimirClasificaciones(resultados);
         imprimirResumen(resultados);
 
-        // 4. Guardar resultados en CSV
         guardarCSV(resultados);
     }
 
-    // ────────────────────────────────────────────────────────────────────────
-    // Carga y fusión de ontologías
-    // ────────────────────────────────────────────────────────────────────────
     private static OWLOntology cargarOntologias() throws Exception {
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 
-        // Ontología base (incluye clasificadores TBox)
         File baseFile = new File(BASE_TTL);
         verificarArchivo(baseFile, "Ontología base");
         OWLOntology base = manager.loadOntologyFromOntologyDocument(baseFile);
 
-        // Extraer el IRI base la primera vez que se carga la ontología.
-        // Las llamadas sucesivas (una por razonador) lo reutilizan sin recalcular.
         if (BASE_IRI == null) {
             String ontIRI = base.getOntologyID()
                 .getOntologyIRI()
@@ -139,11 +118,9 @@ public class BenchmarkOWL {
             System.out.printf("  IRI base detectado : %s%n", BASE_IRI);
         }
 
-        // Fusionar en una sola ontología anónima para razonar
         OWLOntology merged = manager.createOntology();
         manager.addAxioms(merged, base.getAxioms());
 
-        // Cargar el archivo de instancias (ABox)
         File instFile = new File(INST_TTL);
         verificarArchivo(instFile, instFile.getName());
         OWLOntology inst = manager.loadOntologyFromOntologyDocument(instFile);
@@ -163,9 +140,6 @@ public class BenchmarkOWL {
         System.out.printf("  %-20s → %s%n", nombre, f.getAbsolutePath());
     }
 
-    // ────────────────────────────────────────────────────────────────────────
-    // Benchmark de un razonador
-    // ────────────────────────────────────────────────────────────────────────
     private static ResultadoBenchmark ejecutarBenchmark(EntradaRazonador entrada) {
 
         System.out.println(BOLD + "━━━ " + entrada.nombre + " ━━━" + RESET);
@@ -174,11 +148,9 @@ public class BenchmarkOWL {
         MemoryMXBean memBean = ManagementFactory.getMemoryMXBean();
 
         try {
-            // ── Memoria antes ────────────────────────────────────────────────
             System.gc();
             long memAntesMB = memBean.getHeapMemoryUsage().getUsed() / (1024 * 1024);
 
-            // ── Carga desde disco (manager limpio) ───────────────────────────
             long tCarga0 = System.currentTimeMillis();
             System.out.println(CYAN + "  Cargando ontologías..." + RESET);
             OWLOntology ontologia = cargarOntologias();
@@ -187,7 +159,6 @@ public class BenchmarkOWL {
 
             OWLDataFactory factory = ontologia.getOWLOntologyManager().getOWLDataFactory();
 
-            // ── Inicialización del razonador ─────────────────────────────────
             long t0 = System.currentTimeMillis();
             OWLReasoner reasoner = entrada.factory.createReasoner(
                 ontologia, new SimpleConfiguration()
@@ -195,7 +166,6 @@ public class BenchmarkOWL {
             long tInit = System.currentTimeMillis() - t0;
             res.tiempoInicMs = tInit;
 
-            // ── Precomputación ───────────────────────────────────────────────
             long t1 = System.currentTimeMillis();
             reasoner.precomputeInferences(
                 InferenceType.CLASS_HIERARCHY,
@@ -206,13 +176,11 @@ public class BenchmarkOWL {
             res.tiempoPrecompMs = tPrecomp;
             res.tiempoTotalMs   = tCarga + tInit + tPrecomp;
 
-            // ── Memoria después ──────────────────────────────────────────────
             long memDespuesMB = memBean.getHeapMemoryUsage().getUsed() / (1024 * 1024);
             res.memAntesMB   = memAntesMB;
             res.memDespuesMB = memDespuesMB;
             res.memDeltaMB   = memDespuesMB - memAntesMB;
 
-            // ── Consistencia ─────────────────────────────────────────────────
             res.consistente = reasoner.isConsistent();
             System.out.printf("  Consistencia      : %s%n",
                 res.consistente ? GREEN + "CONSISTENTE" + RESET : RED + "✗ INCONSISTENTE" + RESET);
@@ -222,12 +190,10 @@ public class BenchmarkOWL {
                 return res;
             }
 
-            // ── Jerarquía de clases ──────────────────────────────────────────
             res.numClasesJerarquia = reasoner
                 .getSubClasses(factory.getOWLThing(), false)
                 .getFlattened().size();
 
-            // ── Clasificación por clase de mano ──────────────────────────────
             long totalInferencias = 0;
             for (String nombreClase : CLASES_MANO) {
                 OWLClass clase = factory.getOWLClass(IRI.create(BASE_IRI + nombreClase));
@@ -239,7 +205,6 @@ public class BenchmarkOWL {
             }
             res.totalInferencias = totalInferencias;
 
-            // ── Inferencias detalladas por instancia ─────────────────────────
             OWLClass manoClass = factory.getOWLClass(IRI.create(BASE_IRI + "Mano"));
             NodeSet<OWLNamedIndividual> todasManos =
                 reasoner.getInstances(manoClass, false);
@@ -283,9 +248,6 @@ public class BenchmarkOWL {
         return res;
     }
 
-    // ────────────────────────────────────────────────────────────────────────
-    // Impresión de resultados
-    // ────────────────────────────────────────────────────────────────────────
     private static void imprimirTabla(List<ResultadoBenchmark> resultados) {
         System.out.println(BOLD + CYAN);
         System.out.println("╔══════════════════════════════════════════════════════════════════════╗");
@@ -325,7 +287,6 @@ public class BenchmarkOWL {
         System.out.println("╚══════════════════════════════════════════════════════════════════════╝");
         System.out.println(RESET);
 
-        // Cabecera dinámica
         StringBuilder cabecera = new StringBuilder(String.format("%-14s", "Clase"));
         for (ResultadoBenchmark r : resultados) {
             cabecera.append(String.format(" │ %-16s", r.nombre));
@@ -352,7 +313,6 @@ public class BenchmarkOWL {
         System.out.println("╚══════════════════════════════════════════════════════════════════════╝");
         System.out.println(RESET);
 
-        // Usar el primer razonador exitoso como referencia
         ResultadoBenchmark ref = resultados.stream()
             .filter(r -> r.error == null && !r.clasificacionIndividual.isEmpty())
             .findFirst().orElse(null);
@@ -362,7 +322,6 @@ public class BenchmarkOWL {
             return;
         }
 
-        // Ordenar instancias alfabéticamente
         List<String> instancias = new ArrayList<>(ref.clasificacionIndividual.keySet());
         Collections.sort(instancias);
 
@@ -376,7 +335,6 @@ public class BenchmarkOWL {
         }
         System.out.println();
 
-        // Ganador en velocidad
         ResultadoBenchmark masFast = resultados.stream()
             .filter(r -> r.error == null)
             .min(Comparator.comparingLong(r -> r.tiempoTotalMs))
@@ -399,25 +357,8 @@ public class BenchmarkOWL {
         System.out.println();
     }
 
-    // ────────────────────────────────────────────────────────────────────────
-    // Exportación CSV
-    // ────────────────────────────────────────────────────────────────────────
-
-    /**
-     * Guarda dos archivos CSV en RESULTADOS_DIR:
-     *
-     *   resumen_<timestamp>.csv
-     *     Una fila por razonador con todas las métricas numéricas e instancias
-     *     por clase de mano. Pensado para comparativas entre razonadores o entre
-     *     variantes de baraja.
-     *
-     *   clasificacion_<timestamp>.csv
-     *     Una fila por (razonador, individuo, clase_inferida). Pensado para
-     *     análisis de correctitud y comparar qué clasificó cada razonador.
-     */
     private static void guardarCSV(List<ResultadoBenchmark> resultados) {
-        // Derivar el nombre de la variante desde el archivo de ontología
-        // (p.ej. "ontologia_base_poker" o "baraja_6r_4p")
+
         String variante = Paths.get(BASE_TTL).getFileName().toString()
             .replaceAll("\\.ttl$", "");
 
@@ -440,7 +381,6 @@ public class BenchmarkOWL {
         String nombre = "resumen_" + TIMESTAMP + ".csv";
         Path archivo  = dir.resolve(nombre);
 
-        // Cabecera fija + una columna por clase de mano
         StringBuilder cabecera = new StringBuilder(
             "variante,razonador,carga_ms,init_ms,precomp_ms,total_ms," +
             "mem_antes_mb,mem_despues_mb,mem_delta_mb," +
@@ -454,7 +394,7 @@ public class BenchmarkOWL {
             pw.println(cabecera);
 
             for (ResultadoBenchmark r : resultados) {
-                if (r.error != null) continue;          // fila omitida si el razonador falló
+                if (r.error != null) continue;          
                 StringBuilder fila = new StringBuilder();
                 fila.append(csvEscape(variante)).append(',');
                 fila.append(csvEscape(r.nombre)).append(',');
@@ -498,7 +438,6 @@ public class BenchmarkOWL {
                     String individuo = e.getKey();
                     List<String> clases = e.getValue();
                     if (clases.isEmpty()) {
-                        // Individuo sin clase inferida: fila con campo vacío
                         pw.printf("%s,%s,%s,%s%n",
                             csvEscape(variante), csvEscape(r.nombre),
                             csvEscape(individuo), "");
@@ -519,7 +458,6 @@ public class BenchmarkOWL {
         }
     }
 
-    /** Envuelve el valor en comillas dobles si contiene coma, comilla o salto de línea. */
     private static String csvEscape(String v) {
         if (v == null) return "";
         if (v.contains(",") || v.contains("\"") || v.contains("\n")) {
@@ -537,9 +475,6 @@ public class BenchmarkOWL {
         System.out.println(RESET);
     }
 
-    // ────────────────────────────────────────────────────────────────────────
-    // Clases auxiliares
-    // ────────────────────────────────────────────────────────────────────────
     static class EntradaRazonador {
         String nombre;
         OWLReasonerFactory factory;
