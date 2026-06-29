@@ -36,7 +36,7 @@ El generador produce una ontología con los siguientes componentes:
 |---|---|
 | IRI base y metadatos | Derivados automáticamente del nombre de la baraja |
 | Palos y rangos | Clases cerradas con `owl:oneOf` |
-| Cartas | Clase cerrada con una carta por combinación de palo y rango |
+| Cartas | Combinación de un palo y un rango |
 | Mano | Manos de cinco cartas |
 | Clasificadores de mano | Solo los tipos de mano posibles según cantidad de palos, rangos y cartas |
 | Individuos ABox | Individuos concretos de cartas y axiomas `owl:AllDifferent` |
@@ -114,7 +114,7 @@ tipo manos de póker en todos los experimentos.
 
 ### Cierre de la clase `Carta`
 
-`Carta` se cierra con `owl:oneOf`, enumerando todas las combinaciones posibles de palo y rango. Este cierre impide que un razonador infiera la existencia de cartas adicionales no declaradas, ya que bajo la Open World Assumption nada lo prohíbe sin intervención explícita.
+`Carta` no se cierra con `owl:oneOf`, sino que sus restricciones del dominio quedan acotadas indirectamente por el cierre de `Palo` y `Rango` a través de las propiedades funcionales `tienePalo` y `tieneRango`. Esto fue decidido para simplificar un poco la ontología. Este cierre impide que un razonador infiera la existencia de cartas adicionales no declaradas, ya que bajo la Open World Assumption nada lo prohíbe sin intervención explícita, pero sin sobreexplotar a los razonadores.
 
 ### `owl:AllDifferent` para palos, rangos y cartas
 

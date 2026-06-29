@@ -152,7 +152,7 @@ Palo  ≡ { Picas, Corazones, Diamantes, Tréboles }   (4 palos)
 Rango ≡ { Dos, Tres, ..., Rey, As }                  (13 rangos)
 ```
 
-`Carta` no se cierra con `owl:oneOf`, sino que sus restricciones del dominio quedan acotadas indirectamente por el cierre de `Palo` y `Rango` a través de las propiedades funcionales `tienePalo` y `tieneRango`. Esto fue decidido para simplificar un poco la ontología.
+`Carta` no se cierra con `owl:oneOf`, sino que sus restricciones del dominio quedan acotadas indirectamente por el cierre de `Palo` y `Rango` a través de las propiedades funcionales `tienePalo` y `tieneRango`. Esto fue decidido para simplificar un poco la ontología. Este cierre impide que un razonador infiera la existencia de cartas adicionales no declaradas, ya que bajo la Open World Assumption nada lo prohíbe sin intervención explícita, pero sin sobreexplotar a los razonadores.
 
 **`owl:AllDifferent`** en los 69 individuos (3 bloques: palos, rangos y cartas) garantiza que el razonador los trate como entidades distintas, simulando la Unique Name Assumption (UNA) que OWL no asume por defecto.
 
