@@ -3,6 +3,7 @@ package poker;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.reasoner.*;
+import org.semanticweb.owlapi.util.SimpleIRIMapper;
 
 // Razonadores OWL
 // HermiT
@@ -42,7 +43,7 @@ import java.util.concurrent.*;
  * Métricas por razonador:
  *   • carga_ms: Tiempo (milisegundos) de lectura de TTL desde disco y construcción del OWLOntology fusionado.
  *   • init_ms: Tiempo (milisegundos) de creación del razonador.
- *   • precomp_ms: Tiempo (milisegundos) de precomputación de jerarquía, aserciones de clase y propiedades de objeto.
+ *   • precomp_ms: Tiempo (milisegundos) de chequeo de consistencia y precomputación de jerarquía de clases.
  *   • total_ms: Tiempo (milisegundos) de la suma de los tres anteriores (costo real de razonar desde cero).
  *   • mem_antes_mb: Heap usada antes de la precomputación (MB).
  *   • mem_despues_mb: Heap usada después de la precomputación (MB).
@@ -63,8 +64,11 @@ public class BenchmarkOWLDefinitivo {
     /** IRI base de la ontología, extraído automáticamente al cargarla. */
     private static String BASE_IRI;
 
+    /** IRI de la ontología local, usado para resolver owl:imports sin salir a red. */
+    private static String BASE_ONTOLOGY_IRI;
+
     /** Carpeta de destino para los archivos .csv de resultados. */
-    private static final String RESULTADOS_DIR = "../../resultados";
+    private static final String RESULTADOS_DIR = "../resultados";
 
     /** Tiempo máximo permitido por razonador. HermiT no tiene límite; Openllet y JFact
      *  se cancelan si superan este umbral y su resultado se registra como TIMEOUT. */
@@ -168,6 +172,7 @@ public class BenchmarkOWLDefinitivo {
             .map(IRI::toString)
             .orElseThrow(() -> new IllegalStateException(
                 "La ontología base no declara un IRI (falta <iri> a owl:Ontology)."));
+        BASE_ONTOLOGY_IRI = ontIRI;
         BASE_IRI = ontIRI + "#";
         System.out.printf("  IRI base detectado : %s%n", BASE_IRI);
         manager.removeOntology(base);
@@ -190,16 +195,20 @@ public class BenchmarkOWLDefinitivo {
 
         File baseFile = new File(BASE_TTL);
         verificarArchivo(baseFile, "Ontología base");
+        manager.getIRIMappers().add(new SimpleIRIMapper(
+            IRI.create(BASE_ONTOLOGY_IRI),
+            IRI.create(baseFile.toURI())
+        ));
         OWLOntology base = manager.loadOntologyFromOntologyDocument(baseFile);
         OWLOntology merged = manager.createOntology();
         manager.addAxioms(merged, base.getAxioms());
-        manager.removeOntology(base);
 
         File instFile = new File(INST_TTL);
         verificarArchivo(instFile, instFile.getName());
         OWLOntology inst = manager.loadOntologyFromOntologyDocument(instFile);
         manager.addAxioms(merged, inst.getAxioms());
         manager.removeOntology(inst);
+        manager.removeOntology(base);
 
         System.out.printf("  Axiomas totales en la ontología fusionada: %d%n",
             merged.getAxiomCount());
@@ -262,11 +271,14 @@ public class BenchmarkOWLDefinitivo {
             res.tiempoInicMs = tInit;
 
             long t1 = System.currentTimeMillis();
-            reasoner.precomputeInferences(
-                InferenceType.CLASS_HIERARCHY,
-                InferenceType.CLASS_ASSERTIONS,
-                InferenceType.OBJECT_PROPERTY_ASSERTIONS
-            );
+            res.consistente = reasoner.isConsistent();
+            System.out.printf("  Consistencia      : %s%n",
+                res.consistente ? GREEN + "CONSISTENTE" + RESET : RED + "INCONSISTENTE" + RESET);
+
+            if (res.consistente) {
+                reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
+            }
+
             long tPrecomp = System.currentTimeMillis() - t1;
             res.tiempoPrecompMs = tPrecomp;
             res.tiempoTotalMs = tCarga + tInit + tPrecomp;
@@ -275,10 +287,6 @@ public class BenchmarkOWLDefinitivo {
             res.memAntesMB = memAntesMB;
             res.memDespuesMB = memDespuesMB;
             res.memDeltaMB = memDespuesMB - memAntesMB;
-
-            res.consistente = reasoner.isConsistent();
-            System.out.printf("  Consistencia      : %s%n",
-                res.consistente ? GREEN + "CONSISTENTE" + RESET : RED + "INCONSISTENTE" + RESET);
 
             if (!res.consistente) {
                 reasoner.dispose();
