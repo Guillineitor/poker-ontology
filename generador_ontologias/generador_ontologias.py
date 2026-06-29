@@ -95,10 +95,10 @@ def encabezado(iri_base: str, nombre_baraja: str, n_palos: int, n_rangos: int) -
 # desconocido, no necesariamente falso. Sin intervención explícita, el razonador
 # podría asumir la existencia de palos o rangos adicionales no declarados.
 #
-# Para evitarlo, Palo, Rango y Carta se cierran con owl:oneOf, fijando
-# exactamente los individuos posibles. Los {n_cartas} individuos de cartas se
-# declaran además AllDifferent para que el razonador los trate como entidades
-# distintas y no intente unificarlas.
+# Para evitarlo, Palo y Rango se cierran con owl:oneOf, fijando exactamente
+# los individuos posibles. Los {n_cartas} individuos de cartas se declaran
+# además AllDifferent para que el razonador los trate como entidades distintas
+# y no intente unificarlas.
 # -----------------------------------------------------------------------------
  
 <{iri_base}>
@@ -158,30 +158,15 @@ def seccion_rango(rangos: list[str]) -> str:
  
 def seccion_carta(palos: list[str], rangos: list[str]) -> str:
     """
-    Define poker:Carta como clase cerrada con palo y rango obligatorios.
+    Define poker:Carta con palo y rango obligatorios.
  
     Cada carta debe tener exactamente un palo (garantizado por tienePalo como
     FunctionalProperty) y exactamente un rango (garantizado por tieneRango).
-    La enumeración cubre las (n_palos × n_rangos) combinaciones posibles.
     """
-    lineas_cartas = []
-    for p in palos:
-        id_palo = identificador(p)
-        grupo = [f"poker:{identificador(r)}De{id_palo}" for r in rangos]
-        lineas_cartas.append("            " + " ".join(grupo))
-    bloque_cartas = "\n".join(lineas_cartas)
- 
-    return f"""
+    return """
 # Definición de la clase Carta.
-# Carta también se cierra con owl:oneOf. Cada carta tiene exactamente un palo y un rango,
-# garantizado por las FunctionalProperty definidas más adelante.
+# Cada carta tiene exactamente un palo y un rango, garantizado por las FunctionalProperty definidas más adelante.
 poker:Carta a owl:Class ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:oneOf (
-{bloque_cartas}
-        )
-    ] ;
     rdfs:subClassOf [
         a owl:Restriction ;
         owl:onProperty poker:tienePalo ;

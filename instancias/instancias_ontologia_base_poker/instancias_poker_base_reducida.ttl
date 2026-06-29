@@ -1,5 +1,5 @@
 # =============================================================================
-# Instancias de manos de Póker Texas Hold'em
+# Instancias de manos reducida de Póker Texas Hold'em
 # =============================================================================
 
 @prefix carta_alta: <http://www.poker-ontology.org/instancias/carta_alta#> .
@@ -7,10 +7,10 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-<http://www.poker-ontology.org/instancias/todas>
+<http://www.poker-ontology.org/instancias/reducida>
     a owl:Ontology ;
     owl:imports <http://www.poker-ontology.org/poker> ;
-    rdfs:label "Instancias de manos de Póker Texas Hold'em" ;
+    rdfs:label "Instancias de manos reducida de Póker Texas Hold'em" ;
     rdfs:comment "ABox con 4 manos de Carta Alta de prueba." .
 
 # =============================================================================

@@ -59,8 +59,8 @@ ELK no es compatible porque solo soporta OWL 2 EL y no admite cardinalidades cal
 
 La TBox define el esquema conceptual del dominio:
 
-- `Palo` y `Rango` como enumeraciones cerradas.
-- `Carta` con 17 subclases: 4 por palo y 13 por rango.
+- `Palo` y `Rango` como enumeraciones cerradas con `owl:oneOf`.
+- `Carta` con restricciones de dominio sobre `tienePalo` y `tieneRango`, y 17 subclases: 4 por palo y 13 por rango.
 - `Mano` con 9 subclases de tipo de mano, cada una con su `owl:equivalentClass`.
 - 4 propiedades de objeto.
 
@@ -151,6 +151,8 @@ Para cerrar el dominio se aplican dos mecanismos:
 Palo  ≡ { Picas, Corazones, Diamantes, Tréboles }   (4 palos)
 Rango ≡ { Dos, Tres, ..., Rey, As }                  (13 rangos)
 ```
+
+`Carta` no se cierra con `owl:oneOf`, sino que sus restricciones del dominio quedan acotadas indirectamente por el cierre de `Palo` y `Rango` a través de las propiedades funcionales `tienePalo` y `tieneRango`. Esto fue decidido para simplificar un poco la ontología.
 
 **`owl:AllDifferent`** en los 69 individuos (3 bloques: palos, rangos y cartas) garantiza que el razonador los trate como entidades distintas, simulando la Unique Name Assumption (UNA) que OWL no asume por defecto.
 

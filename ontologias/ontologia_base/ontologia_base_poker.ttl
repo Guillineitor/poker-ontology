@@ -59,18 +59,8 @@ poker:Rango a owl:Class ;
     rdfs:comment "Rango de una carta. Clase cerrada: exactamente Dos, Tres, Cuatro, Cinco, Seis, Siete, Ocho, Nueve, Diez, Jota, Reina, Rey y As." .
 
 # Definición de la clase Carta.
-# Carta también se cierra con owl:oneOf. Cada carta tiene exactamente un palo y un rango,
-# garantizado por las FunctionalProperty definidas más adelante.
+# Cada carta tiene exactamente un palo y un rango, garantizado por las FunctionalProperty definidas más adelante.
 poker:Carta a owl:Class ;
-    owl:equivalentClass [
-        a owl:Class ;
-        owl:oneOf (
-            poker:DosDePicas poker:TresDePicas poker:CuatroDePicas poker:CincoDePicas poker:SeisDePicas poker:SieteDePicas poker:OchoDePicas poker:NueveDePicas poker:DiezDePicas poker:JotaDePicas poker:ReinaDePicas poker:ReyDePicas poker:AsDePicas
-            poker:DosDeCorazones poker:TresDeCorazones poker:CuatroDeCorazones poker:CincoDeCorazones poker:SeisDeCorazones poker:SieteDeCorazones poker:OchoDeCorazones poker:NueveDeCorazones poker:DiezDeCorazones poker:JotaDeCorazones poker:ReinaDeCorazones poker:ReyDeCorazones poker:AsDeCorazones
-            poker:DosDeDiamantes poker:TresDeDiamantes poker:CuatroDeDiamantes poker:CincoDeDiamantes poker:SeisDeDiamantes poker:SieteDeDiamantes poker:OchoDeDiamantes poker:NueveDeDiamantes poker:DiezDeDiamantes poker:JotaDeDiamantes poker:ReinaDeDiamantes poker:ReyDeDiamantes poker:AsDeDiamantes
-            poker:DosDeTreboles poker:TresDeTreboles poker:CuatroDeTreboles poker:CincoDeTreboles poker:SeisDeTreboles poker:SieteDeTreboles poker:OchoDeTreboles poker:NueveDeTreboles poker:DiezDeTreboles poker:JotaDeTreboles poker:ReinaDeTreboles poker:ReyDeTreboles poker:AsDeTreboles
-        )
-    ] ;
     rdfs:subClassOf [
         a owl:Restriction ;
         owl:onProperty poker:tienePalo ;
