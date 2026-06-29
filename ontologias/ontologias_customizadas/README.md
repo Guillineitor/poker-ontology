@@ -32,8 +32,8 @@ Ontologías generadas automáticamente por `generador_ontologias.py`, escritas e
 | Atributo | Valor |
 |---|---|
 | Generador | `generador_ontologias.py` |
-| Prefijo | `deck:` |
-| Versión | `1.0.0` |
+| Prefijo | `poker:` |
+| Versión | `2.0.0` |
 | Perfil OWL | OWL 2 DL |
 | Serialización | Turtle (`.ttl`) |
 | Idioma | Español |
@@ -44,7 +44,7 @@ Cada ontología modela una baraja con **P palos × R rangos = P·R cartas**, org
 
 ## Cómo se generan
 
-Las ontologías se producen ejecutando el generador desde la carpeta /generador_ontologias :
+Las ontologías se producen ejecutando el generador desde la carpeta `/generador_ontologias`:
 
 ```powershell
 python generador_ontologias.py
@@ -53,21 +53,20 @@ python generador_ontologias.py
 El script solicita interactivamente:
 
 1. **Nombre de la baraja** — usado como etiqueta y para construir el nombre del archivo `.ttl`.
-2. **IRI base** — por defecto `http://www.ontologia-baraja.org/<nombre>`.
+2. **IRI base** — se deriva automáticamente del nombre como `http://www.ontologia-baraja.org/<slug>`.
 3. **Palos** — lista separada por comas, en el orden preferido.
 4. **Rangos** — lista separada por comas, **de menor a mayor valor** (el orden determina las ventanas de `Escalera`).
 
-El archivo resultante se guarda en `ontologias/ontologias_customizadas/<nombre>.ttl`.
+El archivo resultante se guarda en `ontologias/ontologias_customizadas/<slug>.ttl`.
 
 ---
 
 ## Catálogo de ontologías
 
-Las ontologías están organizadas por número de rangos (7, 13, 19, 25, 31, 37) cruzado con número de palos (2, 4, 8, 12, 16). Los nombres de palos son customizados y usados son los siguientes según cantidad:
+Las ontologías están organizadas por número de rangos (6, 13, 19, 25, 31, 37) cruzado con número de palos (4, 8, 12, 16). Los nombres de palos son los siguientes según cantidad:
 
 | Palos | Nombres |
 |---|---|
-| 2 | Fuego, Agua |
 | 4 | Fuego, Agua, Planta, Eléctrico |
 | 8 | Fuego, Agua, Planta, Eléctrico, Normal, Volador, Bicho, Veneno |
 | 12 | Fuego, Agua, Planta, Eléctrico, Normal, Volador, Bicho, Veneno, Tierra, Roca, Lucha, Psíquico |
@@ -75,21 +74,19 @@ Las ontologías están organizadas por número de rangos (7, 13, 19, 25, 31, 37)
 
 ### Series por número de rangos
 
-#### 7 rangos — `Uno` a `Siete`
+#### 6 rangos — `Uno` a `Seis`
 
 | Archivo | Palos | Rangos | Cartas |
 |---|---|---|---|
-| `baraja_7r_2p.ttl` | 2 | 7 | 14 |
-| `baraja_7r_4p.ttl` | 4 | 7 | 28 |
-| `baraja_7r_8p.ttl` | 8 | 7 | 56 |
-| `baraja_7r_12p.ttl` | 12 | 7 | 84 |
-| `baraja_7r_16p.ttl` | 16 | 7 | 112 |
+| `baraja_6r_4p.ttl` | 4 | 6 | 24 |
+| `baraja_6r_8p.ttl` | 8 | 6 | 48 |
+| `baraja_6r_12p.ttl` | 12 | 6 | 72 |
+| `baraja_6r_16p.ttl` | 16 | 6 | 96 |
 
 #### 13 rangos — `Uno` a `Trece`
 
 | Archivo | Palos | Rangos | Cartas |
 |---|---|---|---|
-| `baraja_13r_2p.ttl` | 2 | 13 | 26 |
 | `baraja_13r_4p.ttl` | 4 | 13 | 52 |
 | `baraja_13r_8p.ttl` | 8 | 13 | 104 |
 | `baraja_13r_12p.ttl` | 12 | 13 | 156 |
@@ -99,7 +96,6 @@ Las ontologías están organizadas por número de rangos (7, 13, 19, 25, 31, 37)
 
 | Archivo | Palos | Rangos | Cartas |
 |---|---|---|---|
-| `baraja_19r_2p.ttl` | 2 | 19 | 38 |
 | `baraja_19r_4p.ttl` | 4 | 19 | 76 |
 | `baraja_19r_8p.ttl` | 8 | 19 | 152 |
 | `baraja_19r_12p.ttl` | 12 | 19 | 228 |
@@ -109,7 +105,6 @@ Las ontologías están organizadas por número de rangos (7, 13, 19, 25, 31, 37)
 
 | Archivo | Palos | Rangos | Cartas |
 |---|---|---|---|
-| `baraja_25r_2p.ttl` | 2 | 25 | 50 |
 | `baraja_25r_4p.ttl` | 4 | 25 | 100 |
 | `baraja_25r_8p.ttl` | 8 | 25 | 200 |
 | `baraja_25r_12p.ttl` | 12 | 25 | 300 |
@@ -119,7 +114,6 @@ Las ontologías están organizadas por número de rangos (7, 13, 19, 25, 31, 37)
 
 | Archivo | Palos | Rangos | Cartas |
 |---|---|---|---|
-| `baraja_31r_2p.ttl` | 2 | 31 | 62 |
 | `baraja_31r_4p.ttl` | 4 | 31 | 124 |
 | `baraja_31r_8p.ttl` | 8 | 31 | 248 |
 | `baraja_31r_12p.ttl` | 12 | 31 | 372 |
@@ -129,7 +123,6 @@ Las ontologías están organizadas por número de rangos (7, 13, 19, 25, 31, 37)
 
 | Archivo | Palos | Rangos | Cartas |
 |---|---|---|---|
-| `baraja_37r_2p.ttl` | 2 | 37 | 74 |
 | `baraja_37r_4p.ttl` | 4 | 37 | 148 |
 | `baraja_37r_8p.ttl` | 8 | 37 | 296 |
 | `baraja_37r_12p.ttl` | 12 | 37 | 444 |
@@ -137,14 +130,14 @@ Las ontologías están organizadas por número de rangos (7, 13, 19, 25, 31, 37)
 
 ### Tabla resumen
 
-| Rangos \ Palos | 2 | 4 | 8 | 12 | 16 |
-|---|---|---|---|---|---|
-| **7** | 14 | 28 | 56 | 84 | 112 |
-| **13** | 26 | 52 | 104 | 156 | 208 |
-| **19** | 38 | 76 | 152 | 228 | 304 |
-| **25** | 50 | 100 | 200 | 300 | 400 |
-| **31** | 62 | 124 | 248 | 372 | 496 |
-| **37** | 74 | 148 | 296 | 444 | 592 |
+| Rangos \ Palos | 4 | 8 | 12 | 16 |
+|---|---|---|---|---|
+| **6** | 24 | 48 | 72 | 96 |
+| **13** | 52 | 104 | 156 | 208 |
+| **19** | 76 | 152 | 228 | 304 |
+| **25** | 100 | 200 | 300 | 400 |
+| **31** | 124 | 248 | 372 | 496 |
+| **37** | 148 | 296 | 444 | 592 |
 
 *(Valores en número de cartas = palos × rangos)*
 
@@ -185,7 +178,7 @@ Todos los individuos están declarados `owl:AllDifferent` en tres bloques separa
 Ambas clases se cierran mediante `owl:equivalentClass [ owl:oneOf (...) ]`, enumerando exactamente los individuos declarados. Esto impide que el razonador asuma palos o rangos adicionales bajo la Open World Assumption.
 
 ```
-Palo  ≡ { P₁, P₂, ..., Pₙ }   (n palos)
+Palo ≡ { P₁, P₂, ..., Pₙ }   (n palos)
 Rango ≡ { R₁, R₂, ..., Rₘ }   (m rangos, de menor a mayor valor)
 ```
 
@@ -197,8 +190,8 @@ Rango ≡ { R₁, R₂, ..., Rₘ }   (m rangos, de menor a mayor valor)
 
 ```
 Carta
-├── CartaDe<P₁>   ≡ tienePalo hasValue <P₁>
-├── CartaDe<P₂>   ≡ tienePalo hasValue <P₂>
+├── CartaDe<P₁> ≡ tienePalo hasValue <P₁>
+├── CartaDe<P₂> ≡ tienePalo hasValue <P₂>
 └── ...
 ```
 
@@ -206,8 +199,8 @@ Carta
 
 ```
 Carta
-├── CartaDe<R₁>   ≡ tieneRango hasValue <R₁>
-├── CartaDe<R₂>   ≡ tieneRango hasValue <R₂>
+├── CartaDe<R₁> ≡ tieneRango hasValue <R₁>
+├── CartaDe<R₂> ≡ tieneRango hasValue <R₂>
 └── ...
 ```
 
@@ -228,9 +221,9 @@ Los tipos de mano se definen con `owl:equivalentClass` en orden de menor a mayor
 | 7 | `Full` | Full | `Trio ⊓ DoblePar` | P ≥ 3 y R ≥ 2 |
 | 8 | `Poker` | Póker | `Mano ⊓ (≥4 CartaDe<R₁> ⊔ ... ⊔ ≥4 CartaDe<Rₘ>)` | P ≥ 4 |
 | 9 | `EscaleraColor` | Escalera de Color | `Escalera ⊓ Color` | R ≥ 5 |
-| 10 | `EscaleraReal` | Escalera Real | `EscaleraColor ⊓ ∃contieneCarta.CartaDe<Rₘ₋₄> ⊓ ... ⊓ ∃contieneCarta.CartaDe<Rₘ>` | R ≥ 5 |
+| 10 | `EscaleraReal` | Escalera Real | `EscaleraColor ⊓ ∃contieneCarta.CartaDe<Rₘ₋₄> ⊓ ... ⊓ ∃contieneCarta.CartaDe<Rₘ>` | R ≥ 6 |
 
-`Full` y `EscaleraColor` se definen como intersecciones de clases ya existentes: `Full ≡ Trio ⊓ DoblePar` y `EscaleraColor ≡ Escalera ⊓ Color`. `EscaleraReal` fija los 5 rangos más altos de la lista de rangos declarada.
+`Full` y `EscaleraColor` se definen como intersecciones de clases ya existentes: `Full ≡ Trio ⊓ DoblePar` y `EscaleraColor ≡ Escalera ⊓ Color`. `EscaleraReal` fija los 5 rangos más altos de la lista de rangos declarada y requiere al menos 6 rangos en total para que esa ventana sea estrictamente distinta de la única escalera posible.
 
 ---
 
@@ -259,10 +252,8 @@ Los tipos de mano se definen con `owl:equivalentClass` en orden de menor a mayor
 
 Los nombres de palos y rangos son **etiquetas libres**: el generador los normaliza a identificadores CamelCase seguros para IRI (eliminando tildes, signos no alfanuméricos y espacios). El texto original se conserva en `rdfs:label` para mantener legibilidad en Protégé.
 
-Por ejemplo, el palo `"Espadas"` produce el individuo `deck:Espadas` y la subclase `deck:CartaDeEspadas`.
+Por ejemplo, el palo `"Eléctrico"` produce el individuo `poker:Electrico` y la subclase `poker:CartaDeElectrico`.
 
 ### Clasificadores no aplicables
 
-Cuando una combinación no puede existir en la baraja finita, el generador omite su clase e inserta un comentario explicativo en el archivo `.ttl`. Por ejemplo, una baraja con 2 palos no puede formar `Trio`, `Full` ni `Poker`, porque cada rango tiene como máximo dos cartas.
-
----
+Cuando una combinación no puede existir en la baraja finita, el generador omite su clase e inserta un comentario explicativo en el archivo `.ttl`. Por ejemplo, una baraja con solo 5 rangos genera `EscaleraColor` pero omite `EscaleraReal`, porque los 5 rangos más altos cubren toda la ventana posible de escalera y no existe una segunda que la diferencie.
