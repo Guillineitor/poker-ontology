@@ -97,7 +97,7 @@ public class BenchmarkOWLDefinitivo {
         BASE_TTL = args[0];
         INST_TTL = args[1];
 
-        cargarOntologias();
+        detectarBaseIRI();
 
         banner();
 
@@ -151,15 +151,39 @@ public class BenchmarkOWLDefinitivo {
     }
 
     /**
+     * Extrae el IRI base desde la ontología base y lo asigna a {@code BASE_IRI}.
+     * Se llama una única vez desde {@code main()} antes de iniciar el benchmark.
+     * No carga las instancias ni construye la ontología fusionada, por lo que
+     * no deja objetos pesados en el heap antes de que comience la medición.
+     *
+     * @throws Exception si el archivo no existe o la ontología no declara IRI.
+     */
+    private static void detectarBaseIRI() throws Exception {
+        OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+        File baseFile = new File(BASE_TTL);
+        verificarArchivo(baseFile, "Ontología base");
+        OWLOntology base = manager.loadOntologyFromOntologyDocument(baseFile);
+        String ontIRI = base.getOntologyID()
+            .getOntologyIRI()
+            .map(IRI::toString)
+            .orElseThrow(() -> new IllegalStateException(
+                "La ontología base no declara un IRI (falta <iri> a owl:Ontology)."));
+        BASE_IRI = ontIRI + "#";
+        System.out.printf("  IRI base detectado : %s%n", BASE_IRI);
+        manager.removeOntology(base);
+    }
+
+    /**
      * Carga la ontología base y el archivo de instancias
      * y los fusiona en una única ontología anónima lista para razonar.
      *
-     * En la primera llamada también extrae el IRI base desde la ontología
-     * cargada y lo asigna a {@code BASE_IRI}. Las llamadas siguientes
-     * (una por cada razonador del loop) reutilizan ese valor sin recalcularlo.
+     * Cada invocación crea un {@code OWLOntologyManager} limpio y libera
+     * explícitamente las ontologías intermedias (base e instancias) una vez
+     * copiados sus axiomas a {@code merged}, minimizando la presión sobre el
+     * heap durante la medición de cada razonador.
      *
      * @return ontología fusionada (TBox + ABox).
-     * @throws Exception si algún archivo no existe o la ontología no declara IRI.
+     * @throws Exception si algún archivo no existe.
      */
     private static OWLOntology cargarOntologias() throws Exception {
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
@@ -167,24 +191,15 @@ public class BenchmarkOWLDefinitivo {
         File baseFile = new File(BASE_TTL);
         verificarArchivo(baseFile, "Ontología base");
         OWLOntology base = manager.loadOntologyFromOntologyDocument(baseFile);
-
-        if (BASE_IRI == null) {
-            String ontIRI = base.getOntologyID()
-                .getOntologyIRI()
-                .map(IRI::toString)
-                .orElseThrow(() -> new IllegalStateException(
-                    "La ontología base no declara un IRI (falta <iri> a owl:Ontology)."));
-            BASE_IRI = ontIRI + "#";
-            System.out.printf("  IRI base detectado : %s%n", BASE_IRI);
-        }
-
         OWLOntology merged = manager.createOntology();
         manager.addAxioms(merged, base.getAxioms());
+        manager.removeOntology(base);
 
         File instFile = new File(INST_TTL);
         verificarArchivo(instFile, instFile.getName());
         OWLOntology inst = manager.loadOntologyFromOntologyDocument(instFile);
         manager.addAxioms(merged, inst.getAxioms());
+        manager.removeOntology(inst);
 
         System.out.printf("  Axiomas totales en la ontología fusionada: %d%n",
             merged.getAxiomCount());
