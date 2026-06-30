@@ -133,7 +133,7 @@ public class BenchmarkOWLDefinitivo {
                 future.cancel(true);
                 System.out.println(RED + BOLD
                     + "\n[ " + entrada.nombre + " ] TIMEOUT ("
-                    + TIMEOUT_MINUTOS + " min) — el razonador no logro clasificar en el tiempo limite."
+                    + TIMEOUT_MINUTOS + " min) - el razonador no logro clasificar en el tiempo limite."
                     + RESET + "\n");
                 ResultadoBenchmark timeout = new ResultadoBenchmark(entrada.nombre);
                 timeout.error = "TIMEOUT (" + TIMEOUT_MINUTOS + " min)";
@@ -371,7 +371,7 @@ public class BenchmarkOWLDefinitivo {
 
         for (ResultadoBenchmark r : resultados) {
             if (r.error != null) {
-                System.out.printf("%-22s | %s%n", r.nombre, RED + "ERROR: " + r.error + RESET);
+                System.out.printf("%-22s │ %s%n", r.nombre, RED + "TIMEOUT/ERROR: " + r.error + RESET);
                 continue;
             }
             System.out.printf(fmt,
@@ -400,19 +400,30 @@ public class BenchmarkOWLDefinitivo {
         System.out.println("╚══════════════════════════════════════════════════════════════════════╝");
         System.out.println(RESET);
 
-        StringBuilder cabecera = new StringBuilder(String.format("%-14s", "Clase"));
+        int colClase = 15;
+        int colRazon = 20;
+
+        StringBuilder cabecera = new StringBuilder(
+            BOLD + String.format("%-" + colClase + "s", "Clase") + RESET);
         for (ResultadoBenchmark r : resultados) {
-            cabecera.append(String.format(" │ %-16s", r.nombre));
+            cabecera.append(String.format(" │ %-" + colRazon + "s", r.nombre));
         }
-        System.out.println(BOLD + cabecera + RESET);
-        System.out.println("─".repeat(14 + resultados.size() * 20));
+        System.out.println(cabecera);
+        System.out.println("─".repeat(colClase + resultados.size() * (colRazon + 3)));
 
         for (String clase : CLASES_MANO) {
-            StringBuilder fila = new StringBuilder(String.format("%-14s", clase));
+            StringBuilder fila = new StringBuilder(String.format("%-" + colClase + "s", clase));
             for (ResultadoBenchmark r : resultados) {
-                int n = r.instanciasPorClase.getOrDefault(clase, -1);
-                fila.append(String.format(" │ %-16s",
-                    n == -1 ? RED + "ERROR" + RESET : String.valueOf(n)));
+                if (r.error != null) {
+                    fila.append(" │ ").append(RED)
+                        .append(String.format("%-" + colRazon + "s", "TIMEOUT"))
+                        .append(RESET);
+                } else {
+                    int n = r.instanciasPorClase.getOrDefault(clase, 0);
+                    fila.append(String.format(" │ %-" + colRazon + "s", n > 0
+                        ? GREEN + n + RESET
+                        : String.valueOf(n)));
+                }
             }
             System.out.println(fila);
         }
@@ -446,8 +457,15 @@ public class BenchmarkOWLDefinitivo {
         for (String ind : instancias) {
             System.out.printf(BOLD + "  %-20s" + RESET, ind);
             for (ResultadoBenchmark r : resultados) {
-                List<String> tipos = r.clasificacionIndividual.getOrDefault(ind, List.of("?"));
-                System.out.printf("  [%s: %s]", r.nombre, String.join(", ", tipos));
+                if (r.error != null) {
+                    System.out.printf("  [%s: %s]", r.nombre,
+                        RED + "TIMEOUT" + RESET);
+                } else {
+                    List<String> tipos = r.clasificacionIndividual.getOrDefault(ind, List.of("-"));
+                    String clases = tipos.isEmpty() ? RED + "(sin clase)" + RESET
+                                                    : GREEN + String.join(", ", tipos) + RESET;
+                    System.out.printf("  [%s: %s]", r.nombre, clases);
+                }
             }
             System.out.println();
         }
@@ -459,7 +477,7 @@ public class BenchmarkOWLDefinitivo {
             .orElse(null);
         if (masFast != null) {
             System.out.println(GREEN + BOLD
-                + "  Razonador mas rapido   : " + masFast.nombre
+                + "  Razonador mas rapido    : " + masFast.nombre
                 + " (" + masFast.tiempoTotalMs + " ms)" + RESET);
         }
 
@@ -476,16 +494,18 @@ public class BenchmarkOWLDefinitivo {
     }
 
     /**
-     * Punto de entrada para la exportación CSV. Crea {@code RESULTADOS_DIR}
-     * si no existe y delega en {@link #guardarResumenCSV} y
-     * {@link #guardarClasificacionCSV}.
+     * Genera un único archivo CSV con dos secciones:
+     * resumen de métricas por razonador y clasificación individual.
+     * El nombre incluye el nombre de la ontología y el timestamp.
+     * Los razonadores con TIMEOUT aparecen en la sección de métricas
+     * con TIMEOUT en todas sus celdas, y se omiten en clasificación individual.
      *
      * @param resultados lista de resultados, uno por razonador.
      */
     private static void guardarCSV(List<ResultadoBenchmark> resultados) {
 
         String variante = Paths.get(BASE_TTL).getFileName().toString()
-            .replaceAll("\\.ttl$", "");
+            .replaceAll("\.ttl$", "");
 
         Path dirPath = Paths.get(RESULTADOS_DIR);
         try {
@@ -496,39 +516,34 @@ public class BenchmarkOWLDefinitivo {
             return;
         }
 
-        guardarResumenCSV(resultados, variante, dirPath);
-        guardarClasificacionCSV(resultados, variante, dirPath);
-    }
-
-    /**
-     * Escribe {@code resumen_<timestamp>.csv} con una fila por razonador.
-     * Contiene todas las métricas numéricas y el recuento de instancias
-     * clasificadas por clase de mano. Pensado para comparativas de rendimiento.
-     *
-     * @param resultados lista de resultados, uno por razonador.
-     * @param variante nombre de la variante de baraja (derivado del nombre del TTL).
-     * @param dir directorio de destino.
-     */
-    private static void guardarResumenCSV(
-            List<ResultadoBenchmark> resultados, String variante, Path dir) {
-
-        String nombre = "resumen_timeout_" + TIMESTAMP + ".csv";
-        Path archivo = dir.resolve(nombre);
-
-        StringBuilder cabecera = new StringBuilder(
-            "variante,razonador,carga_ms,init_ms,precomp_ms,total_ms," +
-            "mem_antes_mb,mem_despues_mb,mem_delta_mb," +
-            "consistente,clases_jerarquia,total_inferencias");
-        for (String c : CLASES_MANO) cabecera.append(",inst_").append(c);
+        String nombre = variante + "_benchmark_" + TIMESTAMP + ".csv";
+        Path archivo = dirPath.resolve(nombre);
 
         try (PrintWriter pw = new PrintWriter(
                 new OutputStreamWriter(
                     new FileOutputStream(archivo.toFile()), StandardCharsets.UTF_8))) {
 
-            pw.println(cabecera);
+            pw.println("# RESUMEN DE METRICAS POR RAZONADOR");
+
+            StringBuilder cabecera1 = new StringBuilder(
+                "variante,razonador,carga_ms,init_ms,precomp_ms,total_ms," +
+                "mem_antes_mb,mem_despues_mb,mem_delta_mb," +
+                "consistente,clases_jerarquia,total_inferencias");
+            for (String c : CLASES_MANO) cabecera1.append(",inst_").append(c);
+            pw.println(cabecera1);
 
             for (ResultadoBenchmark r : resultados) {
-                if (r.error != null) continue;          
+                if (r.error != null) {
+                    String t = csvEscape(r.error);
+                    StringBuilder fila = new StringBuilder();
+                    fila.append(csvEscape(variante)).append(',');
+                    fila.append(csvEscape(r.nombre)).append(',');
+                    for (int i = 0; i < 10; i++) fila.append(t).append(',');
+                    fila.append(t);
+                    for (int i = 0; i < CLASES_MANO.length; i++) fila.append(',').append(t);
+                    pw.println(fila);
+                    continue;
+                }
                 StringBuilder fila = new StringBuilder();
                 fila.append(csvEscape(variante)).append(',');
                 fila.append(csvEscape(r.nombre)).append(',');
@@ -547,33 +562,9 @@ public class BenchmarkOWLDefinitivo {
                 pw.println(fila);
             }
 
-            System.out.println(GREEN + "  [CSV] " + archivo.toAbsolutePath() + RESET);
-
-        } catch (IOException e) {
-            System.err.println(RED + "[CSV] Error escribiendo resumen: " + e.getMessage() + RESET);
-        }
-    }
-
-    /**
-     * Escribe {@code clasificacion_<timestamp>.csv} con una fila por combinación
-     * (razonador, individuo, clase_inferida). Si un individuo no recibió ninguna
-     * clase, se registra con {@code clase_inferida} vacío. Pensado para análisis
-     * de correctitud y detección de discrepancias entre razonadores.
-     *
-     * @param resultados lista de resultados, uno por razonador.
-     * @param variante nombre de la variante de baraja (derivado del nombre del TTL).
-     * @param dir directorio de destino.
-     */
-    private static void guardarClasificacionCSV(
-            List<ResultadoBenchmark> resultados, String variante, Path dir) {
-
-        String nombre = "clasificacion_timeout_" + TIMESTAMP + ".csv";
-        Path archivo = dir.resolve(nombre);
-
-        try (PrintWriter pw = new PrintWriter(
-                new OutputStreamWriter(
-                    new FileOutputStream(archivo.toFile()), StandardCharsets.UTF_8))) {
-
+            pw.println();
+─────
+            pw.println("# CLASIFICACION INDIVIDUAL");
             pw.println("variante,razonador,individuo,clase_inferida");
 
             for (ResultadoBenchmark r : resultados) {
@@ -598,7 +589,7 @@ public class BenchmarkOWLDefinitivo {
             System.out.println(GREEN + "  [CSV] " + archivo.toAbsolutePath() + RESET);
 
         } catch (IOException e) {
-            System.err.println(RED + "[CSV] Error escribiendo clasificacion: " + e.getMessage() + RESET);
+            System.err.println(RED + "[CSV] Error escribiendo resultados: " + e.getMessage() + RESET);
         }
     }
 
