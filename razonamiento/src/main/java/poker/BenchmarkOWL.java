@@ -469,7 +469,7 @@ public class BenchmarkOWL {
     private static void guardarCSV(List<ResultadoBenchmark> resultados) {
 
         String variante = Paths.get(BASE_TTL).getFileName().toString()
-            .replaceAll("\.ttl$", "");
+            .replaceAll("\\.ttl$", "");
 
         Path dirPath = Paths.get(RESULTADOS_DIR);
         try {

@@ -43,7 +43,8 @@ import java.util.concurrent.*;
  * Métricas por razonador:
  *   • carga_ms: Tiempo (milisegundos) de lectura de TTL desde disco y construcción del OWLOntology fusionado.
  *   • init_ms: Tiempo (milisegundos) de creación del razonador.
- *   • precomp_ms: Tiempo (milisegundos) de chequeo de consistencia y precomputación de jerarquía de clases.
+ *   • precomp_ms: Tiempo (milisegundos) de precomputeInferences() (jerarquía, aserciones de clase
+ *     y de propiedad de objeto) más consistencia.
  *   • total_ms: Tiempo (milisegundos) de la suma de los tres anteriores (costo real de razonar desde cero).
  *   • mem_antes_mb: Heap usada antes de la precomputación (MB).
  *   • mem_despues_mb: Heap usada después de la precomputación (MB).
@@ -271,17 +272,20 @@ public class BenchmarkOWLDefinitivo {
             res.tiempoInicMs = tInit;
 
             long t1 = System.currentTimeMillis();
-            res.consistente = reasoner.isConsistent();
-            System.out.printf("  Consistencia      : %s%n",
-                res.consistente ? GREEN + "CONSISTENTE" + RESET : RED + "INCONSISTENTE" + RESET);
 
-            if (res.consistente) {
-                reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
-            }
+            reasoner.precomputeInferences(
+                InferenceType.CLASS_HIERARCHY,
+                InferenceType.CLASS_ASSERTIONS,
+                InferenceType.OBJECT_PROPERTY_ASSERTIONS
+            );
 
             long tPrecomp = System.currentTimeMillis() - t1;
             res.tiempoPrecompMs = tPrecomp;
             res.tiempoTotalMs = tCarga + tInit + tPrecomp;
+
+            res.consistente = reasoner.isConsistent();
+            System.out.printf("  Consistencia      : %s%n",
+                res.consistente ? GREEN + "CONSISTENTE" + RESET : RED + "INCONSISTENTE" + RESET);
 
             long memDespuesMB = memBean.getHeapMemoryUsage().getUsed() / (1024 * 1024);
             res.memAntesMB = memAntesMB;
@@ -505,7 +509,7 @@ public class BenchmarkOWLDefinitivo {
     private static void guardarCSV(List<ResultadoBenchmark> resultados) {
 
         String variante = Paths.get(BASE_TTL).getFileName().toString()
-            .replaceAll("\.ttl$", "");
+            .replaceAll("\\.ttl$", "");
 
         Path dirPath = Paths.get(RESULTADOS_DIR);
         try {
@@ -563,7 +567,7 @@ public class BenchmarkOWLDefinitivo {
             }
 
             pw.println();
-─────
+
             pw.println("# CLASIFICACION INDIVIDUAL");
             pw.println("variante,razonador,individuo,clase_inferida");
 
