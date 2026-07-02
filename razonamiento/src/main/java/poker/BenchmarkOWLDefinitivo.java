@@ -17,7 +17,8 @@ import uk.ac.manchester.cs.jfact.JFactFactory;
 
 import java.io.*;
 import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryPoolMXBean;
+import java.lang.management.MemoryType;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.time.LocalDateTime;
@@ -52,9 +53,10 @@ import java.util.concurrent.*;
  *     y de propiedad de objeto) más consistencia.
  *   • total_ms: Tiempo (milisegundos) de init_ms + precomp_ms (costo de razonar, sin contar la carga
  *     compartida del TTL).
- *   • mem_antes_mb: Heap usada antes de la precomputación (MB), tras forzar {@code System.gc()}.
- *   • mem_despues_mb: Heap usada después de la precomputación (MB), tras forzar {@code System.gc()}.
- *   • mem_delta_mb: Diferencia de heap antes/después de la precomputación (MB).
+ *   • mem_pico_mb: máximo de heap usado desde la creación del razonador hasta el final de
+ *     precomputeInferences(), medido con {@code MemoryPoolMXBean.getPeakUsage()} (reseteado
+ *     justo antes de crear el razonador, tras forzar {@code System.gc()} para partir de una
+ *     base limpia).
  *   • consistente: si la ontología es consistente según el razonador.
  *   • clases_jerarquia: número de clases en la jerarquía inferida.
  *   • inst_<Clase>: número de individuos clasificados bajo cada clase de mano.
@@ -271,12 +273,21 @@ public class BenchmarkOWLDefinitivo {
         ResultadoBenchmark res = new ResultadoBenchmark(entrada.nombre);
         res.tiempoCargaMs = TIEMPO_CARGA_MS;
 
-        MemoryMXBean memBean = ManagementFactory.getMemoryMXBean();
         OWLReasoner reasoner = null;
 
         try {
             System.gc();
-            long memAntesMB = memBean.getHeapMemoryUsage().getUsed() / (1024 * 1024);
+            List<MemoryPoolMXBean> poolsHeap = new ArrayList<>();
+            for (MemoryPoolMXBean pool : ManagementFactory.getMemoryPoolMXBeans()) {
+                if (pool.getType() == MemoryType.HEAP) {
+                    try {
+                        pool.resetPeakUsage();
+                        poolsHeap.add(pool);
+                    } catch (UnsupportedOperationException ignored) {
+                        // Este pool no soporta seguimiento de pico; se omite.
+                    }
+                }
+            }
 
             OWLDataFactory factory = ontologia.getOWLOntologyManager().getOWLDataFactory();
 
@@ -291,8 +302,7 @@ public class BenchmarkOWLDefinitivo {
 
             reasoner.precomputeInferences(
                 InferenceType.CLASS_HIERARCHY,
-                InferenceType.CLASS_ASSERTIONS,
-                InferenceType.OBJECT_PROPERTY_ASSERTIONS
+                InferenceType.CLASS_ASSERTIONS
             );
 
             long tPrecomp = System.currentTimeMillis() - t1;
@@ -303,11 +313,12 @@ public class BenchmarkOWLDefinitivo {
             System.out.printf("  Consistencia      : %s%n",
                 res.consistente ? GREEN + "CONSISTENTE" + RESET : RED + "INCONSISTENTE" + RESET);
 
-            System.gc();
-            long memDespuesMB = memBean.getHeapMemoryUsage().getUsed() / (1024 * 1024);
-            res.memAntesMB = memAntesMB;
-            res.memDespuesMB = memDespuesMB;
-            res.memDeltaMB = memDespuesMB - memAntesMB;
+            long memPicoMB = 0;
+            for (MemoryPoolMXBean pool : poolsHeap) {
+                memPicoMB += pool.getPeakUsage().getUsed();
+            }
+            memPicoMB /= (1024 * 1024);
+            res.memPicoMB = memPicoMB;
 
             if (!res.consistente) {
                 return res;
@@ -356,7 +367,7 @@ public class BenchmarkOWLDefinitivo {
             System.out.printf("  %-22s : %d ms%n",  "Init",                tInit);
             System.out.printf("  %-22s : %d ms%n",  "Precomputacion",      tPrecomp);
             System.out.printf("  %-22s : %d ms%n",  "Total (init+precomp)", res.tiempoTotalMs);
-            System.out.printf("  %-22s : %+d MB%n", "Memoria delta",       res.memDeltaMB);
+            System.out.printf("  %-22s : %d MB%n",  "Memoria pico (real)", res.memPicoMB);
             System.out.printf("  %-22s : %d%n",     "Clases inferidas",    res.numClasesJerarquia);
             System.out.printf("  %-22s : %d%n%n",   "Inferencias totales", res.totalInferencias);
 
@@ -384,11 +395,11 @@ public class BenchmarkOWLDefinitivo {
         System.out.println("╚══════════════════════════════════════════════════════════════════════╝");
         System.out.println(RESET);
 
-        String fmt = "%-22s │ %10s │ %10s │ %12s │ %10s │ %10s │ %8s │ %12s%n";
+        String fmt = "%-22s │ %10s │ %10s │ %12s │ %10s │ %11s │ %8s │ %12s%n";
         System.out.printf(BOLD + fmt + RESET,
             "Razonador", "Carga (ms)", "Init (ms)", "Precomp (ms)", "Total (ms)",
-            "Mem (MB)", "Consist.", "Inferencias");
-        System.out.println("─".repeat(110));
+            "Mem pico(MB)", "Consist.", "Inferencias");
+        System.out.println("─".repeat(109));
 
         for (ResultadoBenchmark r : resultados) {
             if (r.error != null) {
@@ -402,7 +413,7 @@ public class BenchmarkOWLDefinitivo {
                 r.tiempoInicMs,
                 r.tiempoPrecompMs,
                 r.tiempoTotalMs,
-                (r.memDeltaMB >= 0 ? "+" : "") + r.memDeltaMB,
+                r.memPicoMB,
                 r.consistente ? "SI" : "NO",
                 r.totalInferencias
             );
@@ -510,12 +521,12 @@ public class BenchmarkOWLDefinitivo {
 
         ResultadoBenchmark menosMem = resultados.stream()
             .filter(r -> r.error == null)
-            .min(Comparator.comparingLong(r -> r.memDeltaMB))
+            .min(Comparator.comparingLong(r -> r.memPicoMB))
             .orElse(null);
         if (menosMem != null) {
             System.out.println(GREEN + BOLD
                 + "  Menor consumo de memoria: " + menosMem.nombre
-                + " (+" + menosMem.memDeltaMB + " MB)" + RESET);
+                + " (" + menosMem.memPicoMB + " MB pico)" + RESET);
         }
         System.out.println();
     }
@@ -554,7 +565,7 @@ public class BenchmarkOWLDefinitivo {
 
             StringBuilder cabecera1 = new StringBuilder(
                 "variante,razonador,carga_ms,init_ms,precomp_ms,total_ms," +
-                "mem_antes_mb,mem_despues_mb,mem_delta_mb," +
+                "mem_pico_mb," +
                 "consistente,clases_jerarquia,total_inferencias");
             for (String c : CLASES_MANO) cabecera1.append(",inst_").append(c);
             pw.println(cabecera1);
@@ -565,7 +576,7 @@ public class BenchmarkOWLDefinitivo {
                     StringBuilder fila = new StringBuilder();
                     fila.append(csvEscape(variante)).append(',');
                     fila.append(csvEscape(r.nombre));
-                    int totalCampos = 10 + CLASES_MANO.length; 
+                    int totalCampos = 8 + CLASES_MANO.length;
                     for (int i = 0; i < totalCampos; i++) fila.append(',').append(t);
                     pw.println(fila);
                     continue;
@@ -577,9 +588,7 @@ public class BenchmarkOWLDefinitivo {
                 fila.append(r.tiempoInicMs).append(',');
                 fila.append(r.tiempoPrecompMs).append(',');
                 fila.append(r.tiempoTotalMs).append(',');
-                fila.append(r.memAntesMB).append(',');
-                fila.append(r.memDespuesMB).append(',');
-                fila.append(r.memDeltaMB).append(',');
+                fila.append(r.memPicoMB).append(',');
                 fila.append(r.consistente ? "true" : "false").append(',');
                 fila.append(r.numClasesJerarquia).append(',');
                 fila.append(r.totalInferencias);
@@ -660,9 +669,7 @@ public class BenchmarkOWLDefinitivo {
         long tiempoInicMs = 0;
         long tiempoPrecompMs = 0;
         long tiempoTotalMs = 0;
-        long memAntesMB = 0;
-        long memDespuesMB = 0;
-        long memDeltaMB = 0;
+        long memPicoMB = 0;
         boolean consistente = false;
         long numClasesJerarquia = 0;
         long totalInferencias = 0;

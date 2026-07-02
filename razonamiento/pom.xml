@@ -59,7 +59,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>poker.BenchmarkOWL</mainClass>
+                            <mainClass>poker.BenchmarkOWLDefinitivo</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
