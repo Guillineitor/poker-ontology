@@ -52,8 +52,8 @@ import java.util.concurrent.*;
  *     y de propiedad de objeto) más consistencia.
  *   • total_ms: Tiempo (milisegundos) de init_ms + precomp_ms (costo de razonar, sin contar la carga
  *     compartida del TTL).
- *   • mem_antes_mb: Heap usada antes de la precomputación (MB).
- *   • mem_despues_mb: Heap usada después de la precomputación (MB).
+ *   • mem_antes_mb: Heap usada antes de la precomputación (MB), tras forzar {@code System.gc()}.
+ *   • mem_despues_mb: Heap usada después de la precomputación (MB), tras forzar {@code System.gc()}.
  *   • mem_delta_mb: Diferencia de heap antes/después de la precomputación (MB).
  *   • consistente: si la ontología es consistente según el razonador.
  *   • clases_jerarquia: número de clases en la jerarquía inferida.
@@ -126,7 +126,7 @@ public class BenchmarkOWLDefinitivo {
         );
         List<EntradaRazonador> conTimeout = Arrays.asList(
             new EntradaRazonador("Openllet (Pellet)", OpenlletReasonerFactory.getInstance()),
-            new EntradaRazonador("JFact (FaCT++)",    new JFactFactory())
+            new EntradaRazonador("JFact (FaCT++)", new JFactFactory())
         );
 
         List<ResultadoBenchmark> resultados = new ArrayList<>();
@@ -154,7 +154,7 @@ public class BenchmarkOWLDefinitivo {
                     + TIMEOUT_MINUTOS + " min) - el razonador no logro clasificar en el tiempo limite."
                     + RESET + "\n");
                 ResultadoBenchmark timeout = new ResultadoBenchmark(entrada.nombre);
-                timeout.error = "TIMEOUT (" + TIMEOUT_MINUTOS + " min)";
+                timeout.error = "TIMEOUT";
                 resultados.add(timeout);
             } catch (InterruptedException | ExecutionException e) {
                 future.cancel(true);
@@ -272,6 +272,7 @@ public class BenchmarkOWLDefinitivo {
         res.tiempoCargaMs = TIEMPO_CARGA_MS;
 
         MemoryMXBean memBean = ManagementFactory.getMemoryMXBean();
+        OWLReasoner reasoner = null;
 
         try {
             System.gc();
@@ -280,7 +281,7 @@ public class BenchmarkOWLDefinitivo {
             OWLDataFactory factory = ontologia.getOWLOntologyManager().getOWLDataFactory();
 
             long t0 = System.currentTimeMillis();
-            OWLReasoner reasoner = entrada.factory.createReasoner(
+            reasoner = entrada.factory.createReasoner(
                 ontologia, new SimpleConfiguration()
             );
             long tInit = System.currentTimeMillis() - t0;
@@ -302,13 +303,13 @@ public class BenchmarkOWLDefinitivo {
             System.out.printf("  Consistencia      : %s%n",
                 res.consistente ? GREEN + "CONSISTENTE" + RESET : RED + "INCONSISTENTE" + RESET);
 
+            System.gc();
             long memDespuesMB = memBean.getHeapMemoryUsage().getUsed() / (1024 * 1024);
             res.memAntesMB = memAntesMB;
             res.memDespuesMB = memDespuesMB;
             res.memDeltaMB = memDespuesMB - memAntesMB;
 
             if (!res.consistente) {
-                reasoner.dispose();
                 return res;
             }
 
@@ -333,7 +334,7 @@ public class BenchmarkOWLDefinitivo {
 
             System.out.println("  Inferencias en tiempo real:");
             for (OWLNamedIndividual ind : todasManos.getFlattened()) {
-                NodeSet<OWLClass> tipos = reasoner.getTypes(ind, true);
+                NodeSet<OWLClass> tipos = reasoner.getTypes(ind, false);
                 List<String> tiposNombre = new ArrayList<>();
                 for (OWLClass c : tipos.getFlattened()) {
                     if (!c.isOWLThing()) {
@@ -359,11 +360,13 @@ public class BenchmarkOWLDefinitivo {
             System.out.printf("  %-22s : %d%n",     "Clases inferidas",    res.numClasesJerarquia);
             System.out.printf("  %-22s : %d%n%n",   "Inferencias totales", res.totalInferencias);
 
-            reasoner.dispose();
-
         } catch (Exception e) {
             res.error = e.getMessage();
             System.out.println(RED + "  [ERROR] " + e.getMessage() + RESET + "\n");
+        } finally {
+            if (reasoner != null) {
+                reasoner.dispose();
+            }
         }
 
         return res;
@@ -389,7 +392,8 @@ public class BenchmarkOWLDefinitivo {
 
         for (ResultadoBenchmark r : resultados) {
             if (r.error != null) {
-                System.out.printf("%-22s │ %s%n", r.nombre, RED + "TIMEOUT/ERROR: " + r.error + RESET);
+                String etiqueta = "TIMEOUT".equals(r.error) ? "TIMEOUT" : "ERROR: " + r.error;
+                System.out.printf("%-22s │ %s%n", r.nombre, RED + etiqueta + RESET);
                 continue;
             }
             System.out.printf(fmt,
@@ -438,9 +442,14 @@ public class BenchmarkOWLDefinitivo {
                         .append(RESET);
                 } else {
                     int n = r.instanciasPorClase.getOrDefault(clase, 0);
-                    fila.append(String.format(" │ %-" + colRazon + "s", n > 0
-                        ? GREEN + n + RESET
-                        : String.valueOf(n)));
+                    String texto = String.valueOf(n);
+                    if (n > 0) {
+                        fila.append(" │ ").append(GREEN)
+                            .append(String.format("%-" + colRazon + "s", texto))
+                            .append(RESET);
+                    } else {
+                        fila.append(String.format(" │ %-" + colRazon + "s", texto));
+                    }
                 }
             }
             System.out.println(fila);
@@ -555,10 +564,9 @@ public class BenchmarkOWLDefinitivo {
                     String t = csvEscape(r.error);
                     StringBuilder fila = new StringBuilder();
                     fila.append(csvEscape(variante)).append(',');
-                    fila.append(csvEscape(r.nombre)).append(',');
-                    for (int i = 0; i < 10; i++) fila.append(t).append(',');
-                    fila.append(t);
-                    for (int i = 0; i < CLASES_MANO.length; i++) fila.append(',').append(t);
+                    fila.append(csvEscape(r.nombre));
+                    int totalCampos = 10 + CLASES_MANO.length; 
+                    for (int i = 0; i < totalCampos; i++) fila.append(',').append(t);
                     pw.println(fila);
                     continue;
                 }
