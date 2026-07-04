@@ -62,13 +62,13 @@ La función `generar_archivo()` es el punto de ensamblaje. Recibe la ruta a la o
 ## Uso
 
 ```powershell
-python generador_instancias.py ../(carpeta donde se ubica la ontología)/<nombre_ontología>.ttl
+python generador_instancias.py ..\(carpeta donde se ubica la ontología)\<nombre_ontología>.ttl
 ```
 
 **Ejemplo:**
 
 ```powershell
-python generador_instancias.py ..\ontologias\ontologias_customizadas\baraja_6r_4p.ttl
+python generador_instancias.py ..\ontologias\ontologias_customizadas\barajas_6_rangos\baraja_6r_4p.ttl
 ```
 
 El archivo generado se guarda en la misma carpeta del script, con el nombre:

@@ -9,10 +9,10 @@
 # por lo que el script se adapta a cualquier baraja customizada.
 #
 # Uso:
-#     python generador_instancias.py <..\(carpeta donde se ubica la ontología)\<nombre_ontología>.ttl
+#     python generador_instancias.py ..\(carpeta donde se ubica la ontología)\<nombre_ontología>.ttl
 #
 # Ejemplo:
-#     python generador_instancias.py ..\ontologias\ontologias_customizadas\baraja_6r_4p.ttl
+#     python generador_instancias.py ..\ontologias\ontologias_customizadas\barajas_6_rangos\baraja_6r_4p.ttl
 #
 # Flujo principal:
 #     1. Leer la ontología TTL indicada como argumento.

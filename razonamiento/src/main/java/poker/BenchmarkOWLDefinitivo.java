@@ -118,7 +118,7 @@ public class BenchmarkOWLDefinitivo {
         banner();
 
         long tCarga0 = System.currentTimeMillis();
-        System.out.println("  Cargando ontologias...");
+        System.out.println("  " + CYAN + "Cargando ontologias..." + RESET);
         OWLOntology ontologia = cargarOntologias();
         TIEMPO_CARGA_MS = System.currentTimeMillis() - tCarga0;
         System.out.printf("  Tiempo de carga    : %d ms%n%n", TIEMPO_CARGA_MS);
@@ -674,6 +674,18 @@ public class BenchmarkOWLDefinitivo {
 
         private static final long INTERVALO_BUSY_MS = 5_000;
 
+        private static final Map<String, String> TRADUCCIONES_TAREA = Map.of(
+            "Building the class hierarchy...", "Construyendo la jerarquía de clases...",
+            "Initializing class instance data structures", "Inicializando estructuras de datos de instancias",
+            "Classifying", "Clasificando",
+            "Loading", "Cargando"
+        );
+
+        private static String traducir(String taskName) {
+            String traducido = TRADUCCIONES_TAREA.getOrDefault(taskName, taskName);
+            return traducido.replaceAll("\\.+$", "");
+        }
+
         private final String nombreRazonador;
         private String tareaActual = "";
         private long tInicioTarea;
@@ -686,12 +698,12 @@ public class BenchmarkOWLDefinitivo {
 
         @Override
         public void reasonerTaskStarted(String taskName) {
-            tareaActual = taskName;
+            tareaActual = traducir(taskName);
             tInicioTarea = System.currentTimeMillis();
             ultimoPorcentajeImpreso = -1;
             ultimoBusyImpreso = 0;
             System.out.printf("  " + CYAN + "[%s] > %s..." + RESET + "%n",
-                nombreRazonador, taskName);
+                nombreRazonador, tareaActual);
         }
 
         @Override

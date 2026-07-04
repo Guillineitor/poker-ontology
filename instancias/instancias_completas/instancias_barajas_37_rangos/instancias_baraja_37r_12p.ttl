@@ -1,0 +1,271 @@
+# =============================================================================
+# Instancias de manos de Póker Texas Hold'em
+# =============================================================================
+
+@prefix carta_alta: <http://www.poker-ontology.org/instancias/carta_alta#> .
+@prefix par: <http://www.poker-ontology.org/instancias/par#> .
+@prefix doblepar: <http://www.poker-ontology.org/instancias/doblepar#> .
+@prefix trio: <http://www.poker-ontology.org/instancias/trio#> .
+@prefix escalera: <http://www.poker-ontology.org/instancias/escalera#> .
+@prefix color: <http://www.poker-ontology.org/instancias/color#> .
+@prefix full: <http://www.poker-ontology.org/instancias/full#> .
+@prefix pokerh: <http://www.poker-ontology.org/instancias/poker#> .
+@prefix escalera_color: <http://www.poker-ontology.org/instancias/escalera_color#> .
+@prefix escalera_real: <http://www.poker-ontology.org/instancias/escalera_real#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_12p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/todas>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_12p> ;
+    rdfs:label "Instancias de manos de Póker Texas Hold'em" ;
+    rdfs:comment "ABox unificado con 40 manos de prueba, 4 por cada uno de los 10 tipos de manos de Póker Texas Hold'em." .
+
+# =============================================================================
+# 1. Carta Alta
+# =============================================================================
+
+carta_alta:Mano1 a poker:Mano ;
+    rdfs:label "Carta Alta de Treintayseis con Treintaytres Veintiocho Veintisiete Dieciseis" ;
+    poker:contieneCarta poker:VeintisieteDeVeneno, poker:VeintiochoDeNormal, poker:TreintayseisDePsiquico, poker:DieciseisDeNormal, poker:TreintaytresDeAgua .
+
+carta_alta:Mano2 a poker:Mano ;
+    rdfs:label "Carta Alta de Treintayseis con Veintiseis Quince Catorce Tres" ;
+    poker:contieneCarta poker:QuinceDeVolador, poker:VeintiseisDeAgua, poker:TresDeElectrico, poker:CatorceDeTierra, poker:TreintayseisDePlanta .
+
+carta_alta:Mano3 a poker:Mano ;
+    rdfs:label "Carta Alta de Veinticinco con Veinticuatro Diecisiete Doce Diez" ;
+    poker:contieneCarta poker:VeinticuatroDeLucha, poker:DiecisieteDeTierra, poker:DiezDeLucha, poker:DoceDeVeneno, poker:VeinticincoDeTierra .
+
+carta_alta:Mano4 a poker:Mano ;
+    rdfs:label "Carta Alta de Veintisiete con Veinticinco Veintitres Veintidos Once" ;
+    poker:contieneCarta poker:VeintidosDeVeneno, poker:VeinticincoDeTierra, poker:VeintitresDeNormal, poker:OnceDeRoca, poker:VeintisieteDeVeneno .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( carta_alta:Mano1 carta_alta:Mano2 carta_alta:Mano3 carta_alta:Mano4 ) .
+
+# =============================================================================
+# 2. Par
+# =============================================================================
+
+par:Mano5 a poker:Mano ;
+    rdfs:label "Par de Treces con Veinte Diecinueve Once" ;
+    poker:contieneCarta poker:TreceDeBicho, poker:TreceDeElectrico, poker:OnceDeAgua, poker:VeinteDePlanta, poker:DiecinueveDeAgua .
+
+par:Mano6 a poker:Mano ;
+    rdfs:label "Par de Onces con Diecinueve Catorce Seis" ;
+    poker:contieneCarta poker:OnceDeNormal, poker:OnceDeFuego, poker:CatorceDeTierra, poker:SeisDeBicho, poker:DiecinueveDeBicho .
+
+par:Mano7 a poker:Mano ;
+    rdfs:label "Par de Veinticuatros con Treintaysiete Veintitres Veintiuno" ;
+    poker:contieneCarta poker:VeinticuatroDeFuego, poker:VeinticuatroDeVolador, poker:TreintaysieteDeAgua, poker:VeintiunoDeVeneno, poker:VeintitresDeBicho .
+
+par:Mano8 a poker:Mano ;
+    rdfs:label "Par de Veintiseises con Dieciocho Once Cuatro" ;
+    poker:contieneCarta poker:VeintiseisDeVeneno, poker:VeintiseisDeVolador, poker:CuatroDeElectrico, poker:OnceDeTierra, poker:DieciochoDeNormal .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( par:Mano5 par:Mano6 par:Mano7 par:Mano8 ) .
+
+# =============================================================================
+# 3. Doble Par
+# =============================================================================
+
+doblepar:Mano9 a poker:Mano ;
+    rdfs:label "Doble Par de Veintisietes y Diecisietes con Cinco" ;
+    poker:contieneCarta poker:VeintisieteDePlanta, poker:VeintisieteDeElectrico, poker:DiecisieteDeFuego, poker:DiecisieteDePlanta, poker:CincoDeRoca ;
+    poker:manoTienePar poker:Veintisiete, poker:Diecisiete .
+
+doblepar:Mano10 a poker:Mano ;
+    rdfs:label "Doble Par de Dieciochos y Dieciseises con Treintaycuatro" ;
+    poker:contieneCarta poker:DieciochoDeNormal, poker:DieciochoDeVeneno, poker:DieciseisDeBicho, poker:DieciseisDeNormal, poker:TreintaycuatroDePlanta ;
+    poker:manoTienePar poker:Dieciocho, poker:Dieciseis .
+
+doblepar:Mano11 a poker:Mano ;
+    rdfs:label "Doble Par de Treintayseises y Veintiunos con Cinco" ;
+    poker:contieneCarta poker:TreintayseisDeBicho, poker:TreintayseisDeVolador, poker:VeintiunoDeVolador, poker:VeintiunoDeFuego, poker:CincoDeElectrico ;
+    poker:manoTienePar poker:Treintayseis, poker:Veintiuno .
+
+doblepar:Mano12 a poker:Mano ;
+    rdfs:label "Doble Par de Diecinueves y Dieces con Treintaydos" ;
+    poker:contieneCarta poker:DiecinueveDeFuego, poker:DiecinueveDeVolador, poker:DiezDeFuego, poker:DiezDeNormal, poker:TreintaydosDeVolador ;
+    poker:manoTienePar poker:Diecinueve, poker:Diez .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( doblepar:Mano9 doblepar:Mano10 doblepar:Mano11 doblepar:Mano12 ) .
+
+# =============================================================================
+# 4. Trío
+# =============================================================================
+
+trio:Mano13 a poker:Mano ;
+    rdfs:label "Trío de Ochos con Treintaysiete Diecinueve" ;
+    poker:contieneCarta poker:OchoDePlanta, poker:OchoDeTierra, poker:OchoDeAgua, poker:DiecinueveDeFuego, poker:TreintaysieteDeNormal .
+
+trio:Mano14 a poker:Mano ;
+    rdfs:label "Trío de Doses con Veintidos Quince" ;
+    poker:contieneCarta poker:DosDePlanta, poker:DosDeElectrico, poker:DosDeBicho, poker:VeintidosDeAgua, poker:QuinceDeNormal .
+
+trio:Mano15 a poker:Mano ;
+    rdfs:label "Trío de Veintitreses con Treintaycinco Treintaycuatro" ;
+    poker:contieneCarta poker:VeintitresDeAgua, poker:VeintitresDeNormal, poker:VeintitresDeElectrico, poker:TreintaycincoDeBicho, poker:TreintaycuatroDePlanta .
+
+trio:Mano16 a poker:Mano ;
+    rdfs:label "Trío de Veinticuatros con Dieciocho Doce" ;
+    poker:contieneCarta poker:VeinticuatroDeNormal, poker:VeinticuatroDeBicho, poker:VeinticuatroDeRoca, poker:DoceDeAgua, poker:DieciochoDePlanta .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( trio:Mano13 trio:Mano14 trio:Mano15 trio:Mano16 ) .
+
+# =============================================================================
+# 5. Escalera
+# =============================================================================
+
+escalera:Mano17 a poker:Mano ;
+    rdfs:label "Escalera de Treintaydos-Treintaytres-Treintaycuatro-Treintaycinco-Treintayseis" ;
+    poker:contieneCarta poker:TreintaydosDeBicho, poker:TreintaytresDeBicho, poker:TreintaycuatroDeNormal, poker:TreintaycincoDeVolador, poker:TreintayseisDePsiquico .
+
+escalera:Mano18 a poker:Mano ;
+    rdfs:label "Escalera de Treintayuno-Treintaydos-Treintaytres-Treintaycuatro-Treintaycinco" ;
+    poker:contieneCarta poker:TreintayunoDeRoca, poker:TreintaydosDeLucha, poker:TreintaytresDeLucha, poker:TreintaycuatroDeElectrico, poker:TreintaycincoDeNormal .
+
+escalera:Mano19 a poker:Mano ;
+    rdfs:label "Escalera de Dieciseis-Diecisiete-Dieciocho-Diecinueve-Veinte" ;
+    poker:contieneCarta poker:DieciseisDeBicho, poker:DiecisieteDeVolador, poker:DieciochoDeLucha, poker:DiecinueveDeBicho, poker:VeinteDeBicho .
+
+escalera:Mano20 a poker:Mano ;
+    rdfs:label "Escalera de Veintiseis-Veintisiete-Veintiocho-Veintinueve-Treinta" ;
+    poker:contieneCarta poker:VeintiseisDeBicho, poker:VeintisieteDePsiquico, poker:VeintiochoDeFuego, poker:VeintinueveDeVeneno, poker:TreintaDePlanta .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera:Mano17 escalera:Mano18 escalera:Mano19 escalera:Mano20 ) .
+
+# =============================================================================
+# 6. Color
+# =============================================================================
+
+color:Mano21 a poker:Mano ;
+    rdfs:label "Color de Treintayseis Veintidos Dieciseis Quince Doce de Roca" ;
+    poker:contieneCarta poker:TreintayseisDeRoca, poker:DoceDeRoca, poker:VeintidosDeRoca, poker:QuinceDeRoca, poker:DieciseisDeRoca .
+
+color:Mano22 a poker:Mano ;
+    rdfs:label "Color de Treintayuno Treinta Veintitres Quince Trece de Fuego" ;
+    poker:contieneCarta poker:VeintitresDeFuego, poker:TreintaDeFuego, poker:TreceDeFuego, poker:QuinceDeFuego, poker:TreintayunoDeFuego .
+
+color:Mano23 a poker:Mano ;
+    rdfs:label "Color de Treintaycinco Veinticinco Diecinueve Nueve Seis de Normal" ;
+    poker:contieneCarta poker:SeisDeNormal, poker:DiecinueveDeNormal, poker:TreintaycincoDeNormal, poker:VeinticincoDeNormal, poker:NueveDeNormal .
+
+color:Mano24 a poker:Mano ;
+    rdfs:label "Color de Treintaycinco Treintaycuatro Veintiuno Catorce Siete de Lucha" ;
+    poker:contieneCarta poker:TreintaycincoDeLucha, poker:TreintaycuatroDeLucha, poker:SieteDeLucha, poker:CatorceDeLucha, poker:VeintiunoDeLucha .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( color:Mano21 color:Mano22 color:Mano23 color:Mano24 ) .
+
+# =============================================================================
+# 7. Full
+# =============================================================================
+
+full:Mano25 a poker:Mano ;
+    rdfs:label "Full de Trío de Doses con Par de Veintes" ;
+    poker:contieneCarta poker:DosDeVeneno, poker:DosDeAgua, poker:DosDeRoca, poker:VeinteDeVolador, poker:VeinteDeFuego ;
+    poker:manoTienePar poker:Dos, poker:Veinte .
+
+full:Mano26 a poker:Mano ;
+    rdfs:label "Full de Trío de Sietes con Par de Dieciseises" ;
+    poker:contieneCarta poker:SieteDeLucha, poker:SieteDeFuego, poker:SieteDeRoca, poker:DieciseisDePlanta, poker:DieciseisDeElectrico ;
+    poker:manoTienePar poker:Siete, poker:Dieciseis .
+
+full:Mano27 a poker:Mano ;
+    rdfs:label "Full de Trío de Dieciseises con Par de Unos" ;
+    poker:contieneCarta poker:DieciseisDeElectrico, poker:DieciseisDeVeneno, poker:DieciseisDeAgua, poker:UnoDeVeneno, poker:UnoDeTierra ;
+    poker:manoTienePar poker:Dieciseis, poker:Uno .
+
+full:Mano28 a poker:Mano ;
+    rdfs:label "Full de Trío de Nueves con Par de Veintiochos" ;
+    poker:contieneCarta poker:NueveDeAgua, poker:NueveDeElectrico, poker:NueveDeVeneno, poker:VeintiochoDeVeneno, poker:VeintiochoDeVolador ;
+    poker:manoTienePar poker:Nueve, poker:Veintiocho .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( full:Mano25 full:Mano26 full:Mano27 full:Mano28 ) .
+
+# =============================================================================
+# 8. Póker
+# =============================================================================
+
+pokerh:Mano29 a poker:Mano ;
+    rdfs:label "Póker de Diecisietes con Veintiuno de Agua" ;
+    poker:contieneCarta poker:DiecisieteDeElectrico, poker:DiecisieteDeVeneno, poker:DiecisieteDeBicho, poker:DiecisieteDeAgua, poker:VeintiunoDeAgua .
+
+pokerh:Mano30 a poker:Mano ;
+    rdfs:label "Póker de Treintaysietes con Diecinueve de Psíquico" ;
+    poker:contieneCarta poker:TreintaysieteDeAgua, poker:TreintaysieteDeNormal, poker:TreintaysieteDeLucha, poker:TreintaysieteDeTierra, poker:DiecinueveDePsiquico .
+
+pokerh:Mano31 a poker:Mano ;
+    rdfs:label "Póker de Onces con Trece de Roca" ;
+    poker:contieneCarta poker:OnceDeVolador, poker:OnceDeBicho, poker:OnceDeFuego, poker:OnceDePlanta, poker:TreceDeRoca .
+
+pokerh:Mano32 a poker:Mano ;
+    rdfs:label "Póker de Treintaycincos con Cuatro de Eléctrico" ;
+    poker:contieneCarta poker:TreintaycincoDeFuego, poker:TreintaycincoDeVolador, poker:TreintaycincoDeElectrico, poker:TreintaycincoDeBicho, poker:CuatroDeElectrico .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( pokerh:Mano29 pokerh:Mano30 pokerh:Mano31 pokerh:Mano32 ) .
+
+# =============================================================================
+# 9. Escalera de Color
+# =============================================================================
+
+escalera_color:Mano33 a poker:Mano ;
+    rdfs:label "Escalera de Color Veintitres-Veinticuatro-Veinticinco-Veintiseis-Veintisiete de Lucha" ;
+    poker:contieneCarta poker:VeintitresDeLucha, poker:VeinticuatroDeLucha, poker:VeinticincoDeLucha, poker:VeintiseisDeLucha, poker:VeintisieteDeLucha .
+
+escalera_color:Mano34 a poker:Mano ;
+    rdfs:label "Escalera de Color Veintinueve-Treinta-Treintayuno-Treintaydos-Treintaytres de Veneno" ;
+    poker:contieneCarta poker:VeintinueveDeVeneno, poker:TreintaDeVeneno, poker:TreintayunoDeVeneno, poker:TreintaydosDeVeneno, poker:TreintaytresDeVeneno .
+
+escalera_color:Mano35 a poker:Mano ;
+    rdfs:label "Escalera de Color Ocho-Nueve-Diez-Once-Doce de Bicho" ;
+    poker:contieneCarta poker:OchoDeBicho, poker:NueveDeBicho, poker:DiezDeBicho, poker:OnceDeBicho, poker:DoceDeBicho .
+
+escalera_color:Mano36 a poker:Mano ;
+    rdfs:label "Escalera de Color Trece-Catorce-Quince-Dieciseis-Diecisiete de Psíquico" ;
+    poker:contieneCarta poker:TreceDePsiquico, poker:CatorceDePsiquico, poker:QuinceDePsiquico, poker:DieciseisDePsiquico, poker:DiecisieteDePsiquico .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera_color:Mano33 escalera_color:Mano34 escalera_color:Mano35 escalera_color:Mano36 ) .
+
+# =============================================================================
+# 10. Escalera Real
+# =============================================================================
+
+escalera_real:Mano37 a poker:Mano ;
+    rdfs:label "Escalera Real de Tierra" ;
+    poker:contieneCarta poker:TreintaytresDeTierra, poker:TreintaycuatroDeTierra, poker:TreintaycincoDeTierra, poker:TreintayseisDeTierra, poker:TreintaysieteDeTierra .
+
+escalera_real:Mano38 a poker:Mano ;
+    rdfs:label "Escalera Real de Agua" ;
+    poker:contieneCarta poker:TreintaytresDeAgua, poker:TreintaycuatroDeAgua, poker:TreintaycincoDeAgua, poker:TreintayseisDeAgua, poker:TreintaysieteDeAgua .
+
+escalera_real:Mano39 a poker:Mano ;
+    rdfs:label "Escalera Real de Bicho" ;
+    poker:contieneCarta poker:TreintaytresDeBicho, poker:TreintaycuatroDeBicho, poker:TreintaycincoDeBicho, poker:TreintayseisDeBicho, poker:TreintaysieteDeBicho .
+
+escalera_real:Mano40 a poker:Mano ;
+    rdfs:label "Escalera Real de Fuego" ;
+    poker:contieneCarta poker:TreintaytresDeFuego, poker:TreintaycuatroDeFuego, poker:TreintaycincoDeFuego, poker:TreintayseisDeFuego, poker:TreintaysieteDeFuego .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera_real:Mano37 escalera_real:Mano38 escalera_real:Mano39 escalera_real:Mano40 ) .
