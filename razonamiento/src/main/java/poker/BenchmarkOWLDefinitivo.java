@@ -293,7 +293,7 @@ public class BenchmarkOWLDefinitivo {
 
             long t0 = System.currentTimeMillis();
             reasoner = entrada.factory.createReasoner(
-                ontologia, new SimpleConfiguration()
+                ontologia, new SimpleConfiguration(new MonitorProgreso(entrada.nombre))
             );
             long tInit = System.currentTimeMillis() - t0;
             res.tiempoInicMs = tInit;
@@ -328,14 +328,22 @@ public class BenchmarkOWLDefinitivo {
                 .getSubClasses(factory.getOWLThing(), false)
                 .getFlattened().size();
 
+            Map<String, List<String>> tiposPorIndividuo = new LinkedHashMap<>();
+
             long totalInferencias = 0;
             for (String nombreClase : CLASES_MANO) {
                 OWLClass clase = factory.getOWLClass(IRI.create(BASE_IRI + nombreClase));
                 NodeSet<OWLNamedIndividual> instancias =
                     reasoner.getInstances(clase, false);
-                int n = instancias.getFlattened().size();
-                res.instanciasPorClase.put(nombreClase, n);
-                totalInferencias += n;
+                Set<OWLNamedIndividual> planas = instancias.getFlattened();
+                res.instanciasPorClase.put(nombreClase, planas.size());
+                totalInferencias += planas.size();
+
+                for (OWLNamedIndividual ind : planas) {
+                    tiposPorIndividuo
+                        .computeIfAbsent(ind.getIRI().getShortForm(), k -> new ArrayList<>())
+                        .add(nombreClase);
+                }
             }
             res.totalInferencias = totalInferencias;
 
@@ -345,22 +353,16 @@ public class BenchmarkOWLDefinitivo {
 
             System.out.println("  Inferencias en tiempo real:");
             for (OWLNamedIndividual ind : todasManos.getFlattened()) {
-                NodeSet<OWLClass> tipos = reasoner.getTypes(ind, false);
-                List<String> tiposNombre = new ArrayList<>();
-                for (OWLClass c : tipos.getFlattened()) {
-                    if (!c.isOWLThing()) {
-                        tiposNombre.add(c.getIRI().getShortForm());
-                    }
-                }
+                String nombreInd = ind.getIRI().getShortForm();
+                List<String> tiposNombre =
+                    tiposPorIndividuo.getOrDefault(nombreInd, Collections.emptyList());
                 System.out.printf("  " + YELLOW + "%-45s" + RESET + " : %s%n",
-                    ind.getIRI().getShortForm(),
+                    nombreInd,
                     tiposNombre.isEmpty()
                         ? RED + "(sin clase inferida)" + RESET
                         : GREEN + String.join(", ", tiposNombre) + RESET
                 );
-                res.clasificacionIndividual.put(
-                    ind.getIRI().getShortForm(), tiposNombre
-                );
+                res.clasificacionIndividual.put(nombreInd, tiposNombre);
             }
             System.out.println();
 
@@ -650,6 +652,79 @@ public class BenchmarkOWLDefinitivo {
         System.out.println("║            HermiT  ·  Openllet (Pellet)  ·  JFact (FaCT++)           ║");
         System.out.println("╚══════════════════════════════════════════════════════════════════════╝");
         System.out.println(RESET);
+    }
+
+    /**
+     * Reporta el avance del razonador durante {@code precomputeInferences()}.
+     *
+     * La OWL API invoca estos callbacks desde dentro del propio algoritmo del
+     * razonador: {@code reasonerTaskStarted}/{@code reasonerTaskStopped} delimitan
+     * cada fase (p.ej. "Computing class hierarchy"), y {@code reasonerTaskProgressChanged}
+     * reporta un porcentaje dentro de esa fase. No es un contador de inferencias en
+     * tiempo real (eso no lo expone ningún razonador OWL) sino un indicador de avance
+     * por fase del algoritmo.
+     *
+     * El soporte varía por razonador: HermiT reporta porcentajes con bastante detalle;
+     * Openllet y JFact suelen limitarse a marcar la fase como "ocupada" sin porcentaje
+     * (llaman a {@code reasonerTaskBusy()} repetidamente). Para esos casos se imprime
+     * un latido cada {@link #INTERVALO_BUSY_MS} para confirmar que el proceso sigue
+     * vivo mientras se acerca el timeout de 1 minuto.
+     */
+    static class MonitorProgreso implements ReasonerProgressMonitor {
+
+        private static final long INTERVALO_BUSY_MS = 5_000;
+
+        private final String nombreRazonador;
+        private String tareaActual = "";
+        private long tInicioTarea;
+        private int ultimoPorcentajeImpreso;
+        private long ultimoBusyImpreso;
+
+        MonitorProgreso(String nombreRazonador) {
+            this.nombreRazonador = nombreRazonador;
+        }
+
+        @Override
+        public void reasonerTaskStarted(String taskName) {
+            tareaActual = taskName;
+            tInicioTarea = System.currentTimeMillis();
+            ultimoPorcentajeImpreso = -1;
+            ultimoBusyImpreso = 0;
+            System.out.printf("  " + CYAN + "[%s] > %s..." + RESET + "%n",
+                nombreRazonador, taskName);
+        }
+
+        @Override
+        public void reasonerTaskStopped() {
+            long transcurridoMs = System.currentTimeMillis() - tInicioTarea;
+            System.out.printf("  " + CYAN + "[%s] < %s completado (%d ms)" + RESET + "%n",
+                nombreRazonador, tareaActual, transcurridoMs);
+        }
+
+        @Override
+        public void reasonerTaskProgressChanged(int value, int max) {
+            if (max <= 0) return;
+            int porcentaje = (int) ((value * 100L) / max);
+            // Imprime cada 10 puntos porcentuales como mínimo, para no saturar la consola
+            // en ontologías con jerarquías grandes.
+            if (porcentaje >= ultimoPorcentajeImpreso + 10 || porcentaje == 100) {
+                ultimoPorcentajeImpreso = porcentaje;
+                long transcurridoMs = System.currentTimeMillis() - tInicioTarea;
+                System.out.printf("  [%s] %-30s : %3d%%  (%d/%d)  [%d ms]%n",
+                    nombreRazonador, tareaActual, porcentaje, value, max, transcurridoMs);
+            }
+        }
+
+        @Override
+        public void reasonerTaskBusy() {
+            long ahora = System.currentTimeMillis();
+            if (ahora - ultimoBusyImpreso >= INTERVALO_BUSY_MS) {
+                ultimoBusyImpreso = ahora;
+                long transcurridoMs = ahora - tInicioTarea;
+                System.out.printf("  " + YELLOW + "[%s] %-30s : ocupado... [%d ms transcurridos]" + RESET + "%n",
+                    nombreRazonador, tareaActual, transcurridoMs);
+            }
+        }
     }
 
     /** Par (nombre, factory) que identifica a un razonador OWL en el benchmark. */

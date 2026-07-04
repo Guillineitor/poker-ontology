@@ -1,6 +1,7 @@
-poker\BenchmarkOWLDefinitivo.class
 poker\TestViabilidadRazonadoresOWL$ResultadoBenchmark.class
 poker\BenchmarkOWLDefinitivo$ResultadoBenchmark.class
+poker\BenchmarkOWLDefinitivo$MonitorProgreso.class
+poker\TestViabilidadRazonadoresOWL$EntradaRazonador.class
+poker\BenchmarkOWLDefinitivo.class
 poker\BenchmarkOWLDefinitivo$EntradaRazonador.class
 poker\TestViabilidadRazonadoresOWL.class
-poker\TestViabilidadRazonadoresOWL$EntradaRazonador.class
