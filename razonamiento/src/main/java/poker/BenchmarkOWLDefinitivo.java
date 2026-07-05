@@ -152,8 +152,7 @@ public class BenchmarkOWLDefinitivo {
             } catch (TimeoutException e) {
                 future.cancel(true);
                 System.out.println(RED + BOLD
-                    + "\n[ " + entrada.nombre + " ] TIMEOUT ("
-                    + TIMEOUT_MINUTOS + " min) - el razonador no logro clasificar en el tiempo limite."
+                    + "\n[ " + entrada.nombre + " ] TIMEOUT - el razonador no logro clasificar en el tiempo limite."
                     + RESET + "\n");
                 ResultadoBenchmark timeout = new ResultadoBenchmark(entrada.nombre);
                 timeout.error = "TIMEOUT";

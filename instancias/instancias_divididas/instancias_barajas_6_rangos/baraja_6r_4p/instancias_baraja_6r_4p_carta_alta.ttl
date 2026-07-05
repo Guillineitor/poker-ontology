@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 1. Carta Alta
+# =============================================================================
+
+@prefix carta_alta: <http://www.poker-ontology.org/instancias/carta_alta#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_6r_4p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/carta_alta>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_6r_4p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 1. Carta Alta" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 1. Carta Alta." .
+
+# =============================================================================
+# 1. Carta Alta
+# =============================================================================
+
+carta_alta:Mano1 a poker:Mano ;
+    rdfs:label "Carta Alta de Seis con Cinco Cuatro Dos Uno" ;
+    poker:contieneCarta poker:CuatroDeElectrico, poker:DosDePlanta, poker:CincoDeFuego, poker:SeisDeElectrico, poker:UnoDePlanta .
+
+carta_alta:Mano2 a poker:Mano ;
+    rdfs:label "Carta Alta de Seis con Cuatro Tres Dos Uno" ;
+    poker:contieneCarta poker:CuatroDePlanta, poker:DosDeElectrico, poker:TresDePlanta, poker:UnoDeFuego, poker:SeisDeElectrico .
+
+carta_alta:Mano3 a poker:Mano ;
+    rdfs:label "Carta Alta de Seis con Cinco Tres Dos Uno" ;
+    poker:contieneCarta poker:SeisDeAgua, poker:DosDeElectrico, poker:UnoDeFuego, poker:TresDeFuego, poker:CincoDeElectrico .
+
+carta_alta:Mano4 a poker:Mano ;
+    rdfs:label "Carta Alta de Seis con Cinco Tres Dos Uno" ;
+    poker:contieneCarta poker:CincoDeAgua, poker:TresDeAgua, poker:DosDeElectrico, poker:SeisDeAgua, poker:UnoDeAgua .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( carta_alta:Mano1 carta_alta:Mano2 carta_alta:Mano3 carta_alta:Mano4 ) .
