@@ -95,6 +95,11 @@ public class BenchmarkOWLDefinitivo {
         "CartaAlta", "Par", "DoblePar", "Trio", "Escalera", "Color", "Full", "Poker", "EscaleraColor", "EscaleraReal"
     };
 
+    private static final String[] TIPOS_MANO_ARCHIVO = {
+        "escalera_color", "escalera_real", "carta_alta", "doble_par", "escalera",
+        "poker", "color", "trio", "full", "par"
+    };
+
     private static final String RESET = "\u001B[0m";
     private static final String BOLD = "\u001B[1m";
     private static final String CYAN = "\u001B[36m";
@@ -541,11 +546,28 @@ public class BenchmarkOWLDefinitivo {
     }
 
     /**
+     * Detecta el tipo de mano a partir del nombre del archivo de instancias,
+     * mirando si termina en "_<tipo>" (ej: instancias_baraja_6r_4p_par.ttl -> "par").
+     * Si no coincide con ningún tipo conocido, se asume que el archivo contiene
+     * todas las manos juntas y devuelve "todas".
+     *
+     * @param rutaInstancias ruta al archivo .ttl de instancias (INST_TTL).
+     * @return el tipo de mano detectado, o "todas" si no se pudo determinar.
+     */
+    private static String detectarTipoMano(String rutaInstancias) {
+        String nombreBase = Paths.get(rutaInstancias).getFileName().toString()
+            .replaceAll("\\.ttl$", "");
+        for (String tipo : TIPOS_MANO_ARCHIVO) {
+            if (nombreBase.endsWith("_" + tipo)) {
+                return tipo;
+            }
+        }
+        return "todas";
+    }
+
+    /**
      * Genera un único archivo CSV con dos secciones:
      * resumen de métricas por razonador y clasificación individual.
-     * El nombre incluye el nombre de la ontología y el timestamp.
-     * Los razonadores con TIMEOUT aparecen en la sección de métricas
-     * con TIMEOUT en todas sus celdas, y se omiten en clasificación individual.
      *
      * @param resultados lista de resultados, uno por razonador.
      */
@@ -553,6 +575,7 @@ public class BenchmarkOWLDefinitivo {
 
         String variante = Paths.get(BASE_TTL).getFileName().toString()
             .replaceAll("\\.ttl$", "");
+        String tipoMano = detectarTipoMano(INST_TTL);
 
         Path dirPath = Paths.get(RESULTADOS_DIR);
         try {
@@ -563,7 +586,7 @@ public class BenchmarkOWLDefinitivo {
             return;
         }
 
-        String nombre = variante + "_benchmark_" + TIMESTAMP + ".csv";
+        String nombre = variante + "_" + tipoMano + "_benchmark_" + TIMESTAMP + ".csv";
         Path archivo = dirPath.resolve(nombre);
 
         try (PrintWriter pw = new PrintWriter(

@@ -6,6 +6,10 @@
     Despues de cada corrida, los .csv recien creados se mueven a una subcarpeta propia de
     esa ontología: ..\resultados\resultado_<nombre_ontologia> .
 
+    El orden de ejecucion sigue la jerarquia de manos de poker (de menor a
+    mayor valor): carta_alta, par, doblepar, trio, escalera, color, full,
+    poker, escalera_color, escalera_real. No es alfabetico.
+
 .PARAMETER OntologiaBase
     Ruta al archivo .ttl de la ontología base.
 
@@ -53,7 +57,26 @@ if (-not (Test-Path $Jar)) {
 $OutputEncoding = [System.Text.Encoding]::UTF8
 chcp 65001 > $null
 
-$archivosInstancias = Get-ChildItem -Path $CarpetaInstancias -Filter "*.ttl" | Sort-Object Name
+$ordenTipos = @(
+    "carta_alta", "par", "doblepar", "trio", "escalera",
+    "color", "full", "poker", "escalera_color", "escalera_real"
+)
+$indicePorTipo = @{}
+for ($i = 0; $i -lt $ordenTipos.Count; $i++) { $indicePorTipo[$ordenTipos[$i]] = $i }
+
+$tiposPorLongitud = $ordenTipos | Sort-Object Length -Descending
+
+function Obtener-IndiceJerarquia([string]$nombreBase) {
+    foreach ($tipo in $tiposPorLongitud) {
+        if ($nombreBase -like "*_$tipo") {
+            return $indicePorTipo[$tipo]
+        }
+    }
+    return 999   
+}
+
+$archivosInstancias = Get-ChildItem -Path $CarpetaInstancias -Filter "*.ttl" |
+    Sort-Object { Obtener-IndiceJerarquia $_.BaseName }, Name
 
 if ($archivosInstancias.Count -eq 0) {
     Write-Error "No se encontraron archivos .ttl en: $CarpetaInstancias"
@@ -64,7 +87,7 @@ $nombreOntologia = [System.IO.Path]::GetFileNameWithoutExtension($OntologiaBase)
 $carpetaDestino = Join-Path $CarpetaResultados ("resultado_$nombreOntologia")
 New-Item -ItemType Directory -Force -Path $carpetaDestino | Out-Null
 
-$patronCsv = $nombreOntologia + "_benchmark_*.csv"
+$patronCsv = $nombreOntologia + "_*_benchmark_*.csv"
 
 Write-Host ""
 Write-Host "Se van a ejecutar $($archivosInstancias.Count) benchmarks (uno por archivo de instancias)."

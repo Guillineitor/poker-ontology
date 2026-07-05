@@ -45,7 +45,7 @@ from collections import Counter
 TIPOS_MANO = [
     ("carta_alta", "carta_alta", "1. Carta Alta"),
     ("par", "par", "2. Par"),
-    ("doblepar", "doblepar", "3. Doble Par"),
+    ("doble_par", "doble_par", "3. Doble Par"),
     ("trio", "trio", "4. Trío"),
     ("escalera", "escalera", "5. Escalera"),
     ("color", "color", "6. Color"),
@@ -431,7 +431,7 @@ def label_descriptivo(tipo, mano, pares_extra, ont):
                            key=lambda r: valor[r], reverse=True)
         return f"Par de {plural_rango[rango_par]} con {' '.join(kickers)}"
 
-    if tipo == "doblepar":
+    if tipo == "doble_par":
         r1, r2 = sorted(pares_extra, key=lambda r: valor[r], reverse=True)
         kicker = next(r for r, _ in mano if r not in pares_extra)
         return f"Doble Par de {plural_rango[r1]} y {plural_rango[r2]} con {kicker}"
@@ -547,7 +547,7 @@ def bloque_all_different(prefijo, numeros):
 GENERADORES = {
     "carta_alta": generar_carta_alta,
     "par": generar_par,
-    "doblepar": generar_doble_par,
+    "doble_par": generar_doble_par,
     "trio": generar_trio,
     "escalera": generar_escalera,
     "color": generar_color,
