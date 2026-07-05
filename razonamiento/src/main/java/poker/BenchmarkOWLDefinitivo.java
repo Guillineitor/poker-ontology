@@ -356,7 +356,7 @@ public class BenchmarkOWLDefinitivo {
                 String nombreInd = ind.getIRI().getShortForm();
                 List<String> tiposNombre =
                     tiposPorIndividuo.getOrDefault(nombreInd, Collections.emptyList());
-                System.out.printf("  " + YELLOW + "%-45s" + RESET + " : %s%n",
+                System.out.printf("  " + YELLOW + "%-8s" + RESET + " : %s%n",
                     nombreInd,
                     tiposNombre.isEmpty()
                         ? RED + "(sin clase inferida)" + RESET
@@ -406,7 +406,15 @@ public class BenchmarkOWLDefinitivo {
         for (ResultadoBenchmark r : resultados) {
             if (r.error != null) {
                 String etiqueta = "TIMEOUT".equals(r.error) ? "TIMEOUT" : "ERROR: " + r.error;
-                System.out.printf("%-22s │ %s%n", r.nombre, RED + etiqueta + RESET);
+                // Se rellena cada celda al ancho correcto ANTES de agregar los códigos
+                // de color, para que las secuencias ANSI no cuenten como caracteres
+                // visibles y desalineen las columnas.
+                String c10 = RED + String.format("%10s", etiqueta) + RESET;
+                String c12 = RED + String.format("%12s", etiqueta) + RESET;
+                String c11 = RED + String.format("%11s", etiqueta) + RESET;
+                String c8  = RED + String.format("%8s",  etiqueta) + RESET;
+                System.out.printf("%-22s │ %s │ %s │ %s │ %s │ %s │ %s │ %s%n",
+                    r.nombre, c10, c10, c12, c10, c11, c8, c12);
                 continue;
             }
             System.out.printf(fmt,
@@ -495,7 +503,7 @@ public class BenchmarkOWLDefinitivo {
         Collections.sort(instancias);
 
         for (String ind : instancias) {
-            System.out.printf(BOLD + "  %-20s" + RESET, ind);
+            System.out.printf(BOLD + "  %-8s" + RESET, ind);
             for (ResultadoBenchmark r : resultados) {
                 if (r.error != null) {
                     System.out.printf("  [%s: %s]", r.nombre,
@@ -663,17 +671,18 @@ public class BenchmarkOWLDefinitivo {
      * reporta un porcentaje dentro de esa fase. No es un contador de inferencias en
      * tiempo real (eso no lo expone ningún razonador OWL) sino un indicador de avance
      * por fase del algoritmo.
-     *
-     * El soporte varía por razonador: HermiT reporta porcentajes con bastante detalle;
-     * Openllet y JFact suelen limitarse a marcar la fase como "ocupada" sin porcentaje
-     * (llaman a {@code reasonerTaskBusy()} repetidamente). Para esos casos se imprime
-     * un latido cada {@link #INTERVALO_BUSY_MS} para confirmar que el proceso sigue
-     * vivo mientras se acerca el timeout de 1 minuto.
      */
     static class MonitorProgreso implements ReasonerProgressMonitor {
 
         private static final long INTERVALO_BUSY_MS = 5_000;
 
+        /**
+         * Nombres de tarea que los propios razonadores (HermiT, Openllet, JFact)
+         * pasan hardcodeados en inglés a reasonerTaskStarted(). No los generamos
+         * nosotros: solo los traducimos acá para que la consola quede en español.
+         * Si aparece un nombre de tarea nuevo (otra fase, otro razonador), se
+         * imprime tal cual y hay que agregarlo a este mapa.
+         */
         private static final Map<String, String> TRADUCCIONES_TAREA = Map.of(
             "Building the class hierarchy...", "Construyendo la jerarquía de clases...",
             "Initializing class instance data structures", "Inicializando estructuras de datos de instancias",
@@ -722,7 +731,7 @@ public class BenchmarkOWLDefinitivo {
             if (porcentaje >= ultimoPorcentajeImpreso + 10 || porcentaje == 100) {
                 ultimoPorcentajeImpreso = porcentaje;
                 long transcurridoMs = System.currentTimeMillis() - tInicioTarea;
-                System.out.printf("  [%s] %-30s : %3d%%  (%d/%d)  [%d ms]%n",
+                System.out.printf("  [%s] %-14s : %3d%%  (%d/%d)  [%d ms]%n",
                     nombreRazonador, tareaActual, porcentaje, value, max, transcurridoMs);
             }
         }
@@ -733,7 +742,7 @@ public class BenchmarkOWLDefinitivo {
             if (ahora - ultimoBusyImpreso >= INTERVALO_BUSY_MS) {
                 ultimoBusyImpreso = ahora;
                 long transcurridoMs = ahora - tInicioTarea;
-                System.out.printf("  " + YELLOW + "[%s] %-30s : ocupado... [%d ms transcurridos]" + RESET + "%n",
+                System.out.printf("  " + YELLOW + "[%s] %-14s : ocupado... [%d ms transcurridos]" + RESET + "%n",
                     nombreRazonador, tareaActual, transcurridoMs);
             }
         }
