@@ -84,7 +84,7 @@ public class BenchmarkOWLDefinitivo {
 
     /** Tiempo máximo permitido por razonador. HermiT no tiene límite; Openllet y JFact
      *  se cancelan si superan este umbral y su resultado se registra como TIMEOUT. */
-    private static final long TIMEOUT_MINUTOS = 1;
+    private static final long TIMEOUT_SEGUNDOS = 30;
 
     /** Timestamp compartido por todos los archivos generados en esta ejecución. */
     private static final String TIMESTAMP =
@@ -147,7 +147,7 @@ public class BenchmarkOWLDefinitivo {
                 () -> ejecutarBenchmark(entrada, ontologia)
             );
             try {
-                ResultadoBenchmark r = future.get(TIMEOUT_MINUTOS, TimeUnit.MINUTES);
+                ResultadoBenchmark r = future.get(TIMEOUT_SEGUNDOS, TimeUnit.SECONDS);
                 resultados.add(r);
             } catch (TimeoutException e) {
                 future.cancel(true);

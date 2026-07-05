@@ -3,24 +3,23 @@
     Ejecuta BenchmarkOWLDefinitivo una vez por cada archivo de instancias de una
     carpeta (por ejemplo, los 10 archivos divididos por tipo de mano), usando
     siempre la misma ontología base, en ejecuciones separadas y seguidas.
+    Despues de cada corrida, los .csv recien creados se mueven a una subcarpeta propia de
+    esa ontología: ..\resultados\resultado_<nombre_ontologia> .
 
 .PARAMETER OntologiaBase
     Ruta al archivo .ttl de la ontología base.
 
 .PARAMETER CarpetaInstancias
-    Carpeta que contiene los archivos de instancias .ttl a ejecutar
-    (uno por tipo de mano, por ejemplo).
+    Carpeta que contiene los archivos de instancias .ttl a ejecutar.
 
 .PARAMETER Jar
-    Ruta al .jar del benchmark. Por defecto usa la misma ruta relativa que
-    venías usando manualmente.
+    Ruta al .jar del benchmark. 
 
-.PARAMETER CarpetaLogs
-    Carpeta donde se guarda una copia de la salida de consola de cada
-    ejecución (un .txt por archivo de instancias). Se crea si no existe.
+.PARAMETER CarpetaResultados
+    Carpeta donde BenchmarkOWLDefinitivo guarda los .csv. Por defecto "..\resultados".
 
 .EXAMPLE
-    .\ejecutar_benchmarks.ps1 `
+    .\ejecuciones_benchmark.ps1 `
         -OntologiaBase ..\ontologias\ontologias_customizadas\barajas_6_rangos\baraja_6r_4p.ttl `
         -CarpetaInstancias ..\instancias\instancias_divididas\instancias_barajas_6_rangos
 #>
@@ -34,7 +33,7 @@ param(
 
     [string]$Jar = "target/poker-reasoner-1.0-SNAPSHOT-jar-with-dependencies.jar",
 
-    [string]$CarpetaLogs = "..\resultados\logs"
+    [string]$CarpetaResultados = "..\resultados"
 )
 
 if (-not (Test-Path $OntologiaBase)) {
@@ -50,16 +49,10 @@ if (-not (Test-Path $Jar)) {
     exit 1
 }
 
-# Sin esto, al pasar la salida de Java por una tuberia (|), PowerShell puede
-# decodificarla con una codificacion distinta a UTF-8 y los caracteres de las
-# cajas (║ ═ │ etc.) se muestran como "?". Se fuerza UTF-8 tanto en la consola
-# como en la propia JVM para que todo quede consistente.
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding = [System.Text.Encoding]::UTF8
 chcp 65001 > $null
 
-# Se ordenan alfabeticamente para que las 10 ejecuciones salgan siempre en el
-# mismo orden (carta_alta, color, doblepar, escalera, escalera_color, ...).
 $archivosInstancias = Get-ChildItem -Path $CarpetaInstancias -Filter "*.ttl" | Sort-Object Name
 
 if ($archivosInstancias.Count -eq 0) {
@@ -67,12 +60,16 @@ if ($archivosInstancias.Count -eq 0) {
     exit 1
 }
 
-New-Item -ItemType Directory -Force -Path $CarpetaLogs | Out-Null
+$nombreOntologia = [System.IO.Path]::GetFileNameWithoutExtension($OntologiaBase)
+$carpetaDestino = Join-Path $CarpetaResultados ("resultado_$nombreOntologia")
+New-Item -ItemType Directory -Force -Path $carpetaDestino | Out-Null
+
+$patronCsv = $nombreOntologia + "_benchmark_*.csv"
 
 Write-Host ""
 Write-Host "Se van a ejecutar $($archivosInstancias.Count) benchmarks (uno por archivo de instancias)."
 Write-Host "Ontologia base : $OntologiaBase"
-Write-Host "Carpeta logs   : $CarpetaLogs"
+Write-Host "Carpeta resultados: $carpetaDestino"
 Write-Host ""
 
 $numero = 0
@@ -83,15 +80,26 @@ foreach ($archivo in $archivosInstancias) {
     Write-Host " [$numero/$($archivosInstancias.Count)] $($archivo.Name)"
     Write-Host "==================================================================="
 
-    $logFile = Join-Path $CarpetaLogs ("$($archivo.BaseName)_log.txt")
+    $tInicio = Get-Date
 
     & java -Xms30g -Xmx32g "-Dstdout.encoding=UTF-8" "-Dfile.encoding=UTF-8" `
         -cp $Jar poker.BenchmarkOWLDefinitivo `
-        $OntologiaBase $archivo.FullName 2>&1 | Tee-Object -FilePath $logFile
+        $OntologiaBase $archivo.FullName
+
+    $csvNuevo = Get-ChildItem -Path $CarpetaResultados -File -Filter $patronCsv -ErrorAction SilentlyContinue |
+        Where-Object { $_.LastWriteTime -ge $tInicio } |
+        Sort-Object LastWriteTime -Descending |
+        Select-Object -First 1
+
+    if ($csvNuevo) {
+        Move-Item -Path $csvNuevo.FullName -Destination $carpetaDestino -Force
+        Write-Host "  CSV movido a: $(Join-Path $carpetaDestino $csvNuevo.Name)"
+    } else {
+        Write-Warning "  No se encontro el CSV generado para $($archivo.Name) en $CarpetaResultados"
+    }
 
     Write-Host ""
 }
 
-Write-Host "Listo: se ejecutaron $numero benchmarks."
-Write-Host "Logs de consola guardados en: $CarpetaLogs"
-Write-Host "Los CSV de cada corrida quedaron donde los guarda siempre BenchmarkOWLDefinitivo (..\resultados)."
+Write-Host "Proceso terminado. Se ejecutaron $numero benchmarks."
+Write-Host "CSV de todas las ejecuciones fueron guardados en: $carpetaDestino"
