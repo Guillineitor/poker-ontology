@@ -125,4 +125,4 @@ foreach ($archivo in $archivosInstancias) {
 }
 
 Write-Host "Proceso terminado. Se ejecutaron $numero benchmarks."
-Write-Host "CSV de todas las ejecuciones fueron guardados en: $carpetaDestino"
+Write-Host "Los CSV de todas las ejecuciones fueron guardados en: $carpetaDestino"
