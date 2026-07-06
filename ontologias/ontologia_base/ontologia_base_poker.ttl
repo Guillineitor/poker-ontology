@@ -430,7 +430,6 @@ poker:Escalera a owl:Class ;
 
 # Definición de la clase Color.
 # Mano que contiene cinco cartas del mismo palo, con rangos distintos.
-# Se usa allValuesFrom porque la condición es que todas las cartas de la mano sean del mismo palo.
 poker:Color a owl:Class ;
     owl:equivalentClass [
         a owl:Class ;
@@ -439,10 +438,10 @@ poker:Color a owl:Class ;
             [
                 a owl:Class ;
                 owl:unionOf (
-                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:allValuesFrom poker:CartaDeCorazones ]
-                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:allValuesFrom poker:CartaDeDiamantes ]
-                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:allValuesFrom poker:CartaDePicas ]
-                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:allValuesFrom poker:CartaDeTreboles ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCorazones ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiamantes ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDePicas ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTreboles ]
                 )
             ]
         )

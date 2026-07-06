@@ -1,6 +1,6 @@
 # Ontología de Póker Texas Hold'em
 
-Ontología escrita en OWL 2 DL que modela elementos del dominio del juego Póker Texas Hold'em: la baraja de 52 cartas y los diez tipos de mano estándar del póker, definidos como clases con clasificación automática para inferencia de los razonadores OWL. Está serializada en sintaxis Turtle (`.ttl`).
+Ontología escrita en OWL 2 DL que modela elementos del dominio del juego Póker Texas Hold'em: la baraja de 52 cartas y los diez tipos de manos del póker, definidos como clases con clasificación automática para inferencia de los razonadores OWL. Está serializada en sintaxis Turtle (`.ttl`).
 
 Otros aspectos del juego como apuestas, rondas y posiciones no forman parte del alcance y objetivos de esta ontología.
 
@@ -39,7 +39,7 @@ Otros aspectos del juego como apuestas, rondas y posiciones no forman parte del 
 
 ## Perfil OWL y razonadores compatibles
 
-La ontología usa construcciones de OWL 2 DL: cardinalidades calificadas, valores nominales (owl:hasValue), enumeraciones (owl:oneOf) y restricciones universales (owl:allValuesFrom)."
+La ontología usa diferentes elementos que ofrece OWL 2 DL: cardinalidades calificadas, valores nominales (owl:hasValue) y enumeraciones (owl:oneOf)."
 
 Razonadores disponibles en la OWL API para la benchmark:
 
@@ -116,7 +116,7 @@ Los tipos de mano se ordenan de menor a mayor fortaleza:
 | 3 | `DoblePar` | Doble Par | `Mano ⊓ ≥2 manoTienePar` |
 | 4 | `Trio` | Trío | `Mano ⊓ (≥3 CartaDeDos ⊔ … ⊔ ≥3 CartaDeAs)` |
 | 5 | `Escalera` | Escalera | `Mano ⊓ (A-2-3-4-5 ⊔ … ⊔ 10-J-Q-K-A)` |
-| 6 | `Color` | Color | `Mano ⊓ (∀contieneCarta.CartaDeCorazones ⊔ … ⊔ ∀contieneCarta.CartaDeTreboles)` |
+| 6 | `Color` | Color | `Mano ⊓ (≥5 CartaDeCorazones ⊔ … ⊔ ≥5 CartaDeTreboles)` |
 | 7 | `Full` | Full | `Trio ⊓ DoblePar` |
 | 8 | `Poker` | Póker | `Mano ⊓ (≥4 CartaDeDos ⊔ … ⊔ ≥4 CartaDeAs)` |
 | 9 | `EscaleraColor` | Escalera de Color | `Escalera ⊓ Color` |
@@ -149,7 +149,7 @@ Para cerrar el dominio se aplican dos mecanismos:
 
 ```
 Palo  ≡ { Picas, Corazones, Diamantes, Tréboles }   (4 palos)
-Rango ≡ { Dos, Tres, ..., Rey, As }                  (13 rangos)
+Rango ≡ { Dos, Tres, ..., Rey, As }                 (13 rangos)
 ```
 
 `Carta` no se cierra con `owl:oneOf`, sino que sus restricciones del dominio quedan acotadas indirectamente por el cierre de `Palo` y `Rango` a través de las propiedades funcionales `tienePalo` y `tieneRango`. Esto fue decidido para simplificar un poco la ontología. Este cierre impide que un razonador infiera la existencia de cartas adicionales no declaradas, ya que bajo la Open World Assumption nada lo prohíbe sin intervención explícita, pero sin sobreexplotar a los razonadores.
