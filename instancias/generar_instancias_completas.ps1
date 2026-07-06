@@ -9,7 +9,7 @@
     Ruta al script generador_instancias.py.
 
 .PARAMETER CarpetaOntologias
-    Carpeta raiz donde buscar (de forma recursiva) los .ttl de las barajas
+    Carpeta raiz donde buscar los .ttl de las barajas
     customizadas a procesar.
 
 .PARAMETER CarpetaSalida

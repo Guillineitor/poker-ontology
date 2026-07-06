@@ -2,7 +2,7 @@
 # generador_instancias_divididas.py
 # =============================================================================
 #
-# Variante de generador_instancias.py que, en vez de producir un único archivo
+# Variante de generador_instancias_completas.py que, en vez de producir un único archivo
 # ABox con las 40 manos (4 por cada uno de los 10 tipos), genera 10 archivos
 # TTL independientes, uno por cada tipo de mano de de Póker Texas Hold'em.
 #
