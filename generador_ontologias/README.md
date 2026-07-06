@@ -1,6 +1,9 @@
 # Generador de ontologías de baraja
 
-Generador de ontologías con barajas de cartas customizadas en OWL 2 DL, serializado en sintaxis Turtle (`.ttl`). El script es `generador_ontologias.py`.
+Generador de ontologías con barajas de cartas customizadas en OWL 2 DL, serializado en sintaxis Turtle (`.ttl`). Consta de dos scripts:
+
+- **`generador_ontologias.py`** : genera una ontología individual.
+- **`generar_ontologias.ps1`** : automatiza `generador_ontologias.py` para producir de una sola vez todo el catálogo de ontologías usado en el benchmark, organizándolas en subcarpetas.
 
 ---
 
@@ -10,6 +13,8 @@ Generador de ontologías con barajas de cartas customizadas en OWL 2 DL, seriali
 - Generación de ontologías
 - Organización del código
 - Uso
+  - Generación individual 
+  - Generación múltiple 
 - Observaciones importantes
 
 ---
@@ -19,12 +24,15 @@ Generador de ontologías con barajas de cartas customizadas en OWL 2 DL, seriali
 | Atributo | Valor |
 |---|---|
 | Entrada | Nombre, palos y rangos definidos por el usuario |
-| Salida | Archivo `.ttl` en OWL 2 DL |
+| Salida | Archivo(s) `.ttl` en OWL 2 DL |
 | Perfil OWL | OWL 2 DL |
 | Serialización | Turtle (`.ttl`) |
 | Script principal | `generador_ontologias.py` |
+| Script de generación múltiple | `generar_ontologias.ps1` |
 
 El generador construye una ontología completa para una baraja definida por el usuario. La IRI base y el nombre del archivo de salida se derivan automáticamente del nombre de la baraja, por lo que el usuario solo necesita indicar nombre, palos y rangos. El sistema mantiene la estructura de la ontología base de póker y adapta únicamente los datos propios de cada baraja.
+
+Para el benchmark, en vez de ejecutar `generador_ontologias.py` manualmente una vez por cada combinación de palos y rangos, se usa `generar_ontologias.ps1`, que llama al generador por cada combinación de la matriz de pruebas y organiza los archivos resultantes automáticamente (para generar ontologías de forma más cómoda).
 
 ---
 
@@ -45,6 +53,8 @@ El generador produce una ontología con los siguientes componentes:
 
 ## Organización del código
 
+### `generador_ontologias.py`
+
 El archivo está dividido en cuatro bloques:
 
 | Bloque | Funcionalidad |
@@ -56,9 +66,24 @@ El archivo está dividido en cuatro bloques:
 
 La función `generar_ontologia()` es el punto de ensamblaje. Recibe el nombre de la baraja, la IRI base, los palos y los rangos ya validados, y devuelve el contenido Turtle completo. Los clasificadores de manos se incluyen únicamente cuando la cantidad de palos, rangos y cartas permite formarlos con la baraja indicada.
 
+### `generar_ontologias.ps1`
+
+Es un script de para generar una tanda de ontología de una sola vez, dados los palos y rangos posibles.
+
+| Bloque | Funcionalidad |
+|---|---|
+| Parámetros | `ScriptGenerador`, `CarpetaSalida`, `PythonExe`, `GruposRangos`, `GruposPalos`, `SoloListar` |
+| Catálogo fijo | Listas de `$todosPalos` y `$todosRangos`, de donde se usan para las combinaciones pedidas |
+| Bucle de combinaciones | Por cada cantidad de rangos y de palos que exista, se arma el nombre de la baraja (`baraja_<N>r_<M>p`) y envía las respuestas a `generador_ontologias.py`
+| Organización de salida | Mueve cada `.ttl` generado a una subcarpeta `barajas_<N>_rangos/` dentro de `CarpetaSalida` |
+
+Como `generador_ontologias.py` siempre escribe en `<raíz_proyecto>\ontologias\ontologias_customizadas\`, `-CarpetaSalida` debe apuntar a esa misma carpeta para que el script pueda mover los archivos generados.
+
 ---
 
 ## Uso
+
+### Generación individual 
 
 ```powershell
 python generador_ontologias.py
@@ -72,7 +97,28 @@ El archivo generado se guarda en:
 ontologias/ontologias_customizadas/<nombre_ontología>.ttl
 ```
 
-Posteriormente el usuario puede organizar las ontologías creadas de la manera que prefiera. En el caso de las ontologías para el benchmark, se reorganizó en distintas subcarpetas dentro de la carpeta ontologias/ontologias_customizadas/, una por cada cantidad de rangos.
+Este modo es útil para generar una baraja puntual o para probar palos/rangos fuera del catálogo del benchmark. La organización de ese archivo dentro de `ontologias_customizadas/` queda a criterio del usuario.
+
+### Generación múltiple
+
+```powershell
+.\generar_ontologias.ps1
+```
+
+Con los valores usados para el benchmark, genera las 24 ontologías del catálogo de este mismo: 6 grupos de rangos (6, 13, 19, 25, 31, 37) × 4 grupos de palos (4, 8, 12, 16). Cada combinación usa como nombre `baraja_<N>r_<M>p` (por ejemplo, `baraja_6r_8p` para 6 rangos y 8 palos) y los palos/rangos se toman en orden desde el catálogo fijo del script.
+
+Parámetros disponibles:
+
+| Parámetro | Descripción | Valor por defecto |
+|---|---|---|
+| `-ScriptGenerador` | Ruta a `generador_ontologias.py` | `.\generador_ontologias.py` |
+| `-CarpetaSalida` | Carpeta `ontologias_customizadas` donde escribe el generador y donde se crean las subcarpetas `barajas_<N>_rangos` | `..\ontologias\ontologias_customizadas` |
+| `-PythonExe` | Ejecutable de Python a usar | `python` |
+| `-GruposRangos` | Cantidades de rangos a generar (una subcarpeta por valor) | `6,13,19,25,31,37` |
+| `-GruposPalos` | Cantidades de palos a generar dentro de cada grupo de rangos | `4,8,12,16` |
+| `-SoloListar` | Solo imprime las combinaciones que se generarían, sin ejecutar el generador ni tocar el disco | (desactivado) |
+
+Más información en la documentación de **`generar_ontologias.ps1`**.
 
 ---
 
@@ -80,7 +126,7 @@ Posteriormente el usuario puede organizar las ontologías creadas de la manera q
 
 ### Orden de los rangos
 
-Los rangos deben ingresarse de menor a mayor valor. Esa posición se usa para para calcular las ventanas de rangos consecutivos que definen la Escalera y la Escalera Real.
+Los rangos deben ingresarse de menor a mayor valor. Esa posición se usa para calcular las ventanas de rangos consecutivos que definen la Escalera y la Escalera Real. En el catálogo del script **`generar_ontologias.ps1`**, este orden ya viene dado por la lista fija de rangos.
 
 ### Mínimo de rangos 
 
@@ -109,8 +155,7 @@ El generador evalúa la cantidad de palos y rangos antes de emitir clasificadore
 
 Si una clase no se genera, el archivo `.ttl` incluye un comentario con el motivo de la omisión. El árbol de jerarquía de manos en el encabezado de la ontología también refleja únicamente las clases efectivamente generadas.
 
-Para el desarrollo del benchmark, solamente se creó ontologías desde los 4 palos y 6 rangos, para poder probar los clasificadores con la misma cantidad de 
-tipo manos de póker en todos los experimentos.
+Para que todos los experimentos del benchmark probaran la misma cantidad de tipos de mano de póker, el catálogo se definió a partir de un mínimo de 4 palos y 6 rangos. De ahí las valores y cantidades presentes de palos y rangos.
 
 ### Cierre de la clase `Carta`
 
