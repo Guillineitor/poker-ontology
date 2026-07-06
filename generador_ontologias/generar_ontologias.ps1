@@ -31,17 +31,21 @@
     generador_ontologias.py ni tocar el disco. Útil para revisar antes de correr.
 
 .EXAMPLE
-    # Desde la carpeta generador_ontologias\, con los valores por defecto
+    # Generar las 24 ontologías con barajas customizadas completas con los valores por defecto en este script
     # (6/13/19/25/31/37 rangos x 4/8/12/16 palos = 24 archivos):
     .\generar_barajas.ps1
-
+ 
 .EXAMPLE
-    # Revisar qué se generaría sin escribir nada:
+    # Revisar qué ontologías con barajas customizadas se generaría sin escribir nada:
     .\generar_barajas.ps1 -SoloListar
-
+ 
 .EXAMPLE
-    # Solo la serie de 6 rangos:
+    # Generar solo ontologías con barajas customizadas de cierto de rango:
     .\generar_barajas.ps1 -GruposRangos 6
+ 
+.EXAMPLE
+    # Generar solo un par de combinaciones especificas (por ejemplo para testear):
+    .\generar_barajas.ps1 -GruposRangos 13,19 -GruposPalos 4,8
 #>
 
 param(
