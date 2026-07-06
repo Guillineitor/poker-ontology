@@ -50,7 +50,7 @@
 #>
 
 param(
-    [string]$ScriptInstancias = ".\generador_instancias.py",
+    [string]$ScriptInstancias = ".\generador_instancias_completas.py",
     [string]$CarpetaOntologias = "..\ontologias\ontologias_customizadas",
     [string]$CarpetaSalida = "..\instancias\instancias_completas",
     [string]$PythonExe = "python",
