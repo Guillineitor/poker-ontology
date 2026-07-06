@@ -142,8 +142,8 @@ $duracionTotal = (Get-Date) - $tInicioTotal
 if ($SoloListar) {
     Write-Host "Listado terminado. Se procesarian $($archivos.Count) archivos."
 } else {
-    Write-Host "Proceso terminado en $([math]::Round($duracionTotal.TotalSeconds, 1)) s."
-    Write-Host "  Generados: $generados"
-    Write-Host "  Omitidos (ya existian): $omitidos"
-    Write-Host "  Fallidos: $fallidos"
+    Write-Host "Proceso terminado. Se generaron $generados instancias (de $($archivos.Count) ontologias) en $([math]::Round($duracionTotal.TotalSeconds, 1)) s."
+    if ($omitidos -gt 0) { Write-Host "  Omitidos (ya existian): $omitidos" }
+    if ($fallidos -gt 0) { Write-Host "  Fallidos: $fallidos" }
+    Write-Host "Organizadas en subcarpetas instancias_barajas_<N>_rangos dentro de: $CarpetaSalida"
 }
