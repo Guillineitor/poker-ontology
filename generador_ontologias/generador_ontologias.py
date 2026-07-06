@@ -706,15 +706,15 @@ def clasificador_escalera(rangos: list[str]) -> str:
 def clasificador_color(palos: list[str]) -> str:
     """
     Define Color como una mano en la que todas las cartas son del mismo palo.
- 
-    Se usa owl:allValuesFrom por palo porque la condición es que todas las cartas
-    de la mano pertenezcan a un único palo, no solo algunas.
+
+    Se usa owl:minQualifiedCardinality "5", ya que fuerza
+    igual que las 5 cartas sean de ese palo, con la misma.
     """
     lineas = [
         "",
         "# Definición de la clase Color.",
-        "# Mano que contiene cinco cartas del mismo palo, con rangos distintos.",
-        "# Se usa allValuesFrom porque la condición exige que todas las cartas sean del mismo palo.",
+        "# Mano que contiene cinco cartas del mismo palo, con rangos distintos. Se usa unionOf sobre las subclases de palo ",
+        "# porque OWL DL 2 no puede expresar «mismo palo» de forma genérica.",
         "poker:Color a owl:Class ;",
         "    owl:equivalentClass [",
         "        a owl:Class ;",
@@ -727,7 +727,7 @@ def clasificador_color(palos: list[str]) -> str:
     for p in palos:
         id_palo = identificador(p)
         lineas.append(
-            f'                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:allValuesFrom poker:CartaDe{id_palo} ]'
+            f'                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDe{id_palo} ]'
         )
     lineas += [
         "                )",

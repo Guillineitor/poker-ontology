@@ -429,7 +429,8 @@ poker:Escalera a owl:Class ;
     rdfs:comment "Mano formada por cinco cartas de rangos consecutivos, no necesariamente del mismo palo." .
 
 # Definición de la clase Color.
-# Mano que contiene cinco cartas del mismo palo, con rangos distintos.
+# Mano que contiene cinco cartas del mismo palo, con rangos distintos. Se usa unionOf sobre las 4 subclases de palo 
+# porque OWL DL 2 no puede expresar "mismo palo" de forma genérica.
 poker:Color a owl:Class ;
     owl:equivalentClass [
         a owl:Class ;
