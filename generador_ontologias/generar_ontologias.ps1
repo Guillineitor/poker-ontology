@@ -60,8 +60,8 @@ param(
 )
 
 $todosPalos = @(
-    "Fuego", "Agua", "Planta", "Eléctrico", "Normal", "Volador", "Bicho", "Veneno",
-    "Tierra", "Roca", "Lucha", "Psíquico", "Fantasma", "Hielo", "Dragón", "Siniestro"
+    "Fuego", "Agua", "Planta", "Electrico", "Normal", "Volador", "Bicho", "Veneno",
+    "Tierra", "Roca", "Lucha", "Psiquico", "Fantasma", "Hielo", "Dragon", "Siniestro"
 )
 
 $todosRangos = @(
@@ -79,9 +79,10 @@ if (-not $SoloListar) {
     }
     New-Item -ItemType Directory -Force -Path $CarpetaSalida | Out-Null
 
-    [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-    [Console]::InputEncoding  = [System.Text.Encoding]::UTF8
-    $OutputEncoding = [System.Text.Encoding]::UTF8
+    $utf8SinBom = New-Object System.Text.UTF8Encoding($false)
+    [Console]::OutputEncoding = $utf8SinBom
+    [Console]::InputEncoding  = $utf8SinBom
+    $OutputEncoding = $utf8SinBom
     $env:PYTHONIOENCODING = "utf-8"
     chcp 65001 > $null
 }

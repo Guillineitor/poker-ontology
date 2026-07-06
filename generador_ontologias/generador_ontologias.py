@@ -919,14 +919,14 @@ def pedir(prompt: str, valor_por_defecto: str = "") -> str:
     Lee una cadena desde la consola y devuelve valor_por_defecto si la entrada está vacía.
     """
     sufijo = f" [{valor_por_defecto}]" if valor_por_defecto else ""
-    entrada = input(f"{prompt}{sufijo}: ").strip()
+    entrada = input(f"{prompt}{sufijo}: ").replace("\ufeff", "").strip()
     return entrada if entrada else valor_por_defecto
  
 def pedir_lista(prompt: str, ejemplo: str) -> list[str]:
     """
     Lee una lista separada por comas, limpiando espacios y elementos vacíos.
     """
-    entrada = input(f"{prompt} [ej: {ejemplo}]: ").strip()
+    entrada = input(f"{prompt} [ej: {ejemplo}]: ").replace("\ufeff", "").strip()
     return [elemento.strip() for elemento in entrada.split(",") if elemento.strip()]
  
 def main() -> None:
