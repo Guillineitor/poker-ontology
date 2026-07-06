@@ -23,7 +23,7 @@
     Carpeta donde BenchmarkOWLDefinitivo guarda los .csv. Por defecto "..\resultados".
 
 .EXAMPLE
-    .\ejecuciones_benchmark.ps1 `
+    .\ejecutar_benchmark.ps1 `
         -OntologiaBase ..\ontologias\ontologias_customizadas\barajas_6_rangos\baraja_6r_4p.ttl `
         -CarpetaInstancias ..\instancias\instancias_divididas\instancias_barajas_6_rangos
 #>
