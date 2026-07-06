@@ -1,5 +1,5 @@
 # =============================================================================
-# generador_instancias.py
+# generador_instancias_completas.py
 # =============================================================================
 #
 # Este script genera un archivo ABox en formato Turtle (.ttl) con 40 manos
@@ -9,10 +9,10 @@
 # por lo que el script se adapta a cualquier baraja customizada.
 #
 # Uso:
-#     python generador_instancias.py ..\(carpeta donde se ubica la ontología)\<nombre_ontología>.ttl
+#     python generador_instancias_completas.py ..\(carpeta donde se ubica la ontología)\<nombre_ontología>.ttl
 #
 # Ejemplo:
-#     python generador_instancias.py ..\ontologias\ontologias_customizadas\barajas_6_rangos\baraja_6r_4p.ttl
+#     python generador_instancias_completas.py ..\ontologias\ontologias_customizadas\barajas_6_rangos\baraja_6r_4p.ttl
 #
 # Flujo principal:
 #     1. Leer la ontología TTL indicada como argumento.
@@ -615,7 +615,7 @@ def generar_archivo(ruta_ontologia):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Uso: python generador_instancias.py <ontologia.ttl>")
+        print("Uso: python generador_instancias_completas.py <ontologia.ttl>")
         sys.exit(1)
 
     generar_archivo(sys.argv[1])
