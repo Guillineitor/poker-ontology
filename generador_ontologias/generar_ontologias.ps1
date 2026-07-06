@@ -33,19 +33,19 @@
 .EXAMPLE
     # Generar las 24 ontologías con barajas customizadas completas con los valores por defecto en este script
     # (6/13/19/25/31/37 rangos x 4/8/12/16 palos = 24 archivos):
-    .\generar_barajas.ps1
+    .\generar_ontologias.ps1
  
 .EXAMPLE
     # Revisar qué ontologías con barajas customizadas se generaría sin escribir nada:
-    .\generar_barajas.ps1 -SoloListar
+    .\generar_ontologias.ps1 -SoloListar
  
 .EXAMPLE
     # Generar solo ontologías con barajas customizadas de cierto de rango:
-    .\generar_barajas.ps1 -GruposRangos 6
+    .\generar_ontologias.ps1 -GruposRangos 6
  
 .EXAMPLE
     # Generar solo un par de combinaciones especificas (por ejemplo para testear):
-    .\generar_barajas.ps1 -GruposRangos 13,19 -GruposPalos 4,8
+    .\generar_ontologias.ps1 -GruposRangos 13,19 -GruposPalos 4,8
 #>
 
 param(
