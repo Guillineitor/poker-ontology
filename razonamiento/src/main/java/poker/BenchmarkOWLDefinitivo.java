@@ -29,10 +29,12 @@ import java.util.concurrent.*;
 /**
  * BenchmarkOWLDefinitivo compara los razonadores OWL HermiT, Openllet (Pellet) y JFact (FaCT++)
  * sobre ontologías bajo el dominio del juego Poker Texas Hold'em.
- * La ontología se carga una única vez desde disco y se comparte entre los tres razonadores.
- * Esto es debido a que HermiT es el razonador principal que funciona y se ejecuta sin límite de tiempo. Openllet y JFact
- * son secundarios: se les da a lo más 1 minuto de timeout (solo para registrar los problemas de rendimiento de estos razonadores en las tablas, 
- * que no logran clasificar en tiempo razonable, probados en TestViablidadRazonadoresOWL.java).
+ * Cada razonador carga su propia copia de la ontología desde disco de forma independiente,
+ * para garantizar que cada medición sea una unidad aislada y reproducible por separado.
+ * HermiT y JFact (FaCT++) son los razonadores principales que funcionan y se ejecutan sin límite de tiempo. 
+ * Openllet (Pellet) es el único secundario con timeout: se le da a lo más 30 segundos (solo para registrar 
+ * timeout en las tablas, ya que no logra clasificar en un tiempo razonable de rendimiento de este razonador, 
+ * probado en TestViablidadRazonadoresOWL.java).
  *
  * Uso:
  *   java -cp target/poker-reasoner-1.0-SNAPSHOT-jar-with-dependencies.jar poker.BenchmarkOWLDefinitivo <ontologia.ttl> <instancias.ttl>
@@ -45,9 +47,7 @@ import java.util.concurrent.*;
  * por lo que el benchmark funciona con cualquier variante de póker con barajas customizadas.
  *
  * Métricas por razonador:
- *   • carga_ms: Tiempo (milisegundos) de lectura de TTL desde disco y construcción del OWLOntology
- *     fusionado. Se mide una única vez (la carga es compartida por los tres razonadores) y el mismo
- *     valor se replica en cada fila del CSV a modo informativo; no se suma a total_ms.
+ *   • carga_ms: Tiempo (milisegundos) de lectura de TTL desde disco y construcción del OWLOntology fusionado. 
  *   • init_ms: Tiempo (milisegundos) de creación del razonador.
  *   • precomp_ms: Tiempo (milisegundos) de precomputeInferences() (jerarquía, aserciones de clase
  *     y de propiedad de objeto) más consistencia.
@@ -76,14 +76,12 @@ public class BenchmarkOWLDefinitivo {
     /** IRI de la ontología local, usado para resolver owl:imports sin salir a red. */
     private static String BASE_ONTOLOGY_IRI;
 
-    /** Tiempo (ms) de la única carga de la ontología, compartida por los tres razonadores. */
-    private static long TIEMPO_CARGA_MS;
-
     /** Carpeta de destino para los archivos .csv de resultados. */
     private static final String RESULTADOS_DIR = "../resultados";
 
-    /** Tiempo máximo permitido por razonador. HermiT no tiene límite; Openllet y JFact
-     *  se cancelan si superan este umbral y su resultado se registra como TIMEOUT. */
+    /** Tiempo máximo permitido para Openllet, el único razonador con timeout. HermiT y
+     *  JFact no tienen límite. Openllet se cancela si supera este umbral y su
+     *  resultado se registra como TIMEOUT. */
     private static final long TIMEOUT_SEGUNDOS = 3600;
 
     /** Timestamp compartido por todos los archivos generados en esta ejecución. */
@@ -122,24 +120,18 @@ public class BenchmarkOWLDefinitivo {
 
         banner();
 
-        long tCarga0 = System.currentTimeMillis();
-        System.out.println("  " + CYAN + "Cargando ontologias..." + RESET);
-        OWLOntology ontologia = cargarOntologias();
-        TIEMPO_CARGA_MS = System.currentTimeMillis() - tCarga0;
-        System.out.printf("  Tiempo de carga    : %d ms%n%n", TIEMPO_CARGA_MS);
-
         List<EntradaRazonador> sinTimeout = Arrays.asList(
-            new EntradaRazonador("HermiT", new ReasonerFactory())
+            new EntradaRazonador("HermiT", new ReasonerFactory()),
+            new EntradaRazonador("JFact (FaCT++)", new JFactFactory())
         );
         List<EntradaRazonador> conTimeout = Arrays.asList(
-            new EntradaRazonador("Openllet (Pellet)", OpenlletReasonerFactory.getInstance()),
-            new EntradaRazonador("JFact (FaCT++)", new JFactFactory())
+            new EntradaRazonador("Openllet (Pellet)", OpenlletReasonerFactory.getInstance())
         );
 
         List<ResultadoBenchmark> resultados = new ArrayList<>();
 
         for (EntradaRazonador entrada : sinTimeout) {
-            resultados.add(ejecutarBenchmark(entrada, ontologia));
+            resultados.add(ejecutarBenchmark(entrada));
         }
 
         for (EntradaRazonador entrada : conTimeout) {
@@ -149,7 +141,7 @@ public class BenchmarkOWLDefinitivo {
                 return t;
             });
             Future<ResultadoBenchmark> future = executor.submit(
-                () -> ejecutarBenchmark(entrada, ontologia)
+                () -> ejecutarBenchmark(entrada)
             );
             try {
                 ResultadoBenchmark r = future.get(TIMEOUT_SEGUNDOS, TimeUnit.SECONDS);
@@ -207,11 +199,9 @@ public class BenchmarkOWLDefinitivo {
      * Carga la ontología base y el archivo de instancias
      * y los fusiona en una única ontología anónima lista para razonar.
      *
-     * Se llama una única vez desde {@code main()}, y la ontología resultante
-     * se comparte entre los tres razonadores (HermiT, Openllet, JFact), evitando
-     * releer el TTL desde disco en cada benchmark. Libera explícitamente las
-     * ontologías intermedias (base e instancias) una vez copiados sus axiomas
-     * a {@code merged}.
+     * Se llama una vez por cada razonador desde, de modo que cada uno parte de su propia instancia de 
+     * {@code OWLOntology}, completamente aislada de las demás. Libera explícitamente las ontologías intermedias
+     * (base e instancias) una vez copiados sus axiomas a {@code merged}.
      *
      * @return ontología fusionada (TBox + ABox).
      * @throws Exception si algún archivo no existe.
@@ -260,26 +250,33 @@ public class BenchmarkOWLDefinitivo {
     /**
      * Ejecuta el benchmark completo para un único razonador.
      *
-     * La ontología se carga una única vez en {@code main()} y se comparte entre
-     * los tres razonadores (ver {@link #cargarOntologias()}), por lo que aquí
-     * solo se miden la inicialización del razonador y la precomputación de
-     * inferencias. Si el razonador falla o la ontología es inconsistente, el
-     * error queda registrado en {@link ResultadoBenchmark#error} y el método
-     * retorna igualmente sin lanzar excepción.
+     * Cada razonador carga su propia copia de la ontología mediante
+     * {@link #cargarOntologias()} (ontología que no se comparte con los demás
+     * razonadores), por lo que aquí se mide también el tiempo de carga
+     * ({@code carga_ms}), además de la inicialización del razonador y la
+     * precomputación de inferencias. Si la carga falla, el razonador falla o
+     * la ontología resulta inconsistente, el error queda registrado en
+     * {@link ResultadoBenchmark#error} y el método retorna igualmente sin
+     * lanzar excepción.
      *
      * @param entrada par (nombre, factory) que identifica al razonador.
-     * @param ontologia ontología fusionada, ya cargada una única vez en {@code main()}.
      * @return resultado con todas las métricas medidas, o con {@code error} no nulo si falló.
      */
-    private static ResultadoBenchmark ejecutarBenchmark(EntradaRazonador entrada, OWLOntology ontologia) {
+    private static ResultadoBenchmark ejecutarBenchmark(EntradaRazonador entrada) {
 
         System.out.println(BOLD + "\n[ " + entrada.nombre + " ]" + RESET);
         ResultadoBenchmark res = new ResultadoBenchmark(entrada.nombre);
-        res.tiempoCargaMs = TIEMPO_CARGA_MS;
 
         OWLReasoner reasoner = null;
 
         try {
+            System.out.println("  " + CYAN + "Cargando ontologia..." + RESET);
+            long tCarga0 = System.currentTimeMillis();
+            OWLOntology ontologia = cargarOntologias();
+            long tiempoCargaMs = System.currentTimeMillis() - tCarga0;
+            res.tiempoCargaMs = tiempoCargaMs;
+            System.out.printf("  Tiempo de carga    : %d ms%n%n", tiempoCargaMs);
+
             System.gc();
             List<MemoryPoolMXBean> poolsHeap = new ArrayList<>();
             for (MemoryPoolMXBean pool : ManagementFactory.getMemoryPoolMXBeans()) {
