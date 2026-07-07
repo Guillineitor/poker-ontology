@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 9. Escalera de Color
+# =============================================================================
+
+@prefix escalera_color: <http://www.poker-ontology.org/instancias/escalera_color#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_12p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/escalera_color>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_12p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 9. Escalera de Color" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 9. Escalera de Color." .
+
+# =============================================================================
+# 9. Escalera de Color
+# =============================================================================
+
+escalera_color:Mano1 a poker:Mano ;
+    rdfs:label "Escalera de Color Veintiuno-Veintidos-Veintitres-Veinticuatro-Veinticinco de Psiquico" ;
+    poker:contieneCarta poker:VeintiunoDePsiquico, poker:VeintidosDePsiquico, poker:VeintitresDePsiquico, poker:VeinticuatroDePsiquico, poker:VeinticincoDePsiquico .
+
+escalera_color:Mano2 a poker:Mano ;
+    rdfs:label "Escalera de Color Veintidos-Veintitres-Veinticuatro-Veinticinco-Veintiseis de Planta" ;
+    poker:contieneCarta poker:VeintidosDePlanta, poker:VeintitresDePlanta, poker:VeinticuatroDePlanta, poker:VeinticincoDePlanta, poker:VeintiseisDePlanta .
+
+escalera_color:Mano3 a poker:Mano ;
+    rdfs:label "Escalera de Color Dos-Tres-Cuatro-Cinco-Seis de Normal" ;
+    poker:contieneCarta poker:DosDeNormal, poker:TresDeNormal, poker:CuatroDeNormal, poker:CincoDeNormal, poker:SeisDeNormal .
+
+escalera_color:Mano4 a poker:Mano ;
+    rdfs:label "Escalera de Color Treintaydos-Treintaytres-Treintaycuatro-Treintaycinco-Treintayseis de Lucha" ;
+    poker:contieneCarta poker:TreintaydosDeLucha, poker:TreintaytresDeLucha, poker:TreintaycuatroDeLucha, poker:TreintaycincoDeLucha, poker:TreintayseisDeLucha .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera_color:Mano1 escalera_color:Mano2 escalera_color:Mano3 escalera_color:Mano4 ) .

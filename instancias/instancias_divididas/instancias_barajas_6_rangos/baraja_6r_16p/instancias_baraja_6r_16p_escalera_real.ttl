@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 10. Escalera Real
+# =============================================================================
+
+@prefix escalera_real: <http://www.poker-ontology.org/instancias/escalera_real#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_6r_16p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/escalera_real>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_6r_16p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 10. Escalera Real" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 10. Escalera Real." .
+
+# =============================================================================
+# 10. Escalera Real
+# =============================================================================
+
+escalera_real:Mano1 a poker:Mano ;
+    rdfs:label "Escalera Real de Fantasma" ;
+    poker:contieneCarta poker:DosDeFantasma, poker:TresDeFantasma, poker:CuatroDeFantasma, poker:CincoDeFantasma, poker:SeisDeFantasma .
+
+escalera_real:Mano2 a poker:Mano ;
+    rdfs:label "Escalera Real de Psiquico" ;
+    poker:contieneCarta poker:DosDePsiquico, poker:TresDePsiquico, poker:CuatroDePsiquico, poker:CincoDePsiquico, poker:SeisDePsiquico .
+
+escalera_real:Mano3 a poker:Mano ;
+    rdfs:label "Escalera Real de Lucha" ;
+    poker:contieneCarta poker:DosDeLucha, poker:TresDeLucha, poker:CuatroDeLucha, poker:CincoDeLucha, poker:SeisDeLucha .
+
+escalera_real:Mano4 a poker:Mano ;
+    rdfs:label "Escalera Real de Planta" ;
+    poker:contieneCarta poker:DosDePlanta, poker:TresDePlanta, poker:CuatroDePlanta, poker:CincoDePlanta, poker:SeisDePlanta .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera_real:Mano1 escalera_real:Mano2 escalera_real:Mano3 escalera_real:Mano4 ) .

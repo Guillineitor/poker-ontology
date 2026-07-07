@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 8. Póker
+# =============================================================================
+
+@prefix pokerh: <http://www.poker-ontology.org/instancias/pokerh#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_8p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/pokerh>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_8p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 8. Póker" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 8. Póker." .
+
+# =============================================================================
+# 8. Póker
+# =============================================================================
+
+pokerh:Mano1 a poker:Mano ;
+    rdfs:label "Póker de Nueves con Veintiuno de Normal" ;
+    poker:contieneCarta poker:NueveDeAgua, poker:NueveDePlanta, poker:NueveDeVolador, poker:NueveDeNormal, poker:VeintiunoDeNormal .
+
+pokerh:Mano2 a poker:Mano ;
+    rdfs:label "Póker de Treintaytreses con Veintiuno de Agua" ;
+    poker:contieneCarta poker:TreintaytresDeVolador, poker:TreintaytresDeFuego, poker:TreintaytresDeBicho, poker:TreintaytresDeAgua, poker:VeintiunoDeAgua .
+
+pokerh:Mano3 a poker:Mano ;
+    rdfs:label "Póker de Treintaycincos con Veintitres de Veneno" ;
+    poker:contieneCarta poker:TreintaycincoDeVolador, poker:TreintaycincoDeNormal, poker:TreintaycincoDeFuego, poker:TreintaycincoDeElectrico, poker:VeintitresDeVeneno .
+
+pokerh:Mano4 a poker:Mano ;
+    rdfs:label "Póker de Veintiseises con Diecisiete de Volador" ;
+    poker:contieneCarta poker:VeintiseisDePlanta, poker:VeintiseisDeVolador, poker:VeintiseisDeBicho, poker:VeintiseisDeFuego, poker:DiecisieteDeVolador .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( pokerh:Mano1 pokerh:Mano2 pokerh:Mano3 pokerh:Mano4 ) .

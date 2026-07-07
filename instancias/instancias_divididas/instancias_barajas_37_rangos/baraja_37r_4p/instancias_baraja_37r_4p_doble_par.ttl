@@ -1,0 +1,42 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 3. Doble Par
+# =============================================================================
+
+@prefix doble_par: <http://www.poker-ontology.org/instancias/doble_par#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_4p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/doble_par>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_4p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 3. Doble Par" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 3. Doble Par." .
+
+# =============================================================================
+# 3. Doble Par
+# =============================================================================
+
+doble_par:Mano1 a poker:Mano ;
+    rdfs:label "Doble Par de Treintaycuatros y Veinticuatros con Treintaydos" ;
+    poker:contieneCarta poker:VeinticuatroDeAgua, poker:VeinticuatroDePlanta, poker:TreintaycuatroDeElectrico, poker:TreintaycuatroDeFuego, poker:TreintaydosDePlanta ;
+    poker:manoTienePar poker:Veinticuatro, poker:Treintaycuatro .
+
+doble_par:Mano2 a poker:Mano ;
+    rdfs:label "Doble Par de Treintaydoses y Diecinueves con Tres" ;
+    poker:contieneCarta poker:DiecinueveDeAgua, poker:DiecinueveDeFuego, poker:TreintaydosDeElectrico, poker:TreintaydosDeFuego, poker:TresDeFuego ;
+    poker:manoTienePar poker:Diecinueve, poker:Treintaydos .
+
+doble_par:Mano3 a poker:Mano ;
+    rdfs:label "Doble Par de Treintaycuatros y Treces con Cinco" ;
+    poker:contieneCarta poker:TreceDeFuego, poker:TreceDeAgua, poker:TreintaycuatroDePlanta, poker:TreintaycuatroDeAgua, poker:CincoDeElectrico ;
+    poker:manoTienePar poker:Trece, poker:Treintaycuatro .
+
+doble_par:Mano4 a poker:Mano ;
+    rdfs:label "Doble Par de Treintaysietes y Treses con Trece" ;
+    poker:contieneCarta poker:TreintaysieteDeElectrico, poker:TreintaysieteDeAgua, poker:TresDePlanta, poker:TresDeElectrico, poker:TreceDePlanta ;
+    poker:manoTienePar poker:Treintaysiete, poker:Tres .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( doble_par:Mano1 doble_par:Mano2 doble_par:Mano3 doble_par:Mano4 ) .

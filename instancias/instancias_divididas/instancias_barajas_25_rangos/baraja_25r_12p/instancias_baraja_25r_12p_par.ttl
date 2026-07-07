@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 2. Par
+# =============================================================================
+
+@prefix par: <http://www.poker-ontology.org/instancias/par#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_25r_12p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/par>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_25r_12p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 2. Par" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 2. Par." .
+
+# =============================================================================
+# 2. Par
+# =============================================================================
+
+par:Mano1 a poker:Mano ;
+    rdfs:label "Par de Dieciseises con Veinte Diez Ocho" ;
+    poker:contieneCarta poker:DieciseisDePsiquico, poker:DieciseisDeFuego, poker:DiezDePsiquico, poker:VeinteDeLucha, poker:OchoDeVeneno .
+
+par:Mano2 a poker:Mano ;
+    rdfs:label "Par de Veintes con Veintitres Once Nueve" ;
+    poker:contieneCarta poker:VeinteDeAgua, poker:VeinteDeVeneno, poker:VeintitresDeFuego, poker:OnceDeRoca, poker:NueveDeNormal .
+
+par:Mano3 a poker:Mano ;
+    rdfs:label "Par de Ochos con Diecinueve Once Cinco" ;
+    poker:contieneCarta poker:OchoDePlanta, poker:OchoDeTierra, poker:DiecinueveDePlanta, poker:OnceDeTierra, poker:CincoDeVolador .
+
+par:Mano4 a poker:Mano ;
+    rdfs:label "Par de Onces con Veintiuno Doce Cinco" ;
+    poker:contieneCarta poker:OnceDeRoca, poker:OnceDeAgua, poker:DoceDeAgua, poker:VeintiunoDeLucha, poker:CincoDePlanta .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( par:Mano1 par:Mano2 par:Mano3 par:Mano4 ) .

@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 8. Póker
+# =============================================================================
+
+@prefix pokerh: <http://www.poker-ontology.org/instancias/pokerh#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_6r_8p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/pokerh>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_6r_8p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 8. Póker" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 8. Póker." .
+
+# =============================================================================
+# 8. Póker
+# =============================================================================
+
+pokerh:Mano1 a poker:Mano ;
+    rdfs:label "Póker de Doses con Seis de Veneno" ;
+    poker:contieneCarta poker:DosDeFuego, poker:DosDeVeneno, poker:DosDeBicho, poker:DosDeAgua, poker:SeisDeVeneno .
+
+pokerh:Mano2 a poker:Mano ;
+    rdfs:label "Póker de Unos con Dos de Bicho" ;
+    poker:contieneCarta poker:UnoDeBicho, poker:UnoDeVolador, poker:UnoDeAgua, poker:UnoDeElectrico, poker:DosDeBicho .
+
+pokerh:Mano3 a poker:Mano ;
+    rdfs:label "Póker de Seises con Dos de Normal" ;
+    poker:contieneCarta poker:SeisDePlanta, poker:SeisDeFuego, poker:SeisDeElectrico, poker:SeisDeNormal, poker:DosDeNormal .
+
+pokerh:Mano4 a poker:Mano ;
+    rdfs:label "Póker de Cincos con Dos de Electrico" ;
+    poker:contieneCarta poker:CincoDeNormal, poker:CincoDeElectrico, poker:CincoDePlanta, poker:CincoDeVeneno, poker:DosDeElectrico .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( pokerh:Mano1 pokerh:Mano2 pokerh:Mano3 pokerh:Mano4 ) .

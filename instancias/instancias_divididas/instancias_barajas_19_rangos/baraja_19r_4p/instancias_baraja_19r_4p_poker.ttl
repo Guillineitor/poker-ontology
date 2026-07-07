@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 8. Póker
+# =============================================================================
+
+@prefix pokerh: <http://www.poker-ontology.org/instancias/pokerh#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_19r_4p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/pokerh>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_19r_4p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 8. Póker" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 8. Póker." .
+
+# =============================================================================
+# 8. Póker
+# =============================================================================
+
+pokerh:Mano1 a poker:Mano ;
+    rdfs:label "Póker de Cincos con Diecinueve de Fuego" ;
+    poker:contieneCarta poker:CincoDePlanta, poker:CincoDeAgua, poker:CincoDeFuego, poker:CincoDeElectrico, poker:DiecinueveDeFuego .
+
+pokerh:Mano2 a poker:Mano ;
+    rdfs:label "Póker de Dieciochos con Cinco de Agua" ;
+    poker:contieneCarta poker:DieciochoDePlanta, poker:DieciochoDeElectrico, poker:DieciochoDeAgua, poker:DieciochoDeFuego, poker:CincoDeAgua .
+
+pokerh:Mano3 a poker:Mano ;
+    rdfs:label "Póker de Diecisietes con Trece de Planta" ;
+    poker:contieneCarta poker:DiecisieteDePlanta, poker:DiecisieteDeFuego, poker:DiecisieteDeElectrico, poker:DiecisieteDeAgua, poker:TreceDePlanta .
+
+pokerh:Mano4 a poker:Mano ;
+    rdfs:label "Póker de Nueves con Diez de Planta" ;
+    poker:contieneCarta poker:NueveDeAgua, poker:NueveDePlanta, poker:NueveDeFuego, poker:NueveDeElectrico, poker:DiezDePlanta .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( pokerh:Mano1 pokerh:Mano2 pokerh:Mano3 pokerh:Mano4 ) .

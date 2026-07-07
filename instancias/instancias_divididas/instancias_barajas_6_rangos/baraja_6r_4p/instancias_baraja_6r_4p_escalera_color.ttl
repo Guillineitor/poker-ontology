@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 9. Escalera de Color
+# =============================================================================
+
+@prefix escalera_color: <http://www.poker-ontology.org/instancias/escalera_color#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_6r_4p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/escalera_color>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_6r_4p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 9. Escalera de Color" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 9. Escalera de Color." .
+
+# =============================================================================
+# 9. Escalera de Color
+# =============================================================================
+
+escalera_color:Mano1 a poker:Mano ;
+    rdfs:label "Escalera de Color Uno-Dos-Tres-Cuatro-Cinco de Planta" ;
+    poker:contieneCarta poker:UnoDePlanta, poker:DosDePlanta, poker:TresDePlanta, poker:CuatroDePlanta, poker:CincoDePlanta .
+
+escalera_color:Mano2 a poker:Mano ;
+    rdfs:label "Escalera de Color Uno-Dos-Tres-Cuatro-Cinco de Fuego" ;
+    poker:contieneCarta poker:UnoDeFuego, poker:DosDeFuego, poker:TresDeFuego, poker:CuatroDeFuego, poker:CincoDeFuego .
+
+escalera_color:Mano3 a poker:Mano ;
+    rdfs:label "Escalera de Color Uno-Dos-Tres-Cuatro-Cinco de Electrico" ;
+    poker:contieneCarta poker:UnoDeElectrico, poker:DosDeElectrico, poker:TresDeElectrico, poker:CuatroDeElectrico, poker:CincoDeElectrico .
+
+escalera_color:Mano4 a poker:Mano ;
+    rdfs:label "Escalera de Color Uno-Dos-Tres-Cuatro-Cinco de Agua" ;
+    poker:contieneCarta poker:UnoDeAgua, poker:DosDeAgua, poker:TresDeAgua, poker:CuatroDeAgua, poker:CincoDeAgua .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera_color:Mano1 escalera_color:Mano2 escalera_color:Mano3 escalera_color:Mano4 ) .

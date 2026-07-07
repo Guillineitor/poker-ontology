@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 4. Trío
+# =============================================================================
+
+@prefix trio: <http://www.poker-ontology.org/instancias/trio#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_16p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/trio>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_16p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 4. Trío" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 4. Trío." .
+
+# =============================================================================
+# 4. Trío
+# =============================================================================
+
+trio:Mano1 a poker:Mano ;
+    rdfs:label "Trío de Cuatros con Veintiseis Siete" ;
+    poker:contieneCarta poker:CuatroDeHielo, poker:CuatroDeVolador, poker:CuatroDePlanta, poker:SieteDeElectrico, poker:VeintiseisDeElectrico .
+
+trio:Mano2 a poker:Mano ;
+    rdfs:label "Trío de Veintitreses con Veinte Diecinueve" ;
+    poker:contieneCarta poker:VeintitresDeSiniestro, poker:VeintitresDeTierra, poker:VeintitresDePlanta, poker:VeinteDeFantasma, poker:DiecinueveDeNormal .
+
+trio:Mano3 a poker:Mano ;
+    rdfs:label "Trío de Unos con Treintaytres Quince" ;
+    poker:contieneCarta poker:UnoDeFantasma, poker:UnoDeHielo, poker:UnoDeAgua, poker:TreintaytresDeTierra, poker:QuinceDeVolador .
+
+trio:Mano4 a poker:Mano ;
+    rdfs:label "Trío de Ochos con Treintayuno Nueve" ;
+    poker:contieneCarta poker:OchoDeBicho, poker:OchoDeNormal, poker:OchoDeFuego, poker:NueveDeLucha, poker:TreintayunoDeTierra .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( trio:Mano1 trio:Mano2 trio:Mano3 trio:Mano4 ) .

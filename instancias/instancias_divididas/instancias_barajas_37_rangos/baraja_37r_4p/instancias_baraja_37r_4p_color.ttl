@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 6. Color
+# =============================================================================
+
+@prefix color: <http://www.poker-ontology.org/instancias/color#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_4p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/color>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_4p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 6. Color" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 6. Color." .
+
+# =============================================================================
+# 6. Color
+# =============================================================================
+
+color:Mano1 a poker:Mano ;
+    rdfs:label "Color de Treintaytres Treintayuno Veintiocho Siete Dos de Electrico" ;
+    poker:contieneCarta poker:DosDeElectrico, poker:VeintiochoDeElectrico, poker:TreintayunoDeElectrico, poker:TreintaytresDeElectrico, poker:SieteDeElectrico .
+
+color:Mano2 a poker:Mano ;
+    rdfs:label "Color de Treintaycinco Veintisiete Nueve Ocho Uno de Fuego" ;
+    poker:contieneCarta poker:VeintisieteDeFuego, poker:OchoDeFuego, poker:TreintaycincoDeFuego, poker:NueveDeFuego, poker:UnoDeFuego .
+
+color:Mano3 a poker:Mano ;
+    rdfs:label "Color de Treintaytres Veinticuatro Veintiuno Diez Tres de Planta" ;
+    poker:contieneCarta poker:TreintaytresDePlanta, poker:DiezDePlanta, poker:TresDePlanta, poker:VeintiunoDePlanta, poker:VeinticuatroDePlanta .
+
+color:Mano4 a poker:Mano ;
+    rdfs:label "Color de Veintiocho Veintisiete Veinte Diecinueve Doce de Fuego" ;
+    poker:contieneCarta poker:VeintisieteDeFuego, poker:VeinteDeFuego, poker:DiecinueveDeFuego, poker:DoceDeFuego, poker:VeintiochoDeFuego .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( color:Mano1 color:Mano2 color:Mano3 color:Mano4 ) .

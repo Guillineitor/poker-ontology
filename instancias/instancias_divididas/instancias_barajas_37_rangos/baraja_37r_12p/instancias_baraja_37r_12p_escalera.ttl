@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 5. Escalera
+# =============================================================================
+
+@prefix escalera: <http://www.poker-ontology.org/instancias/escalera#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_12p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/escalera>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_12p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 5. Escalera" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 5. Escalera." .
+
+# =============================================================================
+# 5. Escalera
+# =============================================================================
+
+escalera:Mano1 a poker:Mano ;
+    rdfs:label "Escalera de Veinticuatro-Veinticinco-Veintiseis-Veintisiete-Veintiocho" ;
+    poker:contieneCarta poker:VeinticuatroDeFuego, poker:VeinticincoDeFuego, poker:VeintiseisDePlanta, poker:VeintisieteDeVeneno, poker:VeintiochoDeElectrico .
+
+escalera:Mano2 a poker:Mano ;
+    rdfs:label "Escalera de Dieciseis-Diecisiete-Dieciocho-Diecinueve-Veinte" ;
+    poker:contieneCarta poker:DieciseisDeBicho, poker:DiecisieteDeTierra, poker:DieciochoDeVeneno, poker:DiecinueveDeLucha, poker:VeinteDeLucha .
+
+escalera:Mano3 a poker:Mano ;
+    rdfs:label "Escalera de Uno-Dos-Tres-Cuatro-Cinco" ;
+    poker:contieneCarta poker:UnoDeVeneno, poker:DosDeBicho, poker:TresDePsiquico, poker:CuatroDeVolador, poker:CincoDeVolador .
+
+escalera:Mano4 a poker:Mano ;
+    rdfs:label "Escalera de Cuatro-Cinco-Seis-Siete-Ocho" ;
+    poker:contieneCarta poker:CuatroDeTierra, poker:CincoDeTierra, poker:SeisDePlanta, poker:SieteDePsiquico, poker:OchoDeLucha .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera:Mano1 escalera:Mano2 escalera:Mano3 escalera:Mano4 ) .

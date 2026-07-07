@@ -1,0 +1,42 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 7. Full
+# =============================================================================
+
+@prefix full: <http://www.poker-ontology.org/instancias/full#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_16p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/full>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_16p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 7. Full" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 7. Full." .
+
+# =============================================================================
+# 7. Full
+# =============================================================================
+
+full:Mano1 a poker:Mano ;
+    rdfs:label "Full de Trío de Treses con Par de Dieciochos" ;
+    poker:contieneCarta poker:TresDeNormal, poker:TresDeSiniestro, poker:TresDeElectrico, poker:DieciochoDeNormal, poker:DieciochoDeElectrico ;
+    poker:manoTienePar poker:Tres, poker:Dieciocho .
+
+full:Mano2 a poker:Mano ;
+    rdfs:label "Full de Trío de Seises con Par de Dieces" ;
+    poker:contieneCarta poker:SeisDeNormal, poker:SeisDeDragon, poker:SeisDeRoca, poker:DiezDeBicho, poker:DiezDeDragon ;
+    poker:manoTienePar poker:Seis, poker:Diez .
+
+full:Mano3 a poker:Mano ;
+    rdfs:label "Full de Trío de Veinticincos con Par de Treintaydoses" ;
+    poker:contieneCarta poker:VeinticincoDeBicho, poker:VeinticincoDeFantasma, poker:VeinticincoDePsiquico, poker:TreintaydosDeSiniestro, poker:TreintaydosDeDragon ;
+    poker:manoTienePar poker:Veinticinco, poker:Treintaydos .
+
+full:Mano4 a poker:Mano ;
+    rdfs:label "Full de Trío de Treintaydoses con Par de Veintisietes" ;
+    poker:contieneCarta poker:TreintaydosDeTierra, poker:TreintaydosDeVeneno, poker:TreintaydosDeDragon, poker:VeintisieteDePsiquico, poker:VeintisieteDeFuego ;
+    poker:manoTienePar poker:Treintaydos, poker:Veintisiete .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( full:Mano1 full:Mano2 full:Mano3 full:Mano4 ) .

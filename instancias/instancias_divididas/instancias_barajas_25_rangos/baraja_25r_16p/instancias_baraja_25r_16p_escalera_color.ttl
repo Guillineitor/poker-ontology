@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 9. Escalera de Color
+# =============================================================================
+
+@prefix escalera_color: <http://www.poker-ontology.org/instancias/escalera_color#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_25r_16p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/escalera_color>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_25r_16p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 9. Escalera de Color" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 9. Escalera de Color." .
+
+# =============================================================================
+# 9. Escalera de Color
+# =============================================================================
+
+escalera_color:Mano1 a poker:Mano ;
+    rdfs:label "Escalera de Color Tres-Cuatro-Cinco-Seis-Siete de Electrico" ;
+    poker:contieneCarta poker:TresDeElectrico, poker:CuatroDeElectrico, poker:CincoDeElectrico, poker:SeisDeElectrico, poker:SieteDeElectrico .
+
+escalera_color:Mano2 a poker:Mano ;
+    rdfs:label "Escalera de Color Diecinueve-Veinte-Veintiuno-Veintidos-Veintitres de Electrico" ;
+    poker:contieneCarta poker:DiecinueveDeElectrico, poker:VeinteDeElectrico, poker:VeintiunoDeElectrico, poker:VeintidosDeElectrico, poker:VeintitresDeElectrico .
+
+escalera_color:Mano3 a poker:Mano ;
+    rdfs:label "Escalera de Color Doce-Trece-Catorce-Quince-Dieciseis de Planta" ;
+    poker:contieneCarta poker:DoceDePlanta, poker:TreceDePlanta, poker:CatorceDePlanta, poker:QuinceDePlanta, poker:DieciseisDePlanta .
+
+escalera_color:Mano4 a poker:Mano ;
+    rdfs:label "Escalera de Color Quince-Dieciseis-Diecisiete-Dieciocho-Diecinueve de Electrico" ;
+    poker:contieneCarta poker:QuinceDeElectrico, poker:DieciseisDeElectrico, poker:DiecisieteDeElectrico, poker:DieciochoDeElectrico, poker:DiecinueveDeElectrico .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera_color:Mano1 escalera_color:Mano2 escalera_color:Mano3 escalera_color:Mano4 ) .

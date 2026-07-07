@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 9. Escalera de Color
+# =============================================================================
+
+@prefix escalera_color: <http://www.poker-ontology.org/instancias/escalera_color#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_8p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/escalera_color>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_8p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 9. Escalera de Color" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 9. Escalera de Color." .
+
+# =============================================================================
+# 9. Escalera de Color
+# =============================================================================
+
+escalera_color:Mano1 a poker:Mano ;
+    rdfs:label "Escalera de Color Dos-Tres-Cuatro-Cinco-Seis de Planta" ;
+    poker:contieneCarta poker:DosDePlanta, poker:TresDePlanta, poker:CuatroDePlanta, poker:CincoDePlanta, poker:SeisDePlanta .
+
+escalera_color:Mano2 a poker:Mano ;
+    rdfs:label "Escalera de Color Diecisiete-Dieciocho-Diecinueve-Veinte-Veintiuno de Agua" ;
+    poker:contieneCarta poker:DiecisieteDeAgua, poker:DieciochoDeAgua, poker:DiecinueveDeAgua, poker:VeinteDeAgua, poker:VeintiunoDeAgua .
+
+escalera_color:Mano3 a poker:Mano ;
+    rdfs:label "Escalera de Color Veintiuno-Veintidos-Veintitres-Veinticuatro-Veinticinco de Agua" ;
+    poker:contieneCarta poker:VeintiunoDeAgua, poker:VeintidosDeAgua, poker:VeintitresDeAgua, poker:VeinticuatroDeAgua, poker:VeinticincoDeAgua .
+
+escalera_color:Mano4 a poker:Mano ;
+    rdfs:label "Escalera de Color Veintisiete-Veintiocho-Veintinueve-Treinta-Treintayuno de Fuego" ;
+    poker:contieneCarta poker:VeintisieteDeFuego, poker:VeintiochoDeFuego, poker:VeintinueveDeFuego, poker:TreintaDeFuego, poker:TreintayunoDeFuego .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera_color:Mano1 escalera_color:Mano2 escalera_color:Mano3 escalera_color:Mano4 ) .

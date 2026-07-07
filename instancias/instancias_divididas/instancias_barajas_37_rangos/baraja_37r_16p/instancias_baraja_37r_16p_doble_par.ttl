@@ -1,0 +1,42 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 3. Doble Par
+# =============================================================================
+
+@prefix doble_par: <http://www.poker-ontology.org/instancias/doble_par#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_16p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/doble_par>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_16p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 3. Doble Par" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 3. Doble Par." .
+
+# =============================================================================
+# 3. Doble Par
+# =============================================================================
+
+doble_par:Mano1 a poker:Mano ;
+    rdfs:label "Doble Par de Veinticincos y Dieces con Ocho" ;
+    poker:contieneCarta poker:DiezDeTierra, poker:DiezDeDragon, poker:VeinticincoDeAgua, poker:VeinticincoDeFuego, poker:OchoDeSiniestro ;
+    poker:manoTienePar poker:Diez, poker:Veinticinco .
+
+doble_par:Mano2 a poker:Mano ;
+    rdfs:label "Doble Par de Veinticuatros y Treses con Dieciseis" ;
+    poker:contieneCarta poker:VeinticuatroDeVolador, poker:VeinticuatroDeRoca, poker:TresDeNormal, poker:TresDeLucha, poker:DieciseisDeElectrico ;
+    poker:manoTienePar poker:Veinticuatro, poker:Tres .
+
+doble_par:Mano3 a poker:Mano ;
+    rdfs:label "Doble Par de Veintiunos y Veintes con Veintiocho" ;
+    poker:contieneCarta poker:VeinteDeFuego, poker:VeinteDeElectrico, poker:VeintiunoDeDragon, poker:VeintiunoDeLucha, poker:VeintiochoDeNormal ;
+    poker:manoTienePar poker:Veinte, poker:Veintiuno .
+
+doble_par:Mano4 a poker:Mano ;
+    rdfs:label "Doble Par de Veintiochos y Quinces con Nueve" ;
+    poker:contieneCarta poker:QuinceDeSiniestro, poker:QuinceDePlanta, poker:VeintiochoDeElectrico, poker:VeintiochoDeHielo, poker:NueveDeHielo ;
+    poker:manoTienePar poker:Quince, poker:Veintiocho .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( doble_par:Mano1 doble_par:Mano2 doble_par:Mano3 doble_par:Mano4 ) .

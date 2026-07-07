@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 4. Trío
+# =============================================================================
+
+@prefix trio: <http://www.poker-ontology.org/instancias/trio#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_31r_4p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/trio>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_31r_4p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 4. Trío" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 4. Trío." .
+
+# =============================================================================
+# 4. Trío
+# =============================================================================
+
+trio:Mano1 a poker:Mano ;
+    rdfs:label "Trío de Ochos con Veintiseis Tres" ;
+    poker:contieneCarta poker:OchoDePlanta, poker:OchoDeAgua, poker:OchoDeFuego, poker:VeintiseisDePlanta, poker:TresDeElectrico .
+
+trio:Mano2 a poker:Mano ;
+    rdfs:label "Trío de Veintes con Veintisiete Tres" ;
+    poker:contieneCarta poker:VeinteDeFuego, poker:VeinteDePlanta, poker:VeinteDeElectrico, poker:VeintisieteDeAgua, poker:TresDeAgua .
+
+trio:Mano3 a poker:Mano ;
+    rdfs:label "Trío de Veintidoses con Veintiuno Tres" ;
+    poker:contieneCarta poker:VeintidosDeAgua, poker:VeintidosDeElectrico, poker:VeintidosDeFuego, poker:VeintiunoDeAgua, poker:TresDeFuego .
+
+trio:Mano4 a poker:Mano ;
+    rdfs:label "Trío de Diecisietes con Veintitres Veintidos" ;
+    poker:contieneCarta poker:DiecisieteDeElectrico, poker:DiecisieteDePlanta, poker:DiecisieteDeAgua, poker:VeintitresDeElectrico, poker:VeintidosDePlanta .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( trio:Mano1 trio:Mano2 trio:Mano3 trio:Mano4 ) .

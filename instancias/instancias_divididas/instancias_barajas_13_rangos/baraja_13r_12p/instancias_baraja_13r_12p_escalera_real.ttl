@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 10. Escalera Real
+# =============================================================================
+
+@prefix escalera_real: <http://www.poker-ontology.org/instancias/escalera_real#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_13r_12p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/escalera_real>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_13r_12p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 10. Escalera Real" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 10. Escalera Real." .
+
+# =============================================================================
+# 10. Escalera Real
+# =============================================================================
+
+escalera_real:Mano1 a poker:Mano ;
+    rdfs:label "Escalera Real de Roca" ;
+    poker:contieneCarta poker:NueveDeRoca, poker:DiezDeRoca, poker:OnceDeRoca, poker:DoceDeRoca, poker:TreceDeRoca .
+
+escalera_real:Mano2 a poker:Mano ;
+    rdfs:label "Escalera Real de Tierra" ;
+    poker:contieneCarta poker:NueveDeTierra, poker:DiezDeTierra, poker:OnceDeTierra, poker:DoceDeTierra, poker:TreceDeTierra .
+
+escalera_real:Mano3 a poker:Mano ;
+    rdfs:label "Escalera Real de Planta" ;
+    poker:contieneCarta poker:NueveDePlanta, poker:DiezDePlanta, poker:OnceDePlanta, poker:DoceDePlanta, poker:TreceDePlanta .
+
+escalera_real:Mano4 a poker:Mano ;
+    rdfs:label "Escalera Real de Psiquico" ;
+    poker:contieneCarta poker:NueveDePsiquico, poker:DiezDePsiquico, poker:OnceDePsiquico, poker:DoceDePsiquico, poker:TreceDePsiquico .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera_real:Mano1 escalera_real:Mano2 escalera_real:Mano3 escalera_real:Mano4 ) .

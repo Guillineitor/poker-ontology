@@ -1,0 +1,42 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 7. Full
+# =============================================================================
+
+@prefix full: <http://www.poker-ontology.org/instancias/full#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_13r_16p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/full>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_13r_16p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 7. Full" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 7. Full." .
+
+# =============================================================================
+# 7. Full
+# =============================================================================
+
+full:Mano1 a poker:Mano ;
+    rdfs:label "Full de Trío de Sietes con Par de Treces" ;
+    poker:contieneCarta poker:SieteDeVeneno, poker:SieteDeElectrico, poker:SieteDeFuego, poker:TreceDeDragon, poker:TreceDeLucha ;
+    poker:manoTienePar poker:Siete, poker:Trece .
+
+full:Mano2 a poker:Mano ;
+    rdfs:label "Full de Trío de Ochos con Par de Doces" ;
+    poker:contieneCarta poker:OchoDeHielo, poker:OchoDeSiniestro, poker:OchoDeVeneno, poker:DoceDeBicho, poker:DoceDeDragon ;
+    poker:manoTienePar poker:Ocho, poker:Doce .
+
+full:Mano3 a poker:Mano ;
+    rdfs:label "Full de Trío de Cincos con Par de Cuatros" ;
+    poker:contieneCarta poker:CincoDeVeneno, poker:CincoDeRoca, poker:CincoDeDragon, poker:CuatroDeRoca, poker:CuatroDeElectrico ;
+    poker:manoTienePar poker:Cinco, poker:Cuatro .
+
+full:Mano4 a poker:Mano ;
+    rdfs:label "Full de Trío de Nueves con Par de Dieces" ;
+    poker:contieneCarta poker:NueveDeTierra, poker:NueveDeLucha, poker:NueveDePlanta, poker:DiezDeVolador, poker:DiezDeTierra ;
+    poker:manoTienePar poker:Nueve, poker:Diez .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( full:Mano1 full:Mano2 full:Mano3 full:Mano4 ) .

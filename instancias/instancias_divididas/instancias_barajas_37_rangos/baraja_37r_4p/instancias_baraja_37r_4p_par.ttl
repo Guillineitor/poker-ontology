@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 2. Par
+# =============================================================================
+
+@prefix par: <http://www.poker-ontology.org/instancias/par#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_4p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/par>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_4p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 2. Par" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 2. Par." .
+
+# =============================================================================
+# 2. Par
+# =============================================================================
+
+par:Mano1 a poker:Mano ;
+    rdfs:label "Par de Doces con Treintaytres Treintayuno Veintitres" ;
+    poker:contieneCarta poker:DoceDePlanta, poker:DoceDeFuego, poker:TreintaytresDeElectrico, poker:TreintayunoDeFuego, poker:VeintitresDeElectrico .
+
+par:Mano2 a poker:Mano ;
+    rdfs:label "Par de Treintaycincos con Veintiuno Doce Dos" ;
+    poker:contieneCarta poker:TreintaycincoDeFuego, poker:TreintaycincoDeAgua, poker:VeintiunoDePlanta, poker:DoceDePlanta, poker:DosDeAgua .
+
+par:Mano3 a poker:Mano ;
+    rdfs:label "Par de Veintiunos con Treintaytres Veintinueve Siete" ;
+    poker:contieneCarta poker:VeintiunoDeElectrico, poker:VeintiunoDeAgua, poker:TreintaytresDeAgua, poker:SieteDeAgua, poker:VeintinueveDePlanta .
+
+par:Mano4 a poker:Mano ;
+    rdfs:label "Par de Sietes con Veintinueve Veintiocho Seis" ;
+    poker:contieneCarta poker:SieteDeFuego, poker:SieteDeAgua, poker:VeintinueveDeAgua, poker:VeintiochoDeElectrico, poker:SeisDeFuego .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( par:Mano1 par:Mano2 par:Mano3 par:Mano4 ) .

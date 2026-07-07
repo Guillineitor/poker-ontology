@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 1. Carta Alta
+# =============================================================================
+
+@prefix carta_alta: <http://www.poker-ontology.org/instancias/carta_alta#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_13r_12p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/carta_alta>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_13r_12p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 1. Carta Alta" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 1. Carta Alta." .
+
+# =============================================================================
+# 1. Carta Alta
+# =============================================================================
+
+carta_alta:Mano1 a poker:Mano ;
+    rdfs:label "Carta Alta de Ocho con Siete Seis Cinco Dos" ;
+    poker:contieneCarta poker:SieteDeBicho, poker:SeisDeAgua, poker:OchoDeNormal, poker:DosDeVolador, poker:CincoDeRoca .
+
+carta_alta:Mano2 a poker:Mano ;
+    rdfs:label "Carta Alta de Trece con Doce Diez Ocho Siete" ;
+    poker:contieneCarta poker:SieteDeBicho, poker:DoceDePsiquico, poker:TreceDeTierra, poker:DiezDePsiquico, poker:OchoDeNormal .
+
+carta_alta:Mano3 a poker:Mano ;
+    rdfs:label "Carta Alta de Ocho con Seis Cinco Tres Dos" ;
+    poker:contieneCarta poker:OchoDeVolador, poker:TresDePlanta, poker:SeisDePlanta, poker:CincoDeVolador, poker:DosDeNormal .
+
+carta_alta:Mano4 a poker:Mano ;
+    rdfs:label "Carta Alta de Doce con Diez Ocho Siete Tres" ;
+    poker:contieneCarta poker:SieteDeRoca, poker:TresDePlanta, poker:DoceDeVeneno, poker:OchoDeElectrico, poker:DiezDeVeneno .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( carta_alta:Mano1 carta_alta:Mano2 carta_alta:Mano3 carta_alta:Mano4 ) .

@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 6. Color
+# =============================================================================
+
+@prefix color: <http://www.poker-ontology.org/instancias/color#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_31r_4p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/color>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_31r_4p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 6. Color" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 6. Color." .
+
+# =============================================================================
+# 6. Color
+# =============================================================================
+
+color:Mano1 a poker:Mano ;
+    rdfs:label "Color de Veinticinco Dieciocho Dieciseis Trece Diez de Fuego" ;
+    poker:contieneCarta poker:DieciseisDeFuego, poker:DieciochoDeFuego, poker:TreceDeFuego, poker:DiezDeFuego, poker:VeinticincoDeFuego .
+
+color:Mano2 a poker:Mano ;
+    rdfs:label "Color de Veintinueve Veinticuatro Veintidos Catorce Cinco de Electrico" ;
+    poker:contieneCarta poker:VeintidosDeElectrico, poker:CatorceDeElectrico, poker:VeintinueveDeElectrico, poker:CincoDeElectrico, poker:VeinticuatroDeElectrico .
+
+color:Mano3 a poker:Mano ;
+    rdfs:label "Color de Quince Trece Once Siete Tres de Agua" ;
+    poker:contieneCarta poker:SieteDeAgua, poker:TresDeAgua, poker:TreceDeAgua, poker:OnceDeAgua, poker:QuinceDeAgua .
+
+color:Mano4 a poker:Mano ;
+    rdfs:label "Color de Veintiocho Veinticuatro Diecinueve Diez Cuatro de Planta" ;
+    poker:contieneCarta poker:CuatroDePlanta, poker:DiezDePlanta, poker:VeinticuatroDePlanta, poker:DiecinueveDePlanta, poker:VeintiochoDePlanta .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( color:Mano1 color:Mano2 color:Mano3 color:Mano4 ) .

@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 10. Escalera Real
+# =============================================================================
+
+@prefix escalera_real: <http://www.poker-ontology.org/instancias/escalera_real#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_19r_4p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/escalera_real>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_19r_4p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 10. Escalera Real" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 10. Escalera Real." .
+
+# =============================================================================
+# 10. Escalera Real
+# =============================================================================
+
+escalera_real:Mano1 a poker:Mano ;
+    rdfs:label "Escalera Real de Fuego" ;
+    poker:contieneCarta poker:QuinceDeFuego, poker:DieciseisDeFuego, poker:DiecisieteDeFuego, poker:DieciochoDeFuego, poker:DiecinueveDeFuego .
+
+escalera_real:Mano2 a poker:Mano ;
+    rdfs:label "Escalera Real de Electrico" ;
+    poker:contieneCarta poker:QuinceDeElectrico, poker:DieciseisDeElectrico, poker:DiecisieteDeElectrico, poker:DieciochoDeElectrico, poker:DiecinueveDeElectrico .
+
+escalera_real:Mano3 a poker:Mano ;
+    rdfs:label "Escalera Real de Planta" ;
+    poker:contieneCarta poker:QuinceDePlanta, poker:DieciseisDePlanta, poker:DiecisieteDePlanta, poker:DieciochoDePlanta, poker:DiecinueveDePlanta .
+
+escalera_real:Mano4 a poker:Mano ;
+    rdfs:label "Escalera Real de Agua" ;
+    poker:contieneCarta poker:QuinceDeAgua, poker:DieciseisDeAgua, poker:DiecisieteDeAgua, poker:DieciochoDeAgua, poker:DiecinueveDeAgua .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera_real:Mano1 escalera_real:Mano2 escalera_real:Mano3 escalera_real:Mano4 ) .

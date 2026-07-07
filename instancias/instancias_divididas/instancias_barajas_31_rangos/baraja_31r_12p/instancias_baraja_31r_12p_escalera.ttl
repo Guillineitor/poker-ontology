@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 5. Escalera
+# =============================================================================
+
+@prefix escalera: <http://www.poker-ontology.org/instancias/escalera#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_31r_12p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/escalera>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_31r_12p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 5. Escalera" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 5. Escalera." .
+
+# =============================================================================
+# 5. Escalera
+# =============================================================================
+
+escalera:Mano1 a poker:Mano ;
+    rdfs:label "Escalera de Seis-Siete-Ocho-Nueve-Diez" ;
+    poker:contieneCarta poker:SeisDeFuego, poker:SieteDePlanta, poker:OchoDePsiquico, poker:NueveDeElectrico, poker:DiezDeNormal .
+
+escalera:Mano2 a poker:Mano ;
+    rdfs:label "Escalera de Once-Doce-Trece-Catorce-Quince" ;
+    poker:contieneCarta poker:OnceDeBicho, poker:DoceDeBicho, poker:TreceDeVeneno, poker:CatorceDeRoca, poker:QuinceDeNormal .
+
+escalera:Mano3 a poker:Mano ;
+    rdfs:label "Escalera de Trece-Catorce-Quince-Dieciseis-Diecisiete" ;
+    poker:contieneCarta poker:TreceDeVolador, poker:CatorceDeBicho, poker:QuinceDeBicho, poker:DieciseisDeElectrico, poker:DiecisieteDePsiquico .
+
+escalera:Mano4 a poker:Mano ;
+    rdfs:label "Escalera de Diecinueve-Veinte-Veintiuno-Veintidos-Veintitres" ;
+    poker:contieneCarta poker:DiecinueveDeElectrico, poker:VeinteDeNormal, poker:VeintiunoDeTierra, poker:VeintidosDePsiquico, poker:VeintitresDeBicho .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera:Mano1 escalera:Mano2 escalera:Mano3 escalera:Mano4 ) .

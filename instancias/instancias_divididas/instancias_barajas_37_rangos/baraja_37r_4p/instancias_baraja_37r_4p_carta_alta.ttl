@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 1. Carta Alta
+# =============================================================================
+
+@prefix carta_alta: <http://www.poker-ontology.org/instancias/carta_alta#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_4p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/carta_alta>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_4p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 1. Carta Alta" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 1. Carta Alta." .
+
+# =============================================================================
+# 1. Carta Alta
+# =============================================================================
+
+carta_alta:Mano1 a poker:Mano ;
+    rdfs:label "Carta Alta de Treintaysiete con Treintayuno Veintisiete Catorce Seis" ;
+    poker:contieneCarta poker:VeintisieteDeElectrico, poker:TreintaysieteDeElectrico, poker:SeisDeAgua, poker:TreintayunoDeFuego, poker:CatorceDeAgua .
+
+carta_alta:Mano2 a poker:Mano ;
+    rdfs:label "Carta Alta de Treintaytres con Veinticinco Veinticuatro Veintidos Veinte" ;
+    poker:contieneCarta poker:VeinticincoDeAgua, poker:VeinticuatroDeFuego, poker:VeintidosDeAgua, poker:VeinteDePlanta, poker:TreintaytresDeElectrico .
+
+carta_alta:Mano3 a poker:Mano ;
+    rdfs:label "Carta Alta de Treintaycuatro con Veintiuno Trece Diez Cinco" ;
+    poker:contieneCarta poker:TreceDeAgua, poker:TreintaycuatroDePlanta, poker:VeintiunoDeElectrico, poker:DiezDePlanta, poker:CincoDeAgua .
+
+carta_alta:Mano4 a poker:Mano ;
+    rdfs:label "Carta Alta de Diecinueve con Diecisiete Catorce Ocho Tres" ;
+    poker:contieneCarta poker:DiecinueveDeFuego, poker:OchoDePlanta, poker:CatorceDePlanta, poker:DiecisieteDeFuego, poker:TresDeFuego .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( carta_alta:Mano1 carta_alta:Mano2 carta_alta:Mano3 carta_alta:Mano4 ) .

@@ -1,0 +1,42 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 3. Doble Par
+# =============================================================================
+
+@prefix doble_par: <http://www.poker-ontology.org/instancias/doble_par#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_12p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/doble_par>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_12p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 3. Doble Par" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 3. Doble Par." .
+
+# =============================================================================
+# 3. Doble Par
+# =============================================================================
+
+doble_par:Mano1 a poker:Mano ;
+    rdfs:label "Doble Par de Treintas y Diecisietes con Doce" ;
+    poker:contieneCarta poker:DiecisieteDePlanta, poker:DiecisieteDeBicho, poker:TreintaDePlanta, poker:TreintaDeLucha, poker:DoceDeVeneno ;
+    poker:manoTienePar poker:Diecisiete, poker:Treinta .
+
+doble_par:Mano2 a poker:Mano ;
+    rdfs:label "Doble Par de Veintiochos y Veintidoses con Once" ;
+    poker:contieneCarta poker:VeintiochoDeVolador, poker:VeintiochoDeLucha, poker:VeintidosDeLucha, poker:VeintidosDeTierra, poker:OnceDeElectrico ;
+    poker:manoTienePar poker:Veintiocho, poker:Veintidos .
+
+doble_par:Mano3 a poker:Mano ;
+    rdfs:label "Doble Par de Veintiseises y Unos con Seis" ;
+    poker:contieneCarta poker:UnoDeElectrico, poker:UnoDeNormal, poker:VeintiseisDePlanta, poker:VeintiseisDeFuego, poker:SeisDeRoca ;
+    poker:manoTienePar poker:Uno, poker:Veintiseis .
+
+doble_par:Mano4 a poker:Mano ;
+    rdfs:label "Doble Par de Veintiseises y Cincos con Veinticuatro" ;
+    poker:contieneCarta poker:CincoDeNormal, poker:CincoDePsiquico, poker:VeintiseisDeBicho, poker:VeintiseisDeElectrico, poker:VeinticuatroDeTierra ;
+    poker:manoTienePar poker:Cinco, poker:Veintiseis .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( doble_par:Mano1 doble_par:Mano2 doble_par:Mano3 doble_par:Mano4 ) .

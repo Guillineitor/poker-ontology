@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 2. Par
+# =============================================================================
+
+@prefix par: <http://www.poker-ontology.org/instancias/par#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_16p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/par>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_16p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 2. Par" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 2. Par." .
+
+# =============================================================================
+# 2. Par
+# =============================================================================
+
+par:Mano1 a poker:Mano ;
+    rdfs:label "Par de Veintiseises con Treintaycinco Treintayuno Veinte" ;
+    poker:contieneCarta poker:VeintiseisDeTierra, poker:VeintiseisDePlanta, poker:TreintaycincoDePlanta, poker:VeinteDeNormal, poker:TreintayunoDeHielo .
+
+par:Mano2 a poker:Mano ;
+    rdfs:label "Par de Treses con Treintaysiete Veintiocho Dieciocho" ;
+    poker:contieneCarta poker:TresDeFuego, poker:TresDePsiquico, poker:TreintaysieteDeElectrico, poker:VeintiochoDePsiquico, poker:DieciochoDePlanta .
+
+par:Mano3 a poker:Mano ;
+    rdfs:label "Par de Treintaysietes con Veintitres Dieciseis Nueve" ;
+    poker:contieneCarta poker:TreintaysieteDeNormal, poker:TreintaysieteDePlanta, poker:VeintitresDeDragon, poker:NueveDeFantasma, poker:DieciseisDeAgua .
+
+par:Mano4 a poker:Mano ;
+    rdfs:label "Par de Nueves con Treintaysiete Veinticinco Veinticuatro" ;
+    poker:contieneCarta poker:NueveDeBicho, poker:NueveDeLucha, poker:VeinticuatroDeTierra, poker:VeinticincoDeVeneno, poker:TreintaysieteDeFuego .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( par:Mano1 par:Mano2 par:Mano3 par:Mano4 ) .

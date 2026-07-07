@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 5. Escalera
+# =============================================================================
+
+@prefix escalera: <http://www.poker-ontology.org/instancias/escalera#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_19r_4p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/escalera>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_19r_4p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 5. Escalera" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 5. Escalera." .
+
+# =============================================================================
+# 5. Escalera
+# =============================================================================
+
+escalera:Mano1 a poker:Mano ;
+    rdfs:label "Escalera de Quince-Dieciseis-Diecisiete-Dieciocho-Diecinueve" ;
+    poker:contieneCarta poker:QuinceDePlanta, poker:DieciseisDeFuego, poker:DiecisieteDeFuego, poker:DieciochoDeFuego, poker:DiecinueveDePlanta .
+
+escalera:Mano2 a poker:Mano ;
+    rdfs:label "Escalera de Cinco-Seis-Siete-Ocho-Nueve" ;
+    poker:contieneCarta poker:CincoDeElectrico, poker:SeisDeAgua, poker:SieteDeFuego, poker:OchoDeElectrico, poker:NueveDeAgua .
+
+escalera:Mano3 a poker:Mano ;
+    rdfs:label "Escalera de Once-Doce-Trece-Catorce-Quince" ;
+    poker:contieneCarta poker:OnceDeFuego, poker:DoceDeAgua, poker:TreceDeAgua, poker:CatorceDeElectrico, poker:QuinceDeElectrico .
+
+escalera:Mano4 a poker:Mano ;
+    rdfs:label "Escalera de Diez-Once-Doce-Trece-Catorce" ;
+    poker:contieneCarta poker:DiezDeFuego, poker:OnceDeFuego, poker:DoceDeElectrico, poker:TreceDeElectrico, poker:CatorceDeElectrico .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera:Mano1 escalera:Mano2 escalera:Mano3 escalera:Mano4 ) .

@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 6. Color
+# =============================================================================
+
+@prefix color: <http://www.poker-ontology.org/instancias/color#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_31r_8p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/color>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_31r_8p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 6. Color" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 6. Color." .
+
+# =============================================================================
+# 6. Color
+# =============================================================================
+
+color:Mano1 a poker:Mano ;
+    rdfs:label "Color de Veintiocho Veintisiete Veinticuatro Veintitres Quince de Agua" ;
+    poker:contieneCarta poker:VeinticuatroDeAgua, poker:VeintiochoDeAgua, poker:VeintisieteDeAgua, poker:QuinceDeAgua, poker:VeintitresDeAgua .
+
+color:Mano2 a poker:Mano ;
+    rdfs:label "Color de Veintinueve Veintiocho Veintidos Quince Cuatro de Fuego" ;
+    poker:contieneCarta poker:VeintidosDeFuego, poker:VeintinueveDeFuego, poker:QuinceDeFuego, poker:VeintiochoDeFuego, poker:CuatroDeFuego .
+
+color:Mano3 a poker:Mano ;
+    rdfs:label "Color de Veinticuatro Diecinueve Doce Siete Seis de Planta" ;
+    poker:contieneCarta poker:DiecinueveDePlanta, poker:SieteDePlanta, poker:DoceDePlanta, poker:VeinticuatroDePlanta, poker:SeisDePlanta .
+
+color:Mano4 a poker:Mano ;
+    rdfs:label "Color de Diecisiete Catorce Diez Nueve Uno de Agua" ;
+    poker:contieneCarta poker:DiezDeAgua, poker:CatorceDeAgua, poker:DiecisieteDeAgua, poker:UnoDeAgua, poker:NueveDeAgua .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( color:Mano1 color:Mano2 color:Mano3 color:Mano4 ) .

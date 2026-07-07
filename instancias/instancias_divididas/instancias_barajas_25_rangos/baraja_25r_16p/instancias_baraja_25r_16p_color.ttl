@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 6. Color
+# =============================================================================
+
+@prefix color: <http://www.poker-ontology.org/instancias/color#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_25r_16p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/color>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_25r_16p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 6. Color" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 6. Color." .
+
+# =============================================================================
+# 6. Color
+# =============================================================================
+
+color:Mano1 a poker:Mano ;
+    rdfs:label "Color de Diecisiete Dieciseis Quince Trece Seis de Agua" ;
+    poker:contieneCarta poker:TreceDeAgua, poker:SeisDeAgua, poker:DieciseisDeAgua, poker:DiecisieteDeAgua, poker:QuinceDeAgua .
+
+color:Mano2 a poker:Mano ;
+    rdfs:label "Color de Veinticuatro Dieciocho Dieciseis Diez Siete de Fantasma" ;
+    poker:contieneCarta poker:DiezDeFantasma, poker:DieciochoDeFantasma, poker:VeinticuatroDeFantasma, poker:SieteDeFantasma, poker:DieciseisDeFantasma .
+
+color:Mano3 a poker:Mano ;
+    rdfs:label "Color de Veintitres Veintidos Veintiuno Dieciocho Tres de Planta" ;
+    poker:contieneCarta poker:VeintidosDePlanta, poker:VeintitresDePlanta, poker:VeintiunoDePlanta, poker:DieciochoDePlanta, poker:TresDePlanta .
+
+color:Mano4 a poker:Mano ;
+    rdfs:label "Color de Veintitres Dieciocho Once Diez Ocho de Fantasma" ;
+    poker:contieneCarta poker:DieciochoDeFantasma, poker:OchoDeFantasma, poker:OnceDeFantasma, poker:VeintitresDeFantasma, poker:DiezDeFantasma .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( color:Mano1 color:Mano2 color:Mano3 color:Mano4 ) .

@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 8. Póker
+# =============================================================================
+
+@prefix pokerh: <http://www.poker-ontology.org/instancias/pokerh#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_19r_8p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/pokerh>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_19r_8p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 8. Póker" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 8. Póker." .
+
+# =============================================================================
+# 8. Póker
+# =============================================================================
+
+pokerh:Mano1 a poker:Mano ;
+    rdfs:label "Póker de Seises con Siete de Planta" ;
+    poker:contieneCarta poker:SeisDeAgua, poker:SeisDeFuego, poker:SeisDeElectrico, poker:SeisDePlanta, poker:SieteDePlanta .
+
+pokerh:Mano2 a poker:Mano ;
+    rdfs:label "Póker de Diecinueves con Dieciocho de Fuego" ;
+    poker:contieneCarta poker:DiecinueveDeElectrico, poker:DiecinueveDeNormal, poker:DiecinueveDeVeneno, poker:DiecinueveDeVolador, poker:DieciochoDeFuego .
+
+pokerh:Mano3 a poker:Mano ;
+    rdfs:label "Póker de Dieces con Cinco de Volador" ;
+    poker:contieneCarta poker:DiezDeElectrico, poker:DiezDePlanta, poker:DiezDeFuego, poker:DiezDeBicho, poker:CincoDeVolador .
+
+pokerh:Mano4 a poker:Mano ;
+    rdfs:label "Póker de Doces con Nueve de Agua" ;
+    poker:contieneCarta poker:DoceDeVeneno, poker:DoceDeBicho, poker:DoceDeVolador, poker:DoceDeAgua, poker:NueveDeAgua .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( pokerh:Mano1 pokerh:Mano2 pokerh:Mano3 pokerh:Mano4 ) .

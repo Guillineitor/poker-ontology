@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 6. Color
+# =============================================================================
+
+@prefix color: <http://www.poker-ontology.org/instancias/color#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_13r_12p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/color>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_13r_12p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 6. Color" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 6. Color." .
+
+# =============================================================================
+# 6. Color
+# =============================================================================
+
+color:Mano1 a poker:Mano ;
+    rdfs:label "Color de Trece Doce Ocho Siete Tres de Bicho" ;
+    poker:contieneCarta poker:TresDeBicho, poker:SieteDeBicho, poker:DoceDeBicho, poker:OchoDeBicho, poker:TreceDeBicho .
+
+color:Mano2 a poker:Mano ;
+    rdfs:label "Color de Doce Diez Ocho Seis Cuatro de Veneno" ;
+    poker:contieneCarta poker:OchoDeVeneno, poker:DiezDeVeneno, poker:SeisDeVeneno, poker:DoceDeVeneno, poker:CuatroDeVeneno .
+
+color:Mano3 a poker:Mano ;
+    rdfs:label "Color de Trece Ocho Cinco Tres Uno de Volador" ;
+    poker:contieneCarta poker:TresDeVolador, poker:CincoDeVolador, poker:OchoDeVolador, poker:TreceDeVolador, poker:UnoDeVolador .
+
+color:Mano4 a poker:Mano ;
+    rdfs:label "Color de Trece Doce Diez Seis Tres de Volador" ;
+    poker:contieneCarta poker:TresDeVolador, poker:SeisDeVolador, poker:TreceDeVolador, poker:DiezDeVolador, poker:DoceDeVolador .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( color:Mano1 color:Mano2 color:Mano3 color:Mano4 ) .

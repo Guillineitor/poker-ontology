@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 1. Carta Alta
+# =============================================================================
+
+@prefix carta_alta: <http://www.poker-ontology.org/instancias/carta_alta#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_12p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/carta_alta>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_12p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 1. Carta Alta" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 1. Carta Alta." .
+
+# =============================================================================
+# 1. Carta Alta
+# =============================================================================
+
+carta_alta:Mano1 a poker:Mano ;
+    rdfs:label "Carta Alta de Treinta con Veintiseis Veinte Dieciseis Quince" ;
+    poker:contieneCarta poker:VeintiseisDeNormal, poker:VeinteDeRoca, poker:TreintaDeAgua, poker:DieciseisDeRoca, poker:QuinceDeFuego .
+
+carta_alta:Mano2 a poker:Mano ;
+    rdfs:label "Carta Alta de Treintaysiete con Veinte Once Nueve Uno" ;
+    poker:contieneCarta poker:UnoDeElectrico, poker:OnceDeVolador, poker:VeinteDePsiquico, poker:TreintaysieteDeVeneno, poker:NueveDeRoca .
+
+carta_alta:Mano3 a poker:Mano ;
+    rdfs:label "Carta Alta de Treintaytres con Treintaydos Quince Trece Dos" ;
+    poker:contieneCarta poker:TreceDePsiquico, poker:TreintaydosDePsiquico, poker:QuinceDeVeneno, poker:TreintaytresDeVolador, poker:DosDeBicho .
+
+carta_alta:Mano4 a poker:Mano ;
+    rdfs:label "Carta Alta de Treintaytres con Veintisiete Veintidos Dieciocho Siete" ;
+    poker:contieneCarta poker:TreintaytresDePlanta, poker:VeintidosDeVolador, poker:DieciochoDeAgua, poker:SieteDeRoca, poker:VeintisieteDeFuego .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( carta_alta:Mano1 carta_alta:Mano2 carta_alta:Mano3 carta_alta:Mano4 ) .

@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 2. Par
+# =============================================================================
+
+@prefix par: <http://www.poker-ontology.org/instancias/par#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_13r_4p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/par>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_13r_4p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 2. Par" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 2. Par." .
+
+# =============================================================================
+# 2. Par
+# =============================================================================
+
+par:Mano1 a poker:Mano ;
+    rdfs:label "Par de Treces con Once Diez Dos" ;
+    poker:contieneCarta poker:TreceDeAgua, poker:TreceDeFuego, poker:DosDePlanta, poker:DiezDeElectrico, poker:OnceDeFuego .
+
+par:Mano2 a poker:Mano ;
+    rdfs:label "Par de Treces con Nueve Dos Uno" ;
+    poker:contieneCarta poker:TreceDeAgua, poker:TreceDeElectrico, poker:DosDePlanta, poker:UnoDeAgua, poker:NueveDeAgua .
+
+par:Mano3 a poker:Mano ;
+    rdfs:label "Par de Onces con Diez Dos Uno" ;
+    poker:contieneCarta poker:OnceDeElectrico, poker:OnceDeFuego, poker:DiezDeAgua, poker:DosDeFuego, poker:UnoDeFuego .
+
+par:Mano4 a poker:Mano ;
+    rdfs:label "Par de Dieces con Once Siete Cuatro" ;
+    poker:contieneCarta poker:DiezDePlanta, poker:DiezDeElectrico, poker:SieteDePlanta, poker:OnceDeFuego, poker:CuatroDeElectrico .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( par:Mano1 par:Mano2 par:Mano3 par:Mano4 ) .

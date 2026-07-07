@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 9. Escalera de Color
+# =============================================================================
+
+@prefix escalera_color: <http://www.poker-ontology.org/instancias/escalera_color#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_25r_8p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/escalera_color>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_25r_8p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 9. Escalera de Color" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 9. Escalera de Color." .
+
+# =============================================================================
+# 9. Escalera de Color
+# =============================================================================
+
+escalera_color:Mano1 a poker:Mano ;
+    rdfs:label "Escalera de Color Quince-Dieciseis-Diecisiete-Dieciocho-Diecinueve de Electrico" ;
+    poker:contieneCarta poker:QuinceDeElectrico, poker:DieciseisDeElectrico, poker:DiecisieteDeElectrico, poker:DieciochoDeElectrico, poker:DiecinueveDeElectrico .
+
+escalera_color:Mano2 a poker:Mano ;
+    rdfs:label "Escalera de Color Siete-Ocho-Nueve-Diez-Once de Volador" ;
+    poker:contieneCarta poker:SieteDeVolador, poker:OchoDeVolador, poker:NueveDeVolador, poker:DiezDeVolador, poker:OnceDeVolador .
+
+escalera_color:Mano3 a poker:Mano ;
+    rdfs:label "Escalera de Color Uno-Dos-Tres-Cuatro-Cinco de Fuego" ;
+    poker:contieneCarta poker:UnoDeFuego, poker:DosDeFuego, poker:TresDeFuego, poker:CuatroDeFuego, poker:CincoDeFuego .
+
+escalera_color:Mano4 a poker:Mano ;
+    rdfs:label "Escalera de Color Trece-Catorce-Quince-Dieciseis-Diecisiete de Fuego" ;
+    poker:contieneCarta poker:TreceDeFuego, poker:CatorceDeFuego, poker:QuinceDeFuego, poker:DieciseisDeFuego, poker:DiecisieteDeFuego .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera_color:Mano1 escalera_color:Mano2 escalera_color:Mano3 escalera_color:Mano4 ) .

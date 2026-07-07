@@ -1,0 +1,42 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 3. Doble Par
+# =============================================================================
+
+@prefix doble_par: <http://www.poker-ontology.org/instancias/doble_par#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_6r_12p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/doble_par>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_6r_12p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 3. Doble Par" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 3. Doble Par." .
+
+# =============================================================================
+# 3. Doble Par
+# =============================================================================
+
+doble_par:Mano1 a poker:Mano ;
+    rdfs:label "Doble Par de Doses y Unos con Tres" ;
+    poker:contieneCarta poker:DosDeElectrico, poker:DosDeAgua, poker:UnoDeTierra, poker:UnoDeRoca, poker:TresDeFuego ;
+    poker:manoTienePar poker:Dos, poker:Uno .
+
+doble_par:Mano2 a poker:Mano ;
+    rdfs:label "Doble Par de Treses y Doses con Cuatro" ;
+    poker:contieneCarta poker:DosDeBicho, poker:DosDeNormal, poker:TresDeVeneno, poker:TresDeFuego, poker:CuatroDeBicho ;
+    poker:manoTienePar poker:Dos, poker:Tres .
+
+doble_par:Mano3 a poker:Mano ;
+    rdfs:label "Doble Par de Doses y Unos con Cinco" ;
+    poker:contieneCarta poker:DosDePlanta, poker:DosDeFuego, poker:UnoDeRoca, poker:UnoDePsiquico, poker:CincoDeRoca ;
+    poker:manoTienePar poker:Dos, poker:Uno .
+
+doble_par:Mano4 a poker:Mano ;
+    rdfs:label "Doble Par de Cuatros y Treses con Dos" ;
+    poker:contieneCarta poker:CuatroDeLucha, poker:CuatroDeVolador, poker:TresDeNormal, poker:TresDeBicho, poker:DosDeFuego ;
+    poker:manoTienePar poker:Cuatro, poker:Tres .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( doble_par:Mano1 doble_par:Mano2 doble_par:Mano3 doble_par:Mano4 ) .

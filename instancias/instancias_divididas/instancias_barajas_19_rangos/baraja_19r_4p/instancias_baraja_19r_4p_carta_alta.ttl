@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 1. Carta Alta
+# =============================================================================
+
+@prefix carta_alta: <http://www.poker-ontology.org/instancias/carta_alta#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_19r_4p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/carta_alta>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_19r_4p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 1. Carta Alta" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 1. Carta Alta." .
+
+# =============================================================================
+# 1. Carta Alta
+# =============================================================================
+
+carta_alta:Mano1 a poker:Mano ;
+    rdfs:label "Carta Alta de Dieciseis con Once Siete Cuatro Tres" ;
+    poker:contieneCarta poker:SieteDeAgua, poker:DieciseisDeElectrico, poker:OnceDeElectrico, poker:TresDeElectrico, poker:CuatroDeAgua .
+
+carta_alta:Mano2 a poker:Mano ;
+    rdfs:label "Carta Alta de Diecisiete con Dieciseis Doce Siete Cuatro" ;
+    poker:contieneCarta poker:DiecisieteDeElectrico, poker:DoceDePlanta, poker:CuatroDeFuego, poker:SieteDeFuego, poker:DieciseisDeElectrico .
+
+carta_alta:Mano3 a poker:Mano ;
+    rdfs:label "Carta Alta de Quince con Diez Ocho Dos Uno" ;
+    poker:contieneCarta poker:UnoDeElectrico, poker:DosDeElectrico, poker:QuinceDePlanta, poker:OchoDeAgua, poker:DiezDePlanta .
+
+carta_alta:Mano4 a poker:Mano ;
+    rdfs:label "Carta Alta de Diecisiete con Catorce Diez Cinco Uno" ;
+    poker:contieneCarta poker:DiecisieteDeElectrico, poker:CincoDeAgua, poker:CatorceDePlanta, poker:UnoDeAgua, poker:DiezDeElectrico .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( carta_alta:Mano1 carta_alta:Mano2 carta_alta:Mano3 carta_alta:Mano4 ) .

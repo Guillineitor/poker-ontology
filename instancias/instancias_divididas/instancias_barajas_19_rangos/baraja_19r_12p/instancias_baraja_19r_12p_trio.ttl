@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 4. Trío
+# =============================================================================
+
+@prefix trio: <http://www.poker-ontology.org/instancias/trio#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_19r_12p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/trio>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_19r_12p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 4. Trío" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 4. Trío." .
+
+# =============================================================================
+# 4. Trío
+# =============================================================================
+
+trio:Mano1 a poker:Mano ;
+    rdfs:label "Trío de Unos con Quince Seis" ;
+    poker:contieneCarta poker:UnoDeLucha, poker:UnoDeVolador, poker:UnoDeRoca, poker:SeisDeFuego, poker:QuinceDeRoca .
+
+trio:Mano2 a poker:Mano ;
+    rdfs:label "Trío de Cuatros con Quince Cinco" ;
+    poker:contieneCarta poker:CuatroDeNormal, poker:CuatroDeFuego, poker:CuatroDePsiquico, poker:CincoDeBicho, poker:QuinceDeBicho .
+
+trio:Mano3 a poker:Mano ;
+    rdfs:label "Trío de Catorces con Diez Dos" ;
+    poker:contieneCarta poker:CatorceDeBicho, poker:CatorceDePlanta, poker:CatorceDeNormal, poker:DosDeTierra, poker:DiezDeVolador .
+
+trio:Mano4 a poker:Mano ;
+    rdfs:label "Trío de Dieciochos con Seis Cinco" ;
+    poker:contieneCarta poker:DieciochoDeElectrico, poker:DieciochoDeAgua, poker:DieciochoDeBicho, poker:SeisDeFuego, poker:CincoDeNormal .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( trio:Mano1 trio:Mano2 trio:Mano3 trio:Mano4 ) .

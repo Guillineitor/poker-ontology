@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 6. Color
+# =============================================================================
+
+@prefix color: <http://www.poker-ontology.org/instancias/color#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_6r_4p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/color>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_6r_4p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 6. Color" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 6. Color." .
+
+# =============================================================================
+# 6. Color
+# =============================================================================
+
+color:Mano1 a poker:Mano ;
+    rdfs:label "Color de Seis Cuatro Tres Dos Uno de Fuego" ;
+    poker:contieneCarta poker:CuatroDeFuego, poker:SeisDeFuego, poker:TresDeFuego, poker:UnoDeFuego, poker:DosDeFuego .
+
+color:Mano2 a poker:Mano ;
+    rdfs:label "Color de Seis Cinco Cuatro Dos Uno de Fuego" ;
+    poker:contieneCarta poker:CuatroDeFuego, poker:DosDeFuego, poker:CincoDeFuego, poker:SeisDeFuego, poker:UnoDeFuego .
+
+color:Mano3 a poker:Mano ;
+    rdfs:label "Color de Seis Cinco Tres Dos Uno de Planta" ;
+    poker:contieneCarta poker:CincoDePlanta, poker:UnoDePlanta, poker:TresDePlanta, poker:SeisDePlanta, poker:DosDePlanta .
+
+color:Mano4 a poker:Mano ;
+    rdfs:label "Color de Seis Cinco Cuatro Tres Uno de Fuego" ;
+    poker:contieneCarta poker:TresDeFuego, poker:CuatroDeFuego, poker:SeisDeFuego, poker:CincoDeFuego, poker:UnoDeFuego .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( color:Mano1 color:Mano2 color:Mano3 color:Mano4 ) .

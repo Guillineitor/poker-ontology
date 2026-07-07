@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 5. Escalera
+# =============================================================================
+
+@prefix escalera: <http://www.poker-ontology.org/instancias/escalera#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_25r_4p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/escalera>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_25r_4p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 5. Escalera" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 5. Escalera." .
+
+# =============================================================================
+# 5. Escalera
+# =============================================================================
+
+escalera:Mano1 a poker:Mano ;
+    rdfs:label "Escalera de Cinco-Seis-Siete-Ocho-Nueve" ;
+    poker:contieneCarta poker:CincoDePlanta, poker:SeisDeAgua, poker:SieteDeElectrico, poker:OchoDePlanta, poker:NueveDeAgua .
+
+escalera:Mano2 a poker:Mano ;
+    rdfs:label "Escalera de Dieciocho-Diecinueve-Veinte-Veintiuno-Veintidos" ;
+    poker:contieneCarta poker:DieciochoDeElectrico, poker:DiecinueveDeFuego, poker:VeinteDeFuego, poker:VeintiunoDeAgua, poker:VeintidosDeElectrico .
+
+escalera:Mano3 a poker:Mano ;
+    rdfs:label "Escalera de Tres-Cuatro-Cinco-Seis-Siete" ;
+    poker:contieneCarta poker:TresDeAgua, poker:CuatroDeFuego, poker:CincoDeElectrico, poker:SeisDeFuego, poker:SieteDeElectrico .
+
+escalera:Mano4 a poker:Mano ;
+    rdfs:label "Escalera de Veinte-Veintiuno-Veintidos-Veintitres-Veinticuatro" ;
+    poker:contieneCarta poker:VeinteDeFuego, poker:VeintiunoDePlanta, poker:VeintidosDePlanta, poker:VeintitresDePlanta, poker:VeinticuatroDeFuego .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera:Mano1 escalera:Mano2 escalera:Mano3 escalera:Mano4 ) .

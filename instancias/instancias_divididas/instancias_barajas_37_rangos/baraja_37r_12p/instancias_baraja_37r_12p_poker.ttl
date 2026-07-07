@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 8. Póker
+# =============================================================================
+
+@prefix pokerh: <http://www.poker-ontology.org/instancias/pokerh#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_12p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/pokerh>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_12p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 8. Póker" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 8. Póker." .
+
+# =============================================================================
+# 8. Póker
+# =============================================================================
+
+pokerh:Mano1 a poker:Mano ;
+    rdfs:label "Póker de Treces con Treintaytres de Normal" ;
+    poker:contieneCarta poker:TreceDeRoca, poker:TreceDeLucha, poker:TreceDeVolador, poker:TreceDeNormal, poker:TreintaytresDeNormal .
+
+pokerh:Mano2 a poker:Mano ;
+    rdfs:label "Póker de Quinces con Veintiuno de Planta" ;
+    poker:contieneCarta poker:QuinceDeLucha, poker:QuinceDeFuego, poker:QuinceDePlanta, poker:QuinceDeVeneno, poker:VeintiunoDePlanta .
+
+pokerh:Mano3 a poker:Mano ;
+    rdfs:label "Póker de Veintidoses con Veintinueve de Volador" ;
+    poker:contieneCarta poker:VeintidosDeBicho, poker:VeintidosDeVeneno, poker:VeintidosDeFuego, poker:VeintidosDeElectrico, poker:VeintinueveDeVolador .
+
+pokerh:Mano4 a poker:Mano ;
+    rdfs:label "Póker de Dieciseises con Veintitres de Volador" ;
+    poker:contieneCarta poker:DieciseisDeLucha, poker:DieciseisDeFuego, poker:DieciseisDeRoca, poker:DieciseisDePlanta, poker:VeintitresDeVolador .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( pokerh:Mano1 pokerh:Mano2 pokerh:Mano3 pokerh:Mano4 ) .

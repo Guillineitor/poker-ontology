@@ -1,0 +1,42 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 7. Full
+# =============================================================================
+
+@prefix full: <http://www.poker-ontology.org/instancias/full#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_19r_12p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/full>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_19r_12p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 7. Full" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 7. Full." .
+
+# =============================================================================
+# 7. Full
+# =============================================================================
+
+full:Mano1 a poker:Mano ;
+    rdfs:label "Full de Trío de Unos con Par de Catorces" ;
+    poker:contieneCarta poker:UnoDeVeneno, poker:UnoDePsiquico, poker:UnoDeFuego, poker:CatorceDeVolador, poker:CatorceDePlanta ;
+    poker:manoTienePar poker:Uno, poker:Catorce .
+
+full:Mano2 a poker:Mano ;
+    rdfs:label "Full de Trío de Diecinueves con Par de Dieciseises" ;
+    poker:contieneCarta poker:DiecinueveDeFuego, poker:DiecinueveDeTierra, poker:DiecinueveDeLucha, poker:DieciseisDeFuego, poker:DieciseisDePsiquico ;
+    poker:manoTienePar poker:Diecinueve, poker:Dieciseis .
+
+full:Mano3 a poker:Mano ;
+    rdfs:label "Full de Trío de Dieciseises con Par de Cuatros" ;
+    poker:contieneCarta poker:DieciseisDeLucha, poker:DieciseisDeRoca, poker:DieciseisDeVeneno, poker:CuatroDeVeneno, poker:CuatroDeLucha ;
+    poker:manoTienePar poker:Dieciseis, poker:Cuatro .
+
+full:Mano4 a poker:Mano ;
+    rdfs:label "Full de Trío de Seises con Par de Doses" ;
+    poker:contieneCarta poker:SeisDeVolador, poker:SeisDeElectrico, poker:SeisDeVeneno, poker:DosDePlanta, poker:DosDeVolador ;
+    poker:manoTienePar poker:Seis, poker:Dos .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( full:Mano1 full:Mano2 full:Mano3 full:Mano4 ) .

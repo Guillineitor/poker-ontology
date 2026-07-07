@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 6. Color
+# =============================================================================
+
+@prefix color: <http://www.poker-ontology.org/instancias/color#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_12p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/color>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_12p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 6. Color" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 6. Color." .
+
+# =============================================================================
+# 6. Color
+# =============================================================================
+
+color:Mano1 a poker:Mano ;
+    rdfs:label "Color de Treintayuno Treinta Veintinueve Diecisiete Quince de Psiquico" ;
+    poker:contieneCarta poker:QuinceDePsiquico, poker:DiecisieteDePsiquico, poker:VeintinueveDePsiquico, poker:TreintayunoDePsiquico, poker:TreintaDePsiquico .
+
+color:Mano2 a poker:Mano ;
+    rdfs:label "Color de Treintayseis Treintaydos Veintiocho Dieciocho Dieciseis de Planta" ;
+    poker:contieneCarta poker:DieciseisDePlanta, poker:TreintaydosDePlanta, poker:TreintayseisDePlanta, poker:DieciochoDePlanta, poker:VeintiochoDePlanta .
+
+color:Mano3 a poker:Mano ;
+    rdfs:label "Color de Treintaydos Veinticuatro Veintidos Cinco Uno de Normal" ;
+    poker:contieneCarta poker:VeintidosDeNormal, poker:TreintaydosDeNormal, poker:VeinticuatroDeNormal, poker:CincoDeNormal, poker:UnoDeNormal .
+
+color:Mano4 a poker:Mano ;
+    rdfs:label "Color de Veintisiete Veinticuatro Veintidos Diecinueve Diez de Tierra" ;
+    poker:contieneCarta poker:VeintidosDeTierra, poker:DiecinueveDeTierra, poker:VeinticuatroDeTierra, poker:DiezDeTierra, poker:VeintisieteDeTierra .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( color:Mano1 color:Mano2 color:Mano3 color:Mano4 ) .

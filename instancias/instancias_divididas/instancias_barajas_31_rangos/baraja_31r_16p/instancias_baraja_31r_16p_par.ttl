@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 2. Par
+# =============================================================================
+
+@prefix par: <http://www.poker-ontology.org/instancias/par#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_31r_16p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/par>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_31r_16p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 2. Par" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 2. Par." .
+
+# =============================================================================
+# 2. Par
+# =============================================================================
+
+par:Mano1 a poker:Mano ;
+    rdfs:label "Par de Cuatros con Veintinueve Dieciocho Uno" ;
+    poker:contieneCarta poker:CuatroDeHielo, poker:CuatroDeNormal, poker:DieciochoDeLucha, poker:UnoDeFuego, poker:VeintinueveDePlanta .
+
+par:Mano2 a poker:Mano ;
+    rdfs:label "Par de Nueves con Treintayuno Veinte Tres" ;
+    poker:contieneCarta poker:NueveDeRoca, poker:NueveDeAgua, poker:VeinteDeVeneno, poker:TreintayunoDePsiquico, poker:TresDeNormal .
+
+par:Mano3 a poker:Mano ;
+    rdfs:label "Par de Treses con Veintiseis Veinticinco Veinticuatro" ;
+    poker:contieneCarta poker:TresDeVolador, poker:TresDeSiniestro, poker:VeinticuatroDePsiquico, poker:VeinticincoDeFuego, poker:VeintiseisDeVolador .
+
+par:Mano4 a poker:Mano ;
+    rdfs:label "Par de Treces con Diecinueve Ocho Siete" ;
+    poker:contieneCarta poker:TreceDePlanta, poker:TreceDeAgua, poker:OchoDeVeneno, poker:DiecinueveDeLucha, poker:SieteDeVeneno .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( par:Mano1 par:Mano2 par:Mano3 par:Mano4 ) .

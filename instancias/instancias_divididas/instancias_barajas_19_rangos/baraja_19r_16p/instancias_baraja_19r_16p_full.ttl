@@ -1,0 +1,42 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 7. Full
+# =============================================================================
+
+@prefix full: <http://www.poker-ontology.org/instancias/full#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_19r_16p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/full>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_19r_16p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 7. Full" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 7. Full." .
+
+# =============================================================================
+# 7. Full
+# =============================================================================
+
+full:Mano1 a poker:Mano ;
+    rdfs:label "Full de Trío de Cuatros con Par de Seises" ;
+    poker:contieneCarta poker:CuatroDeTierra, poker:CuatroDeElectrico, poker:CuatroDeVeneno, poker:SeisDeHielo, poker:SeisDeElectrico ;
+    poker:manoTienePar poker:Cuatro, poker:Seis .
+
+full:Mano2 a poker:Mano ;
+    rdfs:label "Full de Trío de Diecisietes con Par de Doses" ;
+    poker:contieneCarta poker:DiecisieteDePsiquico, poker:DiecisieteDeBicho, poker:DiecisieteDeNormal, poker:DosDeVeneno, poker:DosDeDragon ;
+    poker:manoTienePar poker:Diecisiete, poker:Dos .
+
+full:Mano3 a poker:Mano ;
+    rdfs:label "Full de Trío de Onces con Par de Cuatros" ;
+    poker:contieneCarta poker:OnceDeTierra, poker:OnceDeVeneno, poker:OnceDeElectrico, poker:CuatroDeDragon, poker:CuatroDePlanta ;
+    poker:manoTienePar poker:Once, poker:Cuatro .
+
+full:Mano4 a poker:Mano ;
+    rdfs:label "Full de Trío de Doses con Par de Treces" ;
+    poker:contieneCarta poker:DosDeNormal, poker:DosDeRoca, poker:DosDeFuego, poker:TreceDeFantasma, poker:TreceDeDragon ;
+    poker:manoTienePar poker:Dos, poker:Trece .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( full:Mano1 full:Mano2 full:Mano3 full:Mano4 ) .

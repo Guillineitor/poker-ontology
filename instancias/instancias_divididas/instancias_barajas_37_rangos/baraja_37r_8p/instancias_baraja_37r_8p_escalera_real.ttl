@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 10. Escalera Real
+# =============================================================================
+
+@prefix escalera_real: <http://www.poker-ontology.org/instancias/escalera_real#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_8p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/escalera_real>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_8p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 10. Escalera Real" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 10. Escalera Real." .
+
+# =============================================================================
+# 10. Escalera Real
+# =============================================================================
+
+escalera_real:Mano1 a poker:Mano ;
+    rdfs:label "Escalera Real de Normal" ;
+    poker:contieneCarta poker:TreintaytresDeNormal, poker:TreintaycuatroDeNormal, poker:TreintaycincoDeNormal, poker:TreintayseisDeNormal, poker:TreintaysieteDeNormal .
+
+escalera_real:Mano2 a poker:Mano ;
+    rdfs:label "Escalera Real de Bicho" ;
+    poker:contieneCarta poker:TreintaytresDeBicho, poker:TreintaycuatroDeBicho, poker:TreintaycincoDeBicho, poker:TreintayseisDeBicho, poker:TreintaysieteDeBicho .
+
+escalera_real:Mano3 a poker:Mano ;
+    rdfs:label "Escalera Real de Volador" ;
+    poker:contieneCarta poker:TreintaytresDeVolador, poker:TreintaycuatroDeVolador, poker:TreintaycincoDeVolador, poker:TreintayseisDeVolador, poker:TreintaysieteDeVolador .
+
+escalera_real:Mano4 a poker:Mano ;
+    rdfs:label "Escalera Real de Agua" ;
+    poker:contieneCarta poker:TreintaytresDeAgua, poker:TreintaycuatroDeAgua, poker:TreintaycincoDeAgua, poker:TreintayseisDeAgua, poker:TreintaysieteDeAgua .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera_real:Mano1 escalera_real:Mano2 escalera_real:Mano3 escalera_real:Mano4 ) .

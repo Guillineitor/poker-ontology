@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 10. Escalera Real
+# =============================================================================
+
+@prefix escalera_real: <http://www.poker-ontology.org/instancias/escalera_real#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_19r_16p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/escalera_real>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_19r_16p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 10. Escalera Real" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 10. Escalera Real." .
+
+# =============================================================================
+# 10. Escalera Real
+# =============================================================================
+
+escalera_real:Mano1 a poker:Mano ;
+    rdfs:label "Escalera Real de Normal" ;
+    poker:contieneCarta poker:QuinceDeNormal, poker:DieciseisDeNormal, poker:DiecisieteDeNormal, poker:DieciochoDeNormal, poker:DiecinueveDeNormal .
+
+escalera_real:Mano2 a poker:Mano ;
+    rdfs:label "Escalera Real de Psiquico" ;
+    poker:contieneCarta poker:QuinceDePsiquico, poker:DieciseisDePsiquico, poker:DiecisieteDePsiquico, poker:DieciochoDePsiquico, poker:DiecinueveDePsiquico .
+
+escalera_real:Mano3 a poker:Mano ;
+    rdfs:label "Escalera Real de Veneno" ;
+    poker:contieneCarta poker:QuinceDeVeneno, poker:DieciseisDeVeneno, poker:DiecisieteDeVeneno, poker:DieciochoDeVeneno, poker:DiecinueveDeVeneno .
+
+escalera_real:Mano4 a poker:Mano ;
+    rdfs:label "Escalera Real de Fantasma" ;
+    poker:contieneCarta poker:QuinceDeFantasma, poker:DieciseisDeFantasma, poker:DiecisieteDeFantasma, poker:DieciochoDeFantasma, poker:DiecinueveDeFantasma .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera_real:Mano1 escalera_real:Mano2 escalera_real:Mano3 escalera_real:Mano4 ) .

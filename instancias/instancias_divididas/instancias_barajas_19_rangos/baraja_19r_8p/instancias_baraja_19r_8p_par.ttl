@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 2. Par
+# =============================================================================
+
+@prefix par: <http://www.poker-ontology.org/instancias/par#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_19r_8p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/par>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_19r_8p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 2. Par" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 2. Par." .
+
+# =============================================================================
+# 2. Par
+# =============================================================================
+
+par:Mano1 a poker:Mano ;
+    rdfs:label "Par de Cincos con Catorce Once Ocho" ;
+    poker:contieneCarta poker:CincoDePlanta, poker:CincoDeBicho, poker:OchoDePlanta, poker:OnceDeNormal, poker:CatorceDeVolador .
+
+par:Mano2 a poker:Mano ;
+    rdfs:label "Par de Dieciochos con Catorce Cinco Uno" ;
+    poker:contieneCarta poker:DieciochoDeBicho, poker:DieciochoDePlanta, poker:CincoDeBicho, poker:UnoDeVolador, poker:CatorceDePlanta .
+
+par:Mano3 a poker:Mano ;
+    rdfs:label "Par de Cincos con Diez Nueve Uno" ;
+    poker:contieneCarta poker:CincoDeVolador, poker:CincoDeFuego, poker:NueveDeBicho, poker:UnoDeNormal, poker:DiezDeElectrico .
+
+par:Mano4 a poker:Mano ;
+    rdfs:label "Par de Dieciochos con Catorce Nueve Dos" ;
+    poker:contieneCarta poker:DieciochoDeVeneno, poker:DieciochoDeBicho, poker:DosDeElectrico, poker:CatorceDeVeneno, poker:NueveDeVolador .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( par:Mano1 par:Mano2 par:Mano3 par:Mano4 ) .

@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 6. Color
+# =============================================================================
+
+@prefix color: <http://www.poker-ontology.org/instancias/color#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_19r_16p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/color>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_19r_16p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 6. Color" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 6. Color." .
+
+# =============================================================================
+# 6. Color
+# =============================================================================
+
+color:Mano1 a poker:Mano ;
+    rdfs:label "Color de Dieciocho Dieciseis Doce Diez Ocho de Agua" ;
+    poker:contieneCarta poker:OchoDeAgua, poker:DieciseisDeAgua, poker:DieciochoDeAgua, poker:DiezDeAgua, poker:DoceDeAgua .
+
+color:Mano2 a poker:Mano ;
+    rdfs:label "Color de Dieciocho Nueve Ocho Cuatro Uno de Lucha" ;
+    poker:contieneCarta poker:NueveDeLucha, poker:OchoDeLucha, poker:CuatroDeLucha, poker:DieciochoDeLucha, poker:UnoDeLucha .
+
+color:Mano3 a poker:Mano ;
+    rdfs:label "Color de Diecinueve Siete Seis Cinco Tres de Fantasma" ;
+    poker:contieneCarta poker:SieteDeFantasma, poker:TresDeFantasma, poker:DiecinueveDeFantasma, poker:CincoDeFantasma, poker:SeisDeFantasma .
+
+color:Mano4 a poker:Mano ;
+    rdfs:label "Color de Dieciocho Once Ocho Siete Uno de Veneno" ;
+    poker:contieneCarta poker:UnoDeVeneno, poker:SieteDeVeneno, poker:OnceDeVeneno, poker:DieciochoDeVeneno, poker:OchoDeVeneno .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( color:Mano1 color:Mano2 color:Mano3 color:Mano4 ) .

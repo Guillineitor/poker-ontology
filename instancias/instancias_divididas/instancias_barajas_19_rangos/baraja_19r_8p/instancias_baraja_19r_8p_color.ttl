@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 6. Color
+# =============================================================================
+
+@prefix color: <http://www.poker-ontology.org/instancias/color#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_19r_8p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/color>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_19r_8p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 6. Color" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 6. Color." .
+
+# =============================================================================
+# 6. Color
+# =============================================================================
+
+color:Mano1 a poker:Mano ;
+    rdfs:label "Color de Diecisiete Doce Nueve Seis Cuatro de Agua" ;
+    poker:contieneCarta poker:SeisDeAgua, poker:CuatroDeAgua, poker:DoceDeAgua, poker:NueveDeAgua, poker:DiecisieteDeAgua .
+
+color:Mano2 a poker:Mano ;
+    rdfs:label "Color de Diecinueve Dieciocho Diecisiete Siete Seis de Bicho" ;
+    poker:contieneCarta poker:DiecisieteDeBicho, poker:SieteDeBicho, poker:DieciochoDeBicho, poker:SeisDeBicho, poker:DiecinueveDeBicho .
+
+color:Mano3 a poker:Mano ;
+    rdfs:label "Color de Dieciocho Diecisiete Doce Once Seis de Electrico" ;
+    poker:contieneCarta poker:SeisDeElectrico, poker:DiecisieteDeElectrico, poker:DieciochoDeElectrico, poker:OnceDeElectrico, poker:DoceDeElectrico .
+
+color:Mano4 a poker:Mano ;
+    rdfs:label "Color de Diez Siete Cuatro Tres Dos de Agua" ;
+    poker:contieneCarta poker:DiezDeAgua, poker:DosDeAgua, poker:TresDeAgua, poker:CuatroDeAgua, poker:SieteDeAgua .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( color:Mano1 color:Mano2 color:Mano3 color:Mano4 ) .

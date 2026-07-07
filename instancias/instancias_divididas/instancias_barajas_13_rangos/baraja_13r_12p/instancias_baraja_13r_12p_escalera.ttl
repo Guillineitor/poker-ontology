@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 5. Escalera
+# =============================================================================
+
+@prefix escalera: <http://www.poker-ontology.org/instancias/escalera#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_13r_12p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/escalera>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_13r_12p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 5. Escalera" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 5. Escalera." .
+
+# =============================================================================
+# 5. Escalera
+# =============================================================================
+
+escalera:Mano1 a poker:Mano ;
+    rdfs:label "Escalera de Nueve-Diez-Once-Doce-Trece" ;
+    poker:contieneCarta poker:NueveDeBicho, poker:DiezDeElectrico, poker:OnceDeLucha, poker:DoceDePsiquico, poker:TreceDeRoca .
+
+escalera:Mano2 a poker:Mano ;
+    rdfs:label "Escalera de Cuatro-Cinco-Seis-Siete-Ocho" ;
+    poker:contieneCarta poker:CuatroDeTierra, poker:CincoDeRoca, poker:SeisDeBicho, poker:SieteDeElectrico, poker:OchoDeTierra .
+
+escalera:Mano3 a poker:Mano ;
+    rdfs:label "Escalera de Tres-Cuatro-Cinco-Seis-Siete" ;
+    poker:contieneCarta poker:TresDeVeneno, poker:CuatroDeLucha, poker:CincoDeFuego, poker:SeisDeAgua, poker:SieteDePsiquico .
+
+escalera:Mano4 a poker:Mano ;
+    rdfs:label "Escalera de Siete-Ocho-Nueve-Diez-Once" ;
+    poker:contieneCarta poker:SieteDeAgua, poker:OchoDeLucha, poker:NueveDeBicho, poker:DiezDeAgua, poker:OnceDeRoca .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera:Mano1 escalera:Mano2 escalera:Mano3 escalera:Mano4 ) .

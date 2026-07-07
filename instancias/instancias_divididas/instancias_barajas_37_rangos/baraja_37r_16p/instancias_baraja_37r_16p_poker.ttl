@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 8. Póker
+# =============================================================================
+
+@prefix pokerh: <http://www.poker-ontology.org/instancias/pokerh#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_37r_16p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/pokerh>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_37r_16p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 8. Póker" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 8. Póker." .
+
+# =============================================================================
+# 8. Póker
+# =============================================================================
+
+pokerh:Mano1 a poker:Mano ;
+    rdfs:label "Póker de Seises con Veintitres de Hielo" ;
+    poker:contieneCarta poker:SeisDeAgua, poker:SeisDeNormal, poker:SeisDeRoca, poker:SeisDeVolador, poker:VeintitresDeHielo .
+
+pokerh:Mano2 a poker:Mano ;
+    rdfs:label "Póker de Veinticuatros con Treintaycuatro de Veneno" ;
+    poker:contieneCarta poker:VeinticuatroDeFantasma, poker:VeinticuatroDePlanta, poker:VeinticuatroDeDragon, poker:VeinticuatroDeAgua, poker:TreintaycuatroDeVeneno .
+
+pokerh:Mano3 a poker:Mano ;
+    rdfs:label "Póker de Dieciochos con Diecinueve de Planta" ;
+    poker:contieneCarta poker:DieciochoDeTierra, poker:DieciochoDeElectrico, poker:DieciochoDeLucha, poker:DieciochoDeBicho, poker:DiecinueveDePlanta .
+
+pokerh:Mano4 a poker:Mano ;
+    rdfs:label "Póker de Treintaydoses con Veintiseis de Siniestro" ;
+    poker:contieneCarta poker:TreintaydosDeSiniestro, poker:TreintaydosDeHielo, poker:TreintaydosDeElectrico, poker:TreintaydosDeTierra, poker:VeintiseisDeSiniestro .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( pokerh:Mano1 pokerh:Mano2 pokerh:Mano3 pokerh:Mano4 ) .

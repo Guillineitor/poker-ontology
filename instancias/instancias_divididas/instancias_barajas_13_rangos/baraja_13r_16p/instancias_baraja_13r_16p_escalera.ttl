@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 5. Escalera
+# =============================================================================
+
+@prefix escalera: <http://www.poker-ontology.org/instancias/escalera#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_13r_16p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/escalera>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_13r_16p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 5. Escalera" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 5. Escalera." .
+
+# =============================================================================
+# 5. Escalera
+# =============================================================================
+
+escalera:Mano1 a poker:Mano ;
+    rdfs:label "Escalera de Dos-Tres-Cuatro-Cinco-Seis" ;
+    poker:contieneCarta poker:DosDeVeneno, poker:TresDeTierra, poker:CuatroDeHielo, poker:CincoDeNormal, poker:SeisDeAgua .
+
+escalera:Mano2 a poker:Mano ;
+    rdfs:label "Escalera de Ocho-Nueve-Diez-Once-Doce" ;
+    poker:contieneCarta poker:OchoDeHielo, poker:NueveDeLucha, poker:DiezDeRoca, poker:OnceDeBicho, poker:DoceDePsiquico .
+
+escalera:Mano3 a poker:Mano ;
+    rdfs:label "Escalera de Uno-Dos-Tres-Cuatro-Cinco" ;
+    poker:contieneCarta poker:UnoDePlanta, poker:DosDeVolador, poker:TresDeRoca, poker:CuatroDeTierra, poker:CincoDeVolador .
+
+escalera:Mano4 a poker:Mano ;
+    rdfs:label "Escalera de Nueve-Diez-Once-Doce-Trece" ;
+    poker:contieneCarta poker:NueveDeBicho, poker:DiezDeVeneno, poker:OnceDeElectrico, poker:DoceDeAgua, poker:TreceDeNormal .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera:Mano1 escalera:Mano2 escalera:Mano3 escalera:Mano4 ) .

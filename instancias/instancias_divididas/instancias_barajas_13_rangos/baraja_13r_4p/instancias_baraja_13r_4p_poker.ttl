@@ -1,0 +1,38 @@
+# =============================================================================
+# Instancias de manos divididas de Póker Texas Hold'em - 8. Póker
+# =============================================================================
+
+@prefix pokerh: <http://www.poker-ontology.org/instancias/pokerh#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_13r_4p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/pokerh>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_13r_4p> ;
+    rdfs:label "Instancias de manos divididas de Póker Texas Hold'em - 8. Póker" ;
+    rdfs:comment "ABox con 4 manos de prueba del tipo 8. Póker." .
+
+# =============================================================================
+# 8. Póker
+# =============================================================================
+
+pokerh:Mano1 a poker:Mano ;
+    rdfs:label "Póker de Seises con Dos de Electrico" ;
+    poker:contieneCarta poker:SeisDeElectrico, poker:SeisDeFuego, poker:SeisDePlanta, poker:SeisDeAgua, poker:DosDeElectrico .
+
+pokerh:Mano2 a poker:Mano ;
+    rdfs:label "Póker de Cuatros con Trece de Fuego" ;
+    poker:contieneCarta poker:CuatroDeFuego, poker:CuatroDeElectrico, poker:CuatroDeAgua, poker:CuatroDePlanta, poker:TreceDeFuego .
+
+pokerh:Mano3 a poker:Mano ;
+    rdfs:label "Póker de Doses con Diez de Fuego" ;
+    poker:contieneCarta poker:DosDeFuego, poker:DosDeAgua, poker:DosDeElectrico, poker:DosDePlanta, poker:DiezDeFuego .
+
+pokerh:Mano4 a poker:Mano ;
+    rdfs:label "Póker de Cuatros con Nueve de Agua" ;
+    poker:contieneCarta poker:CuatroDeAgua, poker:CuatroDeFuego, poker:CuatroDePlanta, poker:CuatroDeElectrico, poker:NueveDeAgua .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( pokerh:Mano1 pokerh:Mano2 pokerh:Mano3 pokerh:Mano4 ) .
