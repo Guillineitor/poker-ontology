@@ -1,0 +1,271 @@
+# =============================================================================
+# Instancias de manos de Póker Texas Hold'em
+# =============================================================================
+
+@prefix carta_alta: <http://www.poker-ontology.org/instancias/carta_alta#> .
+@prefix par: <http://www.poker-ontology.org/instancias/par#> .
+@prefix doblepar: <http://www.poker-ontology.org/instancias/doblepar#> .
+@prefix trio: <http://www.poker-ontology.org/instancias/trio#> .
+@prefix escalera: <http://www.poker-ontology.org/instancias/escalera#> .
+@prefix color: <http://www.poker-ontology.org/instancias/color#> .
+@prefix full: <http://www.poker-ontology.org/instancias/full#> .
+@prefix pokerh: <http://www.poker-ontology.org/instancias/poker#> .
+@prefix escalera_color: <http://www.poker-ontology.org/instancias/escalera_color#> .
+@prefix escalera_real: <http://www.poker-ontology.org/instancias/escalera_real#> .
+@prefix poker: <http://www.ontologia-baraja.org/baraja_6r_8p#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.poker-ontology.org/instancias/todas>
+    a owl:Ontology ;
+    owl:imports <http://www.ontologia-baraja.org/baraja_6r_8p> ;
+    rdfs:label "Instancias de manos de Póker Texas Hold'em" ;
+    rdfs:comment "ABox unificado con 40 manos de prueba, 4 por cada uno de los 10 tipos de manos de Póker Texas Hold'em." .
+
+# =============================================================================
+# 1. Carta Alta
+# =============================================================================
+
+carta_alta:Mano1 a poker:Mano ;
+    rdfs:label "Carta Alta de Seis con Cinco Cuatro Tres Uno" ;
+    poker:contieneCarta poker:SeisDeVeneno, poker:UnoDeBicho, poker:CincoDeFuego, poker:CuatroDeVeneno, poker:TresDeNormal .
+
+carta_alta:Mano2 a poker:Mano ;
+    rdfs:label "Carta Alta de Seis con Cinco Cuatro Dos Uno" ;
+    poker:contieneCarta poker:CuatroDeElectrico, poker:SeisDeElectrico, poker:DosDeElectrico, poker:CincoDeFuego, poker:UnoDeAgua .
+
+carta_alta:Mano3 a poker:Mano ;
+    rdfs:label "Carta Alta de Seis con Cinco Tres Dos Uno" ;
+    poker:contieneCarta poker:SeisDeVolador, poker:DosDeVeneno, poker:TresDePlanta, poker:CincoDeFuego, poker:UnoDeVeneno .
+
+carta_alta:Mano4 a poker:Mano ;
+    rdfs:label "Carta Alta de Seis con Cuatro Tres Dos Uno" ;
+    poker:contieneCarta poker:UnoDePlanta, poker:CuatroDeAgua, poker:DosDePlanta, poker:TresDeVolador, poker:SeisDeElectrico .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( carta_alta:Mano1 carta_alta:Mano2 carta_alta:Mano3 carta_alta:Mano4 ) .
+
+# =============================================================================
+# 2. Par
+# =============================================================================
+
+par:Mano5 a poker:Mano ;
+    rdfs:label "Par de Cuatros con Seis Cinco Dos" ;
+    poker:contieneCarta poker:CuatroDePlanta, poker:CuatroDeAgua, poker:CincoDeVeneno, poker:SeisDeAgua, poker:DosDePlanta .
+
+par:Mano6 a poker:Mano ;
+    rdfs:label "Par de Seises con Cinco Cuatro Dos" ;
+    poker:contieneCarta poker:SeisDeAgua, poker:SeisDeVeneno, poker:CuatroDePlanta, poker:CincoDePlanta, poker:DosDeNormal .
+
+par:Mano7 a poker:Mano ;
+    rdfs:label "Par de Seises con Cinco Tres Dos" ;
+    poker:contieneCarta poker:SeisDeElectrico, poker:SeisDeNormal, poker:TresDeFuego, poker:DosDeAgua, poker:CincoDeVeneno .
+
+par:Mano8 a poker:Mano ;
+    rdfs:label "Par de Unos con Cinco Cuatro Tres" ;
+    poker:contieneCarta poker:UnoDeElectrico, poker:UnoDeFuego, poker:CincoDeBicho, poker:CuatroDeElectrico, poker:TresDeBicho .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( par:Mano5 par:Mano6 par:Mano7 par:Mano8 ) .
+
+# =============================================================================
+# 3. Doble Par
+# =============================================================================
+
+doblepar:Mano9 a poker:Mano ;
+    rdfs:label "Doble Par de Seises y Unos con Cuatro" ;
+    poker:contieneCarta poker:SeisDeNormal, poker:SeisDePlanta, poker:UnoDeAgua, poker:UnoDeElectrico, poker:CuatroDePlanta ;
+    poker:manoTienePar poker:Seis, poker:Uno .
+
+doblepar:Mano10 a poker:Mano ;
+    rdfs:label "Doble Par de Cuatros y Treses con Cinco" ;
+    poker:contieneCarta poker:CuatroDeElectrico, poker:CuatroDeVeneno, poker:TresDeNormal, poker:TresDeVolador, poker:CincoDeAgua ;
+    poker:manoTienePar poker:Cuatro, poker:Tres .
+
+doblepar:Mano11 a poker:Mano ;
+    rdfs:label "Doble Par de Doses y Unos con Cuatro" ;
+    poker:contieneCarta poker:DosDePlanta, poker:DosDeNormal, poker:UnoDePlanta, poker:UnoDeElectrico, poker:CuatroDePlanta ;
+    poker:manoTienePar poker:Dos, poker:Uno .
+
+doblepar:Mano12 a poker:Mano ;
+    rdfs:label "Doble Par de Seises y Unos con Dos" ;
+    poker:contieneCarta poker:SeisDeNormal, poker:SeisDeElectrico, poker:UnoDeBicho, poker:UnoDePlanta, poker:DosDePlanta ;
+    poker:manoTienePar poker:Seis, poker:Uno .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( doblepar:Mano9 doblepar:Mano10 doblepar:Mano11 doblepar:Mano12 ) .
+
+# =============================================================================
+# 4. Trío
+# =============================================================================
+
+trio:Mano13 a poker:Mano ;
+    rdfs:label "Trío de Cincos con Seis Uno" ;
+    poker:contieneCarta poker:CincoDeNormal, poker:CincoDeVeneno, poker:CincoDeAgua, poker:UnoDeAgua, poker:SeisDeNormal .
+
+trio:Mano14 a poker:Mano ;
+    rdfs:label "Trío de Doses con Tres Uno" ;
+    poker:contieneCarta poker:DosDeNormal, poker:DosDeFuego, poker:DosDeElectrico, poker:UnoDeBicho, poker:TresDeVeneno .
+
+trio:Mano15 a poker:Mano ;
+    rdfs:label "Trío de Treses con Dos Uno" ;
+    poker:contieneCarta poker:TresDeElectrico, poker:TresDeVolador, poker:TresDeAgua, poker:DosDeVolador, poker:UnoDeNormal .
+
+trio:Mano16 a poker:Mano ;
+    rdfs:label "Trío de Cincos con Cuatro Tres" ;
+    poker:contieneCarta poker:CincoDeBicho, poker:CincoDeElectrico, poker:CincoDeVolador, poker:CuatroDeElectrico, poker:TresDePlanta .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( trio:Mano13 trio:Mano14 trio:Mano15 trio:Mano16 ) .
+
+# =============================================================================
+# 5. Escalera
+# =============================================================================
+
+escalera:Mano17 a poker:Mano ;
+    rdfs:label "Escalera de Dos-Tres-Cuatro-Cinco-Seis" ;
+    poker:contieneCarta poker:DosDeElectrico, poker:TresDeVolador, poker:CuatroDeBicho, poker:CincoDeVolador, poker:SeisDePlanta .
+
+escalera:Mano18 a poker:Mano ;
+    rdfs:label "Escalera de Uno-Dos-Tres-Cuatro-Cinco" ;
+    poker:contieneCarta poker:UnoDeNormal, poker:DosDeAgua, poker:TresDeFuego, poker:CuatroDeAgua, poker:CincoDeFuego .
+
+escalera:Mano19 a poker:Mano ;
+    rdfs:label "Escalera de Uno-Dos-Tres-Cuatro-Cinco" ;
+    poker:contieneCarta poker:UnoDeBicho, poker:DosDeFuego, poker:TresDeFuego, poker:CuatroDeVolador, poker:CincoDeNormal .
+
+escalera:Mano20 a poker:Mano ;
+    rdfs:label "Escalera de Uno-Dos-Tres-Cuatro-Cinco" ;
+    poker:contieneCarta poker:UnoDeVolador, poker:DosDeNormal, poker:TresDeFuego, poker:CuatroDePlanta, poker:CincoDePlanta .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera:Mano17 escalera:Mano18 escalera:Mano19 escalera:Mano20 ) .
+
+# =============================================================================
+# 6. Color
+# =============================================================================
+
+color:Mano21 a poker:Mano ;
+    rdfs:label "Color de Seis Cuatro Tres Dos Uno de Planta" ;
+    poker:contieneCarta poker:TresDePlanta, poker:DosDePlanta, poker:UnoDePlanta, poker:CuatroDePlanta, poker:SeisDePlanta .
+
+color:Mano22 a poker:Mano ;
+    rdfs:label "Color de Seis Cinco Cuatro Dos Uno de Planta" ;
+    poker:contieneCarta poker:SeisDePlanta, poker:UnoDePlanta, poker:CuatroDePlanta, poker:DosDePlanta, poker:CincoDePlanta .
+
+color:Mano23 a poker:Mano ;
+    rdfs:label "Color de Seis Cinco Cuatro Tres Uno de Volador" ;
+    poker:contieneCarta poker:CuatroDeVolador, poker:SeisDeVolador, poker:CincoDeVolador, poker:TresDeVolador, poker:UnoDeVolador .
+
+color:Mano24 a poker:Mano ;
+    rdfs:label "Color de Seis Cinco Tres Dos Uno de Electrico" ;
+    poker:contieneCarta poker:UnoDeElectrico, poker:DosDeElectrico, poker:SeisDeElectrico, poker:TresDeElectrico, poker:CincoDeElectrico .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( color:Mano21 color:Mano22 color:Mano23 color:Mano24 ) .
+
+# =============================================================================
+# 7. Full
+# =============================================================================
+
+full:Mano25 a poker:Mano ;
+    rdfs:label "Full de Trío de Cuatros con Par de Treses" ;
+    poker:contieneCarta poker:CuatroDeNormal, poker:CuatroDeElectrico, poker:CuatroDeFuego, poker:TresDeVolador, poker:TresDeAgua ;
+    poker:manoTienePar poker:Cuatro, poker:Tres .
+
+full:Mano26 a poker:Mano ;
+    rdfs:label "Full de Trío de Seises con Par de Cincos" ;
+    poker:contieneCarta poker:SeisDeVolador, poker:SeisDePlanta, poker:SeisDeFuego, poker:CincoDeVeneno, poker:CincoDeNormal ;
+    poker:manoTienePar poker:Seis, poker:Cinco .
+
+full:Mano27 a poker:Mano ;
+    rdfs:label "Full de Trío de Seises con Par de Unos" ;
+    poker:contieneCarta poker:SeisDeVolador, poker:SeisDeFuego, poker:SeisDeVeneno, poker:UnoDeElectrico, poker:UnoDePlanta ;
+    poker:manoTienePar poker:Seis, poker:Uno .
+
+full:Mano28 a poker:Mano ;
+    rdfs:label "Full de Trío de Unos con Par de Cincos" ;
+    poker:contieneCarta poker:UnoDePlanta, poker:UnoDeElectrico, poker:UnoDeVeneno, poker:CincoDeElectrico, poker:CincoDeVeneno ;
+    poker:manoTienePar poker:Uno, poker:Cinco .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( full:Mano25 full:Mano26 full:Mano27 full:Mano28 ) .
+
+# =============================================================================
+# 8. Póker
+# =============================================================================
+
+pokerh:Mano29 a poker:Mano ;
+    rdfs:label "Póker de Unos con Tres de Volador" ;
+    poker:contieneCarta poker:UnoDeNormal, poker:UnoDeBicho, poker:UnoDeVolador, poker:UnoDeElectrico, poker:TresDeVolador .
+
+pokerh:Mano30 a poker:Mano ;
+    rdfs:label "Póker de Cuatros con Seis de Normal" ;
+    poker:contieneCarta poker:CuatroDeVolador, poker:CuatroDeAgua, poker:CuatroDePlanta, poker:CuatroDeNormal, poker:SeisDeNormal .
+
+pokerh:Mano31 a poker:Mano ;
+    rdfs:label "Póker de Seises con Cinco de Fuego" ;
+    poker:contieneCarta poker:SeisDeVeneno, poker:SeisDePlanta, poker:SeisDeNormal, poker:SeisDeAgua, poker:CincoDeFuego .
+
+pokerh:Mano32 a poker:Mano ;
+    rdfs:label "Póker de Seises con Tres de Planta" ;
+    poker:contieneCarta poker:SeisDeVeneno, poker:SeisDeBicho, poker:SeisDeFuego, poker:SeisDePlanta, poker:TresDePlanta .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( pokerh:Mano29 pokerh:Mano30 pokerh:Mano31 pokerh:Mano32 ) .
+
+# =============================================================================
+# 9. Escalera de Color
+# =============================================================================
+
+escalera_color:Mano33 a poker:Mano ;
+    rdfs:label "Escalera de Color Uno-Dos-Tres-Cuatro-Cinco de Agua" ;
+    poker:contieneCarta poker:UnoDeAgua, poker:DosDeAgua, poker:TresDeAgua, poker:CuatroDeAgua, poker:CincoDeAgua .
+
+escalera_color:Mano34 a poker:Mano ;
+    rdfs:label "Escalera de Color Uno-Dos-Tres-Cuatro-Cinco de Veneno" ;
+    poker:contieneCarta poker:UnoDeVeneno, poker:DosDeVeneno, poker:TresDeVeneno, poker:CuatroDeVeneno, poker:CincoDeVeneno .
+
+escalera_color:Mano35 a poker:Mano ;
+    rdfs:label "Escalera de Color Uno-Dos-Tres-Cuatro-Cinco de Fuego" ;
+    poker:contieneCarta poker:UnoDeFuego, poker:DosDeFuego, poker:TresDeFuego, poker:CuatroDeFuego, poker:CincoDeFuego .
+
+escalera_color:Mano36 a poker:Mano ;
+    rdfs:label "Escalera de Color Uno-Dos-Tres-Cuatro-Cinco de Planta" ;
+    poker:contieneCarta poker:UnoDePlanta, poker:DosDePlanta, poker:TresDePlanta, poker:CuatroDePlanta, poker:CincoDePlanta .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera_color:Mano33 escalera_color:Mano34 escalera_color:Mano35 escalera_color:Mano36 ) .
+
+# =============================================================================
+# 10. Escalera Real
+# =============================================================================
+
+escalera_real:Mano37 a poker:Mano ;
+    rdfs:label "Escalera Real de Veneno" ;
+    poker:contieneCarta poker:DosDeVeneno, poker:TresDeVeneno, poker:CuatroDeVeneno, poker:CincoDeVeneno, poker:SeisDeVeneno .
+
+escalera_real:Mano38 a poker:Mano ;
+    rdfs:label "Escalera Real de Bicho" ;
+    poker:contieneCarta poker:DosDeBicho, poker:TresDeBicho, poker:CuatroDeBicho, poker:CincoDeBicho, poker:SeisDeBicho .
+
+escalera_real:Mano39 a poker:Mano ;
+    rdfs:label "Escalera Real de Volador" ;
+    poker:contieneCarta poker:DosDeVolador, poker:TresDeVolador, poker:CuatroDeVolador, poker:CincoDeVolador, poker:SeisDeVolador .
+
+escalera_real:Mano40 a poker:Mano ;
+    rdfs:label "Escalera Real de Electrico" ;
+    poker:contieneCarta poker:DosDeElectrico, poker:TresDeElectrico, poker:CuatroDeElectrico, poker:CincoDeElectrico, poker:SeisDeElectrico .
+
+# Unicidad de Instancias
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( escalera_real:Mano37 escalera_real:Mano38 escalera_real:Mano39 escalera_real:Mano40 ) .
