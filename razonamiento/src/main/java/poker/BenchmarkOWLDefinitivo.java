@@ -31,10 +31,8 @@ import java.util.concurrent.*;
  * sobre ontologías bajo el dominio del juego Poker Texas Hold'em.
  * Cada razonador carga su propia copia de la ontología desde disco de forma independiente,
  * para garantizar que cada medición sea una unidad aislada y reproducible por separado.
- * HermiT y JFact (FaCT++) son los razonadores principales que funcionan y se ejecutan sin límite de tiempo. 
- * Openllet (Pellet) es el único secundario con timeout: se le da a lo más 30 segundos (solo para registrar 
- * timeout en las tablas, ya que no logra clasificar en un tiempo razonable de rendimiento de este razonador, 
- * probado en TestViablidadRazonadoresOWL.java).
+ * Los tres razonadores tienen cada uno su propio timeout independiente. Si un razonador supera su límite, 
+ * se cancela y su resultado se registra como TIMEOUT en los registros.
  *
  * Uso:
  *   java -cp target/poker-reasoner-1.0-SNAPSHOT-jar-with-dependencies.jar poker.BenchmarkOWLDefinitivo <ontologia.ttl> <instancias.ttl>
@@ -79,10 +77,17 @@ public class BenchmarkOWLDefinitivo {
     /** Carpeta de destino para los archivos .csv de resultados. */
     private static final String RESULTADOS_DIR = "../resultados";
 
-    /** Tiempo máximo permitido para Openllet, el único razonador con timeout. HermiT y
-     *  JFact no tienen límite. Openllet se cancela si supera este umbral y su
-     *  resultado se registra como TIMEOUT. */
-    private static final long TIMEOUT_SEGUNDOS = 3600;
+    /** Tiempo máximo permitido para HermiT. Su resultado se registra como TIMEOUT
+     *  si supera este umbral. Independiente del timeout de JFact y de Openllet. */
+    private static final long TIMEOUT_HERMIT_SEGUNDOS = 3600;
+
+    /** Tiempo máximo permitido para Openllet. Su resultado se registra como TIMEOUT
+     *  si supera este umbral. Independiente del timeout de JFact. */
+    private static final long TIMEOUT_OPENLLET_SEGUNDOS = 3600;
+
+    /** Tiempo máximo permitido para JFact (FaCT++). Su resultado se registra como TIMEOUT
+     *  si supera este umbral. Independiente del timeout de Openllet. */
+    private static final long TIMEOUT_JFACT_SEGUNDOS = 3600;
 
     /** Timestamp compartido por todos los archivos generados en esta ejecución. */
     private static final String TIMESTAMP =
@@ -120,21 +125,15 @@ public class BenchmarkOWLDefinitivo {
 
         banner();
 
-        List<EntradaRazonador> sinTimeout = Arrays.asList(
-            new EntradaRazonador("HermiT", new ReasonerFactory()),
-            new EntradaRazonador("JFact (FaCT++)", new JFactFactory())
-        );
-        List<EntradaRazonador> conTimeout = Arrays.asList(
-            new EntradaRazonador("Openllet (Pellet)", OpenlletReasonerFactory.getInstance())
+        List<EntradaRazonador> razonadores = Arrays.asList(
+            new EntradaRazonador("HermiT", new ReasonerFactory(), TIMEOUT_HERMIT_SEGUNDOS),
+            new EntradaRazonador("JFact (FaCT++)", new JFactFactory(), TIMEOUT_JFACT_SEGUNDOS),
+            new EntradaRazonador("Openllet (Pellet)", OpenlletReasonerFactory.getInstance(), TIMEOUT_OPENLLET_SEGUNDOS)
         );
 
         List<ResultadoBenchmark> resultados = new ArrayList<>();
 
-        for (EntradaRazonador entrada : sinTimeout) {
-            resultados.add(ejecutarBenchmark(entrada));
-        }
-
-        for (EntradaRazonador entrada : conTimeout) {
+        for (EntradaRazonador entrada : razonadores) {
             ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
                 Thread t = new Thread(r, "razonador-" + entrada.nombre);
                 t.setDaemon(true);
@@ -144,7 +143,7 @@ public class BenchmarkOWLDefinitivo {
                 () -> ejecutarBenchmark(entrada)
             );
             try {
-                ResultadoBenchmark r = future.get(TIMEOUT_SEGUNDOS, TimeUnit.SECONDS);
+                ResultadoBenchmark r = future.get(entrada.timeoutSegundos, TimeUnit.SECONDS);
                 resultados.add(r);
             } catch (TimeoutException e) {
                 future.cancel(true);
@@ -767,13 +766,19 @@ public class BenchmarkOWLDefinitivo {
         }
     }
 
-    /** Par (nombre, factory) que identifica a un razonador OWL en el benchmark. */
+    /** Par (nombre, factory, timeout) que identifica a un razonador OWL en el benchmark.
+     *  Cada razonador de la lista razonadores tiene su propio timeoutSegundos, independiente
+     *  del de los demás razonadores. 
+     */
     static class EntradaRazonador {
         String nombre;
         OWLReasonerFactory factory;
-        EntradaRazonador(String nombre, OWLReasonerFactory factory) {
+        long timeoutSegundos;
+
+        EntradaRazonador(String nombre, OWLReasonerFactory factory, long timeoutSegundos) {
             this.nombre = nombre;
             this.factory = factory;
+            this.timeoutSegundos = timeoutSegundos;
         }
     }
 
