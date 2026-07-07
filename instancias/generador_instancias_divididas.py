@@ -170,6 +170,68 @@ def es_escalera(mano, valor, rangos):
     secuencial = all(vals[i+1] - vals[i] == 1 for i in range(4))
     return secuencial
 
+
+def firma_patron(mano, valor):
+    """
+    Devuelve una firma que identifica la combinación de rangos de una mano,
+    independientemente del palo de cada carta. Dos manos con la misma firma
+    representan el mismo valor de póker (mismos rangos y misma cantidad de
+    repeticiones de cada uno), aunque los palos difieran.
+    """
+    return tuple(sorted(valor[r] for r, _ in mano))
+
+
+def generar_mano_unica(generador, baraja, ont, cartas_usadas, patrones_usados,
+                        intentos_fase1=500, intentos_fase2=5000):
+    """
+    Llama a generador(baraja, ont) repetidamente hasta obtener una mano
+    válida que sea distinta de las ya generadas para ese mismo tipo, en dos
+    niveles:
+
+    Nivel 1 (estricta): se prioriza que la mano tenga una combinación de
+    rangos  que no se haya usado todavía, para que las 4 instancias de un mismo 
+    tipo se vean realmente distintas entre sí.
+
+    Nivel 2 (flexible, para barajas pequeñas): si tras muchos intentos no se
+    logra una firma de patrón nueva (porque el mazo no tiene suficientes
+    combinaciones para ese tipo de mano), se acepta repetir la firma de
+    patrón, pero jamás se acepta repetir la mano exacta (las mismas 5
+    cartas, palo incluido).
+
+    Si ni siquiera en la fase flexible se logra una mano con cartas exactas
+    nuevas, se levanta un RuntimeError (la baraja de cartas es
+    demasiado chico para producir tantas instancias distintas de ese tipo de mano).
+    """
+    valor = ont["valor"]
+
+    for _ in range(intentos_fase1):
+        mano, extra = generador(baraja, ont)
+        cartas = frozenset(mano)
+        if cartas in cartas_usadas:
+            continue
+        patron = firma_patron(mano, valor)
+        if patron in patrones_usados:
+            continue
+        cartas_usadas.add(cartas)
+        patrones_usados.add(patron)
+        return mano, extra
+
+    for _ in range(intentos_fase2):
+        mano, extra = generador(baraja, ont)
+        cartas = frozenset(mano)
+        if cartas in cartas_usadas:
+            continue
+        patron = firma_patron(mano, valor)
+        cartas_usadas.add(cartas)
+        patrones_usados.add(patron)
+        return mano, extra
+
+    raise RuntimeError(
+        "No se pudo generar una mano nueva de este tipo con cartas distintas "
+        "a las ya generadas: la baraja de cartas es demasiado chico para producir tantas "
+        "instancias distintas de este tipo de mano."
+    )
+
 def generar_carta_alta(baraja, ont):
     """
     Genera una mano de Carta Alta: cinco cartas sin ninguna combinación,
@@ -371,26 +433,21 @@ def generar_escalera_color(baraja, ont):
     raise RuntimeError("No se pudo generar una mano de Escalera de Color.")
 
 
-def generar_escalera_real(baraja, ont, palos_usados):
+def generar_escalera_real(baraja, ont):
     """
     Genera una mano de Escalera Real: los cinco rangos más altos del mismo palo.
-    Evita repetir un palo ya utilizado en la misma generación, dentro de lo posible.
     """
     rangos = ont["rangos"]
     palos = ont["palos"]
     conjunto = set(baraja)
 
     secuencia = rangos[-5:]   # Los 5 rangos más altos de la ontología.
-    palos_libres = [p for p in palos if p not in palos_usados]
-    palos_repetidos = [p for p in palos if p in palos_usados]
-    random.shuffle(palos_libres)
-    random.shuffle(palos_repetidos)
-    palos_ord = palos_libres + palos_repetidos
+    palos_disp = palos[:]
+    random.shuffle(palos_disp)
 
-    for palo in palos_ord:
+    for palo in palos_disp:
         mano = [(r, palo) for r in secuencia]
         if all(c in conjunto for c in mano):
-            palos_usados.add(palo)
             return mano, None
     raise RuntimeError("No se pudo generar una mano de Escalera Real.")
 
@@ -554,6 +611,7 @@ GENERADORES = {
     "full": generar_full,
     "poker": generar_poker,
     "escalera_color": generar_escalera_color,
+    "escalera_real": generar_escalera_real,
 }
 
 
@@ -564,7 +622,6 @@ def generar_archivo_tipo(ruta_ontologia, ont, nombre_base, tipo, prefijo, titulo
     """
     ruta_salida = f"instancias_{nombre_base}_{tipo}.ttl"
     baraja = ont["baraja"]
-    palos_escalera_real = set()
 
     secciones = [bloque_cabecera(ont, tipo, prefijo, titulo)]
     seccion = [
@@ -574,12 +631,19 @@ def generar_archivo_tipo(ruta_ontologia, ont, nombre_base, tipo, prefijo, titulo
         "",
     ]
     numeros = []
+    cartas_usadas = set()
+    patrones_usados = set()
 
     for numero_mano in range(1, MANOS_POR_TIPO + 1):
-        if tipo == "escalera_real":
-            mano, pares = generar_escalera_real(baraja, ont, palos_escalera_real)
-        else:
-            mano, pares = GENERADORES[tipo](baraja, ont)
+        try:
+            mano, pares = generar_mano_unica(
+                GENERADORES[tipo], baraja, ont, cartas_usadas, patrones_usados
+            )
+        except RuntimeError as e:
+            raise RuntimeError(
+                f"{titulo}: se generaron {numero_mano - 1} de {MANOS_POR_TIPO} "
+                f"manos distintas y luego falló ({e})"
+            ) from e
 
         seccion.append(bloque_mano(tipo, prefijo, numero_mano, mano, pares, ont))
         seccion.append("")
