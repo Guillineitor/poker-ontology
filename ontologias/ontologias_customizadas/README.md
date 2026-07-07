@@ -8,6 +8,8 @@ Ontologías generadas automáticamente por `generador_ontologias.py`, escritas e
 
 - Descripción general
 - Cómo se generan
+  - Una baraja individual
+  - Barajas múltiples 
 - Catálogo de ontologías
   - Series por número de rangos
   - Tabla resumen
@@ -24,6 +26,7 @@ Ontologías generadas automáticamente por `generador_ontologias.py`, escritas e
 - Decisiones de diseño
   - Nombres de palos y rangos
   - Clasificadores no aplicables
+  - Tipos de mano no disjuntos
 
 ---
 
@@ -44,7 +47,11 @@ Cada ontología modela una baraja con **P palos × R rangos = P·R cartas**, org
 
 ## Cómo se generan
 
-Las ontologías se producen ejecutando el generador desde la carpeta `/generador_ontologias`:
+Hay dos formas de generar ontologías, según si se necesita una baraja puntual o el catálogo completo de ontologías para el benchmark.
+
+### Una baraja individual
+
+Se ejecuta el generador desde la carpeta `/generador_ontologias`:
 
 ```powershell
 python generador_ontologias.py
@@ -57,20 +64,36 @@ El script solicita interactivamente:
 3. **Palos** — lista separada por comas, en el orden preferido.
 4. **Rangos** — lista separada por comas, **de menor a mayor valor** (el orden determina las ventanas de `Escalera`).
 
-El archivo resultante se guarda en `ontologias/ontologias_customizadas/<slug>.ttl`.
+El archivo resultante se guarda directamente en `ontologias/ontologias_customizadas/<slug>.ttl`.
+
+### Barajas múltiples 
+
+El catálogo completo de barajas que se detalla más abajo no se genera llamando a `generador_ontologias.py` manualmente, sino que se genera con `generar_ontologias.ps1`, que automatiza esa tarea. Genera las 24 combinaciones por defecto (6/13/19/25/31/37 rangos x 4/8/12/16 palos) para el benchmark de este trabajo.
+
+```powershell
+.\generar_ontologias.ps1
+```
+
+Como `generador_ontologias.py` es interactivo, el script le pasa las respuestas por stdin en vez de argumentos, usando los nombres de palo y rango fijos que se detallan en la tabla y las series de abajo (y puestos en `generar_ontologias.ps1`). Después de cada ejecución, mueve el `.ttl` resultante a una subcarpeta según su cantidad de rangos, así que la ruta final de cada archivo del catálogo es:
+
+```
+ontologias/ontologias_customizadas/barajas_<N>_rangos/baraja_<N>r_<P>p.ttl
+```
+
+Oor ejemplo: `ontologias/ontologias_customizadas/barajas_6_rangos/baraja_6r_4p.ttl`.
 
 ---
 
 ## Catálogo de ontologías
 
-Las ontologías están organizadas por número de rangos (6, 13, 19, 25, 31, 37) cruzado con número de palos (4, 8, 12, 16). Los nombres de palos son los siguientes según cantidad:
+Las ontologías están organizadas por número de rangos numéricos (6, 13, 19, 25, 31, 37) cruzado con número de palos (4, 8, 12, 16). Los nombres de palos son los siguientes según cantidad:
 
 | Palos | Nombres |
 |---|---|
-| 4 | Fuego, Agua, Planta, Eléctrico |
-| 8 | Fuego, Agua, Planta, Eléctrico, Normal, Volador, Bicho, Veneno |
-| 12 | Fuego, Agua, Planta, Eléctrico, Normal, Volador, Bicho, Veneno, Tierra, Roca, Lucha, Psíquico |
-| 16 | Fuego, Agua, Planta, Eléctrico, Normal, Volador, Bicho, Veneno, Tierra, Roca, Lucha, Psíquico, Fantasma, Hielo, Dragón, Siniestro |
+| 4 | Fuego, Agua, Planta, Electrico |
+| 8 | Fuego, Agua, Planta, Electrico, Normal, Volador, Bicho, Veneno |
+| 12 | Fuego, Agua, Planta, Electrico, Normal, Volador, Bicho, Veneno, Tierra, Roca, Lucha, Psiquico |
+| 16 | Fuego, Agua, Planta, Electrico, Normal, Volador, Bicho, Veneno, Tierra, Roca, Lucha, Psiquico, Fantasma, Hielo, Dragon, Siniestro |
 
 ### Series por número de rangos
 
@@ -110,7 +133,7 @@ Las ontologías están organizadas por número de rangos (6, 13, 19, 25, 31, 37)
 | `baraja_25r_12p.ttl` | 12 | 25 | 300 |
 | `baraja_25r_16p.ttl` | 16 | 25 | 400 |
 
-#### 31 rangos — `Uno` a `Treinta y uno`
+#### 31 rangos — `Uno` a `Treintayuno`
 
 | Archivo | Palos | Rangos | Cartas |
 |---|---|---|---|
@@ -119,7 +142,7 @@ Las ontologías están organizadas por número de rangos (6, 13, 19, 25, 31, 37)
 | `baraja_31r_12p.ttl` | 12 | 31 | 372 |
 | `baraja_31r_16p.ttl` | 16 | 31 | 496 |
 
-#### 37 rangos — `Uno` a `Treinta y siete`
+#### 37 rangos — `Uno` a `Treintaysiete`
 
 | Archivo | Palos | Rangos | Cartas |
 |---|---|---|---|
@@ -252,8 +275,12 @@ Los tipos de mano se definen con `owl:equivalentClass` en orden de menor a mayor
 
 Los nombres de palos y rangos son **etiquetas libres**: el generador los normaliza a identificadores CamelCase seguros para IRI (eliminando tildes, signos no alfanuméricos y espacios). El texto original se conserva en `rdfs:label` para mantener legibilidad en Protégé.
 
-Por ejemplo, el palo `"Eléctrico"` produce el individuo `poker:Electrico` y la subclase `poker:CartaDeElectrico`.
+Por ejemplo, el palo `"Electrico"` produce el individuo `poker:Electrico` y la subclase `poker:CartaDeElectrico`.
 
 ### Clasificadores no aplicables
 
-Cuando una combinación no puede existir en la baraja finita, el generador omite su clase e inserta un comentario explicativo en el archivo `.ttl`. Por ejemplo, una baraja con solo 5 rangos genera `EscaleraColor` pero omite `EscaleraReal`, porque los 5 rangos más altos cubren toda la ventana posible de escalera y no existe una segunda que la diferencie.
+Cuando una combinación no puede existir en la baraja finita, el generador omite su clase e inserta un comentario explicativo en el archivo `.ttl`. Por ejemplo, una baraja con solo 5 rangos genera `EscaleraColor` pero omite `EscaleraReal`, porque los 5 rangos más altos cubren toda la ventana posible de escalera y no existe una segunda que la diferencie (en ese caso ambos tipos de manos serían iguales).
+
+### Tipos de mano no disjuntos
+
+Los clasificadores de tipo de mano (`Par`, `Trio`, `Color`, etc.) se declaran deliberadamente **no disjuntos**. En el juego real una mano solo puede ser de un tipo a la vez (junto con su propia jerarquía de manos), pero acá se prioriza poder evaluar el comportamiento de razonadores OWL en un tiempo razonable. Ontologías con clasificadores de manos disjuntas está designado como trabajo futuro.
