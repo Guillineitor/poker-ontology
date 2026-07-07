@@ -83,7 +83,7 @@ public class BenchmarkOWLDefinitivo {
 
     /** Tiempo máximo permitido para Openllet. Su resultado se registra como TIMEOUT
      *  si supera este umbral. Independiente del timeout de JFact. */
-    private static final long TIMEOUT_OPENLLET_SEGUNDOS = 3600;
+    private static final long TIMEOUT_OPENLLET_SEGUNDOS = 30;
 
     /** Tiempo máximo permitido para JFact (FaCT++). Su resultado se registra como TIMEOUT
      *  si supera este umbral. Independiente del timeout de Openllet. */
@@ -397,24 +397,20 @@ public class BenchmarkOWLDefinitivo {
         System.out.println("╚══════════════════════════════════════════════════════════════════════╝");
         System.out.println(RESET);
 
-        String fmt = "%-22s │ %10s │ %10s │ %12s │ %10s │ %11s │ %8s │ %12s%n";
+        String fmt = "%-22s │ %10s │ %10s │ %12s │ %10s │ %12s │ %8s │ %12s%n";
         System.out.printf(BOLD + fmt + RESET,
             "Razonador", "Carga (ms)", "Init (ms)", "Precomp (ms)", "Total (ms)",
             "Mem pico(MB)", "Consist.", "Inferencias");
-        System.out.println("─".repeat(109));
+        System.out.println("─".repeat(117));
 
         for (ResultadoBenchmark r : resultados) {
             if (r.error != null) {
                 String etiqueta = "TIMEOUT".equals(r.error) ? "TIMEOUT" : "ERROR: " + r.error;
-                // Se rellena cada celda al ancho correcto ANTES de agregar los códigos
-                // de color, para que las secuencias ANSI no cuenten como caracteres
-                // visibles y desalineen las columnas.
                 String c10 = RED + String.format("%10s", etiqueta) + RESET;
                 String c12 = RED + String.format("%12s", etiqueta) + RESET;
-                String c11 = RED + String.format("%11s", etiqueta) + RESET;
                 String c8  = RED + String.format("%8s",  etiqueta) + RESET;
                 System.out.printf("%-22s │ %s │ %s │ %s │ %s │ %s │ %s │ %s%n",
-                    r.nombre, c10, c10, c12, c10, c11, c8, c12);
+                    r.nombre, c10, c10, c12, c10, c12, c8, c12);
                 continue;
             }
             System.out.printf(fmt,
