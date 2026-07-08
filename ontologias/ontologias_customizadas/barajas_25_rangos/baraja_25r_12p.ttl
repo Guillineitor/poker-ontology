@@ -1,0 +1,1929 @@
+# =============================================================================
+# Ontología de baraja: baraja_25r_12p
+# Generada automáticamente por generador_ontologias.py
+# =============================================================================
+#
+# Esta ontología modela la estructura de una baraja de cartas de tipo 'baraja_25r_12p'
+# en OWL 2 DL. El dominio cubre palos, rangos, cartas y la clasificación de
+# manos de cinco cartas. Otros aspectos del juego quedan fuera del alcance.
+#
+# =============================================================================
+ 
+@prefix poker: <http://www.ontologia-baraja.org/baraja_25r_12p#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+ 
+# -----------------------------------------------------------------------------
+# OWL trabaja bajo Open World Assumption (OWA): lo que no está afirmado es
+# desconocido, no necesariamente falso. Sin intervención explícita, el razonador
+# podría asumir la existencia de palos o rangos adicionales no declarados.
+#
+# Para evitarlo, Palo y Rango se cierran con owl:oneOf, fijando exactamente
+# los individuos posibles. Los 300 individuos de cartas se declaran
+# además AllDifferent para que el razonador los trate como entidades distintas
+# y no intente unificarlas.
+# -----------------------------------------------------------------------------
+ 
+<http://www.ontologia-baraja.org/baraja_25r_12p>
+    rdf:type owl:Ontology ;
+    rdfs:label "Ontología de baraja baraja_25r_12p" ;
+    rdfs:comment "Ontología OWL 2 DL que modela la baraja 'baraja_25r_12p' (12 palos x 25 rangos = 300 cartas)." ;
+    owl:versionInfo "2.0.0" .
+
+
+# =============================================================================
+# Palos y Rangos
+# =============================================================================
+
+# Definición de la clase Palo.
+# Palo se cierra con owl:oneOf para que el razonador no asuma palos adicionales.
+poker:Palo a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:oneOf ( poker:Fuego poker:Agua poker:Planta poker:Electrico poker:Normal poker:Volador poker:Bicho poker:Veneno poker:Tierra poker:Roca poker:Lucha poker:Psiquico )
+    ] ;
+    rdfs:label "Palo" ;
+    rdfs:comment "Palo de una carta. Clase cerrada: exactamente Fuego, Agua, Planta, Electrico, Normal, Volador, Bicho, Veneno, Tierra, Roca, Lucha, Psiquico." .
+
+# Definición de la clase Rango.
+# Rango se cierra con owl:oneOf para que el razonador no asuma rangos adicionales.
+poker:Rango a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:oneOf ( poker:Uno poker:Dos poker:Tres poker:Cuatro poker:Cinco poker:Seis poker:Siete poker:Ocho poker:Nueve poker:Diez poker:Once poker:Doce poker:Trece poker:Catorce poker:Quince poker:Dieciseis poker:Diecisiete poker:Dieciocho poker:Diecinueve poker:Veinte poker:Veintiuno poker:Veintidos poker:Veintitres poker:Veinticuatro poker:Veinticinco )
+    ] ;
+    rdfs:label "Rango" ;
+    rdfs:comment "Rango de una carta. Clase cerrada: exactamente Uno, Dos, Tres, Cuatro, Cinco, Seis, Siete, Ocho, Nueve, Diez, Once, Doce, Trece, Catorce, Quince, Dieciseis, Diecisiete, Dieciocho, Diecinueve, Veinte, Veintiuno, Veintidos, Veintitres, Veinticuatro, Veinticinco." .
+
+# Definición de la clase Carta.
+# Cada carta tiene exactamente un palo y un rango, garantizado por las FunctionalProperty definidas más adelante.
+poker:Carta a owl:Class ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:someValuesFrom poker:Palo
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty poker:tieneRango ;
+        owl:someValuesFrom poker:Rango
+    ] ;
+    rdfs:label "Carta" ;
+    rdfs:comment "Una carta de la baraja, caracterizada por un palo y un rango únicos." .
+
+# Subclases de Carta por palo.
+# Se usan en los clasificadores de Color y Escalera de Color.
+poker:CartaDeFuego a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:hasValue poker:Fuego
+    ] ;
+    rdfs:label "Carta de Fuego" ;
+    rdfs:comment "Una carta de la baraja del palo de Fuego." .
+
+poker:CartaDeAgua a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:hasValue poker:Agua
+    ] ;
+    rdfs:label "Carta de Agua" ;
+    rdfs:comment "Una carta de la baraja del palo de Agua." .
+
+poker:CartaDePlanta a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:hasValue poker:Planta
+    ] ;
+    rdfs:label "Carta de Planta" ;
+    rdfs:comment "Una carta de la baraja del palo de Planta." .
+
+poker:CartaDeElectrico a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:hasValue poker:Electrico
+    ] ;
+    rdfs:label "Carta de Electrico" ;
+    rdfs:comment "Una carta de la baraja del palo de Electrico." .
+
+poker:CartaDeNormal a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:hasValue poker:Normal
+    ] ;
+    rdfs:label "Carta de Normal" ;
+    rdfs:comment "Una carta de la baraja del palo de Normal." .
+
+poker:CartaDeVolador a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:hasValue poker:Volador
+    ] ;
+    rdfs:label "Carta de Volador" ;
+    rdfs:comment "Una carta de la baraja del palo de Volador." .
+
+poker:CartaDeBicho a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:hasValue poker:Bicho
+    ] ;
+    rdfs:label "Carta de Bicho" ;
+    rdfs:comment "Una carta de la baraja del palo de Bicho." .
+
+poker:CartaDeVeneno a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:hasValue poker:Veneno
+    ] ;
+    rdfs:label "Carta de Veneno" ;
+    rdfs:comment "Una carta de la baraja del palo de Veneno." .
+
+poker:CartaDeTierra a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:hasValue poker:Tierra
+    ] ;
+    rdfs:label "Carta de Tierra" ;
+    rdfs:comment "Una carta de la baraja del palo de Tierra." .
+
+poker:CartaDeRoca a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:hasValue poker:Roca
+    ] ;
+    rdfs:label "Carta de Roca" ;
+    rdfs:comment "Una carta de la baraja del palo de Roca." .
+
+poker:CartaDeLucha a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:hasValue poker:Lucha
+    ] ;
+    rdfs:label "Carta de Lucha" ;
+    rdfs:comment "Una carta de la baraja del palo de Lucha." .
+
+poker:CartaDePsiquico a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty poker:tienePalo ;
+        owl:hasValue poker:Psiquico
+    ] ;
+    rdfs:label "Carta de Psiquico" ;
+    rdfs:comment "Una carta de la baraja del palo de Psiquico." .
+
+# Subclases de Carta por rango.
+# Se usan en los clasificadores de Par, Trío y Póker.
+poker:CartaDeUno a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Uno ] ;
+    rdfs:label "Carta de Uno" .
+
+poker:CartaDeDos a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Dos ] ;
+    rdfs:label "Carta de Dos" .
+
+poker:CartaDeTres a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Tres ] ;
+    rdfs:label "Carta de Tres" .
+
+poker:CartaDeCuatro a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Cuatro ] ;
+    rdfs:label "Carta de Cuatro" .
+
+poker:CartaDeCinco a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Cinco ] ;
+    rdfs:label "Carta de Cinco" .
+
+poker:CartaDeSeis a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Seis ] ;
+    rdfs:label "Carta de Seis" .
+
+poker:CartaDeSiete a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Siete ] ;
+    rdfs:label "Carta de Siete" .
+
+poker:CartaDeOcho a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Ocho ] ;
+    rdfs:label "Carta de Ocho" .
+
+poker:CartaDeNueve a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Nueve ] ;
+    rdfs:label "Carta de Nueve" .
+
+poker:CartaDeDiez a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Diez ] ;
+    rdfs:label "Carta de Diez" .
+
+poker:CartaDeOnce a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Once ] ;
+    rdfs:label "Carta de Once" .
+
+poker:CartaDeDoce a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Doce ] ;
+    rdfs:label "Carta de Doce" .
+
+poker:CartaDeTrece a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Trece ] ;
+    rdfs:label "Carta de Trece" .
+
+poker:CartaDeCatorce a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Catorce ] ;
+    rdfs:label "Carta de Catorce" .
+
+poker:CartaDeQuince a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Quince ] ;
+    rdfs:label "Carta de Quince" .
+
+poker:CartaDeDieciseis a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Dieciseis ] ;
+    rdfs:label "Carta de Dieciseis" .
+
+poker:CartaDeDiecisiete a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Diecisiete ] ;
+    rdfs:label "Carta de Diecisiete" .
+
+poker:CartaDeDieciocho a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Dieciocho ] ;
+    rdfs:label "Carta de Dieciocho" .
+
+poker:CartaDeDiecinueve a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Diecinueve ] ;
+    rdfs:label "Carta de Diecinueve" .
+
+poker:CartaDeVeinte a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Veinte ] ;
+    rdfs:label "Carta de Veinte" .
+
+poker:CartaDeVeintiuno a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Veintiuno ] ;
+    rdfs:label "Carta de Veintiuno" .
+
+poker:CartaDeVeintidos a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Veintidos ] ;
+    rdfs:label "Carta de Veintidos" .
+
+poker:CartaDeVeintitres a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Veintitres ] ;
+    rdfs:label "Carta de Veintitres" .
+
+poker:CartaDeVeinticuatro a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Veinticuatro ] ;
+    rdfs:label "Carta de Veinticuatro" .
+
+poker:CartaDeVeinticinco a owl:Class ;
+    rdfs:subClassOf poker:Carta ;
+    owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:Veinticinco ] ;
+    rdfs:label "Carta de Veinticinco" .
+
+
+# Disjunción explícita de subclases de Carta
+# De por si ya son mutuamente disjuntas como consecuencia
+# lógica de que tieneRango (que es FunctionalProperty) y los individuos de Rango son
+# AllDifferent, pero esta disjunción ayuda a evitar que el razonador tenga que rehacer esa derivación en cada
+# rama de los clasificadores que usan estas subclases en un owl:unionOf
+# (como por ejemplo más adelante con las manos de tipos Par, Trío, Póker, Escalera), 
+# lo cual importa a medida que crece la complejidad de la ontología.
+
+[] a owl:AllDisjointClasses ;
+    owl:members (
+        poker:CartaDeFuego poker:CartaDeAgua poker:CartaDePlanta poker:CartaDeElectrico
+        poker:CartaDeNormal poker:CartaDeVolador poker:CartaDeBicho poker:CartaDeVeneno
+        poker:CartaDeTierra poker:CartaDeRoca poker:CartaDeLucha poker:CartaDePsiquico
+    ) .
+
+[] a owl:AllDisjointClasses ;
+    owl:members (
+        poker:CartaDeUno poker:CartaDeDos poker:CartaDeTres poker:CartaDeCuatro poker:CartaDeCinco
+        poker:CartaDeSeis poker:CartaDeSiete poker:CartaDeOcho poker:CartaDeNueve poker:CartaDeDiez
+        poker:CartaDeOnce poker:CartaDeDoce poker:CartaDeTrece poker:CartaDeCatorce poker:CartaDeQuince
+        poker:CartaDeDieciseis poker:CartaDeDiecisiete poker:CartaDeDieciocho poker:CartaDeDiecinueve
+        poker:CartaDeVeinte poker:CartaDeVeintiuno poker:CartaDeVeintidos poker:CartaDeVeintitres
+        poker:CartaDeVeinticuatro poker:CartaDeVeinticinco
+    ) .
+
+
+# =============================================================================
+# Tipos de Mano
+# =============================================================================
+#
+# Jerarquía de menor a mayor valor de las manos posibles con esta baraja:
+#
+#   Mano
+#   ├── CartaAlta      (1) Sin combinación; gana la carta más alta
+#   ├── Par            (2) Dos cartas del mismo rango
+#   ├── DoblePar       (3) Dos pares de rangos distintos
+#   ├── Trio           (4) Tres cartas del mismo rango
+#   ├── Escalera       (5) Cinco cartas de rangos consecutivos
+#   ├── Color          (6) Cinco cartas del mismo palo
+#   ├── Full           (7) Un trío más un par de rangos distintos
+#   ├── Poker          (8) Cuatro cartas del mismo rango
+#   ├── EscaleraColor  (9) Cinco cartas consecutivas del mismo palo
+#   ├── EscaleraReal   (10) Los cinco rangos más altos del mismo palo
+#
+# Decisión de diseño: los tipos de mano no se declaran disjuntos entre sí.
+# Si bien en el juego real esto es así, la ontología busca evaluar la capacidad
+# de los razonadores OWL frente a ontologías suficientemente complejas. Una
+# versión con clases disjuntas queda para trabajo futuro.
+# =============================================================================
+
+# Definición de la clase Mano.
+poker:Mano a owl:Class ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty poker:contieneCarta ;
+        owl:maxQualifiedCardinality "5"^^xsd:nonNegativeInteger ;
+        owl:onClass poker:Carta
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty poker:contieneCarta ;
+        owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ;
+        owl:onClass poker:Carta
+    ] ;
+    rdfs:label "Mano" ;
+    rdfs:comment "La mejor combinación de 5 cartas que puede formar un jugador con la baraja." .
+
+# Definición de la clase CartaAlta.
+# Mano sin una combinación específica; gana la carta más alta. La definición es simple
+# a propósito: al no declarar las manos como clases disjuntas, técnicamente cualquier
+# tipo de mano podría clasificarse también como CartaAlta.
+poker:CartaAlta a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:Mano
+            [
+                a owl:Restriction ;
+                owl:onProperty poker:contieneCarta ;
+                owl:someValuesFrom poker:Carta
+            ]
+        )
+    ] ;
+    rdfs:subClassOf poker:Mano ;
+    rdfs:label "Carta Alta" ;
+    rdfs:comment "Mano formada sin combinación; la carta más alta decide el ganador." .
+
+# Definición de la clase Par.
+# Mano que contiene dos cartas del mismo rango. Se usa unionOf sobre las subclases
+# de rango porque OWL DL 2 no puede expresar «mismo rango» de forma genérica.
+poker:Par a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeUno ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOnce ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDoce ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTrece ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCatorce ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeQuince ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDieciseis ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiecisiete ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDieciocho ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiecinueve ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeinte ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeintiuno ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeintidos ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeintitres ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeinticuatro ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeinticinco ]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Par" ;
+    rdfs:comment "Mano formada por dos cartas del mismo rango más tres cartas de rangos distintos." .
+
+# Definición de la clase DoblePar.
+# Mano que contiene dos pares de cartas de distintos rangos. Usa la propiedad auxiliar
+# manoTienePar, que se agrega manualmente en la ABox. OWL DL 2 no puede contar pares
+# «distintos» de forma nativa, así que se delega parte del trabajo al momento de
+# instanciar la mano.
+poker:DoblePar a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:Mano
+            [ a owl:Restriction ;
+              owl:onProperty poker:manoTienePar ;
+              owl:minCardinality "2"^^xsd:nonNegativeInteger ]
+        )
+    ] ;
+    rdfs:label "Doble Par" ;
+    rdfs:comment "Mano formada por dos pares de rangos distintos, independientemente del palo." .
+
+# Definición de la clase Trio.
+# Mano que contiene tres cartas del mismo rango. Se usa unionOf sobre las subclases
+# de rango porque OWL DL 2 no puede expresar «mismo rango» de forma genérica.
+poker:Trio a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeUno ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOnce ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDoce ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTrece ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCatorce ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeQuince ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDieciseis ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiecisiete ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDieciocho ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiecinueve ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeinte ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeintiuno ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeintidos ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeintitres ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeinticuatro ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeinticinco ]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Trío" ;
+    rdfs:comment "Mano formada por tres cartas del mismo rango y otras dos cartas distintas." .
+
+# Definición de la clase Escalera.
+# Mano que contiene cinco cartas con rangos consecutivos, puede ser de palos distintos.
+# Se enumeran todas las ventanas posibles de cinco rangos consecutivos.
+# No hay forma de expresar «consecutivos» en OWL DL 2 sin esta enumeración.
+poker:Escalera a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    # Escalera Uno-Dos-Tres-Cuatro-Cinco.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeUno ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDos ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeTres ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCuatro ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCinco ]
+                    )]
+                    # Escalera Dos-Tres-Cuatro-Cinco-Seis.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDos ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeTres ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCuatro ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCinco ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSeis ]
+                    )]
+                    # Escalera Tres-Cuatro-Cinco-Seis-Siete.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeTres ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCuatro ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCinco ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSeis ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSiete ]
+                    )]
+                    # Escalera Cuatro-Cinco-Seis-Siete-Ocho.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCuatro ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCinco ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSeis ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSiete ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeOcho ]
+                    )]
+                    # Escalera Cinco-Seis-Siete-Ocho-Nueve.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCinco ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSeis ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSiete ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeOcho ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeNueve ]
+                    )]
+                    # Escalera Seis-Siete-Ocho-Nueve-Diez.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSeis ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSiete ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeOcho ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeNueve ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiez ]
+                    )]
+                    # Escalera Siete-Ocho-Nueve-Diez-Once.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeSiete ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeOcho ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeNueve ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiez ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeOnce ]
+                    )]
+                    # Escalera Ocho-Nueve-Diez-Once-Doce.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeOcho ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeNueve ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiez ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeOnce ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDoce ]
+                    )]
+                    # Escalera Nueve-Diez-Once-Doce-Trece.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeNueve ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiez ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeOnce ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDoce ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeTrece ]
+                    )]
+                    # Escalera Diez-Once-Doce-Trece-Catorce.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiez ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeOnce ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDoce ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeTrece ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCatorce ]
+                    )]
+                    # Escalera Once-Doce-Trece-Catorce-Quince.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeOnce ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDoce ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeTrece ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCatorce ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeQuince ]
+                    )]
+                    # Escalera Doce-Trece-Catorce-Quince-Dieciseis.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDoce ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeTrece ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCatorce ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeQuince ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDieciseis ]
+                    )]
+                    # Escalera Trece-Catorce-Quince-Dieciseis-Diecisiete.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeTrece ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCatorce ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeQuince ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDieciseis ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiecisiete ]
+                    )]
+                    # Escalera Catorce-Quince-Dieciseis-Diecisiete-Dieciocho.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeCatorce ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeQuince ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDieciseis ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiecisiete ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDieciocho ]
+                    )]
+                    # Escalera Quince-Dieciseis-Diecisiete-Dieciocho-Diecinueve.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeQuince ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDieciseis ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiecisiete ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDieciocho ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiecinueve ]
+                    )]
+                    # Escalera Dieciseis-Diecisiete-Dieciocho-Diecinueve-Veinte.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDieciseis ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiecisiete ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDieciocho ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiecinueve ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeinte ]
+                    )]
+                    # Escalera Diecisiete-Dieciocho-Diecinueve-Veinte-Veintiuno.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiecisiete ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDieciocho ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiecinueve ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeinte ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeintiuno ]
+                    )]
+                    # Escalera Dieciocho-Diecinueve-Veinte-Veintiuno-Veintidos.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDieciocho ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiecinueve ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeinte ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeintiuno ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeintidos ]
+                    )]
+                    # Escalera Diecinueve-Veinte-Veintiuno-Veintidos-Veintitres.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeDiecinueve ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeinte ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeintiuno ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeintidos ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeintitres ]
+                    )]
+                    # Escalera Veinte-Veintiuno-Veintidos-Veintitres-Veinticuatro.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeinte ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeintiuno ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeintidos ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeintitres ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeinticuatro ]
+                    )]
+                    # Escalera Veintiuno-Veintidos-Veintitres-Veinticuatro-Veinticinco.
+                    [ a owl:Class ; owl:intersectionOf (
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeintiuno ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeintidos ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeintitres ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeinticuatro ]
+                        [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeinticinco ]
+                    )]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Escalera" ;
+    rdfs:comment "Mano formada por cinco cartas de rangos consecutivos, no necesariamente del mismo palo." .
+
+# Definición de la clase Color.
+# Mano que contiene cinco cartas del mismo palo, con rangos distintos. Se usa unionOf sobre las subclases de palo 
+# porque OWL DL 2 no puede expresar «mismo palo» de forma genérica.
+poker:Color a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeFuego ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeAgua ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDePlanta ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeElectrico ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNormal ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVolador ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeBicho ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeneno ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTierra ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeRoca ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeLucha ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "5"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDePsiquico ]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Color" ;
+    rdfs:comment "Mano formada por cinco cartas del mismo palo, no necesariamente consecutivas entre sí." .
+
+# Definición de la clase Full.
+# Mano que contiene un trío más un par de rangos distintos. Al no declarar las manos
+# como clases disjuntas, Full puede definirse como la intersección de Trio y DoblePar,
+# lo que es conceptualmente correcto y evita duplicar restricciones.
+poker:Full a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:Trio
+            poker:DoblePar
+        )
+    ] ;
+    rdfs:label "Full" ;
+    rdfs:comment "Mano formada por tres cartas del mismo rango y dos cartas de otro mismo rango." .
+
+# Definición de la clase Poker.
+# Mano que contiene cuatro cartas del mismo rango. Se usa unionOf sobre las subclases
+# de rango porque OWL DL 2 no puede expresar «mismo rango» de forma genérica.
+poker:Poker a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:Mano
+            [
+                a owl:Class ;
+                owl:unionOf (
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeUno ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDos ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTres ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCuatro ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCinco ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSeis ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeSiete ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOcho ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeNueve ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiez ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeOnce ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDoce ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeTrece ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeCatorce ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeQuince ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDieciseis ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiecisiete ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDieciocho ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeDiecinueve ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeinte ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeintiuno ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeintidos ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeintitres ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeinticuatro ]
+                    [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ; owl:onClass poker:CartaDeVeinticinco ]
+                )
+            ]
+        )
+    ] ;
+    rdfs:label "Póker" ;
+    rdfs:comment "Mano formada por cuatro cartas del mismo rango y una carta cualquiera." .
+
+# Definición de la clase EscaleraColor.
+# Mano que contiene cinco cartas consecutivas del mismo palo. Se define como la
+# intersección de Escalera y Color, lo que es conceptualmente correcto y evita
+# enumerar todas las combinaciones posibles de secuencia y palo.
+poker:EscaleraColor a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:Escalera
+            poker:Color
+        )
+    ] ;
+    rdfs:label "Escalera de Color" ;
+    rdfs:comment "Mano formada por cinco cartas consecutivas del mismo palo." .
+
+# Definición de la clase EscaleraReal.
+# Caso especial de EscaleraColor con los cinco rangos más altos (Veintiuno-Veintidos-Veintitres-Veinticuatro-Veinticinco).
+# Se define como la intersección de EscaleraColor con la presencia obligatoria
+# de cada uno de esos cinco rangos.
+poker:EscaleraReal a owl:Class ;
+    rdfs:subClassOf poker:EscaleraColor ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            poker:EscaleraColor
+            [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeintiuno ]
+            [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeintidos ]
+            [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeintitres ]
+            [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeinticuatro ]
+            [ a owl:Restriction ; owl:onProperty poker:contieneCarta ; owl:someValuesFrom poker:CartaDeVeinticinco ]
+        )
+    ] ;
+    rdfs:label "Escalera Real" ;
+    rdfs:comment "Mano formada por los cinco rangos más altos consecutivos (Veintiuno-Veintidos-Veintitres-Veinticuatro-Veinticinco) del mismo palo." .
+
+ 
+# =============================================================================
+# Propiedades de Objeto
+# =============================================================================
+ 
+# Definición de la propiedad tienePalo.
+# Propiedad que indica que cada carta tiene exactamente un palo.
+poker:tienePalo a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain poker:Carta ;
+    rdfs:range  poker:Palo ;
+    rdfs:label  "Tiene Palo" ;
+    rdfs:comment "Propiedad que asocia una carta con su palo. Funcional: cada carta tiene exactamente un palo." .
+ 
+# Definición de la propiedad tieneRango.
+# Propiedad que indica que cada carta tiene exactamente un rango.
+poker:tieneRango a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain poker:Carta ;
+    rdfs:range  poker:Rango ;
+    rdfs:label  "Tiene Rango" ;
+    rdfs:comment "Propiedad que asocia una carta con su rango. Funcional: cada carta tiene exactamente un rango." .
+ 
+# Definición de la propiedad contieneCarta.
+# Propiedad que indica que una mano contiene cierta carta.
+poker:contieneCarta a owl:ObjectProperty ;
+    rdfs:domain poker:Mano ;
+    rdfs:range  poker:Carta ;
+    rdfs:label  "Contiene Carta" ;
+    rdfs:comment "Propiedad que relaciona una mano con cada una de las cartas que la componen." .
+ 
+# Definición de la propiedad manoTienePar.
+# manoTienePar es una propiedad auxiliar para el clasificador de DoblePar.
+# OWL DL 2 no puede contar cuántos rangos distintos tienen cardinalidad mayor o igual a 2,
+# así que esta propiedad se agrega manualmente en la ABox al instanciar cada mano.
+# La explicación está detallada en la definición de la clase DoblePar.
+poker:manoTienePar a owl:ObjectProperty ;
+    rdfs:domain poker:Mano ;
+    rdfs:range  poker:Rango ;
+    rdfs:label  "Mano tiene Par" ;
+    rdfs:comment "Indica qué rangos están presentes con al menos 2 cartas en la mano. Se agrega manualmente en la ABox; usado por el clasificador de DoblePar." .
+
+# =============================================================================
+# ABox - Individuos
+# =============================================================================
+#
+# Convención de nombres para cartas: {Rango}De{Palo}.
+# =============================================================================
+
+# --- Palos ---
+poker:Fuego a poker:Palo ;
+    rdfs:label "Fuego" .
+poker:Agua a poker:Palo ;
+    rdfs:label "Agua" .
+poker:Planta a poker:Palo ;
+    rdfs:label "Planta" .
+poker:Electrico a poker:Palo ;
+    rdfs:label "Electrico" .
+poker:Normal a poker:Palo ;
+    rdfs:label "Normal" .
+poker:Volador a poker:Palo ;
+    rdfs:label "Volador" .
+poker:Bicho a poker:Palo ;
+    rdfs:label "Bicho" .
+poker:Veneno a poker:Palo ;
+    rdfs:label "Veneno" .
+poker:Tierra a poker:Palo ;
+    rdfs:label "Tierra" .
+poker:Roca a poker:Palo ;
+    rdfs:label "Roca" .
+poker:Lucha a poker:Palo ;
+    rdfs:label "Lucha" .
+poker:Psiquico a poker:Palo ;
+    rdfs:label "Psiquico" .
+
+# --- Rangos ---
+poker:Uno a poker:Rango ;
+    rdfs:label "Uno" .
+
+poker:Dos a poker:Rango ;
+    rdfs:label "Dos" .
+
+poker:Tres a poker:Rango ;
+    rdfs:label "Tres" .
+
+poker:Cuatro a poker:Rango ;
+    rdfs:label "Cuatro" .
+
+poker:Cinco a poker:Rango ;
+    rdfs:label "Cinco" .
+
+poker:Seis a poker:Rango ;
+    rdfs:label "Seis" .
+
+poker:Siete a poker:Rango ;
+    rdfs:label "Siete" .
+
+poker:Ocho a poker:Rango ;
+    rdfs:label "Ocho" .
+
+poker:Nueve a poker:Rango ;
+    rdfs:label "Nueve" .
+
+poker:Diez a poker:Rango ;
+    rdfs:label "Diez" .
+
+poker:Once a poker:Rango ;
+    rdfs:label "Once" .
+
+poker:Doce a poker:Rango ;
+    rdfs:label "Doce" .
+
+poker:Trece a poker:Rango ;
+    rdfs:label "Trece" .
+
+poker:Catorce a poker:Rango ;
+    rdfs:label "Catorce" .
+
+poker:Quince a poker:Rango ;
+    rdfs:label "Quince" .
+
+poker:Dieciseis a poker:Rango ;
+    rdfs:label "Dieciseis" .
+
+poker:Diecisiete a poker:Rango ;
+    rdfs:label "Diecisiete" .
+
+poker:Dieciocho a poker:Rango ;
+    rdfs:label "Dieciocho" .
+
+poker:Diecinueve a poker:Rango ;
+    rdfs:label "Diecinueve" .
+
+poker:Veinte a poker:Rango ;
+    rdfs:label "Veinte" .
+
+poker:Veintiuno a poker:Rango ;
+    rdfs:label "Veintiuno" .
+
+poker:Veintidos a poker:Rango ;
+    rdfs:label "Veintidos" .
+
+poker:Veintitres a poker:Rango ;
+    rdfs:label "Veintitres" .
+
+poker:Veinticuatro a poker:Rango ;
+    rdfs:label "Veinticuatro" .
+
+poker:Veinticinco a poker:Rango ;
+    rdfs:label "Veinticinco" .
+
+# --- Cartas ---
+# Cartas de Fuego.
+poker:UnoDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Uno ;
+    rdfs:label "Uno de Fuego" .
+poker:DosDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Dos ;
+    rdfs:label "Dos de Fuego" .
+poker:TresDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Tres ;
+    rdfs:label "Tres de Fuego" .
+poker:CuatroDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Cuatro ;
+    rdfs:label "Cuatro de Fuego" .
+poker:CincoDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Cinco ;
+    rdfs:label "Cinco de Fuego" .
+poker:SeisDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Seis ;
+    rdfs:label "Seis de Fuego" .
+poker:SieteDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Siete ;
+    rdfs:label "Siete de Fuego" .
+poker:OchoDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Ocho ;
+    rdfs:label "Ocho de Fuego" .
+poker:NueveDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Nueve ;
+    rdfs:label "Nueve de Fuego" .
+poker:DiezDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Diez ;
+    rdfs:label "Diez de Fuego" .
+poker:OnceDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Once ;
+    rdfs:label "Once de Fuego" .
+poker:DoceDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Doce ;
+    rdfs:label "Doce de Fuego" .
+poker:TreceDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Trece ;
+    rdfs:label "Trece de Fuego" .
+poker:CatorceDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Catorce ;
+    rdfs:label "Catorce de Fuego" .
+poker:QuinceDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Quince ;
+    rdfs:label "Quince de Fuego" .
+poker:DieciseisDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Dieciseis ;
+    rdfs:label "Dieciseis de Fuego" .
+poker:DiecisieteDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Diecisiete ;
+    rdfs:label "Diecisiete de Fuego" .
+poker:DieciochoDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Dieciocho ;
+    rdfs:label "Dieciocho de Fuego" .
+poker:DiecinueveDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Diecinueve ;
+    rdfs:label "Diecinueve de Fuego" .
+poker:VeinteDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Veinte ;
+    rdfs:label "Veinte de Fuego" .
+poker:VeintiunoDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Veintiuno ;
+    rdfs:label "Veintiuno de Fuego" .
+poker:VeintidosDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Veintidos ;
+    rdfs:label "Veintidos de Fuego" .
+poker:VeintitresDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Veintitres ;
+    rdfs:label "Veintitres de Fuego" .
+poker:VeinticuatroDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Veinticuatro ;
+    rdfs:label "Veinticuatro de Fuego" .
+poker:VeinticincoDeFuego a poker:Carta ;
+    poker:tienePalo poker:Fuego ; poker:tieneRango poker:Veinticinco ;
+    rdfs:label "Veinticinco de Fuego" .
+
+# Cartas de Agua.
+poker:UnoDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Uno ;
+    rdfs:label "Uno de Agua" .
+poker:DosDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Dos ;
+    rdfs:label "Dos de Agua" .
+poker:TresDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Tres ;
+    rdfs:label "Tres de Agua" .
+poker:CuatroDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Cuatro ;
+    rdfs:label "Cuatro de Agua" .
+poker:CincoDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Cinco ;
+    rdfs:label "Cinco de Agua" .
+poker:SeisDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Seis ;
+    rdfs:label "Seis de Agua" .
+poker:SieteDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Siete ;
+    rdfs:label "Siete de Agua" .
+poker:OchoDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Ocho ;
+    rdfs:label "Ocho de Agua" .
+poker:NueveDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Nueve ;
+    rdfs:label "Nueve de Agua" .
+poker:DiezDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Diez ;
+    rdfs:label "Diez de Agua" .
+poker:OnceDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Once ;
+    rdfs:label "Once de Agua" .
+poker:DoceDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Doce ;
+    rdfs:label "Doce de Agua" .
+poker:TreceDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Trece ;
+    rdfs:label "Trece de Agua" .
+poker:CatorceDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Catorce ;
+    rdfs:label "Catorce de Agua" .
+poker:QuinceDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Quince ;
+    rdfs:label "Quince de Agua" .
+poker:DieciseisDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Dieciseis ;
+    rdfs:label "Dieciseis de Agua" .
+poker:DiecisieteDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Diecisiete ;
+    rdfs:label "Diecisiete de Agua" .
+poker:DieciochoDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Dieciocho ;
+    rdfs:label "Dieciocho de Agua" .
+poker:DiecinueveDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Diecinueve ;
+    rdfs:label "Diecinueve de Agua" .
+poker:VeinteDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Veinte ;
+    rdfs:label "Veinte de Agua" .
+poker:VeintiunoDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Veintiuno ;
+    rdfs:label "Veintiuno de Agua" .
+poker:VeintidosDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Veintidos ;
+    rdfs:label "Veintidos de Agua" .
+poker:VeintitresDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Veintitres ;
+    rdfs:label "Veintitres de Agua" .
+poker:VeinticuatroDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Veinticuatro ;
+    rdfs:label "Veinticuatro de Agua" .
+poker:VeinticincoDeAgua a poker:Carta ;
+    poker:tienePalo poker:Agua ; poker:tieneRango poker:Veinticinco ;
+    rdfs:label "Veinticinco de Agua" .
+
+# Cartas de Planta.
+poker:UnoDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Uno ;
+    rdfs:label "Uno de Planta" .
+poker:DosDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Dos ;
+    rdfs:label "Dos de Planta" .
+poker:TresDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Tres ;
+    rdfs:label "Tres de Planta" .
+poker:CuatroDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Cuatro ;
+    rdfs:label "Cuatro de Planta" .
+poker:CincoDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Cinco ;
+    rdfs:label "Cinco de Planta" .
+poker:SeisDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Seis ;
+    rdfs:label "Seis de Planta" .
+poker:SieteDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Siete ;
+    rdfs:label "Siete de Planta" .
+poker:OchoDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Ocho ;
+    rdfs:label "Ocho de Planta" .
+poker:NueveDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Nueve ;
+    rdfs:label "Nueve de Planta" .
+poker:DiezDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Diez ;
+    rdfs:label "Diez de Planta" .
+poker:OnceDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Once ;
+    rdfs:label "Once de Planta" .
+poker:DoceDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Doce ;
+    rdfs:label "Doce de Planta" .
+poker:TreceDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Trece ;
+    rdfs:label "Trece de Planta" .
+poker:CatorceDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Catorce ;
+    rdfs:label "Catorce de Planta" .
+poker:QuinceDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Quince ;
+    rdfs:label "Quince de Planta" .
+poker:DieciseisDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Dieciseis ;
+    rdfs:label "Dieciseis de Planta" .
+poker:DiecisieteDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Diecisiete ;
+    rdfs:label "Diecisiete de Planta" .
+poker:DieciochoDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Dieciocho ;
+    rdfs:label "Dieciocho de Planta" .
+poker:DiecinueveDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Diecinueve ;
+    rdfs:label "Diecinueve de Planta" .
+poker:VeinteDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Veinte ;
+    rdfs:label "Veinte de Planta" .
+poker:VeintiunoDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Veintiuno ;
+    rdfs:label "Veintiuno de Planta" .
+poker:VeintidosDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Veintidos ;
+    rdfs:label "Veintidos de Planta" .
+poker:VeintitresDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Veintitres ;
+    rdfs:label "Veintitres de Planta" .
+poker:VeinticuatroDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Veinticuatro ;
+    rdfs:label "Veinticuatro de Planta" .
+poker:VeinticincoDePlanta a poker:Carta ;
+    poker:tienePalo poker:Planta ; poker:tieneRango poker:Veinticinco ;
+    rdfs:label "Veinticinco de Planta" .
+
+# Cartas de Electrico.
+poker:UnoDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Uno ;
+    rdfs:label "Uno de Electrico" .
+poker:DosDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Dos ;
+    rdfs:label "Dos de Electrico" .
+poker:TresDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Tres ;
+    rdfs:label "Tres de Electrico" .
+poker:CuatroDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Cuatro ;
+    rdfs:label "Cuatro de Electrico" .
+poker:CincoDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Cinco ;
+    rdfs:label "Cinco de Electrico" .
+poker:SeisDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Seis ;
+    rdfs:label "Seis de Electrico" .
+poker:SieteDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Siete ;
+    rdfs:label "Siete de Electrico" .
+poker:OchoDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Ocho ;
+    rdfs:label "Ocho de Electrico" .
+poker:NueveDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Nueve ;
+    rdfs:label "Nueve de Electrico" .
+poker:DiezDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Diez ;
+    rdfs:label "Diez de Electrico" .
+poker:OnceDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Once ;
+    rdfs:label "Once de Electrico" .
+poker:DoceDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Doce ;
+    rdfs:label "Doce de Electrico" .
+poker:TreceDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Trece ;
+    rdfs:label "Trece de Electrico" .
+poker:CatorceDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Catorce ;
+    rdfs:label "Catorce de Electrico" .
+poker:QuinceDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Quince ;
+    rdfs:label "Quince de Electrico" .
+poker:DieciseisDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Dieciseis ;
+    rdfs:label "Dieciseis de Electrico" .
+poker:DiecisieteDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Diecisiete ;
+    rdfs:label "Diecisiete de Electrico" .
+poker:DieciochoDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Dieciocho ;
+    rdfs:label "Dieciocho de Electrico" .
+poker:DiecinueveDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Diecinueve ;
+    rdfs:label "Diecinueve de Electrico" .
+poker:VeinteDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Veinte ;
+    rdfs:label "Veinte de Electrico" .
+poker:VeintiunoDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Veintiuno ;
+    rdfs:label "Veintiuno de Electrico" .
+poker:VeintidosDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Veintidos ;
+    rdfs:label "Veintidos de Electrico" .
+poker:VeintitresDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Veintitres ;
+    rdfs:label "Veintitres de Electrico" .
+poker:VeinticuatroDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Veinticuatro ;
+    rdfs:label "Veinticuatro de Electrico" .
+poker:VeinticincoDeElectrico a poker:Carta ;
+    poker:tienePalo poker:Electrico ; poker:tieneRango poker:Veinticinco ;
+    rdfs:label "Veinticinco de Electrico" .
+
+# Cartas de Normal.
+poker:UnoDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Uno ;
+    rdfs:label "Uno de Normal" .
+poker:DosDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Dos ;
+    rdfs:label "Dos de Normal" .
+poker:TresDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Tres ;
+    rdfs:label "Tres de Normal" .
+poker:CuatroDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Cuatro ;
+    rdfs:label "Cuatro de Normal" .
+poker:CincoDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Cinco ;
+    rdfs:label "Cinco de Normal" .
+poker:SeisDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Seis ;
+    rdfs:label "Seis de Normal" .
+poker:SieteDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Siete ;
+    rdfs:label "Siete de Normal" .
+poker:OchoDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Ocho ;
+    rdfs:label "Ocho de Normal" .
+poker:NueveDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Nueve ;
+    rdfs:label "Nueve de Normal" .
+poker:DiezDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Diez ;
+    rdfs:label "Diez de Normal" .
+poker:OnceDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Once ;
+    rdfs:label "Once de Normal" .
+poker:DoceDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Doce ;
+    rdfs:label "Doce de Normal" .
+poker:TreceDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Trece ;
+    rdfs:label "Trece de Normal" .
+poker:CatorceDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Catorce ;
+    rdfs:label "Catorce de Normal" .
+poker:QuinceDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Quince ;
+    rdfs:label "Quince de Normal" .
+poker:DieciseisDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Dieciseis ;
+    rdfs:label "Dieciseis de Normal" .
+poker:DiecisieteDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Diecisiete ;
+    rdfs:label "Diecisiete de Normal" .
+poker:DieciochoDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Dieciocho ;
+    rdfs:label "Dieciocho de Normal" .
+poker:DiecinueveDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Diecinueve ;
+    rdfs:label "Diecinueve de Normal" .
+poker:VeinteDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Veinte ;
+    rdfs:label "Veinte de Normal" .
+poker:VeintiunoDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Veintiuno ;
+    rdfs:label "Veintiuno de Normal" .
+poker:VeintidosDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Veintidos ;
+    rdfs:label "Veintidos de Normal" .
+poker:VeintitresDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Veintitres ;
+    rdfs:label "Veintitres de Normal" .
+poker:VeinticuatroDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Veinticuatro ;
+    rdfs:label "Veinticuatro de Normal" .
+poker:VeinticincoDeNormal a poker:Carta ;
+    poker:tienePalo poker:Normal ; poker:tieneRango poker:Veinticinco ;
+    rdfs:label "Veinticinco de Normal" .
+
+# Cartas de Volador.
+poker:UnoDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Uno ;
+    rdfs:label "Uno de Volador" .
+poker:DosDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Dos ;
+    rdfs:label "Dos de Volador" .
+poker:TresDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Tres ;
+    rdfs:label "Tres de Volador" .
+poker:CuatroDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Cuatro ;
+    rdfs:label "Cuatro de Volador" .
+poker:CincoDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Cinco ;
+    rdfs:label "Cinco de Volador" .
+poker:SeisDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Seis ;
+    rdfs:label "Seis de Volador" .
+poker:SieteDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Siete ;
+    rdfs:label "Siete de Volador" .
+poker:OchoDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Ocho ;
+    rdfs:label "Ocho de Volador" .
+poker:NueveDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Nueve ;
+    rdfs:label "Nueve de Volador" .
+poker:DiezDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Diez ;
+    rdfs:label "Diez de Volador" .
+poker:OnceDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Once ;
+    rdfs:label "Once de Volador" .
+poker:DoceDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Doce ;
+    rdfs:label "Doce de Volador" .
+poker:TreceDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Trece ;
+    rdfs:label "Trece de Volador" .
+poker:CatorceDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Catorce ;
+    rdfs:label "Catorce de Volador" .
+poker:QuinceDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Quince ;
+    rdfs:label "Quince de Volador" .
+poker:DieciseisDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Dieciseis ;
+    rdfs:label "Dieciseis de Volador" .
+poker:DiecisieteDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Diecisiete ;
+    rdfs:label "Diecisiete de Volador" .
+poker:DieciochoDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Dieciocho ;
+    rdfs:label "Dieciocho de Volador" .
+poker:DiecinueveDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Diecinueve ;
+    rdfs:label "Diecinueve de Volador" .
+poker:VeinteDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Veinte ;
+    rdfs:label "Veinte de Volador" .
+poker:VeintiunoDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Veintiuno ;
+    rdfs:label "Veintiuno de Volador" .
+poker:VeintidosDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Veintidos ;
+    rdfs:label "Veintidos de Volador" .
+poker:VeintitresDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Veintitres ;
+    rdfs:label "Veintitres de Volador" .
+poker:VeinticuatroDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Veinticuatro ;
+    rdfs:label "Veinticuatro de Volador" .
+poker:VeinticincoDeVolador a poker:Carta ;
+    poker:tienePalo poker:Volador ; poker:tieneRango poker:Veinticinco ;
+    rdfs:label "Veinticinco de Volador" .
+
+# Cartas de Bicho.
+poker:UnoDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Uno ;
+    rdfs:label "Uno de Bicho" .
+poker:DosDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Dos ;
+    rdfs:label "Dos de Bicho" .
+poker:TresDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Tres ;
+    rdfs:label "Tres de Bicho" .
+poker:CuatroDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Cuatro ;
+    rdfs:label "Cuatro de Bicho" .
+poker:CincoDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Cinco ;
+    rdfs:label "Cinco de Bicho" .
+poker:SeisDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Seis ;
+    rdfs:label "Seis de Bicho" .
+poker:SieteDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Siete ;
+    rdfs:label "Siete de Bicho" .
+poker:OchoDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Ocho ;
+    rdfs:label "Ocho de Bicho" .
+poker:NueveDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Nueve ;
+    rdfs:label "Nueve de Bicho" .
+poker:DiezDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Diez ;
+    rdfs:label "Diez de Bicho" .
+poker:OnceDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Once ;
+    rdfs:label "Once de Bicho" .
+poker:DoceDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Doce ;
+    rdfs:label "Doce de Bicho" .
+poker:TreceDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Trece ;
+    rdfs:label "Trece de Bicho" .
+poker:CatorceDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Catorce ;
+    rdfs:label "Catorce de Bicho" .
+poker:QuinceDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Quince ;
+    rdfs:label "Quince de Bicho" .
+poker:DieciseisDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Dieciseis ;
+    rdfs:label "Dieciseis de Bicho" .
+poker:DiecisieteDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Diecisiete ;
+    rdfs:label "Diecisiete de Bicho" .
+poker:DieciochoDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Dieciocho ;
+    rdfs:label "Dieciocho de Bicho" .
+poker:DiecinueveDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Diecinueve ;
+    rdfs:label "Diecinueve de Bicho" .
+poker:VeinteDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Veinte ;
+    rdfs:label "Veinte de Bicho" .
+poker:VeintiunoDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Veintiuno ;
+    rdfs:label "Veintiuno de Bicho" .
+poker:VeintidosDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Veintidos ;
+    rdfs:label "Veintidos de Bicho" .
+poker:VeintitresDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Veintitres ;
+    rdfs:label "Veintitres de Bicho" .
+poker:VeinticuatroDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Veinticuatro ;
+    rdfs:label "Veinticuatro de Bicho" .
+poker:VeinticincoDeBicho a poker:Carta ;
+    poker:tienePalo poker:Bicho ; poker:tieneRango poker:Veinticinco ;
+    rdfs:label "Veinticinco de Bicho" .
+
+# Cartas de Veneno.
+poker:UnoDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Uno ;
+    rdfs:label "Uno de Veneno" .
+poker:DosDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Dos ;
+    rdfs:label "Dos de Veneno" .
+poker:TresDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Tres ;
+    rdfs:label "Tres de Veneno" .
+poker:CuatroDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Cuatro ;
+    rdfs:label "Cuatro de Veneno" .
+poker:CincoDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Cinco ;
+    rdfs:label "Cinco de Veneno" .
+poker:SeisDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Seis ;
+    rdfs:label "Seis de Veneno" .
+poker:SieteDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Siete ;
+    rdfs:label "Siete de Veneno" .
+poker:OchoDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Ocho ;
+    rdfs:label "Ocho de Veneno" .
+poker:NueveDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Nueve ;
+    rdfs:label "Nueve de Veneno" .
+poker:DiezDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Diez ;
+    rdfs:label "Diez de Veneno" .
+poker:OnceDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Once ;
+    rdfs:label "Once de Veneno" .
+poker:DoceDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Doce ;
+    rdfs:label "Doce de Veneno" .
+poker:TreceDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Trece ;
+    rdfs:label "Trece de Veneno" .
+poker:CatorceDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Catorce ;
+    rdfs:label "Catorce de Veneno" .
+poker:QuinceDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Quince ;
+    rdfs:label "Quince de Veneno" .
+poker:DieciseisDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Dieciseis ;
+    rdfs:label "Dieciseis de Veneno" .
+poker:DiecisieteDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Diecisiete ;
+    rdfs:label "Diecisiete de Veneno" .
+poker:DieciochoDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Dieciocho ;
+    rdfs:label "Dieciocho de Veneno" .
+poker:DiecinueveDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Diecinueve ;
+    rdfs:label "Diecinueve de Veneno" .
+poker:VeinteDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Veinte ;
+    rdfs:label "Veinte de Veneno" .
+poker:VeintiunoDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Veintiuno ;
+    rdfs:label "Veintiuno de Veneno" .
+poker:VeintidosDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Veintidos ;
+    rdfs:label "Veintidos de Veneno" .
+poker:VeintitresDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Veintitres ;
+    rdfs:label "Veintitres de Veneno" .
+poker:VeinticuatroDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Veinticuatro ;
+    rdfs:label "Veinticuatro de Veneno" .
+poker:VeinticincoDeVeneno a poker:Carta ;
+    poker:tienePalo poker:Veneno ; poker:tieneRango poker:Veinticinco ;
+    rdfs:label "Veinticinco de Veneno" .
+
+# Cartas de Tierra.
+poker:UnoDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Uno ;
+    rdfs:label "Uno de Tierra" .
+poker:DosDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Dos ;
+    rdfs:label "Dos de Tierra" .
+poker:TresDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Tres ;
+    rdfs:label "Tres de Tierra" .
+poker:CuatroDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Cuatro ;
+    rdfs:label "Cuatro de Tierra" .
+poker:CincoDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Cinco ;
+    rdfs:label "Cinco de Tierra" .
+poker:SeisDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Seis ;
+    rdfs:label "Seis de Tierra" .
+poker:SieteDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Siete ;
+    rdfs:label "Siete de Tierra" .
+poker:OchoDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Ocho ;
+    rdfs:label "Ocho de Tierra" .
+poker:NueveDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Nueve ;
+    rdfs:label "Nueve de Tierra" .
+poker:DiezDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Diez ;
+    rdfs:label "Diez de Tierra" .
+poker:OnceDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Once ;
+    rdfs:label "Once de Tierra" .
+poker:DoceDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Doce ;
+    rdfs:label "Doce de Tierra" .
+poker:TreceDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Trece ;
+    rdfs:label "Trece de Tierra" .
+poker:CatorceDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Catorce ;
+    rdfs:label "Catorce de Tierra" .
+poker:QuinceDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Quince ;
+    rdfs:label "Quince de Tierra" .
+poker:DieciseisDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Dieciseis ;
+    rdfs:label "Dieciseis de Tierra" .
+poker:DiecisieteDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Diecisiete ;
+    rdfs:label "Diecisiete de Tierra" .
+poker:DieciochoDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Dieciocho ;
+    rdfs:label "Dieciocho de Tierra" .
+poker:DiecinueveDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Diecinueve ;
+    rdfs:label "Diecinueve de Tierra" .
+poker:VeinteDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Veinte ;
+    rdfs:label "Veinte de Tierra" .
+poker:VeintiunoDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Veintiuno ;
+    rdfs:label "Veintiuno de Tierra" .
+poker:VeintidosDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Veintidos ;
+    rdfs:label "Veintidos de Tierra" .
+poker:VeintitresDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Veintitres ;
+    rdfs:label "Veintitres de Tierra" .
+poker:VeinticuatroDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Veinticuatro ;
+    rdfs:label "Veinticuatro de Tierra" .
+poker:VeinticincoDeTierra a poker:Carta ;
+    poker:tienePalo poker:Tierra ; poker:tieneRango poker:Veinticinco ;
+    rdfs:label "Veinticinco de Tierra" .
+
+# Cartas de Roca.
+poker:UnoDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Uno ;
+    rdfs:label "Uno de Roca" .
+poker:DosDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Dos ;
+    rdfs:label "Dos de Roca" .
+poker:TresDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Tres ;
+    rdfs:label "Tres de Roca" .
+poker:CuatroDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Cuatro ;
+    rdfs:label "Cuatro de Roca" .
+poker:CincoDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Cinco ;
+    rdfs:label "Cinco de Roca" .
+poker:SeisDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Seis ;
+    rdfs:label "Seis de Roca" .
+poker:SieteDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Siete ;
+    rdfs:label "Siete de Roca" .
+poker:OchoDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Ocho ;
+    rdfs:label "Ocho de Roca" .
+poker:NueveDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Nueve ;
+    rdfs:label "Nueve de Roca" .
+poker:DiezDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Diez ;
+    rdfs:label "Diez de Roca" .
+poker:OnceDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Once ;
+    rdfs:label "Once de Roca" .
+poker:DoceDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Doce ;
+    rdfs:label "Doce de Roca" .
+poker:TreceDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Trece ;
+    rdfs:label "Trece de Roca" .
+poker:CatorceDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Catorce ;
+    rdfs:label "Catorce de Roca" .
+poker:QuinceDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Quince ;
+    rdfs:label "Quince de Roca" .
+poker:DieciseisDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Dieciseis ;
+    rdfs:label "Dieciseis de Roca" .
+poker:DiecisieteDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Diecisiete ;
+    rdfs:label "Diecisiete de Roca" .
+poker:DieciochoDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Dieciocho ;
+    rdfs:label "Dieciocho de Roca" .
+poker:DiecinueveDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Diecinueve ;
+    rdfs:label "Diecinueve de Roca" .
+poker:VeinteDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Veinte ;
+    rdfs:label "Veinte de Roca" .
+poker:VeintiunoDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Veintiuno ;
+    rdfs:label "Veintiuno de Roca" .
+poker:VeintidosDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Veintidos ;
+    rdfs:label "Veintidos de Roca" .
+poker:VeintitresDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Veintitres ;
+    rdfs:label "Veintitres de Roca" .
+poker:VeinticuatroDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Veinticuatro ;
+    rdfs:label "Veinticuatro de Roca" .
+poker:VeinticincoDeRoca a poker:Carta ;
+    poker:tienePalo poker:Roca ; poker:tieneRango poker:Veinticinco ;
+    rdfs:label "Veinticinco de Roca" .
+
+# Cartas de Lucha.
+poker:UnoDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Uno ;
+    rdfs:label "Uno de Lucha" .
+poker:DosDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Dos ;
+    rdfs:label "Dos de Lucha" .
+poker:TresDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Tres ;
+    rdfs:label "Tres de Lucha" .
+poker:CuatroDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Cuatro ;
+    rdfs:label "Cuatro de Lucha" .
+poker:CincoDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Cinco ;
+    rdfs:label "Cinco de Lucha" .
+poker:SeisDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Seis ;
+    rdfs:label "Seis de Lucha" .
+poker:SieteDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Siete ;
+    rdfs:label "Siete de Lucha" .
+poker:OchoDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Ocho ;
+    rdfs:label "Ocho de Lucha" .
+poker:NueveDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Nueve ;
+    rdfs:label "Nueve de Lucha" .
+poker:DiezDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Diez ;
+    rdfs:label "Diez de Lucha" .
+poker:OnceDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Once ;
+    rdfs:label "Once de Lucha" .
+poker:DoceDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Doce ;
+    rdfs:label "Doce de Lucha" .
+poker:TreceDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Trece ;
+    rdfs:label "Trece de Lucha" .
+poker:CatorceDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Catorce ;
+    rdfs:label "Catorce de Lucha" .
+poker:QuinceDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Quince ;
+    rdfs:label "Quince de Lucha" .
+poker:DieciseisDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Dieciseis ;
+    rdfs:label "Dieciseis de Lucha" .
+poker:DiecisieteDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Diecisiete ;
+    rdfs:label "Diecisiete de Lucha" .
+poker:DieciochoDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Dieciocho ;
+    rdfs:label "Dieciocho de Lucha" .
+poker:DiecinueveDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Diecinueve ;
+    rdfs:label "Diecinueve de Lucha" .
+poker:VeinteDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Veinte ;
+    rdfs:label "Veinte de Lucha" .
+poker:VeintiunoDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Veintiuno ;
+    rdfs:label "Veintiuno de Lucha" .
+poker:VeintidosDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Veintidos ;
+    rdfs:label "Veintidos de Lucha" .
+poker:VeintitresDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Veintitres ;
+    rdfs:label "Veintitres de Lucha" .
+poker:VeinticuatroDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Veinticuatro ;
+    rdfs:label "Veinticuatro de Lucha" .
+poker:VeinticincoDeLucha a poker:Carta ;
+    poker:tienePalo poker:Lucha ; poker:tieneRango poker:Veinticinco ;
+    rdfs:label "Veinticinco de Lucha" .
+
+# Cartas de Psiquico.
+poker:UnoDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Uno ;
+    rdfs:label "Uno de Psiquico" .
+poker:DosDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Dos ;
+    rdfs:label "Dos de Psiquico" .
+poker:TresDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Tres ;
+    rdfs:label "Tres de Psiquico" .
+poker:CuatroDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Cuatro ;
+    rdfs:label "Cuatro de Psiquico" .
+poker:CincoDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Cinco ;
+    rdfs:label "Cinco de Psiquico" .
+poker:SeisDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Seis ;
+    rdfs:label "Seis de Psiquico" .
+poker:SieteDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Siete ;
+    rdfs:label "Siete de Psiquico" .
+poker:OchoDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Ocho ;
+    rdfs:label "Ocho de Psiquico" .
+poker:NueveDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Nueve ;
+    rdfs:label "Nueve de Psiquico" .
+poker:DiezDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Diez ;
+    rdfs:label "Diez de Psiquico" .
+poker:OnceDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Once ;
+    rdfs:label "Once de Psiquico" .
+poker:DoceDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Doce ;
+    rdfs:label "Doce de Psiquico" .
+poker:TreceDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Trece ;
+    rdfs:label "Trece de Psiquico" .
+poker:CatorceDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Catorce ;
+    rdfs:label "Catorce de Psiquico" .
+poker:QuinceDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Quince ;
+    rdfs:label "Quince de Psiquico" .
+poker:DieciseisDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Dieciseis ;
+    rdfs:label "Dieciseis de Psiquico" .
+poker:DiecisieteDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Diecisiete ;
+    rdfs:label "Diecisiete de Psiquico" .
+poker:DieciochoDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Dieciocho ;
+    rdfs:label "Dieciocho de Psiquico" .
+poker:DiecinueveDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Diecinueve ;
+    rdfs:label "Diecinueve de Psiquico" .
+poker:VeinteDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Veinte ;
+    rdfs:label "Veinte de Psiquico" .
+poker:VeintiunoDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Veintiuno ;
+    rdfs:label "Veintiuno de Psiquico" .
+poker:VeintidosDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Veintidos ;
+    rdfs:label "Veintidos de Psiquico" .
+poker:VeintitresDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Veintitres ;
+    rdfs:label "Veintitres de Psiquico" .
+poker:VeinticuatroDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Veinticuatro ;
+    rdfs:label "Veinticuatro de Psiquico" .
+poker:VeinticincoDePsiquico a poker:Carta ;
+    poker:tienePalo poker:Psiquico ; poker:tieneRango poker:Veinticinco ;
+    rdfs:label "Veinticinco de Psiquico" .
+
+
+# --- Unicidad de individuos ---
+# AllDifferent es necesario porque OWL DL 2 no asume distinción entre individuos
+# por defecto (Unique Name Assumption no aplica en OWL). Aplica para palos, rangos y cartas.
+ 
+# 12 palos distintos.
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( poker:Fuego poker:Agua poker:Planta poker:Electrico poker:Normal poker:Volador poker:Bicho poker:Veneno poker:Tierra poker:Roca poker:Lucha poker:Psiquico ) .
+ 
+# 25 rangos distintos.
+[] a owl:AllDifferent ;
+    owl:distinctMembers ( poker:Uno poker:Dos poker:Tres poker:Cuatro poker:Cinco poker:Seis poker:Siete poker:Ocho poker:Nueve poker:Diez poker:Once poker:Doce poker:Trece poker:Catorce poker:Quince poker:Dieciseis poker:Diecisiete poker:Dieciocho poker:Diecinueve poker:Veinte poker:Veintiuno poker:Veintidos poker:Veintitres poker:Veinticuatro poker:Veinticinco ) .
+ 
+# 300 cartas distintas.
+[] a owl:AllDifferent ;
+    owl:distinctMembers (
+        poker:UnoDeFuego poker:DosDeFuego poker:TresDeFuego poker:CuatroDeFuego poker:CincoDeFuego poker:SeisDeFuego poker:SieteDeFuego poker:OchoDeFuego poker:NueveDeFuego poker:DiezDeFuego poker:OnceDeFuego poker:DoceDeFuego poker:TreceDeFuego poker:CatorceDeFuego poker:QuinceDeFuego poker:DieciseisDeFuego poker:DiecisieteDeFuego poker:DieciochoDeFuego poker:DiecinueveDeFuego poker:VeinteDeFuego poker:VeintiunoDeFuego poker:VeintidosDeFuego poker:VeintitresDeFuego poker:VeinticuatroDeFuego poker:VeinticincoDeFuego
+        poker:UnoDeAgua poker:DosDeAgua poker:TresDeAgua poker:CuatroDeAgua poker:CincoDeAgua poker:SeisDeAgua poker:SieteDeAgua poker:OchoDeAgua poker:NueveDeAgua poker:DiezDeAgua poker:OnceDeAgua poker:DoceDeAgua poker:TreceDeAgua poker:CatorceDeAgua poker:QuinceDeAgua poker:DieciseisDeAgua poker:DiecisieteDeAgua poker:DieciochoDeAgua poker:DiecinueveDeAgua poker:VeinteDeAgua poker:VeintiunoDeAgua poker:VeintidosDeAgua poker:VeintitresDeAgua poker:VeinticuatroDeAgua poker:VeinticincoDeAgua
+        poker:UnoDePlanta poker:DosDePlanta poker:TresDePlanta poker:CuatroDePlanta poker:CincoDePlanta poker:SeisDePlanta poker:SieteDePlanta poker:OchoDePlanta poker:NueveDePlanta poker:DiezDePlanta poker:OnceDePlanta poker:DoceDePlanta poker:TreceDePlanta poker:CatorceDePlanta poker:QuinceDePlanta poker:DieciseisDePlanta poker:DiecisieteDePlanta poker:DieciochoDePlanta poker:DiecinueveDePlanta poker:VeinteDePlanta poker:VeintiunoDePlanta poker:VeintidosDePlanta poker:VeintitresDePlanta poker:VeinticuatroDePlanta poker:VeinticincoDePlanta
+        poker:UnoDeElectrico poker:DosDeElectrico poker:TresDeElectrico poker:CuatroDeElectrico poker:CincoDeElectrico poker:SeisDeElectrico poker:SieteDeElectrico poker:OchoDeElectrico poker:NueveDeElectrico poker:DiezDeElectrico poker:OnceDeElectrico poker:DoceDeElectrico poker:TreceDeElectrico poker:CatorceDeElectrico poker:QuinceDeElectrico poker:DieciseisDeElectrico poker:DiecisieteDeElectrico poker:DieciochoDeElectrico poker:DiecinueveDeElectrico poker:VeinteDeElectrico poker:VeintiunoDeElectrico poker:VeintidosDeElectrico poker:VeintitresDeElectrico poker:VeinticuatroDeElectrico poker:VeinticincoDeElectrico
+        poker:UnoDeNormal poker:DosDeNormal poker:TresDeNormal poker:CuatroDeNormal poker:CincoDeNormal poker:SeisDeNormal poker:SieteDeNormal poker:OchoDeNormal poker:NueveDeNormal poker:DiezDeNormal poker:OnceDeNormal poker:DoceDeNormal poker:TreceDeNormal poker:CatorceDeNormal poker:QuinceDeNormal poker:DieciseisDeNormal poker:DiecisieteDeNormal poker:DieciochoDeNormal poker:DiecinueveDeNormal poker:VeinteDeNormal poker:VeintiunoDeNormal poker:VeintidosDeNormal poker:VeintitresDeNormal poker:VeinticuatroDeNormal poker:VeinticincoDeNormal
+        poker:UnoDeVolador poker:DosDeVolador poker:TresDeVolador poker:CuatroDeVolador poker:CincoDeVolador poker:SeisDeVolador poker:SieteDeVolador poker:OchoDeVolador poker:NueveDeVolador poker:DiezDeVolador poker:OnceDeVolador poker:DoceDeVolador poker:TreceDeVolador poker:CatorceDeVolador poker:QuinceDeVolador poker:DieciseisDeVolador poker:DiecisieteDeVolador poker:DieciochoDeVolador poker:DiecinueveDeVolador poker:VeinteDeVolador poker:VeintiunoDeVolador poker:VeintidosDeVolador poker:VeintitresDeVolador poker:VeinticuatroDeVolador poker:VeinticincoDeVolador
+        poker:UnoDeBicho poker:DosDeBicho poker:TresDeBicho poker:CuatroDeBicho poker:CincoDeBicho poker:SeisDeBicho poker:SieteDeBicho poker:OchoDeBicho poker:NueveDeBicho poker:DiezDeBicho poker:OnceDeBicho poker:DoceDeBicho poker:TreceDeBicho poker:CatorceDeBicho poker:QuinceDeBicho poker:DieciseisDeBicho poker:DiecisieteDeBicho poker:DieciochoDeBicho poker:DiecinueveDeBicho poker:VeinteDeBicho poker:VeintiunoDeBicho poker:VeintidosDeBicho poker:VeintitresDeBicho poker:VeinticuatroDeBicho poker:VeinticincoDeBicho
+        poker:UnoDeVeneno poker:DosDeVeneno poker:TresDeVeneno poker:CuatroDeVeneno poker:CincoDeVeneno poker:SeisDeVeneno poker:SieteDeVeneno poker:OchoDeVeneno poker:NueveDeVeneno poker:DiezDeVeneno poker:OnceDeVeneno poker:DoceDeVeneno poker:TreceDeVeneno poker:CatorceDeVeneno poker:QuinceDeVeneno poker:DieciseisDeVeneno poker:DiecisieteDeVeneno poker:DieciochoDeVeneno poker:DiecinueveDeVeneno poker:VeinteDeVeneno poker:VeintiunoDeVeneno poker:VeintidosDeVeneno poker:VeintitresDeVeneno poker:VeinticuatroDeVeneno poker:VeinticincoDeVeneno
+        poker:UnoDeTierra poker:DosDeTierra poker:TresDeTierra poker:CuatroDeTierra poker:CincoDeTierra poker:SeisDeTierra poker:SieteDeTierra poker:OchoDeTierra poker:NueveDeTierra poker:DiezDeTierra poker:OnceDeTierra poker:DoceDeTierra poker:TreceDeTierra poker:CatorceDeTierra poker:QuinceDeTierra poker:DieciseisDeTierra poker:DiecisieteDeTierra poker:DieciochoDeTierra poker:DiecinueveDeTierra poker:VeinteDeTierra poker:VeintiunoDeTierra poker:VeintidosDeTierra poker:VeintitresDeTierra poker:VeinticuatroDeTierra poker:VeinticincoDeTierra
+        poker:UnoDeRoca poker:DosDeRoca poker:TresDeRoca poker:CuatroDeRoca poker:CincoDeRoca poker:SeisDeRoca poker:SieteDeRoca poker:OchoDeRoca poker:NueveDeRoca poker:DiezDeRoca poker:OnceDeRoca poker:DoceDeRoca poker:TreceDeRoca poker:CatorceDeRoca poker:QuinceDeRoca poker:DieciseisDeRoca poker:DiecisieteDeRoca poker:DieciochoDeRoca poker:DiecinueveDeRoca poker:VeinteDeRoca poker:VeintiunoDeRoca poker:VeintidosDeRoca poker:VeintitresDeRoca poker:VeinticuatroDeRoca poker:VeinticincoDeRoca
+        poker:UnoDeLucha poker:DosDeLucha poker:TresDeLucha poker:CuatroDeLucha poker:CincoDeLucha poker:SeisDeLucha poker:SieteDeLucha poker:OchoDeLucha poker:NueveDeLucha poker:DiezDeLucha poker:OnceDeLucha poker:DoceDeLucha poker:TreceDeLucha poker:CatorceDeLucha poker:QuinceDeLucha poker:DieciseisDeLucha poker:DiecisieteDeLucha poker:DieciochoDeLucha poker:DiecinueveDeLucha poker:VeinteDeLucha poker:VeintiunoDeLucha poker:VeintidosDeLucha poker:VeintitresDeLucha poker:VeinticuatroDeLucha poker:VeinticincoDeLucha
+        poker:UnoDePsiquico poker:DosDePsiquico poker:TresDePsiquico poker:CuatroDePsiquico poker:CincoDePsiquico poker:SeisDePsiquico poker:SieteDePsiquico poker:OchoDePsiquico poker:NueveDePsiquico poker:DiezDePsiquico poker:OnceDePsiquico poker:DoceDePsiquico poker:TreceDePsiquico poker:CatorceDePsiquico poker:QuinceDePsiquico poker:DieciseisDePsiquico poker:DiecisieteDePsiquico poker:DieciochoDePsiquico poker:DiecinueveDePsiquico poker:VeinteDePsiquico poker:VeintiunoDePsiquico poker:VeintidosDePsiquico poker:VeintitresDePsiquico poker:VeinticuatroDePsiquico poker:VeinticincoDePsiquico
+    ) .
