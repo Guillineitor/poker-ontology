@@ -185,6 +185,24 @@ poker:CartaDeAs a owl:Class ;
     owl:equivalentClass [ a owl:Restriction ; owl:onProperty poker:tieneRango ; owl:hasValue poker:As ] ;
     rdfs:label "Carta de As" .
 
+# Disjunción explícita de subclases de Carta
+# De por si ya son mutuamente disjuntas como consecuencia
+# lógica de que tieneRango (que es FunctionalProperty) y los individuos de Rango son
+# AllDifferent, pero esta disjunción ayuda a evitar que el razonador tenga que rehacer esa derivación en cada
+# rama de los clasificadores que usan estas subclases en un owl:unionOf
+# (como por ejemplo más adelante con las manos de tipos Par, Trío, Póker, Escalera), 
+# lo cual importa a medida que crece la complejidad de la ontología.
+
+[] a owl:AllDisjointClasses ;
+    owl:members ( poker:CartaDePicas poker:CartaDeCorazones poker:CartaDeDiamantes poker:CartaDeTreboles ) .
+
+[] a owl:AllDisjointClasses ;
+    owl:members (
+        poker:CartaDeDos poker:CartaDeTres poker:CartaDeCuatro poker:CartaDeCinco
+        poker:CartaDeSeis poker:CartaDeSiete poker:CartaDeOcho poker:CartaDeNueve
+        poker:CartaDeDiez poker:CartaDeJota poker:CartaDeReina poker:CartaDeRey poker:CartaDeAs
+    ) .
+
 
 # =============================================================================
 # Tipos de Mano

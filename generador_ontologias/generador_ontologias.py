@@ -229,7 +229,35 @@ def subclases_por_rango(rangos: list[str]) -> str:
             "",
         ]
     return "\n".join(lineas)
-  
+
+def seccion_disjuncion_clases(palos: list[str], rangos: list[str]) -> str:
+    """
+    Declara las subclases CartaDe<Palo> y CartaDe<Rango> como mutuamente disjuntas
+    dentro de cada grupo, vía owl:AllDisjointClasses.
+
+    Esta disjunción es para evitar que el razonador tenga que re-derivarla cada vez que evalúa una
+    rama del owl:unionOf en los clasificadores (Par, Trío, Póker, Escalera, Color),
+    lo que se vuelve más relevante cuanto más compleja es la ontología.
+    """
+    ids_palos = " ".join(f"poker:CartaDe{identificador(p)}" for p in palos)
+    ids_rangos = " ".join(f"poker:CartaDe{identificador(r)}" for r in rangos)
+
+    return f"""
+# Disjunción explícita de subclases de Carta
+# De por si ya son mutuamente disjuntas como consecuencia
+# lógica de que tieneRango (que es FunctionalProperty) y los individuos de Rango son
+# AllDifferent, pero esta disjunción ayuda a evitar que el razonador tenga que rehacer esa derivación en cada
+# rama de los clasificadores que usan estas subclases en un owl:unionOf
+# (como por ejemplo más adelante con las manos de tipos Par, Trío, Póker, Escalera), 
+# lo cual importa a medida que crece la complejidad de la ontología.
+
+[] a owl:AllDisjointClasses ;
+    owl:members ( {ids_palos} ) .
+
+[] a owl:AllDisjointClasses ;
+    owl:members ( {ids_rangos} ) .
+"""
+
 def seccion_grupos(posibles: dict[str, bool], motivos: dict[str, str]) -> str:
     """
     Define poker:Mano como un grupo de exactamente cinco cartas.
@@ -877,6 +905,7 @@ def generar_ontologia(
         seccion_carta(palos, rangos),
         subclases_por_palo(palos),
         subclases_por_rango(rangos),
+        seccion_disjuncion_clases(palos, rangos),
         seccion_grupos(posibles, motivos),
     ]
  
