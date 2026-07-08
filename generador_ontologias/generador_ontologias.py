@@ -23,6 +23,7 @@
 
 import re
 import sys
+import textwrap
 import unicodedata
 from pathlib import Path
  
@@ -59,6 +60,17 @@ def etiqueta(nombre: str) -> str:
     Devuelve una etiqueta legible para rdfs:label.
     """
     return nombre.strip().capitalize()
+
+def envolver_ids(ids: list[str], indent: str = "        ", ancho: int = 96) -> str:
+    """
+    Envuelve una lista de identificadores en varias líneas de a lo sumo "ancho"
+    caracteres, para que listas largas (por ejemplo owl:members u
+    owl:distinctMembers con decenas de rangos) no queden en una sola línea
+    kilométrica. Si la lista entra en una sola línea, devuelve una sola línea.
+    """
+    texto = " ".join(ids)
+    lineas = textwrap.wrap(texto, width=ancho, break_long_words=False, break_on_hyphens=False)
+    return "\n".join(f"{indent}{linea}" for linea in lineas)
  
 # =============================================================================
 # Bloques de la ontología
@@ -239,8 +251,11 @@ def seccion_disjuncion_clases(palos: list[str], rangos: list[str]) -> str:
     rama del owl:unionOf en los clasificadores (Par, Trío, Póker, Escalera, Color),
     lo que se vuelve más relevante cuanto más compleja es la ontología.
     """
-    ids_palos = " ".join(f"poker:CartaDe{identificador(p)}" for p in palos)
-    ids_rangos = " ".join(f"poker:CartaDe{identificador(r)}" for r in rangos)
+    ids_palos = [f"poker:CartaDe{identificador(p)}" for p in palos]
+    ids_rangos = [f"poker:CartaDe{identificador(r)}" for r in rangos]
+
+    bloque_palos = envolver_ids(ids_palos)
+    bloque_rangos = envolver_ids(ids_rangos)
 
     return f"""
 # Disjunción explícita de subclases de Carta
@@ -252,10 +267,14 @@ def seccion_disjuncion_clases(palos: list[str], rangos: list[str]) -> str:
 # lo cual importa a medida que crece la complejidad de la ontología.
 
 [] a owl:AllDisjointClasses ;
-    owl:members ( {ids_palos} ) .
+    owl:members (
+{bloque_palos}
+    ) .
 
 [] a owl:AllDisjointClasses ;
-    owl:members ( {ids_rangos} ) .
+    owl:members (
+{bloque_rangos}
+    ) .
 """
 
 def seccion_grupos(posibles: dict[str, bool], motivos: dict[str, str]) -> str:
