@@ -79,7 +79,7 @@ public class BenchmarkOWLDefinitivo {
 
     /** Tiempo máximo permitido para HermiT. Su resultado se registra como TIMEOUT
      *  si supera este umbral. Independiente del timeout de JFact y de Openllet. */
-    private static final long TIMEOUT_HERMIT_SEGUNDOS = 600;
+    private static final long TIMEOUT_HERMIT_SEGUNDOS = 3600;
 
     /** Tiempo máximo permitido para Openllet. Su resultado se registra como TIMEOUT
      *  si supera este umbral. Independiente del timeout de JFact. */
@@ -87,7 +87,7 @@ public class BenchmarkOWLDefinitivo {
 
     /** Tiempo máximo permitido para JFact (FaCT++). Su resultado se registra como TIMEOUT
      *  si supera este umbral. Independiente del timeout de Openllet. */
-    private static final long TIMEOUT_JFACT_SEGUNDOS = 300;
+    private static final long TIMEOUT_JFACT_SEGUNDOS = 3600;
 
     /** Timestamp compartido por todos los archivos generados en esta ejecución. */
     private static final String TIMESTAMP =
