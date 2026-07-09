@@ -1,0 +1,40 @@
+# RESUMEN DE METRICAS POR RAZONADOR
+variante,razonador,carga_ms,init_ms,precomp_ms,total_ms,mem_pico_mb,consistente,clases_jerarquia,total_inferencias,inst_CartaAlta,inst_Par,inst_DoblePar,inst_Trio,inst_Escalera,inst_Color,inst_Full,inst_Poker,inst_EscaleraColor,inst_EscaleraReal
+baraja_37r_12p,HermiT,287,394,262283,262677,1649,true,64,16,4,0,0,0,4,4,0,0,4,0
+baraja_37r_12p,JFact (FaCT++),158,143,117968,118111,14759,true,64,16,4,0,0,0,4,4,0,0,4,0
+baraja_37r_12p,Openllet (Pellet),TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT
+
+# CLASIFICACION INDIVIDUAL
+variante,razonador,individuo,clase_inferida
+baraja_37r_12p,HermiT,Mano2,CartaAlta
+baraja_37r_12p,HermiT,Mano2,Escalera
+baraja_37r_12p,HermiT,Mano2,Color
+baraja_37r_12p,HermiT,Mano2,EscaleraColor
+baraja_37r_12p,HermiT,Mano3,CartaAlta
+baraja_37r_12p,HermiT,Mano3,Escalera
+baraja_37r_12p,HermiT,Mano3,Color
+baraja_37r_12p,HermiT,Mano3,EscaleraColor
+baraja_37r_12p,HermiT,Mano4,CartaAlta
+baraja_37r_12p,HermiT,Mano4,Escalera
+baraja_37r_12p,HermiT,Mano4,Color
+baraja_37r_12p,HermiT,Mano4,EscaleraColor
+baraja_37r_12p,HermiT,Mano1,CartaAlta
+baraja_37r_12p,HermiT,Mano1,Escalera
+baraja_37r_12p,HermiT,Mano1,Color
+baraja_37r_12p,HermiT,Mano1,EscaleraColor
+baraja_37r_12p,JFact (FaCT++),Mano1,CartaAlta
+baraja_37r_12p,JFact (FaCT++),Mano1,Escalera
+baraja_37r_12p,JFact (FaCT++),Mano1,Color
+baraja_37r_12p,JFact (FaCT++),Mano1,EscaleraColor
+baraja_37r_12p,JFact (FaCT++),Mano2,CartaAlta
+baraja_37r_12p,JFact (FaCT++),Mano2,Escalera
+baraja_37r_12p,JFact (FaCT++),Mano2,Color
+baraja_37r_12p,JFact (FaCT++),Mano2,EscaleraColor
+baraja_37r_12p,JFact (FaCT++),Mano3,CartaAlta
+baraja_37r_12p,JFact (FaCT++),Mano3,Escalera
+baraja_37r_12p,JFact (FaCT++),Mano3,Color
+baraja_37r_12p,JFact (FaCT++),Mano3,EscaleraColor
+baraja_37r_12p,JFact (FaCT++),Mano4,CartaAlta
+baraja_37r_12p,JFact (FaCT++),Mano4,Escalera
+baraja_37r_12p,JFact (FaCT++),Mano4,Color
+baraja_37r_12p,JFact (FaCT++),Mano4,EscaleraColor

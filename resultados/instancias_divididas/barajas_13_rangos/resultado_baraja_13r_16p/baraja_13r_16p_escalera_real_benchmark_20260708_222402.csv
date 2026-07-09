@@ -1,0 +1,48 @@
+# RESUMEN DE METRICAS POR RAZONADOR
+variante,razonador,carga_ms,init_ms,precomp_ms,total_ms,mem_pico_mb,consistente,clases_jerarquia,total_inferencias,inst_CartaAlta,inst_Par,inst_DoblePar,inst_Trio,inst_Escalera,inst_Color,inst_Full,inst_Poker,inst_EscaleraColor,inst_EscaleraReal
+baraja_13r_16p,HermiT,160,263,66657,66920,1175,true,44,20,4,0,0,0,4,4,0,0,4,4
+baraja_13r_16p,JFact (FaCT++),98,93,167956,168049,14735,true,44,20,4,0,0,0,4,4,0,0,4,4
+baraja_13r_16p,Openllet (Pellet),TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT
+
+# CLASIFICACION INDIVIDUAL
+variante,razonador,individuo,clase_inferida
+baraja_13r_16p,HermiT,Mano1,CartaAlta
+baraja_13r_16p,HermiT,Mano1,Escalera
+baraja_13r_16p,HermiT,Mano1,Color
+baraja_13r_16p,HermiT,Mano1,EscaleraColor
+baraja_13r_16p,HermiT,Mano1,EscaleraReal
+baraja_13r_16p,HermiT,Mano2,CartaAlta
+baraja_13r_16p,HermiT,Mano2,Escalera
+baraja_13r_16p,HermiT,Mano2,Color
+baraja_13r_16p,HermiT,Mano2,EscaleraColor
+baraja_13r_16p,HermiT,Mano2,EscaleraReal
+baraja_13r_16p,HermiT,Mano3,CartaAlta
+baraja_13r_16p,HermiT,Mano3,Escalera
+baraja_13r_16p,HermiT,Mano3,Color
+baraja_13r_16p,HermiT,Mano3,EscaleraColor
+baraja_13r_16p,HermiT,Mano3,EscaleraReal
+baraja_13r_16p,HermiT,Mano4,CartaAlta
+baraja_13r_16p,HermiT,Mano4,Escalera
+baraja_13r_16p,HermiT,Mano4,Color
+baraja_13r_16p,HermiT,Mano4,EscaleraColor
+baraja_13r_16p,HermiT,Mano4,EscaleraReal
+baraja_13r_16p,JFact (FaCT++),Mano1,CartaAlta
+baraja_13r_16p,JFact (FaCT++),Mano1,Escalera
+baraja_13r_16p,JFact (FaCT++),Mano1,Color
+baraja_13r_16p,JFact (FaCT++),Mano1,EscaleraColor
+baraja_13r_16p,JFact (FaCT++),Mano1,EscaleraReal
+baraja_13r_16p,JFact (FaCT++),Mano2,CartaAlta
+baraja_13r_16p,JFact (FaCT++),Mano2,Escalera
+baraja_13r_16p,JFact (FaCT++),Mano2,Color
+baraja_13r_16p,JFact (FaCT++),Mano2,EscaleraColor
+baraja_13r_16p,JFact (FaCT++),Mano2,EscaleraReal
+baraja_13r_16p,JFact (FaCT++),Mano3,CartaAlta
+baraja_13r_16p,JFact (FaCT++),Mano3,Escalera
+baraja_13r_16p,JFact (FaCT++),Mano3,Color
+baraja_13r_16p,JFact (FaCT++),Mano3,EscaleraColor
+baraja_13r_16p,JFact (FaCT++),Mano3,EscaleraReal
+baraja_13r_16p,JFact (FaCT++),Mano4,CartaAlta
+baraja_13r_16p,JFact (FaCT++),Mano4,Escalera
+baraja_13r_16p,JFact (FaCT++),Mano4,Color
+baraja_13r_16p,JFact (FaCT++),Mano4,EscaleraColor
+baraja_13r_16p,JFact (FaCT++),Mano4,EscaleraReal

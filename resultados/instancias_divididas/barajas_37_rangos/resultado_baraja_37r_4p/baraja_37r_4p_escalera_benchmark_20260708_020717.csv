@@ -1,0 +1,24 @@
+# RESUMEN DE METRICAS POR RAZONADOR
+variante,razonador,carga_ms,init_ms,precomp_ms,total_ms,mem_pico_mb,consistente,clases_jerarquia,total_inferencias,inst_CartaAlta,inst_Par,inst_DoblePar,inst_Trio,inst_Escalera,inst_Color,inst_Full,inst_Poker,inst_EscaleraColor,inst_EscaleraReal
+baraja_37r_4p,HermiT,202,343,38387,38730,1241,true,56,8,4,0,0,0,4,0,0,0,0,0
+baraja_37r_4p,JFact (FaCT++),83,104,24467,24571,14733,true,56,8,4,0,0,0,4,0,0,0,0,0
+baraja_37r_4p,Openllet (Pellet),TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT
+
+# CLASIFICACION INDIVIDUAL
+variante,razonador,individuo,clase_inferida
+baraja_37r_4p,HermiT,Mano1,CartaAlta
+baraja_37r_4p,HermiT,Mano1,Escalera
+baraja_37r_4p,HermiT,Mano3,CartaAlta
+baraja_37r_4p,HermiT,Mano3,Escalera
+baraja_37r_4p,HermiT,Mano2,CartaAlta
+baraja_37r_4p,HermiT,Mano2,Escalera
+baraja_37r_4p,HermiT,Mano4,CartaAlta
+baraja_37r_4p,HermiT,Mano4,Escalera
+baraja_37r_4p,JFact (FaCT++),Mano1,CartaAlta
+baraja_37r_4p,JFact (FaCT++),Mano1,Escalera
+baraja_37r_4p,JFact (FaCT++),Mano2,CartaAlta
+baraja_37r_4p,JFact (FaCT++),Mano2,Escalera
+baraja_37r_4p,JFact (FaCT++),Mano3,CartaAlta
+baraja_37r_4p,JFact (FaCT++),Mano3,Escalera
+baraja_37r_4p,JFact (FaCT++),Mano4,CartaAlta
+baraja_37r_4p,JFact (FaCT++),Mano4,Escalera

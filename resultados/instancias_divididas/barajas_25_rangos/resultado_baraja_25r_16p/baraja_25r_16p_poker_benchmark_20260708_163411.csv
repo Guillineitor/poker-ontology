@@ -1,0 +1,40 @@
+# RESUMEN DE METRICAS POR RAZONADOR
+variante,razonador,carga_ms,init_ms,precomp_ms,total_ms,mem_pico_mb,consistente,clases_jerarquia,total_inferencias,inst_CartaAlta,inst_Par,inst_DoblePar,inst_Trio,inst_Escalera,inst_Color,inst_Full,inst_Poker,inst_EscaleraColor,inst_EscaleraReal
+baraja_25r_16p,HermiT,281,273,328931,329204,3755,true,56,16,4,4,0,4,0,0,0,4,0,0
+baraja_25r_16p,JFact (FaCT++),149,160,425391,425551,14763,true,56,16,4,4,0,4,0,0,0,4,0,0
+baraja_25r_16p,Openllet (Pellet),TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT
+
+# CLASIFICACION INDIVIDUAL
+variante,razonador,individuo,clase_inferida
+baraja_25r_16p,HermiT,Mano2,CartaAlta
+baraja_25r_16p,HermiT,Mano2,Par
+baraja_25r_16p,HermiT,Mano2,Trio
+baraja_25r_16p,HermiT,Mano2,Poker
+baraja_25r_16p,HermiT,Mano1,CartaAlta
+baraja_25r_16p,HermiT,Mano1,Par
+baraja_25r_16p,HermiT,Mano1,Trio
+baraja_25r_16p,HermiT,Mano1,Poker
+baraja_25r_16p,HermiT,Mano4,CartaAlta
+baraja_25r_16p,HermiT,Mano4,Par
+baraja_25r_16p,HermiT,Mano4,Trio
+baraja_25r_16p,HermiT,Mano4,Poker
+baraja_25r_16p,HermiT,Mano3,CartaAlta
+baraja_25r_16p,HermiT,Mano3,Par
+baraja_25r_16p,HermiT,Mano3,Trio
+baraja_25r_16p,HermiT,Mano3,Poker
+baraja_25r_16p,JFact (FaCT++),Mano1,CartaAlta
+baraja_25r_16p,JFact (FaCT++),Mano1,Par
+baraja_25r_16p,JFact (FaCT++),Mano1,Trio
+baraja_25r_16p,JFact (FaCT++),Mano1,Poker
+baraja_25r_16p,JFact (FaCT++),Mano2,CartaAlta
+baraja_25r_16p,JFact (FaCT++),Mano2,Par
+baraja_25r_16p,JFact (FaCT++),Mano2,Trio
+baraja_25r_16p,JFact (FaCT++),Mano2,Poker
+baraja_25r_16p,JFact (FaCT++),Mano3,CartaAlta
+baraja_25r_16p,JFact (FaCT++),Mano3,Par
+baraja_25r_16p,JFact (FaCT++),Mano3,Trio
+baraja_25r_16p,JFact (FaCT++),Mano3,Poker
+baraja_25r_16p,JFact (FaCT++),Mano4,CartaAlta
+baraja_25r_16p,JFact (FaCT++),Mano4,Par
+baraja_25r_16p,JFact (FaCT++),Mano4,Trio
+baraja_25r_16p,JFact (FaCT++),Mano4,Poker

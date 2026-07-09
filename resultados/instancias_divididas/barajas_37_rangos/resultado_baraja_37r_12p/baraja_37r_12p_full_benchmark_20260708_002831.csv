@@ -1,0 +1,48 @@
+# RESUMEN DE METRICAS POR RAZONADOR
+variante,razonador,carga_ms,init_ms,precomp_ms,total_ms,mem_pico_mb,consistente,clases_jerarquia,total_inferencias,inst_CartaAlta,inst_Par,inst_DoblePar,inst_Trio,inst_Escalera,inst_Color,inst_Full,inst_Poker,inst_EscaleraColor,inst_EscaleraReal
+baraja_37r_12p,HermiT,293,371,90308,90679,1264,true,64,20,4,4,4,4,0,0,4,0,0,0
+baraja_37r_12p,JFact (FaCT++),166,146,13855,14001,9673,true,64,20,4,4,4,4,0,0,4,0,0,0
+baraja_37r_12p,Openllet (Pellet),TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT
+
+# CLASIFICACION INDIVIDUAL
+variante,razonador,individuo,clase_inferida
+baraja_37r_12p,HermiT,Mano2,CartaAlta
+baraja_37r_12p,HermiT,Mano2,Par
+baraja_37r_12p,HermiT,Mano2,DoblePar
+baraja_37r_12p,HermiT,Mano2,Trio
+baraja_37r_12p,HermiT,Mano2,Full
+baraja_37r_12p,HermiT,Mano1,CartaAlta
+baraja_37r_12p,HermiT,Mano1,Par
+baraja_37r_12p,HermiT,Mano1,DoblePar
+baraja_37r_12p,HermiT,Mano1,Trio
+baraja_37r_12p,HermiT,Mano1,Full
+baraja_37r_12p,HermiT,Mano4,CartaAlta
+baraja_37r_12p,HermiT,Mano4,Par
+baraja_37r_12p,HermiT,Mano4,DoblePar
+baraja_37r_12p,HermiT,Mano4,Trio
+baraja_37r_12p,HermiT,Mano4,Full
+baraja_37r_12p,HermiT,Mano3,CartaAlta
+baraja_37r_12p,HermiT,Mano3,Par
+baraja_37r_12p,HermiT,Mano3,DoblePar
+baraja_37r_12p,HermiT,Mano3,Trio
+baraja_37r_12p,HermiT,Mano3,Full
+baraja_37r_12p,JFact (FaCT++),Mano1,CartaAlta
+baraja_37r_12p,JFact (FaCT++),Mano1,Par
+baraja_37r_12p,JFact (FaCT++),Mano1,DoblePar
+baraja_37r_12p,JFact (FaCT++),Mano1,Trio
+baraja_37r_12p,JFact (FaCT++),Mano1,Full
+baraja_37r_12p,JFact (FaCT++),Mano2,CartaAlta
+baraja_37r_12p,JFact (FaCT++),Mano2,Par
+baraja_37r_12p,JFact (FaCT++),Mano2,DoblePar
+baraja_37r_12p,JFact (FaCT++),Mano2,Trio
+baraja_37r_12p,JFact (FaCT++),Mano2,Full
+baraja_37r_12p,JFact (FaCT++),Mano3,CartaAlta
+baraja_37r_12p,JFact (FaCT++),Mano3,Par
+baraja_37r_12p,JFact (FaCT++),Mano3,DoblePar
+baraja_37r_12p,JFact (FaCT++),Mano3,Trio
+baraja_37r_12p,JFact (FaCT++),Mano3,Full
+baraja_37r_12p,JFact (FaCT++),Mano4,CartaAlta
+baraja_37r_12p,JFact (FaCT++),Mano4,Par
+baraja_37r_12p,JFact (FaCT++),Mano4,DoblePar
+baraja_37r_12p,JFact (FaCT++),Mano4,Trio
+baraja_37r_12p,JFact (FaCT++),Mano4,Full

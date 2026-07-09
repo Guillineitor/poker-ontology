@@ -167,7 +167,7 @@ foreach ($archivo in $archivosInstancias) {
 
     $tInicio = Get-Date
 
-    & java -Xms30g -Xmx32g "-Dstdout.encoding=UTF-8" "-Dfile.encoding=UTF-8" `
+    & java -Xms24g -Xmx24g "-Dstdout.encoding=UTF-8" "-Dfile.encoding=UTF-8" `
         -cp $Jar poker.BenchmarkOWLDefinitivo `
         $OntologiaBase $archivo.FullName
 
