@@ -1,34 +1,37 @@
-"""
-generar_graficos.py
-
-Recorre automaticamente la carpeta `resultados` (instancias_completas e
-instancias_divididas) consolida todos los CSV del benchmark en un
-unico DataFrame y genera una carpeta `resultados/graficos/` con:
-
-  graficos/
-    resumen_metricas_global.csv        <- todos los datos parseados, para
-                                           analisis propio / tablas de la tesis
-    instancias_completas/
-      tiempo_vs_escala/barajas_<N>_rangos.png     (total_ms vs palos, x razonador)
-      memoria_vs_escala/barajas_<N>_rangos.png    (mem_pico_mb vs palos, x razonador)
-      heatmaps_tiempo/<Razonador>.png             (rangos x palos -> tiempo)
-    instancias_divididas/
-      tiempo_por_tipo_mano/<TipoMano>.png         (pequeños multiplos por rango)
-      memoria_por_tipo_mano/<TipoMano>.png
-      heatmaps_tiempo_por_tipo/<Razonador>.png    (tipo_mano x rangos, x cantidad de palos)
-
-Los casos TIMEOUT (JFact/Openllet) se marcan visualmente con una X roja y,
-en heatmaps, con achurado rojo — nunca se inventa un valor numerico de tiempo
-real, se usa el umbral de timeout configurado del razonador solo como
-referencia visual de "aqui se corto".
-
-Uso:
-    python generar_graficos.py
-    python generar_graficos.py --resultados ..\\resultados
-    python generar_graficos.py --resultados ..\\resultados --salida ..\\resultados\\graficos
-
-Requiere: pandas, numpy, matplotlib  (pip install pandas numpy matplotlib)
-"""
+# =============================================================================
+# generar_graficos.py
+# =============================================================================
+#
+# Este script recorre automáticamente la carpeta resultados/ con los resultados 
+# los experimentos generada por ejecutar_benchmark.ps1 y BenchmarkOWLDefinitivo.java 
+# (instancias_completas e instancias_divididas), consolida todos los CSV de benchmark en un 
+# único DataFrame y genera una carpeta resultados/graficos/, con los gráficos de tiempo
+# y memoria por razonador, tanto a en pruebas globales (instancias_completas) como
+# desglosados por tipo de mano (instancias_divididas).
+#
+# Los casos TIMEOUT  nunca se representan con un valor de tiempo inventado, sino que
+# se marcan visualmente con una X roja en los gráficos de línea, o con
+# achurado rojo en los heatmaps, usando el umbral de timeout configurado del
+# razonador solo como referencia visual.
+#
+# Uso:
+#     python generar_graficos.py
+#
+# Flujo principal:
+#     1. Recorrer resultados/instancias_completas y resultados/instancias_divididas
+#        buscando todos los archivos *_benchmark_*.csv.
+#     2. Extraer de la ruta y el nombre de cada archivo la cantidad de rangos,
+#        de palos y el tipo de mano (o "Todas" para instancias_completas).
+#     3. Leer la sección "RESUMEN DE METRICAS POR RAZONADOR" de cada CSV y
+#        consolidar todo en un único DataFrame, marcando TIMEOUT y errores.
+#     4. Guardar ese DataFrame consolidado como resumen_metricas_global.csv.
+#     5. Generar los gráficos de tiempo/memoria vs escala y los heatmaps,
+#        tanto para las pruebas con instancias_completas como para 
+#        instancias_divididas.
+#
+# Requiere: pandas, numpy, matplotlib  (pip install pandas numpy matplotlib)
+#
+# =============================================================================
 
 import argparse
 import csv
@@ -43,9 +46,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
-# --------------------------------------------------------------------------
-# Configuracion general
-# --------------------------------------------------------------------------
+# =============================================================================
+# Configuración general
+# =============================================================================
 
 RAZONADORES = ["HermiT", "JFact (FaCT++)", "Openllet (Pellet)"]
 
@@ -55,24 +58,17 @@ COLOR_RAZONADOR = {
     "Openllet (Pellet)": "#2ca02c",
 }
 
-# Timeouts configurados en BenchmarkOWLDefinitivo.java (en segundos).
-# Ajustar aqui si se cambian las constantes TIMEOUT_*_SEGUNDOS en el .java.
 TIMEOUT_SEGUNDOS = {
-    "HermiT": 3600,
-    "JFact (FaCT++)": 10,
-    "Openllet (Pellet)": 10,
+    "HermiT": 1800,
+    "JFact (FaCT++)": 1800,
+    "Openllet (Pellet)": 1800,
 }
 
-# Orden de jerarquia de manos de poker (menor a mayor valor), igual que
-# ejecutar_benchmark.ps1 / CLASES_MANO en el .java. "Todas" es el caso de
-# instancias_completas (un solo archivo con todos los tipos de mano).
 ORDEN_TIPOS_MANO = [
     "Todas", "CartaAlta", "Par", "DoblePar", "Trio",
     "Escalera", "Color", "Full", "Poker", "EscaleraColor", "EscaleraReal",
 ]
 
-# Mapeo desde el sufijo usado en el nombre del archivo (TIPOS_MANO_ARCHIVO en
-# el .java) hacia el nombre de clase legible (CLASES_MANO en el .java).
 MAPA_TIPO_MANO = {
     "todas": "Todas",
     "carta_alta": "CartaAlta",
@@ -87,7 +83,6 @@ MAPA_TIPO_MANO = {
     "escalera_real": "EscaleraReal",
 }
 
-# Nombre de archivo esperado: baraja_<N>r_<M>p_<tipoMano>_benchmark_<timestamp>.csv
 PATRON_ARCHIVO = re.compile(
     r"^baraja_(?P<rangos>\d+)r_(?P<palos>\d+)p_(?P<tipo>.+)_benchmark_[\d_]+\.csv$"
 )
@@ -102,13 +97,21 @@ CLASES_MANO_CSV = [
     "Color", "Full", "Poker", "EscaleraColor", "EscaleraReal",
 ]
 
-
-# --------------------------------------------------------------------------
-# Parseo de CSV y construccion del DataFrame consolidado
-# --------------------------------------------------------------------------
+# =============================================================================
+# Parseo de CSV y construcción del DataFrame consolidado
+# =============================================================================
 
 def parsear_metadatos_ruta(path: Path):
-    """Extrae tipo_instancias, rangos, palos y tipo_mano desde la ruta/nombre."""
+    """
+    Extrae tipo_instancias, rangos, palos y tipo_mano a partir de la ruta
+    y el nombre de un archivo CSV de benchmark.
+
+    tipo_instancias se determina buscando "instancias_completas" o
+    "instancias_divididas" entre las carpetas de la ruta. rangos, palos y
+    tipo_mano se extraen del nombre de archivo con PATRON_ARCHIVO. Devuelve
+    None si el nombre no calza con el patrón esperado, para que el llamador
+    pueda omitir ese archivo en vez de fallar.
+    """
     partes = path.parts
     if "instancias_completas" in partes:
         tipo_instancias = "instancias_completas"
@@ -135,7 +138,15 @@ def parsear_metadatos_ruta(path: Path):
 
 
 def leer_seccion_metricas(path: Path):
-    """Lee solo la seccion '# RESUMEN DE METRICAS POR RAZONADOR' del csv."""
+    """
+    Lee únicamente la sección "# RESUMEN DE METRICAS POR RAZONADOR" de un
+    CSV de benchmark y la devuelve como lista de diccionarios (uno por fila).
+
+    El CSV que escribe BenchmarkOWLDefinitivo.java tiene dos secciones
+    separadas por una línea en blanco (métricas y clasificación individual);
+    esta función se detiene apenas encuentra esa línea en blanco, así que
+    nunca llega a leer la segunda sección.
+    """
     with open(path, "r", encoding="utf-8-sig", newline="") as f:
         lineas = f.readlines()
 
@@ -159,6 +170,17 @@ def leer_seccion_metricas(path: Path):
 
 
 def construir_dataframe(carpeta_resultados: Path) -> pd.DataFrame:
+    """
+    Recorre recursivamente carpeta_resultados buscando todos los archivos
+    *_benchmark_*.csv, los parsea con parsear_metadatos_ruta / leer_seccion_metricas
+    y arma un único DataFrame consolidado con todas las corridas encontradas.
+
+    Cada fila del DataFrame resultante corresponde a un razonador dentro de
+    un CSV puntual (una combinación de variante x tipo de mano). Los casos
+    TIMEOUT y ERROR quedan marcados en las columnas es_timeout / es_error en
+    vez de intentar convertir el texto "TIMEOUT" a un número, y los campos
+    numéricos correspondientes quedan como NaN.
+    """
     filas = []
     archivos = sorted(carpeta_resultados.rglob("*_benchmark_*.csv"))
 
@@ -176,7 +198,7 @@ def construir_dataframe(carpeta_resultados: Path) -> pd.DataFrame:
 
         registros = leer_seccion_metricas(archivo)
         if not registros:
-            print(f"[!] Sin seccion de metricas, se omite: {archivo}")
+            print(f"[!] Sin sección de métricas, se omite: {archivo}")
             omitidos += 1
             continue
 
@@ -219,13 +241,20 @@ def construir_dataframe(carpeta_resultados: Path) -> pd.DataFrame:
         df["total_s"] = df["total_ms"] / 1000.0
     return df
 
-
-# --------------------------------------------------------------------------
+# =============================================================================
 # Utilidades de graficado
-# --------------------------------------------------------------------------
+# =============================================================================
 
 def _marcar_timeouts_linea(ax, to_df, metrica, razonador, ok_serie_max):
-    """Dibuja marcadores de TIMEOUT (X roja) sobre un grafico de lineas."""
+    """
+    Dibuja los puntos TIMEOUT de un razonador sobre un gráfico de líneas ya
+    creado, como una X roja con la etiqueta "TIMEOUT" encima.
+
+    Para tiempo (metrica == "total_s") la X se ubica en el umbral real de
+    timeout del razonador (TIMEOUT_SEGUNDOS), no en un valor inventado. Para
+    memoria, que no tiene umbral porque el proceso nunca llegó a reportar un
+    pico, la X se ubica apenas por encima del máximo visible en ese gráfico.
+    """
     if to_df.empty:
         return
     if metrica == "total_s":
@@ -243,7 +272,14 @@ def _marcar_timeouts_linea(ax, to_df, metrica, razonador, ok_serie_max):
 
 
 def _dibujar_lineas_por_razonador(ax, sub, metrica):
-    """Dibuja, sobre un eje dado, una linea por razonador (marcando timeouts)."""
+    """
+    Dibuja sobre un eje ya creado una línea de `metrica` vs "palos" por cada
+    razonador presente en sub, marcando los timeouts con _marcar_timeouts_linea.
+
+    Si un razonador solo tiene filas TIMEOUT en esta serie (sin ningún punto
+    real que graficar), igual se agrega una línea vacía para que aparezca en
+    la leyenda con su color correspondiente, en vez de desaparecer del todo.
+    """
     for razonador in RAZONADORES:
         datos_r = sub[sub["razonador"] == razonador].sort_values("palos")
         if datos_r.empty:
@@ -256,8 +292,6 @@ def _dibujar_lineas_por_razonador(ax, sub, metrica):
         if not ok.empty:
             ax.plot(ok["palos"], ok[metrica], marker="o", label=razonador, color=color)
         elif not to.empty:
-            # Solo hubo timeouts para este razonador en esta serie: igual
-            # queremos que aparezca en la leyenda.
             ax.plot([], [], marker="o", label=razonador, color=color)
 
         ok_max = ok[metrica].max() if not ok.empty else None
@@ -265,7 +299,13 @@ def _dibujar_lineas_por_razonador(ax, sub, metrica):
 
 
 def graficar_metrica_vs_escala(df, metrica, ylabel, titulo_base, carpeta_salida, log_y=True):
-    """Un PNG por cada 'rangos', graficando `metrica` vs 'palos' (x razonador)."""
+    """
+    Genera un PNG por cada cantidad de rangos presente en df, graficando
+    `metrica` vs cantidad de palos, con una línea por razonador.
+
+    Pensada para instancias_completas, donde cada combinación de rango x
+    palo corresponde a un único CSV ("todas" las manos en un mismo archivo).
+    """
     carpeta_salida.mkdir(parents=True, exist_ok=True)
     rangos_unicos = sorted(df["rangos"].unique())
 
@@ -290,7 +330,13 @@ def graficar_metrica_vs_escala(df, metrica, ylabel, titulo_base, carpeta_salida,
 
 
 def graficar_heatmap_tiempo(df, carpeta_salida):
-    """Heatmap rangos x palos -> tiempo total (s), uno por razonador."""
+    """
+    Genera un heatmap rangos x palos -> tiempo total (s), uno por razonador.
+
+    Pensada para instancias_completas. Los timeouts se muestran con achurado
+    rojo y la etiqueta "TIMEOUT" en vez de un color de la escala, para no
+    confundirlos nunca con un tiempo real medido.
+    """
     carpeta_salida.mkdir(parents=True, exist_ok=True)
     rangos_unicos = sorted(df["rangos"].unique())
     palos_unicos = sorted(df["palos"].unique())
@@ -322,6 +368,14 @@ def graficar_heatmap_tiempo(df, carpeta_salida):
 
 def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
                                  xlabel, ylabel, titulo, ruta_salida):
+    """
+    Dibuja y guarda un único heatmap a partir de una matriz de tiempos (s) y
+    una matriz booleana es_to que indica qué celdas corresponden a TIMEOUT.
+
+    Usa escala de color logarítmica porque los tiempos observados abarcan
+    varios órdenes de magnitud. Las celdas TIMEOUT se sobreescriben con achurado rojo
+    y la etiqueta "TIMEOUT", en vez de dejar que participen de la escala.
+    """
     fig, ax = plt.subplots(figsize=(1.1 * len(etiquetas_x) + 2, 0.9 * len(etiquetas_y) + 2))
 
     valores_validos = matriz[~np.isnan(matriz) & ~es_to]
@@ -366,7 +420,13 @@ def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
 
 def graficar_pequenos_multiplos_por_tipo_mano(df, metrica, ylabel, titulo_base,
                                                carpeta_salida, log_y=True):
-    """Un PNG por tipo de mano; cada uno con un subplot por cantidad de rangos."""
+    """
+    Genera un PNG por tipo de mano; cada uno con un subplot por cantidad de
+    rangos (una grilla de pequeños múltiplos), graficando `metrica` vs palos.
+
+    Pensada para instancias_divididas, donde cada tipo de mano tiene su
+    propio CSV separado por cada combinación de rango x palo.
+    """
     carpeta_salida.mkdir(parents=True, exist_ok=True)
     tipos_presentes = [t for t in ORDEN_TIPOS_MANO
                        if t != "Todas" and t in df["tipo_mano"].unique()]
@@ -409,9 +469,16 @@ def graficar_pequenos_multiplos_por_tipo_mano(df, metrica, ylabel, titulo_base,
 
 
 def graficar_heatmap_tipo_mano(df, carpeta_salida):
-    """Heatmap tipo_mano x rangos -> tiempo (s); un PNG por razonador, con un
-    subplot por cantidad de palos. Util para ver de un vistazo en que tipos
-    de mano/escalas se concentra la lentitud de cada razonador."""
+    """
+    Genera, por cada razonador, un heatmap tipo_mano x rangos -> tiempo (s),
+    con un panel por cantidad de palos.
+
+    Pensada para instancias_divididas. Permite ver de un vistazo en qué
+    tipos de mano y a qué escala se concentra la lentitud de cada razonador
+    (por ejemplo JFact en escalera/full). La escala de color se normaliza
+    por razonador (no por panel) para que los paneles de un mismo razonador
+    sean comparables entre sí.
+    """
     carpeta_salida.mkdir(parents=True, exist_ok=True)
     tipos_presentes = [t for t in ORDEN_TIPOS_MANO
                        if t != "Todas" and t in df["tipo_mano"].unique()]
@@ -484,14 +551,23 @@ def graficar_heatmap_tipo_mano(df, carpeta_salida):
 
 
 def _slug_razonador(razonador: str) -> str:
+    """
+    Devuelve la primera palabra del nombre de un razonador (por ejemplo
+    "JFact" a partir de "JFact (FaCT++)"), usada como nombre de archivo PNG.
+    """
     return razonador.split(" ")[0].replace("(", "").replace(")", "")
 
-
-# --------------------------------------------------------------------------
-# Main
-# --------------------------------------------------------------------------
+# =============================================================================
+# Punto de entrada
+# =============================================================================
 
 def main():
+    """
+    Función principal. Lee los argumentos de línea de comandos, construye el
+    DataFrame consolidado a partir de la carpeta de resultados y genera
+    tanto el CSV resumen como todos los gráficos de instancias_completas e
+    instancias_divididas en la carpeta de salida.
+    """
     parser = argparse.ArgumentParser(
         description="Genera graficos a partir de los CSV de benchmark OWL en la carpeta 'resultados'.")
     parser.add_argument("--resultados", default="../resultados",
