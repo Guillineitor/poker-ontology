@@ -274,11 +274,13 @@ def _marcar_timeouts_linea(ax, to_df, metrica, razonador, ok_serie_max):
 def _dibujar_lineas_por_razonador(ax, sub, metrica):
     """
     Dibuja sobre un eje ya creado una línea de `metrica` vs "palos" por cada
-    razonador presente en sub, marcando los timeouts con _marcar_timeouts_linea.
+    razonador presente en sub.
 
     Si un razonador solo tiene filas TIMEOUT en esta serie (sin ningún punto
-    real que graficar), igual se agrega una línea vacía para que aparezca en
-    la leyenda con su color correspondiente, en vez de desaparecer del todo.
+    real que graficar) y la métrica es tiempo, igual se agrega una línea
+    vacía para que aparezca en la leyenda con su color correspondiente, en
+    vez de desaparecer del todo. En el caso de memoria, ese razonador simplemente no
+    aparece en este panel.
     """
     for razonador in RAZONADORES:
         datos_r = sub[sub["razonador"] == razonador].sort_values("palos")
@@ -291,11 +293,12 @@ def _dibujar_lineas_por_razonador(ax, sub, metrica):
 
         if not ok.empty:
             ax.plot(ok["palos"], ok[metrica], marker="o", label=razonador, color=color)
-        elif not to.empty:
+        elif not to.empty and metrica == "total_s":
             ax.plot([], [], marker="o", label=razonador, color=color)
 
-        ok_max = ok[metrica].max() if not ok.empty else None
-        _marcar_timeouts_linea(ax, to, metrica, razonador, ok_max)
+        if metrica == "total_s":
+            ok_max = ok[metrica].max() if not ok.empty else None
+            _marcar_timeouts_linea(ax, to, metrica, razonador, ok_max)
 
 
 def graficar_metrica_vs_escala(df, metrica, ylabel, titulo_base, carpeta_salida, log_y=True):
@@ -593,7 +596,7 @@ def main():
 
     ruta_csv_global = carpeta_graficos / "resumen_metricas_global.csv"
     df.to_csv(ruta_csv_global, index=False, encoding="utf-8-sig")
-    print(f"[OK] Resumen global guardado en: {ruta_csv_global}  ({len(df)} filas)")
+    print(f"Resumen global guardado en: {ruta_csv_global}  ({len(df)} filas)")
 
     df_completas = df[df["tipo_instancias"] == "instancias_completas"]
     df_divididas = df[df["tipo_instancias"] == "instancias_divididas"]
