@@ -83,11 +83,11 @@ public class BenchmarkOWLDefinitivo {
 
     /** Tiempo máximo permitido para Openllet. Su resultado se registra como TIMEOUT
      *  si supera este umbral. Independiente del timeout de JFact. */
-    private static final long TIMEOUT_OPENLLET_SEGUNDOS = 30;
+    private static final long TIMEOUT_OPENLLET_SEGUNDOS = 10;
 
     /** Tiempo máximo permitido para JFact (FaCT++). Su resultado se registra como TIMEOUT
      *  si supera este umbral. Independiente del timeout de Openllet. */
-    private static final long TIMEOUT_JFACT_SEGUNDOS = 3600;
+    private static final long TIMEOUT_JFACT_SEGUNDOS = 10;
 
     /** Timestamp compartido por todos los archivos generados en esta ejecución. */
     private static final String TIMESTAMP =
