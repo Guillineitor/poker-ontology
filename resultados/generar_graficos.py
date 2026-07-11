@@ -1,0 +1,556 @@
+"""
+generar_graficos.py
+
+Recorre automaticamente la carpeta `resultados` (instancias_completas e
+instancias_divididas) consolida todos los CSV del benchmark en un
+unico DataFrame y genera una carpeta `resultados/graficos/` con:
+
+  graficos/
+    resumen_metricas_global.csv        <- todos los datos parseados, para
+                                           analisis propio / tablas de la tesis
+    instancias_completas/
+      tiempo_vs_escala/barajas_<N>_rangos.png     (total_ms vs palos, x razonador)
+      memoria_vs_escala/barajas_<N>_rangos.png    (mem_pico_mb vs palos, x razonador)
+      heatmaps_tiempo/<Razonador>.png             (rangos x palos -> tiempo)
+    instancias_divididas/
+      tiempo_por_tipo_mano/<TipoMano>.png         (pequeños multiplos por rango)
+      memoria_por_tipo_mano/<TipoMano>.png
+      heatmaps_tiempo_por_tipo/<Razonador>.png    (tipo_mano x rangos, x cantidad de palos)
+
+Los casos TIMEOUT (JFact/Openllet) se marcan visualmente con una X roja y,
+en heatmaps, con achurado rojo — nunca se inventa un valor numerico de tiempo
+real, se usa el umbral de timeout configurado del razonador solo como
+referencia visual de "aqui se corto".
+
+Uso:
+    python generar_graficos.py
+    python generar_graficos.py --resultados ..\\resultados
+    python generar_graficos.py --resultados ..\\resultados --salida ..\\resultados\\graficos
+
+Requiere: pandas, numpy, matplotlib  (pip install pandas numpy matplotlib)
+"""
+
+import argparse
+import csv
+import re
+import sys
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+
+# --------------------------------------------------------------------------
+# Configuracion general
+# --------------------------------------------------------------------------
+
+RAZONADORES = ["HermiT", "JFact (FaCT++)", "Openllet (Pellet)"]
+
+COLOR_RAZONADOR = {
+    "HermiT": "#1f77b4",
+    "JFact (FaCT++)": "#ff7f0e",
+    "Openllet (Pellet)": "#2ca02c",
+}
+
+# Timeouts configurados en BenchmarkOWLDefinitivo.java (en segundos).
+# Ajustar aqui si se cambian las constantes TIMEOUT_*_SEGUNDOS en el .java.
+TIMEOUT_SEGUNDOS = {
+    "HermiT": 3600,
+    "JFact (FaCT++)": 10,
+    "Openllet (Pellet)": 10,
+}
+
+# Orden de jerarquia de manos de poker (menor a mayor valor), igual que
+# ejecutar_benchmark.ps1 / CLASES_MANO en el .java. "Todas" es el caso de
+# instancias_completas (un solo archivo con todos los tipos de mano).
+ORDEN_TIPOS_MANO = [
+    "Todas", "CartaAlta", "Par", "DoblePar", "Trio",
+    "Escalera", "Color", "Full", "Poker", "EscaleraColor", "EscaleraReal",
+]
+
+# Mapeo desde el sufijo usado en el nombre del archivo (TIPOS_MANO_ARCHIVO en
+# el .java) hacia el nombre de clase legible (CLASES_MANO en el .java).
+MAPA_TIPO_MANO = {
+    "todas": "Todas",
+    "carta_alta": "CartaAlta",
+    "par": "Par",
+    "doble_par": "DoblePar",
+    "trio": "Trio",
+    "escalera": "Escalera",
+    "color": "Color",
+    "full": "Full",
+    "poker": "Poker",
+    "escalera_color": "EscaleraColor",
+    "escalera_real": "EscaleraReal",
+}
+
+# Nombre de archivo esperado: baraja_<N>r_<M>p_<tipoMano>_benchmark_<timestamp>.csv
+PATRON_ARCHIVO = re.compile(
+    r"^baraja_(?P<rangos>\d+)r_(?P<palos>\d+)p_(?P<tipo>.+)_benchmark_[\d_]+\.csv$"
+)
+
+CAMPOS_NUMERICOS = [
+    "carga_ms", "init_ms", "precomp_ms", "total_ms", "mem_pico_mb",
+    "clases_jerarquia", "total_inferencias",
+]
+
+CLASES_MANO_CSV = [
+    "CartaAlta", "Par", "DoblePar", "Trio", "Escalera",
+    "Color", "Full", "Poker", "EscaleraColor", "EscaleraReal",
+]
+
+
+# --------------------------------------------------------------------------
+# Parseo de CSV y construccion del DataFrame consolidado
+# --------------------------------------------------------------------------
+
+def parsear_metadatos_ruta(path: Path):
+    """Extrae tipo_instancias, rangos, palos y tipo_mano desde la ruta/nombre."""
+    partes = path.parts
+    if "instancias_completas" in partes:
+        tipo_instancias = "instancias_completas"
+    elif "instancias_divididas" in partes:
+        tipo_instancias = "instancias_divididas"
+    else:
+        tipo_instancias = "desconocido"
+
+    m = PATRON_ARCHIVO.match(path.name)
+    if not m:
+        return None
+
+    rangos = int(m.group("rangos"))
+    palos = int(m.group("palos"))
+    tipo_bruto = m.group("tipo")
+    tipo_mano = MAPA_TIPO_MANO.get(tipo_bruto, tipo_bruto)
+
+    return {
+        "tipo_instancias": tipo_instancias,
+        "rangos": rangos,
+        "palos": palos,
+        "tipo_mano": tipo_mano,
+    }
+
+
+def leer_seccion_metricas(path: Path):
+    """Lee solo la seccion '# RESUMEN DE METRICAS POR RAZONADOR' del csv."""
+    with open(path, "r", encoding="utf-8-sig", newline="") as f:
+        lineas = f.readlines()
+
+    inicio = None
+    for i, linea in enumerate(lineas):
+        if linea.strip() == "# RESUMEN DE METRICAS POR RAZONADOR":
+            inicio = i + 1
+            break
+    if inicio is None:
+        return []
+
+    fin = len(lineas)
+    for i in range(inicio, len(lineas)):
+        if lineas[i].strip() == "":
+            fin = i
+            break
+
+    bloque = lineas[inicio:fin]
+    lector = csv.DictReader(bloque)
+    return list(lector)
+
+
+def construir_dataframe(carpeta_resultados: Path) -> pd.DataFrame:
+    filas = []
+    archivos = sorted(carpeta_resultados.rglob("*_benchmark_*.csv"))
+
+    if not archivos:
+        print(f"[!] No se encontraron CSV de benchmark bajo {carpeta_resultados}")
+        return pd.DataFrame()
+
+    omitidos = 0
+    for archivo in archivos:
+        meta = parsear_metadatos_ruta(archivo)
+        if meta is None:
+            print(f"[!] Nombre de archivo no reconocido, se omite: {archivo}")
+            omitidos += 1
+            continue
+
+        registros = leer_seccion_metricas(archivo)
+        if not registros:
+            print(f"[!] Sin seccion de metricas, se omite: {archivo}")
+            omitidos += 1
+            continue
+
+        for r in registros:
+            fila = dict(meta)
+            fila["razonador"] = r.get("razonador")
+            fila["archivo"] = str(archivo)
+
+            es_timeout = (r.get("total_ms") == "TIMEOUT")
+            consistente_bruto = r.get("consistente")
+            es_error = (not es_timeout) and (consistente_bruto not in ("true", "false"))
+
+            fila["es_timeout"] = es_timeout
+            fila["es_error"] = es_error
+            fila["error_msg"] = r.get("total_ms") if es_error else None
+
+            for campo in CAMPOS_NUMERICOS:
+                val = r.get(campo)
+                try:
+                    fila[campo] = float(val)
+                except (TypeError, ValueError):
+                    fila[campo] = np.nan
+
+            fila["consistente"] = (consistente_bruto == "true")
+
+            for c in CLASES_MANO_CSV:
+                val = r.get(f"inst_{c}")
+                try:
+                    fila[f"inst_{c}"] = int(val)
+                except (TypeError, ValueError):
+                    fila[f"inst_{c}"] = np.nan
+
+            filas.append(fila)
+
+    if omitidos:
+        print(f"[i] {omitidos} archivo(s) omitido(s) por formato inesperado.")
+
+    df = pd.DataFrame(filas)
+    if not df.empty:
+        df["total_s"] = df["total_ms"] / 1000.0
+    return df
+
+
+# --------------------------------------------------------------------------
+# Utilidades de graficado
+# --------------------------------------------------------------------------
+
+def _marcar_timeouts_linea(ax, to_df, metrica, razonador, ok_serie_max):
+    """Dibuja marcadores de TIMEOUT (X roja) sobre un grafico de lineas."""
+    if to_df.empty:
+        return
+    if metrica == "total_s":
+        y_vals = [TIMEOUT_SEGUNDOS.get(razonador, np.nan)] * len(to_df)
+    else:
+        referencia = ok_serie_max if (ok_serie_max is not None and ok_serie_max > 0) else 1.0
+        y_vals = [referencia * 1.15] * len(to_df)
+
+    ax.scatter(to_df["palos"], y_vals, marker="X", s=110, color="red",
+               edgecolor="black", linewidth=0.6, zorder=5)
+    for x_val, y_val in zip(to_df["palos"], y_vals):
+        ax.annotate("TIMEOUT", (x_val, y_val), textcoords="offset points",
+                    xytext=(0, 7), ha="center", fontsize=7, color="red",
+                    fontweight="bold")
+
+
+def _dibujar_lineas_por_razonador(ax, sub, metrica):
+    """Dibuja, sobre un eje dado, una linea por razonador (marcando timeouts)."""
+    for razonador in RAZONADORES:
+        datos_r = sub[sub["razonador"] == razonador].sort_values("palos")
+        if datos_r.empty:
+            continue
+        color = COLOR_RAZONADOR.get(razonador)
+
+        ok = datos_r[~datos_r["es_timeout"]]
+        to = datos_r[datos_r["es_timeout"]]
+
+        if not ok.empty:
+            ax.plot(ok["palos"], ok[metrica], marker="o", label=razonador, color=color)
+        elif not to.empty:
+            # Solo hubo timeouts para este razonador en esta serie: igual
+            # queremos que aparezca en la leyenda.
+            ax.plot([], [], marker="o", label=razonador, color=color)
+
+        ok_max = ok[metrica].max() if not ok.empty else None
+        _marcar_timeouts_linea(ax, to, metrica, razonador, ok_max)
+
+
+def graficar_metrica_vs_escala(df, metrica, ylabel, titulo_base, carpeta_salida, log_y=True):
+    """Un PNG por cada 'rangos', graficando `metrica` vs 'palos' (x razonador)."""
+    carpeta_salida.mkdir(parents=True, exist_ok=True)
+    rangos_unicos = sorted(df["rangos"].unique())
+
+    for rangos in rangos_unicos:
+        sub = df[df["rangos"] == rangos]
+        fig, ax = plt.subplots(figsize=(7, 5))
+
+        _dibujar_lineas_por_razonador(ax, sub, metrica)
+
+        if log_y:
+            ax.set_yscale("log")
+        palos_unicos = sorted(sub["palos"].unique())
+        ax.set_xticks(palos_unicos)
+        ax.set_xlabel("Cantidad de palos")
+        ax.set_ylabel(ylabel)
+        ax.set_title(f"{titulo_base} — {rangos} rangos")
+        ax.grid(True, which="both", linestyle=":", alpha=0.5)
+        ax.legend(fontsize=8)
+        fig.tight_layout()
+        fig.savefig(carpeta_salida / f"barajas_{rangos}_rangos.png", dpi=150)
+        plt.close(fig)
+
+
+def graficar_heatmap_tiempo(df, carpeta_salida):
+    """Heatmap rangos x palos -> tiempo total (s), uno por razonador."""
+    carpeta_salida.mkdir(parents=True, exist_ok=True)
+    rangos_unicos = sorted(df["rangos"].unique())
+    palos_unicos = sorted(df["palos"].unique())
+
+    for razonador in RAZONADORES:
+        sub = df[df["razonador"] == razonador]
+        matriz = np.full((len(rangos_unicos), len(palos_unicos)), np.nan)
+        es_to = np.zeros_like(matriz, dtype=bool)
+
+        for i, r in enumerate(rangos_unicos):
+            for j, p in enumerate(palos_unicos):
+                fila = sub[(sub["rangos"] == r) & (sub["palos"] == p)]
+                if fila.empty:
+                    continue
+                row = fila.iloc[0]
+                if row["es_timeout"]:
+                    es_to[i, j] = True
+                    matriz[i, j] = TIMEOUT_SEGUNDOS.get(razonador, np.nan)
+                else:
+                    matriz[i, j] = row["total_s"]
+
+        _dibujar_heatmap_individual(
+            matriz, es_to, rangos_unicos, palos_unicos,
+            xlabel="Cantidad de palos", ylabel="Cantidad de rangos",
+            titulo=f"Tiempo total de clasificacion — {razonador}",
+            ruta_salida=carpeta_salida / f"{_slug_razonador(razonador)}.png",
+        )
+
+
+def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
+                                 xlabel, ylabel, titulo, ruta_salida):
+    fig, ax = plt.subplots(figsize=(1.1 * len(etiquetas_x) + 2, 0.9 * len(etiquetas_y) + 2))
+
+    valores_validos = matriz[~np.isnan(matriz) & ~es_to]
+    valores_to = matriz[~np.isnan(matriz) & es_to]
+    todos_positivos = np.concatenate([v[v > 0] for v in [valores_validos, valores_to] if v.size])
+
+    if todos_positivos.size:
+        vmin = max(todos_positivos.min(), 1e-3)
+        vmax = todos_positivos.max()
+        norm = mcolors.LogNorm(vmin=vmin, vmax=vmax) if vmax > vmin else None
+    else:
+        norm = None
+
+    im = ax.imshow(np.ma.masked_invalid(matriz), cmap="viridis", norm=norm, aspect="auto")
+
+    for i in range(matriz.shape[0]):
+        for j in range(matriz.shape[1]):
+            if np.isnan(matriz[i, j]):
+                continue
+            if es_to[i, j]:
+                ax.add_patch(plt.Rectangle((j - 0.5, i - 0.5), 1, 1, fill=False,
+                                            hatch="//", edgecolor="red", linewidth=1.4))
+                ax.text(j, i, "TIMEOUT", ha="center", va="center",
+                        color="red", fontsize=7, fontweight="bold")
+            else:
+                ax.text(j, i, f"{matriz[i, j]:.2f}s", ha="center", va="center",
+                        color="white", fontsize=8)
+
+    ax.set_xticks(range(len(etiquetas_x)))
+    ax.set_xticklabels(etiquetas_x)
+    ax.set_yticks(range(len(etiquetas_y)))
+    ax.set_yticklabels(etiquetas_y)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title(titulo, fontsize=11)
+    if todos_positivos.size:
+        fig.colorbar(im, ax=ax, label="Tiempo total (s, escala log)")
+    fig.tight_layout()
+    fig.savefig(ruta_salida, dpi=150)
+    plt.close(fig)
+
+
+def graficar_pequenos_multiplos_por_tipo_mano(df, metrica, ylabel, titulo_base,
+                                               carpeta_salida, log_y=True):
+    """Un PNG por tipo de mano; cada uno con un subplot por cantidad de rangos."""
+    carpeta_salida.mkdir(parents=True, exist_ok=True)
+    tipos_presentes = [t for t in ORDEN_TIPOS_MANO
+                       if t != "Todas" and t in df["tipo_mano"].unique()]
+    rangos_unicos = sorted(df["rangos"].unique())
+
+    ncols = 3
+    nrows = int(np.ceil(len(rangos_unicos) / ncols)) if rangos_unicos else 1
+
+    for tipo in tipos_presentes:
+        sub_tipo = df[df["tipo_mano"] == tipo]
+        fig, axes = plt.subplots(nrows, ncols, figsize=(4.6 * ncols, 3.6 * nrows), squeeze=False)
+
+        for idx, rangos in enumerate(rangos_unicos):
+            ax = axes[idx // ncols][idx % ncols]
+            sub = sub_tipo[sub_tipo["rangos"] == rangos]
+
+            _dibujar_lineas_por_razonador(ax, sub, metrica)
+
+            if log_y:
+                ax.set_yscale("log")
+            palos_unicos = sorted(sub["palos"].unique())
+            if palos_unicos:
+                ax.set_xticks(palos_unicos)
+            ax.set_title(f"{rangos} rangos", fontsize=10)
+            ax.grid(True, which="both", linestyle=":", alpha=0.4)
+
+        for k in range(len(rangos_unicos), nrows * ncols):
+            axes[k // ncols][k % ncols].axis("off")
+
+        handles, labels = axes[0][0].get_legend_handles_labels()
+        if handles:
+            fig.legend(handles, labels, loc="upper center", ncol=3,
+                       bbox_to_anchor=(0.5, 1.04), fontsize=8)
+        fig.suptitle(f"{titulo_base} — {tipo}", y=1.08, fontsize=13)
+        fig.text(0.5, -0.02, "Cantidad de palos", ha="center", fontsize=9)
+        fig.text(-0.01, 0.5, ylabel, va="center", rotation="vertical", fontsize=9)
+        fig.tight_layout()
+        fig.savefig(carpeta_salida / f"{tipo}.png", dpi=150, bbox_inches="tight")
+        plt.close(fig)
+
+
+def graficar_heatmap_tipo_mano(df, carpeta_salida):
+    """Heatmap tipo_mano x rangos -> tiempo (s); un PNG por razonador, con un
+    subplot por cantidad de palos. Util para ver de un vistazo en que tipos
+    de mano/escalas se concentra la lentitud de cada razonador."""
+    carpeta_salida.mkdir(parents=True, exist_ok=True)
+    tipos_presentes = [t for t in ORDEN_TIPOS_MANO
+                       if t != "Todas" and t in df["tipo_mano"].unique()]
+    rangos_unicos = sorted(df["rangos"].unique())
+    palos_unicos = sorted(df["palos"].unique())
+
+    if not tipos_presentes or not rangos_unicos or not palos_unicos:
+        return
+
+    for razonador in RAZONADORES:
+        sub_r = df[df["razonador"] == razonador]
+
+        valores_validos = sub_r.loc[~sub_r["es_timeout"], "total_s"].dropna()
+        vmax_to = TIMEOUT_SEGUNDOS.get(razonador, None)
+        candidatos_vmax = [v for v in [valores_validos.max() if not valores_validos.empty else None,
+                                        vmax_to] if v is not None]
+        vmax = max(candidatos_vmax) if candidatos_vmax else 1.0
+        vmin = valores_validos.min() if not valores_validos.empty else 1e-3
+        vmin = max(vmin, 1e-3)
+        norm = mcolors.LogNorm(vmin=vmin, vmax=vmax) if vmax > vmin else None
+
+        fig, axes = plt.subplots(1, len(palos_unicos),
+                                  figsize=(3.6 * len(palos_unicos) + 2, 0.55 * len(tipos_presentes) + 2.5),
+                                  squeeze=False)
+        axes = axes[0]
+        im = None
+
+        for k, palos in enumerate(palos_unicos):
+            ax = axes[k]
+            sub = sub_r[sub_r["palos"] == palos]
+            matriz = np.full((len(tipos_presentes), len(rangos_unicos)), np.nan)
+            es_to = np.zeros_like(matriz, dtype=bool)
+
+            for i, tipo in enumerate(tipos_presentes):
+                for j, rangos in enumerate(rangos_unicos):
+                    fila = sub[(sub["tipo_mano"] == tipo) & (sub["rangos"] == rangos)]
+                    if fila.empty:
+                        continue
+                    row = fila.iloc[0]
+                    if row["es_timeout"]:
+                        es_to[i, j] = True
+                        matriz[i, j] = TIMEOUT_SEGUNDOS.get(razonador, np.nan)
+                    else:
+                        matriz[i, j] = row["total_s"]
+
+            im = ax.imshow(np.ma.masked_invalid(matriz), cmap="viridis", norm=norm, aspect="auto")
+
+            for i in range(len(tipos_presentes)):
+                for j in range(len(rangos_unicos)):
+                    if np.isnan(matriz[i, j]):
+                        continue
+                    if es_to[i, j]:
+                        ax.add_patch(plt.Rectangle((j - 0.5, i - 0.5), 1, 1, fill=False,
+                                                    hatch="//", edgecolor="red", linewidth=1.2))
+                        ax.text(j, i, "TO", ha="center", va="center", color="red",
+                                fontsize=7, fontweight="bold")
+
+            ax.set_xticks(range(len(rangos_unicos)))
+            ax.set_xticklabels(rangos_unicos, rotation=45, fontsize=8)
+            ax.set_yticks(range(len(tipos_presentes)))
+            ax.set_yticklabels(tipos_presentes if k == 0 else [], fontsize=8)
+            ax.set_xlabel("Rangos", fontsize=9)
+            ax.set_title(f"{palos} palos", fontsize=10)
+
+        fig.suptitle(f"Tiempo total por tipo de mano — {razonador}", fontsize=13)
+        if im is not None:
+            fig.colorbar(im, ax=axes.tolist(), label="Tiempo total (s, escala log)", shrink=0.85)
+        fig.savefig(carpeta_salida / f"{_slug_razonador(razonador)}.png", dpi=150, bbox_inches="tight")
+        plt.close(fig)
+
+
+def _slug_razonador(razonador: str) -> str:
+    return razonador.split(" ")[0].replace("(", "").replace(")", "")
+
+
+# --------------------------------------------------------------------------
+# Main
+# --------------------------------------------------------------------------
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Genera graficos a partir de los CSV de benchmark OWL en la carpeta 'resultados'.")
+    parser.add_argument("--resultados", default="../resultados",
+                         help="Carpeta raiz de resultados (por defecto ../resultados)")
+    parser.add_argument("--salida", default=None,
+                         help="Carpeta de salida para los graficos (por defecto <resultados>/graficos)")
+    args = parser.parse_args()
+
+    carpeta_resultados = Path(args.resultados).resolve()
+    if not carpeta_resultados.exists():
+        print(f"[ERROR] No existe la carpeta de resultados: {carpeta_resultados}")
+        sys.exit(1)
+
+    carpeta_graficos = Path(args.salida).resolve() if args.salida else carpeta_resultados / "graficos"
+    carpeta_graficos.mkdir(parents=True, exist_ok=True)
+
+    print(f"Leyendo CSV de benchmark desde: {carpeta_resultados}")
+    df = construir_dataframe(carpeta_resultados)
+
+    if df.empty:
+        print("[ERROR] No se pudo construir ningun dato a partir de los CSV encontrados.")
+        sys.exit(1)
+
+    ruta_csv_global = carpeta_graficos / "resumen_metricas_global.csv"
+    df.to_csv(ruta_csv_global, index=False, encoding="utf-8-sig")
+    print(f"[OK] Resumen global guardado en: {ruta_csv_global}  ({len(df)} filas)")
+
+    df_completas = df[df["tipo_instancias"] == "instancias_completas"]
+    df_divididas = df[df["tipo_instancias"] == "instancias_divididas"]
+
+    if not df_completas.empty:
+        print(f"Generando graficos de instancias_completas... ({len(df_completas)} filas)")
+        base = carpeta_graficos / "instancias_completas"
+        graficar_metrica_vs_escala(
+            df_completas, "total_s", "Tiempo total (s, escala log)",
+            "Tiempo total de clasificacion", base / "tiempo_vs_escala", log_y=True)
+        graficar_metrica_vs_escala(
+            df_completas, "mem_pico_mb", "Memoria pico (MB)",
+            "Memoria pico utilizada", base / "memoria_vs_escala", log_y=False)
+        graficar_heatmap_tiempo(df_completas, base / "heatmaps_tiempo")
+    else:
+        print("[!] No se encontraron datos de instancias_completas.")
+
+    if not df_divididas.empty:
+        print(f"Generando graficos de instancias_divididas... ({len(df_divididas)} filas)")
+        base = carpeta_graficos / "instancias_divididas"
+        graficar_pequenos_multiplos_por_tipo_mano(
+            df_divididas, "total_s", "Tiempo total (s, escala log)",
+            "Tiempo total de clasificacion", base / "tiempo_por_tipo_mano", log_y=True)
+        graficar_pequenos_multiplos_por_tipo_mano(
+            df_divididas, "mem_pico_mb", "Memoria pico (MB)",
+            "Memoria pico utilizada", base / "memoria_por_tipo_mano", log_y=False)
+        graficar_heatmap_tipo_mano(df_divididas, base / "heatmaps_tiempo_por_tipo")
+    else:
+        print("[!] No se encontraron datos de instancias_divididas.")
+
+    print("\nProceso terminado.")
+    print(f"Graficos disponibles en: {carpeta_graficos}")
+
+
+if __name__ == "__main__":
+    main()
