@@ -324,6 +324,88 @@ def graficar_metrica_vs_rangos(df, metrica, ylabel, titulo_base, carpeta_salida,
     )
 
 
+def _graficar_comparacion_barajas_por_razonador(df, metrica, ylabel, titulo_base, carpeta_salida, col_linea, col_x, etiqueta_linea, etiqueta_x, log_y=True):
+    """
+    Genera un PNG por cada razonador, graficando `metrica` vs `col_x` con
+    una línea por cada valor de `col_linea` (todas juntas en el mismo eje).
+
+    Es el "transpuesto" de _graficar_metrica_vs_variable: en vez de un PNG
+    por valor fijo de baraja con una línea por razonador, aquí se arma un
+    PNG por razonador con una línea por cada baraja (cada rango o cada
+    palo fijo), para comparar de un vistazo cómo escala ESE razonador en
+    particular a través de todas las barajas a la vez.
+    """
+    carpeta_salida.mkdir(parents=True, exist_ok=True)
+    valores_linea = sorted(df[col_linea].unique())
+    if not valores_linea:
+        return
+
+    cmap = plt.get_cmap("viridis")
+    n = len(valores_linea)
+    colores = {v: cmap(i / max(n - 1, 1)) for i, v in enumerate(valores_linea)}
+
+    for razonador in RAZONADORES:
+        sub_r = df[df["razonador"] == razonador]
+        if sub_r.empty:
+            continue
+
+        fig, ax = plt.subplots(figsize=(8, 5.5))
+
+        for valor_linea in valores_linea:
+            datos = sub_r[sub_r[col_linea] == valor_linea].sort_values(col_x)
+            ok = datos[~datos["es_timeout"]]
+            if ok.empty:
+                continue
+            ax.plot(ok[col_x], ok[metrica], marker="o",
+                    label=f"{valor_linea} {etiqueta_linea}", color=colores[valor_linea])
+
+        if log_y:
+            ax.set_yscale("log")
+        else:
+            ax.ticklabel_format(style="plain", axis="y", useOffset=False)
+        valores_x = sorted(sub_r[col_x].unique())
+        if valores_x:
+            ax.set_xticks(valores_x)
+        ax.set_xlabel(etiqueta_x)
+        ax.set_ylabel(ylabel)
+        ax.set_title(f"{titulo_base} — {razonador}")
+        ax.grid(True, which="both", linestyle=":", alpha=0.5)
+        ax.legend(fontsize=8, title=etiqueta_linea.capitalize(), ncol=2)
+        fig.tight_layout()
+        fig.savefig(carpeta_salida / f"{_slug_razonador(razonador)}.png", dpi=150)
+        plt.close(fig)
+
+
+def graficar_comparacion_barajas_vs_palos(df, metrica, ylabel, titulo_base, carpeta_salida, log_y=False):
+    """
+    Genera un PNG por razonador, con una línea por cantidad de rangos,
+    graficando `metrica` vs cantidad de palos.
+
+    Permite ver, para un razonador dado, cómo se comportan todas las
+    barajas (una por cada rango fijo) a medida que aumentan los palos,
+    todas juntas en el mismo gráfico. Pensada para instancias_completas.
+    """
+    _graficar_comparacion_barajas_por_razonador(
+        df, metrica, ylabel, titulo_base, carpeta_salida,
+        col_linea="rangos", col_x="palos",
+        etiqueta_linea="rangos", etiqueta_x="Cantidad de palos", log_y=log_y,
+    )
+
+
+def graficar_comparacion_barajas_vs_rangos(df, metrica, ylabel, titulo_base, carpeta_salida, log_y=False):
+    """
+    Es el espejo de graficar_comparacion_barajas_vs_palos: genera un PNG
+    por razonador, con una línea por cantidad de palos, graficando
+    `metrica` vs cantidad de rangos (palos fijo por línea en vez de rangos
+    fijo por línea).
+    """
+    _graficar_comparacion_barajas_por_razonador(
+        df, metrica, ylabel, titulo_base, carpeta_salida,
+        col_linea="palos", col_x="rangos",
+        etiqueta_linea="palos", etiqueta_x="Cantidad de rangos", log_y=log_y,
+    )
+
+
 def graficar_heatmap_tiempo(df, carpeta_salida):
     """
     Genera un heatmap rangos x palos -> tiempo total (s), uno por razonador.
@@ -677,6 +759,18 @@ def main():
             df_completas, "mem_pico_mb", "Memoria pico (MB)",
             "Memoria pico utilizada", base / "memoria_vs_rangos", log_y=False)
         graficar_heatmap_tiempo(df_completas, base / "heatmaps_tiempo")
+        graficar_comparacion_barajas_vs_palos(
+            df_completas, "total_s", "Tiempo total (s)",
+            "Comparacion de barajas (tiempo)", base / "comparacion_barajas_vs_palos")
+        graficar_comparacion_barajas_vs_palos(
+            df_completas, "mem_pico_mb", "Memoria pico (MB)",
+            "Comparacion de barajas (memoria)", base / "comparacion_barajas_memoria_vs_palos")
+        graficar_comparacion_barajas_vs_rangos(
+            df_completas, "total_s", "Tiempo total (s)",
+            "Comparacion de barajas (tiempo)", base / "comparacion_barajas_vs_rangos")
+        graficar_comparacion_barajas_vs_rangos(
+            df_completas, "mem_pico_mb", "Memoria pico (MB)",
+            "Comparacion de barajas (memoria)", base / "comparacion_barajas_memoria_vs_rangos")
     else:
         print("[!] No se encontraron datos de instancias_completas.")
 
