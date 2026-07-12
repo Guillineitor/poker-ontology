@@ -9,11 +9,6 @@
 # y memoria por razonador, tanto a en pruebas globales (instancias_completas) como
 # desglosados por tipo de mano (instancias_divididas).
 #
-# Los casos TIMEOUT  nunca se representan con un valor de tiempo inventado, sino que
-# se marcan visualmente con una X roja en los gráficos de línea, o con
-# achurado rojo en los heatmaps, usando el umbral de timeout configurado del
-# razonador solo como referencia visual.
-#
 # Uso:
 #     python generar_graficos.py
 #
@@ -57,12 +52,6 @@ COLOR_RAZONADOR = {
     "HermiT": "#1f77b4",
     "JFact (FaCT++)": "#ff7f0e",
     "Openllet (Pellet)": "#2ca02c",
-}
-
-TIMEOUT_SEGUNDOS = {
-    "HermiT": 1800,
-    "JFact (FaCT++)": 1800,
-    "Openllet (Pellet)": 1800,
 }
 
 ORDEN_TIPOS_MANO = [
@@ -299,10 +288,6 @@ def graficar_metrica_vs_escala(df, metrica, ylabel, titulo_base, carpeta_salida,
 def graficar_heatmap_tiempo(df, carpeta_salida):
     """
     Genera un heatmap rangos x palos -> tiempo total (s), uno por razonador.
-
-    Pensada para instancias_completas. Los timeouts se muestran con achurado
-    rojo y la etiqueta "TIMEOUT" en vez de un color de la escala, para no
-    confundirlos nunca con un tiempo real medido.
     """
     carpeta_salida.mkdir(parents=True, exist_ok=True)
     rangos_unicos = sorted(df["rangos"].unique())
@@ -321,7 +306,6 @@ def graficar_heatmap_tiempo(df, carpeta_salida):
                 row = fila.iloc[0]
                 if row["es_timeout"]:
                     es_to[i, j] = True
-                    matriz[i, j] = TIMEOUT_SEGUNDOS.get(razonador, np.nan)
                 else:
                     matriz[i, j] = row["total_s"]
 
@@ -348,19 +332,18 @@ def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
     Dibuja y guarda un único heatmap a partir de una matriz de tiempos (s) y
     una matriz booleana es_to que indica qué celdas corresponden a TIMEOUT.
 
-    Usa escala de color lineal. Las celdas TIMEOUT se sobreescriben con
-    achurado rojo y la etiqueta "TIMEOUT", en vez de dejar que participen de
-    la escala.
+    Usa escala de color lineal, calculada solo a partir de los tiempos
+    reales. Las celdas TIMEOUT quedan en blanco y se
+    sobreescriben con achurado rojo y la etiqueta "TIMEOUT", sin participar
+    nunca de la escala.
     """
     fig, ax = plt.subplots(figsize=(1.1 * len(etiquetas_x) + 2, 0.9 * len(etiquetas_y) + 2))
 
-    valores_validos = matriz[~np.isnan(matriz) & ~es_to]
-    valores_to = matriz[~np.isnan(matriz) & es_to]
-    todos_los_valores = np.concatenate([v for v in [valores_validos, valores_to] if v.size])
+    valores_validos = matriz[~np.isnan(matriz)]
 
-    if todos_los_valores.size:
-        vmin = todos_los_valores.min()
-        vmax = todos_los_valores.max()
+    if valores_validos.size:
+        vmin = valores_validos.min()
+        vmax = valores_validos.max()
         norm = mcolors.Normalize(vmin=vmin, vmax=vmax) if vmax > vmin else None
     else:
         norm = None
@@ -369,14 +352,12 @@ def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
 
     for i in range(matriz.shape[0]):
         for j in range(matriz.shape[1]):
-            if np.isnan(matriz[i, j]):
-                continue
             if es_to[i, j]:
                 ax.add_patch(plt.Rectangle((j - 0.5, i - 0.5), 1, 1, fill=False,
                                             hatch="//", edgecolor="red", linewidth=1.4))
                 ax.text(j, i, "TIMEOUT", ha="center", va="center",
                         color="red", fontsize=7, fontweight="bold")
-            else:
+            elif not np.isnan(matriz[i, j]):
                 ax.text(j, i, f"{matriz[i, j]:.2f}s", ha="center", va="center",
                         color="white", fontsize=8)
 
@@ -387,7 +368,7 @@ def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.set_title(titulo, fontsize=11)
-    if todos_los_valores.size:
+    if valores_validos.size:
         cbar = fig.colorbar(im, ax=ax, label="Tiempo total (s)")
         cbar.ax.yaxis.set_major_formatter(mticker.FuncFormatter(_formatear_tick_tiempo))
     fig.tight_layout()
@@ -451,12 +432,6 @@ def graficar_heatmap_tipo_mano(df, carpeta_salida):
     """
     Genera, por cada razonador, un heatmap tipo_mano x rangos -> tiempo (s),
     con un panel por cantidad de palos.
-
-    Pensada para instancias_divididas. Permite ver de un vistazo en qué
-    tipos de mano y a qué escala se concentra la lentitud de cada razonador
-    (por ejemplo JFact en escalera/full). La escala de color se normaliza
-    por razonador (no por panel) para que los paneles de un mismo razonador
-    sean comparables entre sí.
     """
     carpeta_salida.mkdir(parents=True, exist_ok=True)
     tipos_presentes = [t for t in ORDEN_TIPOS_MANO
@@ -467,16 +442,18 @@ def graficar_heatmap_tipo_mano(df, carpeta_salida):
     if not tipos_presentes or not rangos_unicos or not palos_unicos:
         return
 
+    valores_validos_global = df.loc[~df["es_timeout"], "total_s"].dropna()
+    if not valores_validos_global.empty:
+        vmin_global = valores_validos_global.min()
+        vmax_global = valores_validos_global.max()
+        norm_global = (mcolors.Normalize(vmin=vmin_global, vmax=vmax_global)
+                       if vmax_global > vmin_global else None)
+    else:
+        norm_global = None
+
     for razonador in RAZONADORES:
         sub_r = df[df["razonador"] == razonador]
-
-        valores_validos = sub_r.loc[~sub_r["es_timeout"], "total_s"].dropna()
-        vmax_to = TIMEOUT_SEGUNDOS.get(razonador, None)
-        candidatos_vmax = [v for v in [valores_validos.max() if not valores_validos.empty else None,
-                                        vmax_to] if v is not None]
-        vmax = max(candidatos_vmax) if candidatos_vmax else 1.0
-        vmin = valores_validos.min() if not valores_validos.empty else 0.0
-        norm = mcolors.Normalize(vmin=vmin, vmax=vmax) if vmax > vmin else None
+        norm = norm_global
 
         fig, axes = plt.subplots(1, len(palos_unicos),
                                   figsize=(3.6 * len(palos_unicos) + 2, 0.55 * len(tipos_presentes) + 2.5),
@@ -498,7 +475,6 @@ def graficar_heatmap_tipo_mano(df, carpeta_salida):
                     row = fila.iloc[0]
                     if row["es_timeout"]:
                         es_to[i, j] = True
-                        matriz[i, j] = TIMEOUT_SEGUNDOS.get(razonador, np.nan)
                     else:
                         matriz[i, j] = row["total_s"]
 
@@ -506,8 +482,6 @@ def graficar_heatmap_tipo_mano(df, carpeta_salida):
 
             for i in range(len(tipos_presentes)):
                 for j in range(len(rangos_unicos)):
-                    if np.isnan(matriz[i, j]):
-                        continue
                     if es_to[i, j]:
                         ax.add_patch(plt.Rectangle((j - 0.5, i - 0.5), 1, 1, fill=False,
                                                     hatch="//", edgecolor="red", linewidth=1.2))
