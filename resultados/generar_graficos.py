@@ -235,13 +235,17 @@ def construir_dataframe(carpeta_resultados: Path) -> pd.DataFrame:
 # Utilidades de graficado
 # =============================================================================
 
-def _dibujar_lineas_por_razonador(ax, sub, metrica):
+def _dibujar_lineas_por_razonador(ax, sub, metrica, col_x="palos"):
     """
-    Dibuja sobre un eje ya creado una línea de `metrica` vs "palos" por cada
-    razonador presente en sub (salvos los casos de TIMEOUT).
+    Dibuja sobre un eje ya creado una línea de `metrica` vs `col_x` por cada
+    razonador presente en sub (salvo los casos de TIMEOUT).
+
+    `col_x` es la columna a usar como eje X: "palos" (por defecto, para los
+    gráficos existentes) o "rangos" (para las variantes espejo que grafican
+    vs. rangos en vez de vs. palos).
     """
     for razonador in RAZONADORES:
-        datos_r = sub[sub["razonador"] == razonador].sort_values("palos")
+        datos_r = sub[sub["razonador"] == razonador].sort_values(col_x)
         if datos_r.empty:
             continue
         color = COLOR_RAZONADOR.get(razonador)
@@ -249,7 +253,43 @@ def _dibujar_lineas_por_razonador(ax, sub, metrica):
         ok = datos_r[~datos_r["es_timeout"]]
 
         if not ok.empty:
-            ax.plot(ok["palos"], ok[metrica], marker="o", label=razonador, color=color)
+            ax.plot(ok[col_x], ok[metrica], marker="o", label=razonador, color=color)
+
+
+def _graficar_metrica_vs_variable(df, metrica, ylabel, titulo_base, carpeta_salida,
+                                   col_panel, col_x, etiqueta_panel, etiqueta_x,
+                                   log_y=True):
+    """
+    Genera un PNG por cada valor único de `col_panel` presente en df,
+    graficando `metrica` vs `col_x`, con una línea por razonador.
+
+    Función genérica que arma tanto los gráficos "vs palos" (col_panel=
+    "rangos", col_x="palos") como su espejo "vs rangos" (col_panel="palos",
+    col_x="rangos"), para no duplicar la lógica de armado de la figura.
+    """
+    carpeta_salida.mkdir(parents=True, exist_ok=True)
+    valores_panel = sorted(df[col_panel].unique())
+
+    for valor_panel in valores_panel:
+        sub = df[df[col_panel] == valor_panel]
+        fig, ax = plt.subplots(figsize=(7, 5))
+
+        _dibujar_lineas_por_razonador(ax, sub, metrica, col_x=col_x)
+
+        if log_y:
+            ax.set_yscale("log")
+        else:
+            ax.ticklabel_format(style="plain", axis="y", useOffset=False)
+        valores_x = sorted(sub[col_x].unique())
+        ax.set_xticks(valores_x)
+        ax.set_xlabel(etiqueta_x)
+        ax.set_ylabel(ylabel)
+        ax.set_title(f"{titulo_base} — {valor_panel} {etiqueta_panel}")
+        ax.grid(True, which="both", linestyle=":", alpha=0.5)
+        ax.legend(fontsize=8)
+        fig.tight_layout()
+        fig.savefig(carpeta_salida / f"barajas_{valor_panel}_{etiqueta_panel}.png", dpi=150)
+        plt.close(fig)
 
 
 def graficar_metrica_vs_escala(df, metrica, ylabel, titulo_base, carpeta_salida, log_y=True):
@@ -260,29 +300,28 @@ def graficar_metrica_vs_escala(df, metrica, ylabel, titulo_base, carpeta_salida,
     Pensada para instancias_completas, donde cada combinación de rango x
     palo corresponde a un único CSV ("todas" las manos en un mismo archivo).
     """
-    carpeta_salida.mkdir(parents=True, exist_ok=True)
-    rangos_unicos = sorted(df["rangos"].unique())
+    _graficar_metrica_vs_variable(
+        df, metrica, ylabel, titulo_base, carpeta_salida,
+        col_panel="rangos", col_x="palos",
+        etiqueta_panel="rangos", etiqueta_x="Cantidad de palos", log_y=log_y,
+    )
 
-    for rangos in rangos_unicos:
-        sub = df[df["rangos"] == rangos]
-        fig, ax = plt.subplots(figsize=(7, 5))
 
-        _dibujar_lineas_por_razonador(ax, sub, metrica)
+def graficar_metrica_vs_rangos(df, metrica, ylabel, titulo_base, carpeta_salida, log_y=True):
+    """
+    Genera un PNG por cada cantidad de palos presente en df, graficando
+    `metrica` vs cantidad de rangos, con una línea por razonador.
 
-        if log_y:
-            ax.set_yscale("log")
-        else:
-            ax.ticklabel_format(style="plain", axis="y", useOffset=False)
-        palos_unicos = sorted(sub["palos"].unique())
-        ax.set_xticks(palos_unicos)
-        ax.set_xlabel("Cantidad de palos")
-        ax.set_ylabel(ylabel)
-        ax.set_title(f"{titulo_base} — {rangos} rangos")
-        ax.grid(True, which="both", linestyle=":", alpha=0.5)
-        ax.legend(fontsize=8)
-        fig.tight_layout()
-        fig.savefig(carpeta_salida / f"barajas_{rangos}_rangos.png", dpi=150)
-        plt.close(fig)
+    Es el espejo de graficar_metrica_vs_escala: misma lógica, pero con los
+    roles de "palos" y "rangos" invertidos, para poder ver cómo escala cada
+    razonador a medida que crece la cantidad de rangos (con la cantidad de
+    palos fija), y no solo al revés.
+    """
+    _graficar_metrica_vs_variable(
+        df, metrica, ylabel, titulo_base, carpeta_salida,
+        col_panel="palos", col_x="rangos",
+        etiqueta_panel="palos", etiqueta_x="Cantidad de rangos", log_y=log_y,
+    )
 
 
 def graficar_heatmap_tiempo(df, carpeta_salida):
@@ -292,6 +331,15 @@ def graficar_heatmap_tiempo(df, carpeta_salida):
     carpeta_salida.mkdir(parents=True, exist_ok=True)
     rangos_unicos = sorted(df["rangos"].unique())
     palos_unicos = sorted(df["palos"].unique())
+
+    valores_validos_global = df.loc[~df["es_timeout"], "total_s"].dropna()
+    if not valores_validos_global.empty:
+        vmin_global = valores_validos_global.min()
+        vmax_global = valores_validos_global.max()
+        norm_global = (mcolors.Normalize(vmin=vmin_global, vmax=vmax_global)
+                       if vmax_global > vmin_global else None)
+    else:
+        norm_global = None
 
     for razonador in RAZONADORES:
         sub = df[df["razonador"] == razonador]
@@ -314,6 +362,7 @@ def graficar_heatmap_tiempo(df, carpeta_salida):
             xlabel="Cantidad de palos", ylabel="Cantidad de rangos",
             titulo=f"Tiempo total de clasificacion — {razonador}",
             ruta_salida=carpeta_salida / f"{_slug_razonador(razonador)}.png",
+            norm=norm_global,
         )
 
 
@@ -327,13 +376,13 @@ def _formatear_tick_tiempo(valor, pos=None):
 
 
 def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
-                                 xlabel, ylabel, titulo, ruta_salida):
+                                 xlabel, ylabel, titulo, ruta_salida, norm=None):
     """
     Dibuja y guarda un único heatmap a partir de una matriz de tiempos (s) y
     una matriz booleana es_to que indica qué celdas corresponden a TIMEOUT.
 
     Usa escala de color lineal, calculada solo a partir de los tiempos
-    reales. Las celdas TIMEOUT quedan en blanco y se
+    reales (no-timeout). Las celdas TIMEOUT quedan en blanco y se
     sobreescriben con achurado rojo y la etiqueta "TIMEOUT", sin participar
     nunca de la escala.
     """
@@ -341,12 +390,10 @@ def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
 
     valores_validos = matriz[~np.isnan(matriz)]
 
-    if valores_validos.size:
+    if norm is None and valores_validos.size:
         vmin = valores_validos.min()
         vmax = valores_validos.max()
         norm = mcolors.Normalize(vmin=vmin, vmax=vmax) if vmax > vmin else None
-    else:
-        norm = None
 
     im = ax.imshow(np.ma.masked_invalid(matriz), cmap="viridis", norm=norm, aspect="auto")
 
@@ -368,12 +415,67 @@ def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.set_title(titulo, fontsize=11)
-    if valores_validos.size:
+    if norm is not None or valores_validos.size:
         cbar = fig.colorbar(im, ax=ax, label="Tiempo total (s)")
         cbar.ax.yaxis.set_major_formatter(mticker.FuncFormatter(_formatear_tick_tiempo))
     fig.tight_layout()
     fig.savefig(ruta_salida, dpi=150)
     plt.close(fig)
+
+
+def _graficar_pequenos_multiplos_por_tipo_mano(df, metrica, ylabel, titulo_base,
+                                                carpeta_salida, col_panel, col_x,
+                                                etiqueta_panel, etiqueta_x, log_y=True):
+    """
+    Genera un PNG por tipo de mano; cada uno con un subplot por cada valor
+    de `col_panel` (una grilla de pequeños múltiplos), graficando `metrica`
+    vs `col_x` dentro de cada subplot.
+
+    Función genérica que arma tanto la grilla "vs palos" (col_panel=
+    "rangos", col_x="palos") como su espejo "vs rangos" (col_panel="palos",
+    col_x="rangos"), para no duplicar la lógica de armado de la figura.
+    """
+    carpeta_salida.mkdir(parents=True, exist_ok=True)
+    tipos_presentes = [t for t in ORDEN_TIPOS_MANO
+                       if t != "Todas" and t in df["tipo_mano"].unique()]
+    valores_panel = sorted(df[col_panel].unique())
+
+    ncols = 3
+    nrows = int(np.ceil(len(valores_panel) / ncols)) if valores_panel else 1
+
+    for tipo in tipos_presentes:
+        sub_tipo = df[df["tipo_mano"] == tipo]
+        fig, axes = plt.subplots(nrows, ncols, figsize=(4.6 * ncols, 3.6 * nrows), squeeze=False)
+
+        for idx, valor_panel in enumerate(valores_panel):
+            ax = axes[idx // ncols][idx % ncols]
+            sub = sub_tipo[sub_tipo[col_panel] == valor_panel]
+
+            _dibujar_lineas_por_razonador(ax, sub, metrica, col_x=col_x)
+
+            if log_y:
+                ax.set_yscale("log")
+            else:
+                ax.ticklabel_format(style="plain", axis="y", useOffset=False)
+            valores_x = sorted(sub[col_x].unique())
+            if valores_x:
+                ax.set_xticks(valores_x)
+            ax.set_title(f"{valor_panel} {etiqueta_panel}", fontsize=10)
+            ax.grid(True, which="both", linestyle=":", alpha=0.4)
+
+        for k in range(len(valores_panel), nrows * ncols):
+            axes[k // ncols][k % ncols].axis("off")
+
+        handles, labels = axes[0][0].get_legend_handles_labels()
+        if handles:
+            fig.legend(handles, labels, loc="upper center", ncol=3,
+                       bbox_to_anchor=(0.5, 1.04), fontsize=8)
+        fig.suptitle(f"{titulo_base} — {tipo}", y=1.08, fontsize=13)
+        fig.text(0.5, -0.02, etiqueta_x, ha="center", fontsize=9)
+        fig.text(-0.01, 0.5, ylabel, va="center", rotation="vertical", fontsize=9)
+        fig.tight_layout()
+        fig.savefig(carpeta_salida / f"{tipo}.png", dpi=150, bbox_inches="tight")
+        plt.close(fig)
 
 
 def graficar_pequenos_multiplos_por_tipo_mano(df, metrica, ylabel, titulo_base,
@@ -385,47 +487,30 @@ def graficar_pequenos_multiplos_por_tipo_mano(df, metrica, ylabel, titulo_base,
     Pensada para instancias_divididas, donde cada tipo de mano tiene su
     propio CSV separado por cada combinación de rango x palo.
     """
-    carpeta_salida.mkdir(parents=True, exist_ok=True)
-    tipos_presentes = [t for t in ORDEN_TIPOS_MANO
-                       if t != "Todas" and t in df["tipo_mano"].unique()]
-    rangos_unicos = sorted(df["rangos"].unique())
+    _graficar_pequenos_multiplos_por_tipo_mano(
+        df, metrica, ylabel, titulo_base, carpeta_salida,
+        col_panel="rangos", col_x="palos",
+        etiqueta_panel="rangos", etiqueta_x="Cantidad de palos", log_y=log_y,
+    )
 
-    ncols = 3
-    nrows = int(np.ceil(len(rangos_unicos) / ncols)) if rangos_unicos else 1
 
-    for tipo in tipos_presentes:
-        sub_tipo = df[df["tipo_mano"] == tipo]
-        fig, axes = plt.subplots(nrows, ncols, figsize=(4.6 * ncols, 3.6 * nrows), squeeze=False)
+def graficar_pequenos_multiplos_por_tipo_mano_vs_rangos(df, metrica, ylabel, titulo_base,
+                                                         carpeta_salida, log_y=True):
+    """
+    Genera un PNG por tipo de mano; cada uno con un subplot por cantidad de
+    palos (una grilla de pequeños múltiplos), graficando `metrica` vs
+    rangos.
 
-        for idx, rangos in enumerate(rangos_unicos):
-            ax = axes[idx // ncols][idx % ncols]
-            sub = sub_tipo[sub_tipo["rangos"] == rangos]
-
-            _dibujar_lineas_por_razonador(ax, sub, metrica)
-
-            if log_y:
-                ax.set_yscale("log")
-            else:
-                ax.ticklabel_format(style="plain", axis="y", useOffset=False)
-            palos_unicos = sorted(sub["palos"].unique())
-            if palos_unicos:
-                ax.set_xticks(palos_unicos)
-            ax.set_title(f"{rangos} rangos", fontsize=10)
-            ax.grid(True, which="both", linestyle=":", alpha=0.4)
-
-        for k in range(len(rangos_unicos), nrows * ncols):
-            axes[k // ncols][k % ncols].axis("off")
-
-        handles, labels = axes[0][0].get_legend_handles_labels()
-        if handles:
-            fig.legend(handles, labels, loc="upper center", ncol=3,
-                       bbox_to_anchor=(0.5, 1.04), fontsize=8)
-        fig.suptitle(f"{titulo_base} — {tipo}", y=1.08, fontsize=13)
-        fig.text(0.5, -0.02, "Cantidad de palos", ha="center", fontsize=9)
-        fig.text(-0.01, 0.5, ylabel, va="center", rotation="vertical", fontsize=9)
-        fig.tight_layout()
-        fig.savefig(carpeta_salida / f"{tipo}.png", dpi=150, bbox_inches="tight")
-        plt.close(fig)
+    Es el espejo de graficar_pequenos_multiplos_por_tipo_mano: mismo
+    layout, pero con los roles de "palos" y "rangos" invertidos, para ver
+    cómo escala cada razonador a medida que crece la cantidad de rangos
+    (con la cantidad de palos fija), dentro de cada tipo de mano.
+    """
+    _graficar_pequenos_multiplos_por_tipo_mano(
+        df, metrica, ylabel, titulo_base, carpeta_salida,
+        col_panel="palos", col_x="rangos",
+        etiqueta_panel="palos", etiqueta_x="Cantidad de rangos", log_y=log_y,
+    )
 
 
 def graficar_heatmap_tipo_mano(df, carpeta_salida):
@@ -560,6 +645,12 @@ def main():
         graficar_metrica_vs_escala(
             df_completas, "mem_pico_mb", "Memoria pico (MB)",
             "Memoria pico utilizada", base / "memoria_vs_escala", log_y=False)
+        graficar_metrica_vs_rangos(
+            df_completas, "total_s", "Tiempo total (s)",
+            "Tiempo total de clasificacion", base / "tiempo_vs_rangos", log_y=False)
+        graficar_metrica_vs_rangos(
+            df_completas, "mem_pico_mb", "Memoria pico (MB)",
+            "Memoria pico utilizada", base / "memoria_vs_rangos", log_y=False)
         graficar_heatmap_tiempo(df_completas, base / "heatmaps_tiempo")
     else:
         print("[!] No se encontraron datos de instancias_completas.")
@@ -573,6 +664,12 @@ def main():
         graficar_pequenos_multiplos_por_tipo_mano(
             df_divididas, "mem_pico_mb", "Memoria pico (MB)",
             "Memoria pico utilizada", base / "memoria_por_tipo_mano", log_y=False)
+        graficar_pequenos_multiplos_por_tipo_mano_vs_rangos(
+            df_divididas, "total_s", "Tiempo total (s)",
+            "Tiempo total de clasificacion", base / "tiempo_por_tipo_mano_vs_rangos", log_y=False)
+        graficar_pequenos_multiplos_por_tipo_mano_vs_rangos(
+            df_divididas, "mem_pico_mb", "Memoria pico (MB)",
+            "Memoria pico utilizada", base / "memoria_por_tipo_mano_vs_rangos", log_y=False)
         graficar_heatmap_tipo_mano(df_divididas, base / "heatmaps_tiempo_por_tipo")
     else:
         print("[!] No se encontraron datos de instancias_divididas.")
