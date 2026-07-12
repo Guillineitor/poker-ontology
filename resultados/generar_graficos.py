@@ -335,7 +335,7 @@ def graficar_heatmap_tiempo(df, carpeta_salida):
 
 def _formatear_tick_tiempo(valor, pos=None):
     """
-    Formatea un tick del colorbar de tiempo (escala log) como número entero.
+    Formatea un tick del colorbar de tiempo como número entero.
     """
     if valor >= 1:
         return f"{int(round(valor))}"
@@ -348,20 +348,20 @@ def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
     Dibuja y guarda un único heatmap a partir de una matriz de tiempos (s) y
     una matriz booleana es_to que indica qué celdas corresponden a TIMEOUT.
 
-    Usa escala de color logarítmica porque los tiempos observados abarcan
-    varios órdenes de magnitud. Las celdas TIMEOUT se sobreescriben con achurado rojo
-    y la etiqueta "TIMEOUT", en vez de dejar que participen de la escala.
+    Usa escala de color lineal. Las celdas TIMEOUT se sobreescriben con
+    achurado rojo y la etiqueta "TIMEOUT", en vez de dejar que participen de
+    la escala.
     """
     fig, ax = plt.subplots(figsize=(1.1 * len(etiquetas_x) + 2, 0.9 * len(etiquetas_y) + 2))
 
     valores_validos = matriz[~np.isnan(matriz) & ~es_to]
     valores_to = matriz[~np.isnan(matriz) & es_to]
-    todos_positivos = np.concatenate([v[v > 0] for v in [valores_validos, valores_to] if v.size])
+    todos_los_valores = np.concatenate([v for v in [valores_validos, valores_to] if v.size])
 
-    if todos_positivos.size:
-        vmin = max(todos_positivos.min(), 1e-3)
-        vmax = todos_positivos.max()
-        norm = mcolors.LogNorm(vmin=vmin, vmax=vmax) if vmax > vmin else None
+    if todos_los_valores.size:
+        vmin = todos_los_valores.min()
+        vmax = todos_los_valores.max()
+        norm = mcolors.Normalize(vmin=vmin, vmax=vmax) if vmax > vmin else None
     else:
         norm = None
 
@@ -387,8 +387,8 @@ def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.set_title(titulo, fontsize=11)
-    if todos_positivos.size:
-        cbar = fig.colorbar(im, ax=ax, label="Tiempo total (s, escala log)")
+    if todos_los_valores.size:
+        cbar = fig.colorbar(im, ax=ax, label="Tiempo total (s)")
         cbar.ax.yaxis.set_major_formatter(mticker.FuncFormatter(_formatear_tick_tiempo))
     fig.tight_layout()
     fig.savefig(ruta_salida, dpi=150)
@@ -475,9 +475,8 @@ def graficar_heatmap_tipo_mano(df, carpeta_salida):
         candidatos_vmax = [v for v in [valores_validos.max() if not valores_validos.empty else None,
                                         vmax_to] if v is not None]
         vmax = max(candidatos_vmax) if candidatos_vmax else 1.0
-        vmin = valores_validos.min() if not valores_validos.empty else 1e-3
-        vmin = max(vmin, 1e-3)
-        norm = mcolors.LogNorm(vmin=vmin, vmax=vmax) if vmax > vmin else None
+        vmin = valores_validos.min() if not valores_validos.empty else 0.0
+        norm = mcolors.Normalize(vmin=vmin, vmax=vmax) if vmax > vmin else None
 
         fig, axes = plt.subplots(1, len(palos_unicos),
                                   figsize=(3.6 * len(palos_unicos) + 2, 0.55 * len(tipos_presentes) + 2.5),
@@ -524,7 +523,7 @@ def graficar_heatmap_tipo_mano(df, carpeta_salida):
 
         fig.suptitle(f"Tiempo total por tipo de mano — {razonador}", fontsize=13)
         if im is not None:
-            cbar = fig.colorbar(im, ax=axes.tolist(), label="Tiempo total (s, escala log)", shrink=0.85)
+            cbar = fig.colorbar(im, ax=axes.tolist(), label="Tiempo total (s)", shrink=0.85)
             cbar.ax.yaxis.set_major_formatter(mticker.FuncFormatter(_formatear_tick_tiempo))
         fig.savefig(carpeta_salida / f"{_slug_razonador(razonador)}.png", dpi=150, bbox_inches="tight")
         plt.close(fig)
