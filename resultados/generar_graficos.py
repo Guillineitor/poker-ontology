@@ -45,6 +45,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+import matplotlib.ticker as mticker
 
 # =============================================================================
 # Configuración general
@@ -245,42 +246,10 @@ def construir_dataframe(carpeta_resultados: Path) -> pd.DataFrame:
 # Utilidades de graficado
 # =============================================================================
 
-def _marcar_timeouts_linea(ax, to_df, metrica, razonador, ok_serie_max):
-    """
-    Dibuja los puntos TIMEOUT de un razonador sobre un gráfico de líneas ya
-    creado, como una X roja con la etiqueta "TIMEOUT" encima.
-
-    Para tiempo (metrica == "total_s") la X se ubica en el umbral real de
-    timeout del razonador (TIMEOUT_SEGUNDOS), no en un valor inventado. Para
-    memoria, que no tiene umbral porque el proceso nunca llegó a reportar un
-    pico, la X se ubica apenas por encima del máximo visible en ese gráfico.
-    """
-    if to_df.empty:
-        return
-    if metrica == "total_s":
-        y_vals = [TIMEOUT_SEGUNDOS.get(razonador, np.nan)] * len(to_df)
-    else:
-        referencia = ok_serie_max if (ok_serie_max is not None and ok_serie_max > 0) else 1.0
-        y_vals = [referencia * 1.15] * len(to_df)
-
-    ax.scatter(to_df["palos"], y_vals, marker="X", s=110, color="red",
-               edgecolor="black", linewidth=0.6, zorder=5)
-    for x_val, y_val in zip(to_df["palos"], y_vals):
-        ax.annotate("TIMEOUT", (x_val, y_val), textcoords="offset points",
-                    xytext=(0, 7), ha="center", fontsize=7, color="red",
-                    fontweight="bold")
-
-
 def _dibujar_lineas_por_razonador(ax, sub, metrica):
     """
     Dibuja sobre un eje ya creado una línea de `metrica` vs "palos" por cada
-    razonador presente en sub.
-
-    Si un razonador solo tiene filas TIMEOUT en esta serie (sin ningún punto
-    real que graficar) y la métrica es tiempo, igual se agrega una línea
-    vacía para que aparezca en la leyenda con su color correspondiente, en
-    vez de desaparecer del todo. En el caso de memoria, ese razonador simplemente no
-    aparece en este panel.
+    razonador presente en sub (salvos los casos de TIMEOUT).
     """
     for razonador in RAZONADORES:
         datos_r = sub[sub["razonador"] == razonador].sort_values("palos")
@@ -289,16 +258,9 @@ def _dibujar_lineas_por_razonador(ax, sub, metrica):
         color = COLOR_RAZONADOR.get(razonador)
 
         ok = datos_r[~datos_r["es_timeout"]]
-        to = datos_r[datos_r["es_timeout"]]
 
         if not ok.empty:
             ax.plot(ok["palos"], ok[metrica], marker="o", label=razonador, color=color)
-        elif not to.empty and metrica == "total_s":
-            ax.plot([], [], marker="o", label=razonador, color=color)
-
-        if metrica == "total_s":
-            ok_max = ok[metrica].max() if not ok.empty else None
-            _marcar_timeouts_linea(ax, to, metrica, razonador, ok_max)
 
 
 def graficar_metrica_vs_escala(df, metrica, ylabel, titulo_base, carpeta_salida, log_y=True):
@@ -320,6 +282,8 @@ def graficar_metrica_vs_escala(df, metrica, ylabel, titulo_base, carpeta_salida,
 
         if log_y:
             ax.set_yscale("log")
+        else:
+            ax.ticklabel_format(style="plain", axis="y", useOffset=False)
         palos_unicos = sorted(sub["palos"].unique())
         ax.set_xticks(palos_unicos)
         ax.set_xlabel("Cantidad de palos")
@@ -369,6 +333,15 @@ def graficar_heatmap_tiempo(df, carpeta_salida):
         )
 
 
+def _formatear_tick_tiempo(valor, pos=None):
+    """
+    Formatea un tick del colorbar de tiempo (escala log) como número entero.
+    """
+    if valor >= 1:
+        return f"{int(round(valor))}"
+    return f"{valor:g}"
+
+
 def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
                                  xlabel, ylabel, titulo, ruta_salida):
     """
@@ -415,7 +388,8 @@ def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
     ax.set_ylabel(ylabel)
     ax.set_title(titulo, fontsize=11)
     if todos_positivos.size:
-        fig.colorbar(im, ax=ax, label="Tiempo total (s, escala log)")
+        cbar = fig.colorbar(im, ax=ax, label="Tiempo total (s, escala log)")
+        cbar.ax.yaxis.set_major_formatter(mticker.FuncFormatter(_formatear_tick_tiempo))
     fig.tight_layout()
     fig.savefig(ruta_salida, dpi=150)
     plt.close(fig)
@@ -450,6 +424,8 @@ def graficar_pequenos_multiplos_por_tipo_mano(df, metrica, ylabel, titulo_base,
 
             if log_y:
                 ax.set_yscale("log")
+            else:
+                ax.ticklabel_format(style="plain", axis="y", useOffset=False)
             palos_unicos = sorted(sub["palos"].unique())
             if palos_unicos:
                 ax.set_xticks(palos_unicos)
@@ -548,7 +524,8 @@ def graficar_heatmap_tipo_mano(df, carpeta_salida):
 
         fig.suptitle(f"Tiempo total por tipo de mano — {razonador}", fontsize=13)
         if im is not None:
-            fig.colorbar(im, ax=axes.tolist(), label="Tiempo total (s, escala log)", shrink=0.85)
+            cbar = fig.colorbar(im, ax=axes.tolist(), label="Tiempo total (s, escala log)", shrink=0.85)
+            cbar.ax.yaxis.set_major_formatter(mticker.FuncFormatter(_formatear_tick_tiempo))
         fig.savefig(carpeta_salida / f"{_slug_razonador(razonador)}.png", dpi=150, bbox_inches="tight")
         plt.close(fig)
 
@@ -605,8 +582,8 @@ def main():
         print(f"Generando graficos de instancias_completas... ({len(df_completas)} filas)")
         base = carpeta_graficos / "instancias_completas"
         graficar_metrica_vs_escala(
-            df_completas, "total_s", "Tiempo total (s, escala log)",
-            "Tiempo total de clasificacion", base / "tiempo_vs_escala", log_y=True)
+            df_completas, "total_s", "Tiempo total (s)",
+            "Tiempo total de clasificacion", base / "tiempo_vs_escala", log_y=False)
         graficar_metrica_vs_escala(
             df_completas, "mem_pico_mb", "Memoria pico (MB)",
             "Memoria pico utilizada", base / "memoria_vs_escala", log_y=False)
@@ -618,8 +595,8 @@ def main():
         print(f"Generando graficos de instancias_divididas... ({len(df_divididas)} filas)")
         base = carpeta_graficos / "instancias_divididas"
         graficar_pequenos_multiplos_por_tipo_mano(
-            df_divididas, "total_s", "Tiempo total (s, escala log)",
-            "Tiempo total de clasificacion", base / "tiempo_por_tipo_mano", log_y=True)
+            df_divididas, "total_s", "Tiempo total (s)",
+            "Tiempo total de clasificacion", base / "tiempo_por_tipo_mano", log_y=False)
         graficar_pequenos_multiplos_por_tipo_mano(
             df_divididas, "mem_pico_mb", "Memoria pico (MB)",
             "Memoria pico utilizada", base / "memoria_por_tipo_mano", log_y=False)
