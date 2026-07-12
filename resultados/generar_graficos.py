@@ -324,7 +324,9 @@ def graficar_metrica_vs_rangos(df, metrica, ylabel, titulo_base, carpeta_salida,
     )
 
 
-def _graficar_comparacion_barajas_por_razonador(df, metrica, ylabel, titulo_base, carpeta_salida, col_linea, col_x, etiqueta_linea, etiqueta_x, log_y=True):
+def _graficar_comparacion_barajas_por_razonador(df, metrica, ylabel, titulo_base,
+                                                 carpeta_salida, col_linea, col_x,
+                                                 etiqueta_linea, etiqueta_x, log_y=True):
     """
     Genera un PNG por cada razonador, graficando `metrica` vs `col_x` con
     una línea por cada valor de `col_linea` (todas juntas en el mismo eje).
@@ -351,6 +353,7 @@ def _graficar_comparacion_barajas_por_razonador(df, metrica, ylabel, titulo_base
 
         fig, ax = plt.subplots(figsize=(8, 5.5))
 
+        hubo_lineas = False
         for valor_linea in valores_linea:
             datos = sub_r[sub_r[col_linea] == valor_linea].sort_values(col_x)
             ok = datos[~datos["es_timeout"]]
@@ -358,6 +361,11 @@ def _graficar_comparacion_barajas_por_razonador(df, metrica, ylabel, titulo_base
                 continue
             ax.plot(ok[col_x], ok[metrica], marker="o",
                     label=f"{valor_linea} {etiqueta_linea}", color=colores[valor_linea])
+            hubo_lineas = True
+
+        if not hubo_lineas:
+            plt.close(fig)
+            continue
 
         if log_y:
             ax.set_yscale("log")
@@ -612,6 +620,115 @@ def graficar_pequenos_multiplos_por_tipo_mano_vs_rangos(df, metrica, ylabel, tit
     )
 
 
+def _graficar_pequenos_multiplos_por_razonador(df, metrica, ylabel, titulo_base,
+                                                carpeta_salida, col_panel, col_x,
+                                                etiqueta_panel, etiqueta_x, log_y=True):
+    """
+    Genera un PNG por cada razonador; cada uno con un subplot por cada
+    valor de `col_panel` (grilla de pequeños múltiplos), graficando
+    `metrica` vs `col_x` con una línea por tipo de mano dentro de cada
+    subplot.
+
+    Es el "transpuesto" de _graficar_pequenos_multiplos_por_tipo_mano: en
+    vez de un PNG por tipo de mano con una línea por razonador, aquí se
+    arma un PNG por razonador con una línea por tipo de mano, para ver de
+    un vistazo en qué tipos de mano se concentra la lentitud de CADA
+    razonador (por ejemplo JFact disparándose en escalera/full mientras el
+    resto se mantiene plano), sin tener que comparar 10 PNG por separado.
+    """
+    carpeta_salida.mkdir(parents=True, exist_ok=True)
+    tipos_presentes = [t for t in ORDEN_TIPOS_MANO
+                       if t != "Todas" and t in df["tipo_mano"].unique()]
+    valores_panel = sorted(df[col_panel].unique())
+    if not tipos_presentes or not valores_panel:
+        return
+
+    cmap = plt.get_cmap("tab10")
+    colores_tipo = {t: cmap(i % 10) for i, t in enumerate(tipos_presentes)}
+
+    ncols = 3
+    nrows = int(np.ceil(len(valores_panel) / ncols))
+
+    for razonador in RAZONADORES:
+        sub_r = df[df["razonador"] == razonador]
+        if sub_r.empty:
+            continue
+
+        fig, axes = plt.subplots(nrows, ncols, figsize=(4.6 * ncols, 3.6 * nrows), squeeze=False)
+        hubo_lineas = False
+
+        for idx, valor_panel in enumerate(valores_panel):
+            ax = axes[idx // ncols][idx % ncols]
+            sub_panel = sub_r[sub_r[col_panel] == valor_panel]
+
+            for tipo in tipos_presentes:
+                datos = sub_panel[sub_panel["tipo_mano"] == tipo].sort_values(col_x)
+                ok = datos[~datos["es_timeout"]]
+                if ok.empty:
+                    continue
+                ax.plot(ok[col_x], ok[metrica], marker="o", markersize=4, linewidth=1.3,
+                        label=tipo, color=colores_tipo[tipo])
+                hubo_lineas = True
+
+            if log_y:
+                ax.set_yscale("log")
+            else:
+                ax.ticklabel_format(style="plain", axis="y", useOffset=False)
+            valores_x = sorted(sub_panel[col_x].unique())
+            if valores_x:
+                ax.set_xticks(valores_x)
+            ax.set_title(f"{valor_panel} {etiqueta_panel}", fontsize=10)
+            ax.grid(True, which="both", linestyle=":", alpha=0.4)
+
+        if not hubo_lineas:
+            plt.close(fig)
+            continue
+
+        for k in range(len(valores_panel), nrows * ncols):
+            axes[k // ncols][k % ncols].axis("off")
+
+        handles, labels = [], []
+        for ax_ in axes.flat:
+            handles, labels = ax_.get_legend_handles_labels()
+            if handles:
+                break
+        if handles:
+            fig.legend(handles, labels, loc="upper center", ncol=5,
+                       bbox_to_anchor=(0.5, 1.06), fontsize=8)
+        fig.suptitle(f"{titulo_base} — {razonador}", y=1.1, fontsize=13)
+        fig.text(0.5, -0.02, etiqueta_x, ha="center", fontsize=9)
+        fig.text(-0.01, 0.5, ylabel, va="center", rotation="vertical", fontsize=9)
+        fig.tight_layout()
+        fig.savefig(carpeta_salida / f"{_slug_razonador(razonador)}.png", dpi=150, bbox_inches="tight")
+        plt.close(fig)
+
+
+def graficar_comparacion_tipos_mano_vs_palos(df, metrica, ylabel, titulo_base, carpeta_salida, log_y=False):
+    """
+    Genera un PNG por razonador, con un panel por cantidad de rangos y una
+    línea por tipo de mano dentro de cada panel, graficando `metrica` vs
+    cantidad de palos. Pensada para instancias_divididas.
+    """
+    _graficar_pequenos_multiplos_por_razonador(
+        df, metrica, ylabel, titulo_base, carpeta_salida,
+        col_panel="rangos", col_x="palos",
+        etiqueta_panel="rangos", etiqueta_x="Cantidad de palos", log_y=log_y,
+    )
+
+
+def graficar_comparacion_tipos_mano_vs_rangos(df, metrica, ylabel, titulo_base, carpeta_salida, log_y=False):
+    """
+    Es el espejo de graficar_comparacion_tipos_mano_vs_palos: un PNG por
+    razonador, con un panel por cantidad de palos y una línea por tipo de
+    mano, graficando `metrica` vs cantidad de rangos.
+    """
+    _graficar_pequenos_multiplos_por_razonador(
+        df, metrica, ylabel, titulo_base, carpeta_salida,
+        col_panel="palos", col_x="rangos",
+        etiqueta_panel="palos", etiqueta_x="Cantidad de rangos", log_y=log_y,
+    )
+
+
 def graficar_heatmap_tipo_mano(df, carpeta_salida):
     """
     Genera, por cada razonador, un heatmap tipo_mano x rangos -> tiempo (s),
@@ -750,26 +867,26 @@ def main():
             df_completas, "total_s", "Tiempo total (s)",
             "Tiempo total de clasificacion", base / "tiempo_vs_palos", log_y=False)
         graficar_metrica_vs_escala(
-            df_completas, "mem_pico_mb", "Memoria pico (MB)",
-            "Memoria pico utilizada", base / "memoria_vs_palos", log_y=False)
+            df_completas, "mem_pico_mb", "Memoria (MB)",
+            "Memoria utilizada", base / "memoria_vs_palos", log_y=False)
         graficar_metrica_vs_rangos(
             df_completas, "total_s", "Tiempo total (s)",
             "Tiempo total de clasificacion", base / "tiempo_vs_rangos", log_y=False)
         graficar_metrica_vs_rangos(
-            df_completas, "mem_pico_mb", "Memoria pico (MB)",
-            "Memoria pico utilizada", base / "memoria_vs_rangos", log_y=False)
+            df_completas, "mem_pico_mb", "Memoria (MB)",
+            "Memoria utilizada", base / "memoria_vs_rangos", log_y=False)
         graficar_heatmap_tiempo(df_completas, base / "heatmaps_tiempo")
         graficar_comparacion_barajas_vs_palos(
             df_completas, "total_s", "Tiempo total (s)",
-            "Comparacion de barajas (tiempo)", base / "comparacion_barajas_vs_palos")
+            "Comparacion de barajas (tiempo)", base / "comparacion_barajas_tiempo_vs_palos")
         graficar_comparacion_barajas_vs_palos(
-            df_completas, "mem_pico_mb", "Memoria pico (MB)",
+            df_completas, "mem_pico_mb", "Memoria (MB)",
             "Comparacion de barajas (memoria)", base / "comparacion_barajas_memoria_vs_palos")
         graficar_comparacion_barajas_vs_rangos(
             df_completas, "total_s", "Tiempo total (s)",
-            "Comparacion de barajas (tiempo)", base / "comparacion_barajas_vs_rangos")
+            "Comparacion de barajas (tiempo)", base / "comparacion_barajas_tiempo_vs_rangos")
         graficar_comparacion_barajas_vs_rangos(
-            df_completas, "mem_pico_mb", "Memoria pico (MB)",
+            df_completas, "mem_pico_mb", "Memoria (MB)",
             "Comparacion de barajas (memoria)", base / "comparacion_barajas_memoria_vs_rangos")
     else:
         print("[!] No se encontraron datos de instancias_completas.")
@@ -781,15 +898,27 @@ def main():
             df_divididas, "total_s", "Tiempo total (s)",
             "Tiempo total de clasificacion", base / "tiempo_por_tipo_mano_vs_palos", log_y=False)
         graficar_pequenos_multiplos_por_tipo_mano(
-            df_divididas, "mem_pico_mb", "Memoria pico (MB)",
-            "Memoria pico utilizada", base / "memoria_por_tipo_mano_vs_palos", log_y=False)
+            df_divididas, "mem_pico_mb", "Memoria (MB)",
+            "Memoria utilizada", base / "memoria_por_tipo_mano_vs_palos", log_y=False)
         graficar_pequenos_multiplos_por_tipo_mano_vs_rangos(
             df_divididas, "total_s", "Tiempo total (s)",
             "Tiempo total de clasificacion", base / "tiempo_por_tipo_mano_vs_rangos", log_y=False)
         graficar_pequenos_multiplos_por_tipo_mano_vs_rangos(
-            df_divididas, "mem_pico_mb", "Memoria pico (MB)",
-            "Memoria pico utilizada", base / "memoria_por_tipo_mano_vs_rangos", log_y=False)
+            df_divididas, "mem_pico_mb", "Memoria (MB)",
+            "Memoria utilizada", base / "memoria_por_tipo_mano_vs_rangos", log_y=False)
         graficar_heatmap_tipo_mano(df_divididas, base / "heatmaps_tiempo_por_tipo")
+        graficar_comparacion_tipos_mano_vs_palos(
+            df_divididas, "total_s", "Tiempo total (s)",
+            "Comparacion de tipos de mano (tiempo)", base / "comparacion_tipos_mano_tiempo_vs_palos")
+        graficar_comparacion_tipos_mano_vs_palos(
+            df_divididas, "mem_pico_mb", "Memoria (MB)",
+            "Comparacion de tipos de mano (memoria)", base / "comparacion_tipos_mano_memoria_vs_palos")
+        graficar_comparacion_tipos_mano_vs_rangos(
+            df_divididas, "total_s", "Tiempo total (s)",
+            "Comparacion de tipos de mano (tiempo)", base / "comparacion_tipos_mano_tiempo_vs_rangos")
+        graficar_comparacion_tipos_mano_vs_rangos(
+            df_divididas, "mem_pico_mb", "Memoria (MB)",
+            "Comparacion de tipos de mano (memoria)", base / "comparacion_tipos_mano_memoria_vs_rangos")
     else:
         print("[!] No se encontraron datos de instancias_divididas.")
 
