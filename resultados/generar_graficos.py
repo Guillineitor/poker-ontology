@@ -327,6 +327,15 @@ def graficar_metrica_vs_rangos(df, metrica, ylabel, titulo_base, carpeta_salida,
 def graficar_heatmap_tiempo(df, carpeta_salida):
     """
     Genera un heatmap rangos x palos -> tiempo total (s), uno por razonador.
+
+    Pensada para instancias_completas. Los timeouts se muestran con achurado
+    rojo y la etiqueta "TIMEOUT" sobre una celda en blanco (nunca participan
+    de la escala de color), para no confundirlos jamás con un tiempo real
+    medido ni distorsionar la escala con un valor inventado. La escala de
+    color se normaliza de forma global, a partir de los tiempos válidos de
+    TODOS los razonadores en conjunto, para que los tres PNG resultantes
+    compartan exactamente la misma barra de color y sean comparables entre
+    sí.
     """
     carpeta_salida.mkdir(parents=True, exist_ok=True)
     rangos_unicos = sorted(df["rangos"].unique())
@@ -385,6 +394,14 @@ def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
     reales (no-timeout). Las celdas TIMEOUT quedan en blanco y se
     sobreescriben con achurado rojo y la etiqueta "TIMEOUT", sin participar
     nunca de la escala.
+
+    Si se recibe `norm`, se usa esa normalización (por ejemplo una escala
+    global calculada por el llamador a partir de varios heatmaps juntos)
+    en vez de calcular una propia a partir de esta matriz. Esto permite que
+    varios PNG generados por separado (uno por razonador) compartan
+    exactamente la misma barra de color, incluso si alguno de ellos no
+    tiene ningún valor válido propio (por ejemplo, si todas sus corridas
+    dieron TIMEOUT).
     """
     fig, ax = plt.subplots(figsize=(1.1 * len(etiquetas_x) + 2, 0.9 * len(etiquetas_y) + 2))
 
@@ -517,6 +534,14 @@ def graficar_heatmap_tipo_mano(df, carpeta_salida):
     """
     Genera, por cada razonador, un heatmap tipo_mano x rangos -> tiempo (s),
     con un panel por cantidad de palos.
+
+    Pensada para instancias_divididas. Permite ver de un vistazo en qué
+    tipos de mano y a qué escala se concentra la lentitud de cada razonador
+    (por ejemplo JFact en escalera/full). La escala de color se normaliza
+    de forma global, a partir de los tiempos válidos de TODOS los
+    razonadores en conjunto, para que los tres PNG resultantes (uno por
+    razonador) compartan exactamente la misma barra de color y sean
+    comparables entre sí (y no solo los paneles dentro de un mismo PNG).
     """
     carpeta_salida.mkdir(parents=True, exist_ok=True)
     tipos_presentes = [t for t in ORDEN_TIPOS_MANO
@@ -641,10 +666,10 @@ def main():
         base = carpeta_graficos / "instancias_completas"
         graficar_metrica_vs_escala(
             df_completas, "total_s", "Tiempo total (s)",
-            "Tiempo total de clasificacion", base / "tiempo_vs_escala", log_y=False)
+            "Tiempo total de clasificacion", base / "tiempo_vs_palos", log_y=False)
         graficar_metrica_vs_escala(
             df_completas, "mem_pico_mb", "Memoria pico (MB)",
-            "Memoria pico utilizada", base / "memoria_vs_escala", log_y=False)
+            "Memoria pico utilizada", base / "memoria_vs_palos", log_y=False)
         graficar_metrica_vs_rangos(
             df_completas, "total_s", "Tiempo total (s)",
             "Tiempo total de clasificacion", base / "tiempo_vs_rangos", log_y=False)
@@ -660,10 +685,10 @@ def main():
         base = carpeta_graficos / "instancias_divididas"
         graficar_pequenos_multiplos_por_tipo_mano(
             df_divididas, "total_s", "Tiempo total (s)",
-            "Tiempo total de clasificacion", base / "tiempo_por_tipo_mano", log_y=False)
+            "Tiempo total de clasificacion", base / "tiempo_por_tipo_mano_vs_palos", log_y=False)
         graficar_pequenos_multiplos_por_tipo_mano(
             df_divididas, "mem_pico_mb", "Memoria pico (MB)",
-            "Memoria pico utilizada", base / "memoria_por_tipo_mano", log_y=False)
+            "Memoria pico utilizada", base / "memoria_por_tipo_mano_vs_palos", log_y=False)
         graficar_pequenos_multiplos_por_tipo_mano_vs_rangos(
             df_divididas, "total_s", "Tiempo total (s)",
             "Tiempo total de clasificacion", base / "tiempo_por_tipo_mano_vs_rangos", log_y=False)
