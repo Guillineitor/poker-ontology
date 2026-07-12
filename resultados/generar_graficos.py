@@ -867,26 +867,26 @@ def main():
             df_completas, "total_s", "Tiempo total (s)",
             "Tiempo total de clasificacion", base / "tiempo_vs_palos", log_y=False)
         graficar_metrica_vs_escala(
-            df_completas, "mem_pico_mb", "Memoria (MB)",
+            df_completas, "mem_pico_mb", "Memoria peak (MB)",
             "Memoria utilizada", base / "memoria_vs_palos", log_y=False)
         graficar_metrica_vs_rangos(
             df_completas, "total_s", "Tiempo total (s)",
             "Tiempo total de clasificacion", base / "tiempo_vs_rangos", log_y=False)
         graficar_metrica_vs_rangos(
-            df_completas, "mem_pico_mb", "Memoria (MB)",
+            df_completas, "mem_pico_mb", "Memoria peak (MB)",
             "Memoria utilizada", base / "memoria_vs_rangos", log_y=False)
         graficar_heatmap_tiempo(df_completas, base / "heatmaps_tiempo")
         graficar_comparacion_barajas_vs_palos(
             df_completas, "total_s", "Tiempo total (s)",
             "Comparacion de barajas (tiempo)", base / "comparacion_barajas_tiempo_vs_palos")
         graficar_comparacion_barajas_vs_palos(
-            df_completas, "mem_pico_mb", "Memoria (MB)",
+            df_completas, "mem_pico_mb", "Memoria peak (MB)",
             "Comparacion de barajas (memoria)", base / "comparacion_barajas_memoria_vs_palos")
         graficar_comparacion_barajas_vs_rangos(
             df_completas, "total_s", "Tiempo total (s)",
             "Comparacion de barajas (tiempo)", base / "comparacion_barajas_tiempo_vs_rangos")
         graficar_comparacion_barajas_vs_rangos(
-            df_completas, "mem_pico_mb", "Memoria (MB)",
+            df_completas, "mem_pico_mb", "Memoria peak (MB)",
             "Comparacion de barajas (memoria)", base / "comparacion_barajas_memoria_vs_rangos")
     else:
         print("[!] No se encontraron datos de instancias_completas.")
@@ -898,26 +898,26 @@ def main():
             df_divididas, "total_s", "Tiempo total (s)",
             "Tiempo total de clasificacion", base / "tiempo_por_tipo_mano_vs_palos", log_y=False)
         graficar_pequenos_multiplos_por_tipo_mano(
-            df_divididas, "mem_pico_mb", "Memoria (MB)",
+            df_divididas, "mem_pico_mb", "Memoria peak (MB)",
             "Memoria utilizada", base / "memoria_por_tipo_mano_vs_palos", log_y=False)
         graficar_pequenos_multiplos_por_tipo_mano_vs_rangos(
             df_divididas, "total_s", "Tiempo total (s)",
             "Tiempo total de clasificacion", base / "tiempo_por_tipo_mano_vs_rangos", log_y=False)
         graficar_pequenos_multiplos_por_tipo_mano_vs_rangos(
-            df_divididas, "mem_pico_mb", "Memoria (MB)",
+            df_divididas, "mem_pico_mb", "Memoria peak (MB)",
             "Memoria utilizada", base / "memoria_por_tipo_mano_vs_rangos", log_y=False)
         graficar_heatmap_tipo_mano(df_divididas, base / "heatmaps_tiempo_por_tipo")
         graficar_comparacion_tipos_mano_vs_palos(
             df_divididas, "total_s", "Tiempo total (s)",
             "Comparacion de tipos de mano (tiempo)", base / "comparacion_tipos_mano_tiempo_vs_palos")
         graficar_comparacion_tipos_mano_vs_palos(
-            df_divididas, "mem_pico_mb", "Memoria (MB)",
+            df_divididas, "mem_pico_mb", "Memoria peak (MB)",
             "Comparacion de tipos de mano (memoria)", base / "comparacion_tipos_mano_memoria_vs_palos")
         graficar_comparacion_tipos_mano_vs_rangos(
             df_divididas, "total_s", "Tiempo total (s)",
             "Comparacion de tipos de mano (tiempo)", base / "comparacion_tipos_mano_tiempo_vs_rangos")
         graficar_comparacion_tipos_mano_vs_rangos(
-            df_divididas, "mem_pico_mb", "Memoria (MB)",
+            df_divididas, "mem_pico_mb", "Memoria peak (MB)",
             "Comparacion de tipos de mano (memoria)", base / "comparacion_tipos_mano_memoria_vs_rangos")
     else:
         print("[!] No se encontraron datos de instancias_divididas.")
