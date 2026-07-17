@@ -414,24 +414,33 @@ def graficar_comparacion_barajas_vs_rangos(df, metrica, ylabel, titulo_base, car
     )
 
 
-def graficar_heatmap_tiempo(df, carpeta_salida):
+def _graficar_heatmap_rangos_palos(df, carpeta_salida, metrica, cbar_label,
+                                    fmt_celda, fmt_tick, titulo_metrica,
+                                    razonadores=None):
     """
-    Genera un heatmap rangos x palos -> tiempo total (s), uno por razonador.
+    Función interna genérica: genera un heatmap rangos x palos -> `metrica`,
+    uno por cada razonador en `razonadores` (por defecto todos, RAZONADORES).
+
+    Compartida por graficar_heatmap_tiempo (metrica="total_s") y
+    graficar_heatmap_memoria (metrica="mem_pico_mb"), para no duplicar la
+    lógica de armado de la matriz ni la normalización global de color.
 
     Pensada para instancias_completas. Los timeouts se muestran con achurado
     rojo y la etiqueta "TIMEOUT" sobre una celda en blanco (nunca participan
-    de la escala de color), para no confundirlos jamás con un tiempo real
+    de la escala de color), para no confundirlos jamás con un valor real
     medido ni distorsionar la escala con un valor inventado. La escala de
-    color se normaliza de forma global, a partir de los tiempos válidos de
-    TODOS los razonadores en conjunto, para que los tres PNG resultantes
-    compartan exactamente la misma barra de color y sean comparables entre
-    sí.
+    color se normaliza de forma global, a partir de los valores válidos de
+    TODOS los razonadores graficados en conjunto, para que los PNG
+    resultantes compartan exactamente la misma barra de color y sean
+    comparables entre sí.
     """
     carpeta_salida.mkdir(parents=True, exist_ok=True)
+    razonadores = razonadores if razonadores is not None else RAZONADORES
     rangos_unicos = sorted(df["rangos"].unique())
     palos_unicos = sorted(df["palos"].unique())
 
-    valores_validos_global = df.loc[~df["es_timeout"], "total_s"].dropna()
+    df_razonadores = df[df["razonador"].isin(razonadores)]
+    valores_validos_global = df_razonadores.loc[~df_razonadores["es_timeout"], metrica].dropna()
     if not valores_validos_global.empty:
         vmin_global = valores_validos_global.min()
         vmax_global = valores_validos_global.max()
@@ -440,7 +449,7 @@ def graficar_heatmap_tiempo(df, carpeta_salida):
     else:
         norm_global = None
 
-    for razonador in RAZONADORES:
+    for razonador in razonadores:
         sub = df[df["razonador"] == razonador]
         matriz = np.full((len(rangos_unicos), len(palos_unicos)), np.nan)
         es_to = np.zeros_like(matriz, dtype=bool)
@@ -454,15 +463,57 @@ def graficar_heatmap_tiempo(df, carpeta_salida):
                 if row["es_timeout"]:
                     es_to[i, j] = True
                 else:
-                    matriz[i, j] = row["total_s"]
+                    matriz[i, j] = row[metrica]
 
         _dibujar_heatmap_individual(
             matriz, es_to, rangos_unicos, palos_unicos,
             xlabel="Cantidad de palos", ylabel="Cantidad de rangos",
-            titulo=f"Tiempo total de clasificacion — {razonador}",
+            titulo=f"{titulo_metrica} — {razonador}",
             ruta_salida=carpeta_salida / f"{_slug_razonador(razonador)}.png",
             norm=norm_global,
+            cbar_label=cbar_label, fmt_celda=fmt_celda, fmt_tick=fmt_tick,
         )
+
+
+def graficar_heatmap_tiempo(df, carpeta_salida, razonadores=None):
+    """
+    Genera un heatmap rangos x palos -> tiempo total (s), uno por razonador
+    (por defecto los tres; pasar `razonadores` para restringir, por ejemplo
+    a HermiT y JFact).
+
+    Pensada para instancias_completas. Ver _graficar_heatmap_rangos_palos
+    para el detalle del manejo de timeouts y la normalización de color.
+    """
+    _graficar_heatmap_rangos_palos(
+        df, carpeta_salida, metrica="total_s",
+        cbar_label="Tiempo total (s)", fmt_celda=lambda v: f"{v:.2f}s",
+        fmt_tick=_formatear_tick_tiempo,
+        titulo_metrica="Tiempo total de clasificacion",
+        razonadores=razonadores,
+    )
+
+
+def graficar_heatmap_memoria(df, carpeta_salida, razonadores=None):
+    """
+    Genera un heatmap rangos x palos -> memoria peak (MB), uno por
+    razonador. Por defecto se restringe a HermiT y JFact (los dos
+    razonadores que sí completan a la escala más grande sin timeout;
+    Openllet queda casi siempre marcado como TIMEOUT ahí, por lo que un
+    heatmap de memoria para él aportaría poco), pero se puede pasar
+    `razonadores` explícitamente para incluir a los tres.
+
+    Es el equivalente en memoria de graficar_heatmap_tiempo: misma matriz
+    rangos x palos, mismo tratamiento de TIMEOUT (celda en blanco con
+    achurado rojo, memoria queda NaN igual que el tiempo en esos casos) y
+    misma normalización global de color entre los PNG generados.
+    """
+    _graficar_heatmap_rangos_palos(
+        df, carpeta_salida, metrica="mem_pico_mb",
+        cbar_label="Memoria peak (MB)", fmt_celda=lambda v: f"{v:.0f} MB",
+        fmt_tick=_formatear_tick_memoria,
+        titulo_metrica="Memoria utilizada",
+        razonadores=razonadores if razonadores is not None else ["HermiT", "JFact (FaCT++)"],
+    )
 
 
 def _formatear_tick_tiempo(valor, pos=None):
@@ -474,13 +525,28 @@ def _formatear_tick_tiempo(valor, pos=None):
     return f"{valor:g}"
 
 
-def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
-                                 xlabel, ylabel, titulo, ruta_salida, norm=None):
+def _formatear_tick_memoria(valor, pos=None):
     """
-    Dibuja y guarda un único heatmap a partir de una matriz de tiempos (s) y
-    una matriz booleana es_to que indica qué celdas corresponden a TIMEOUT.
+    Formatea un tick del colorbar de memoria (MB) como número entero.
 
-    Usa escala de color lineal, calculada solo a partir de los tiempos
+    Usa exactamente la misma lógica de redondeo que _formatear_tick_tiempo;
+    se mantiene como función separada solo para que el nombre sea claro en
+    los llamados de heatmaps de memoria.
+    """
+    return _formatear_tick_tiempo(valor, pos)
+
+
+def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
+                                 xlabel, ylabel, titulo, ruta_salida, norm=None,
+                                 cbar_label="Tiempo total (s)",
+                                 fmt_celda=lambda v: f"{v:.2f}s",
+                                 fmt_tick=_formatear_tick_tiempo):
+    """
+    Dibuja y guarda un único heatmap a partir de una matriz de valores (por
+    defecto tiempos en s, pero sirve para cualquier métrica numérica) y una
+    matriz booleana es_to que indica qué celdas corresponden a TIMEOUT.
+
+    Usa escala de color lineal, calculada solo a partir de los valores
     reales (no-timeout). Las celdas TIMEOUT quedan en blanco y se
     sobreescriben con achurado rojo y la etiqueta "TIMEOUT", sin participar
     nunca de la escala.
@@ -492,6 +558,10 @@ def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
     exactamente la misma barra de color, incluso si alguno de ellos no
     tiene ningún valor válido propio (por ejemplo, si todas sus corridas
     dieron TIMEOUT).
+
+    `cbar_label`, `fmt_celda` y `fmt_tick` permiten reutilizar exactamente
+    el mismo dibujo para otras métricas (por ejemplo memoria peak en MB en
+    vez de tiempo en s), sin duplicar la lógica de la figura.
     """
     fig, ax = plt.subplots(figsize=(1.1 * len(etiquetas_x) + 2, 0.9 * len(etiquetas_y) + 2))
 
@@ -512,7 +582,7 @@ def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
                 ax.text(j, i, "TIMEOUT", ha="center", va="center",
                         color="red", fontsize=7, fontweight="bold")
             elif not np.isnan(matriz[i, j]):
-                ax.text(j, i, f"{matriz[i, j]:.2f}s", ha="center", va="center",
+                ax.text(j, i, fmt_celda(matriz[i, j]), ha="center", va="center",
                         color="white", fontsize=8)
 
     ax.set_xticks(range(len(etiquetas_x)))
@@ -523,8 +593,8 @@ def _dibujar_heatmap_individual(matriz, es_to, etiquetas_y, etiquetas_x,
     ax.set_ylabel(ylabel)
     ax.set_title(titulo, fontsize=11)
     if norm is not None or valores_validos.size:
-        cbar = fig.colorbar(im, ax=ax, label="Tiempo total (s)")
-        cbar.ax.yaxis.set_major_formatter(mticker.FuncFormatter(_formatear_tick_tiempo))
+        cbar = fig.colorbar(im, ax=ax, label=cbar_label)
+        cbar.ax.yaxis.set_major_formatter(mticker.FuncFormatter(fmt_tick))
     fig.tight_layout()
     fig.savefig(ruta_salida, dpi=150)
     plt.close(fig)
@@ -729,20 +799,29 @@ def graficar_comparacion_tipos_mano_vs_rangos(df, metrica, ylabel, titulo_base, 
     )
 
 
-def graficar_heatmap_tipo_mano(df, carpeta_salida):
+def _graficar_heatmap_tipo_mano(df, carpeta_salida, metrica, cbar_label,
+                                 fmt_tick, titulo_metrica, razonadores=None):
     """
-    Genera, por cada razonador, un heatmap tipo_mano x rangos -> tiempo (s),
-    con un panel por cantidad de palos.
+    Función interna genérica: genera, por cada razonador en `razonadores`
+    (por defecto todos, RAZONADORES), un heatmap tipo_mano x rangos ->
+    `metrica`, con un panel por cantidad de palos.
+
+    Compartida por graficar_heatmap_tipo_mano (metrica="total_s") y
+    graficar_heatmap_tipo_mano_memoria (metrica="mem_pico_mb"), para no
+    duplicar la lógica de armado de los paneles ni la normalización global
+    de color.
 
     Pensada para instancias_divididas. Permite ver de un vistazo en qué
-    tipos de mano y a qué escala se concentra la lentitud de cada razonador
-    (por ejemplo JFact en escalera/full). La escala de color se normaliza
-    de forma global, a partir de los tiempos válidos de TODOS los
-    razonadores en conjunto, para que los tres PNG resultantes (uno por
-    razonador) compartan exactamente la misma barra de color y sean
-    comparables entre sí (y no solo los paneles dentro de un mismo PNG).
+    tipos de mano y a qué escala se concentra el costo (tiempo o memoria)
+    de cada razonador (por ejemplo JFact en escalera/full). La escala de
+    color se normaliza de forma global, a partir de los valores válidos de
+    TODOS los razonadores graficados en conjunto, para que los PNG
+    resultantes (uno por razonador) compartan exactamente la misma barra de
+    color y sean comparables entre sí (y no solo los paneles dentro de un
+    mismo PNG).
     """
     carpeta_salida.mkdir(parents=True, exist_ok=True)
+    razonadores = razonadores if razonadores is not None else RAZONADORES
     tipos_presentes = [t for t in ORDEN_TIPOS_MANO
                        if t != "Todas" and t in df["tipo_mano"].unique()]
     rangos_unicos = sorted(df["rangos"].unique())
@@ -751,7 +830,8 @@ def graficar_heatmap_tipo_mano(df, carpeta_salida):
     if not tipos_presentes or not rangos_unicos or not palos_unicos:
         return
 
-    valores_validos_global = df.loc[~df["es_timeout"], "total_s"].dropna()
+    df_razonadores = df[df["razonador"].isin(razonadores)]
+    valores_validos_global = df_razonadores.loc[~df_razonadores["es_timeout"], metrica].dropna()
     if not valores_validos_global.empty:
         vmin_global = valores_validos_global.min()
         vmax_global = valores_validos_global.max()
@@ -760,7 +840,7 @@ def graficar_heatmap_tipo_mano(df, carpeta_salida):
     else:
         norm_global = None
 
-    for razonador in RAZONADORES:
+    for razonador in razonadores:
         sub_r = df[df["razonador"] == razonador]
         norm = norm_global
 
@@ -785,7 +865,7 @@ def graficar_heatmap_tipo_mano(df, carpeta_salida):
                     if row["es_timeout"]:
                         es_to[i, j] = True
                     else:
-                        matriz[i, j] = row["total_s"]
+                        matriz[i, j] = row[metrica]
 
             im = ax.imshow(np.ma.masked_invalid(matriz), cmap="viridis", norm=norm, aspect="auto")
 
@@ -804,12 +884,47 @@ def graficar_heatmap_tipo_mano(df, carpeta_salida):
             ax.set_xlabel("Rangos", fontsize=9)
             ax.set_title(f"{palos} palos", fontsize=10)
 
-        fig.suptitle(f"Tiempo total por tipo de mano — {razonador}", fontsize=13)
+        fig.suptitle(f"{titulo_metrica} — {razonador}", fontsize=13)
         if im is not None:
-            cbar = fig.colorbar(im, ax=axes.tolist(), label="Tiempo total (s)", shrink=0.85)
-            cbar.ax.yaxis.set_major_formatter(mticker.FuncFormatter(_formatear_tick_tiempo))
+            cbar = fig.colorbar(im, ax=axes.tolist(), label=cbar_label, shrink=0.85)
+            cbar.ax.yaxis.set_major_formatter(mticker.FuncFormatter(fmt_tick))
         fig.savefig(carpeta_salida / f"{_slug_razonador(razonador)}.png", dpi=150, bbox_inches="tight")
         plt.close(fig)
+
+
+def graficar_heatmap_tipo_mano(df, carpeta_salida, razonadores=None):
+    """
+    Genera, por cada razonador (por defecto los tres), un heatmap tipo_mano
+    x rangos -> tiempo (s), con un panel por cantidad de palos.
+
+    Pensada para instancias_divididas. Ver _graficar_heatmap_tipo_mano para
+    el detalle del manejo de timeouts y la normalización de color.
+    """
+    _graficar_heatmap_tipo_mano(
+        df, carpeta_salida, metrica="total_s", cbar_label="Tiempo total (s)",
+        fmt_tick=_formatear_tick_tiempo,
+        titulo_metrica="Tiempo total por tipo de mano",
+        razonadores=razonadores,
+    )
+
+
+def graficar_heatmap_tipo_mano_memoria(df, carpeta_salida, razonadores=None):
+    """
+    Genera, por cada razonador, un heatmap tipo_mano x rangos -> memoria
+    peak (MB), con un panel por cantidad de palos.
+
+    Es el equivalente en memoria de graficar_heatmap_tipo_mano. Por
+    defecto se restringe a HermiT y JFact (Openllet queda casi siempre en
+    TIMEOUT a estas escalas, por lo que un heatmap de memoria para él
+    aportaría poco), pero se puede pasar `razonadores` explícitamente para
+    incluir a los tres.
+    """
+    _graficar_heatmap_tipo_mano(
+        df, carpeta_salida, metrica="mem_pico_mb", cbar_label="Memoria peak (MB)",
+        fmt_tick=_formatear_tick_memoria,
+        titulo_metrica="Memoria utilizada por tipo de mano",
+        razonadores=razonadores if razonadores is not None else ["HermiT", "JFact (FaCT++)"],
+    )
 
 
 def _slug_razonador(razonador: str) -> str:
@@ -876,6 +991,7 @@ def main():
             df_completas, "mem_pico_mb", "Memoria peak (MB)",
             "Memoria utilizada", base / "memoria_vs_rangos", log_y=False)
         graficar_heatmap_tiempo(df_completas, base / "heatmaps_tiempo")
+        graficar_heatmap_memoria(df_completas, base / "heatmaps_memoria")
         graficar_comparacion_barajas_vs_palos(
             df_completas, "total_s", "Tiempo total (s)",
             "Comparacion de barajas (tiempo)", base / "comparacion_barajas_tiempo_vs_palos")
@@ -907,6 +1023,7 @@ def main():
             df_divididas, "mem_pico_mb", "Memoria peak (MB)",
             "Memoria utilizada", base / "memoria_por_tipo_mano_vs_rangos", log_y=False)
         graficar_heatmap_tipo_mano(df_divididas, base / "heatmaps_tiempo_por_tipo")
+        graficar_heatmap_tipo_mano_memoria(df_divididas, base / "heatmaps_memoria_por_tipo")
         graficar_comparacion_tipos_mano_vs_palos(
             df_divididas, "total_s", "Tiempo total (s)",
             "Comparacion de tipos de mano (tiempo)", base / "comparacion_tipos_mano_tiempo_vs_palos")
