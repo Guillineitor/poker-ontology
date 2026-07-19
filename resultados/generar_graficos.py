@@ -991,7 +991,7 @@ def main():
             df_completas, "mem_pico_mb", "Memoria peak (MB)",
             "Memoria utilizada", base / "memoria_vs_rangos", log_y=False)
         graficar_heatmap_tiempo(df_completas, base / "heatmaps_tiempo")
-        graficar_heatmap_memoria(df_completas, base / "heatmaps_memoria")
+        graficar_heatmap_memoria(df_completas, base / "heatmaps_memoria", razonadores=RAZONADORES)
         graficar_comparacion_barajas_vs_palos(
             df_completas, "total_s", "Tiempo total (s)",
             "Comparacion de barajas (tiempo)", base / "comparacion_barajas_tiempo_vs_palos")
@@ -1023,7 +1023,7 @@ def main():
             df_divididas, "mem_pico_mb", "Memoria peak (MB)",
             "Memoria utilizada", base / "memoria_por_tipo_mano_vs_rangos", log_y=False)
         graficar_heatmap_tipo_mano(df_divididas, base / "heatmaps_tiempo_por_tipo")
-        graficar_heatmap_tipo_mano_memoria(df_divididas, base / "heatmaps_memoria_por_tipo")
+        graficar_heatmap_tipo_mano_memoria(df_divididas, base / "heatmaps_memoria_por_tipo", razonadores=RAZONADORES)
         graficar_comparacion_tipos_mano_vs_palos(
             df_divididas, "total_s", "Tiempo total (s)",
             "Comparacion de tipos de mano (tiempo)", base / "comparacion_tipos_mano_tiempo_vs_palos")
